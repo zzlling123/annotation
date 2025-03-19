@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinkao.erp.login.mapper.UserLoginLogMapper">
+
+<select id="page" resultType="com.xinkao.erp.system.model.vo.UserLoginLogPageVo">
+    select * from sys_user_login_log
+    where 1=1
+    <if test="userLoginLogQuery.account != null and userLoginLogQuery.account != ''">
+        and account LIKE CONCAT('%', #{userLoginLogQuery.account}, '%')
+    </if>
+    <if test="userLoginLogQuery.realName != null and userLoginLogQuery.realName != ''">
+        and real_name LIKE CONCAT('%', #{userLoginLogQuery.realName}, '%')
+    </if>
+    <if test="userLoginLogQuery.status != null and userLoginLogQuery.status != ''">
+        and status = #{userLoginLogQuery.status}
+    </if>
+    <if test="userLoginLogQuery.strTime != null and userLoginLogQuery.strTime != '' and userLoginLogQuery.endTime != null and userLoginLogQuery.endTime != ''">
+        and login_time between #{userLoginLogQuery.strTime} and  #{userLoginLogQuery.endTime}
+    </if>
+    Order by login_time DESC
+</select>
+
+</mapper>

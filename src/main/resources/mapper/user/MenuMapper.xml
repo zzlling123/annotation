@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinkao.erp.user.mapper.MenuMapper">
+	<select id="getMenuRoleList" resultType="com.xinkao.erp.user.entity.Menu">
+		SELECT m.menu_id,m.menu_name,m.route,m.pid,m.sort,m.is_del,m.icon
+		FROM role_menu r
+				 LEFT JOIN menu m on r.menu_id = m.menu_id
+		WHERE r.role_id = #{roleId} and m.is_del = 0 ORDER BY m.sort
+	</select>
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinkao.erp.user.mapper.UserMapper">
+<!-- 分页查询 -->
+	<select id="page" resultType="com.xinkao.erp.user.vo.UserPageVo">
+		SELECT u.id,u.real_name,u.mobile,u.role_id,r.role_name,u.dutie,u.create_time,u.state
+		FROM `user` u
+		LEFT JOIN role r ON r.id = u.role_id
+		LEFT JOIN user_department ud ON ud.user_id = u.id
+		WHERE 1=1 and u.is_del = 0
+		<if test="userQuery.realName != null and userQuery.realName != ''">
+			and u.real_name LIKE CONCAT('%', #{userQuery.realName}, '%')
+		</if>
+		<if test="userQuery.mobile != null and userQuery.mobile != ''">
+			and u.mobile LIKE CONCAT('%', #{userQuery.mobile}, '%')
+		</if>
+		<if test="userQuery.roleId != null and userQuery.roleId != ''">
+			and u.role_id = #{userQuery.roleId}
+		</if>
+		<if test="userQuery.state != null and userQuery.state != ''">
+			and u.state = #{userQuery.state}
+		</if>
+		<if test="userQuery.dutie != null and userQuery.dutie != ''">
+			and u.dutie = #{userQuery.dutie}
+		</if>
+		<if test="userQuery.departmentId != null and userQuery.departmentId != ''">
+			and ud.department_id in
+			<foreach collection="userQuery.departmentIds" item="did" index="index" open="(" close=")" separator=",">
+				#{did}
+			</foreach>
+		</if>
+		GROUP BY u.id
+		ORDER BY u.id DESC
+	</select>
+
+	<select id="getDutiesList" resultType="java.lang.String">
+		SELECT dutie
+		FROM `user`
+		WHERE is_del = 0 and dutie != '' and dutie is not null
+		<if test="userQuery.dutie != null and userQuery.dutie != ''">
+			and dutie LIKE CONCAT('%', #{userQuery.dutie}, '%')
+		</if>
+		GROUP BY dutie
+	</select>
+
+	<select id="getUserDepartmentList" resultType="com.xinkao.erp.user.vo.UserDepartmentVo">
+		SELECT u.id userId,u.real_name,u.mobile,ud.department_id
+		FROM `user` u
+				 left JOIN user_department ud ON u.id = ud.user_id
+		WHERE u.is_del = 0 and ud.department_id is not NULL
+		GROUP BY u.id,ud.department_id
+	</select>
+</mapper>

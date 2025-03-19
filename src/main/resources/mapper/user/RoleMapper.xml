@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinkao.erp.user.mapper.RoleMapper">
+	<select id="page" resultType="com.xinkao.erp.user.vo.RolePageVo">
+		SELECT *
+		FROM role
+		where 1=1 and is_del = 0
+		<if test="roleQuery.roleName != null and roleQuery.roleName != ''">
+			and role_name LIKE CONCAT('%', #{roleQuery.roleName}, '%')
+		</if>
+		<if test="roleQuery.createName != null and roleQuery.createName != ''">
+			and create_by LIKE CONCAT('%', #{roleQuery.createName}, '%')
+		</if>
+		Order by create_time DESC
+	</select>
+</mapper>

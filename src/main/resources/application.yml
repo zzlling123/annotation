@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: annotation
+  profiles:
+    active: test
+server:
+  servlet:
+    context-path: /annotation
+  
+##钉钉告警
+dingtalk:
+  alarm: 
+    enabled: false
+    url:
