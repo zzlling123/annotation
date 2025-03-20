@@ -22,21 +22,21 @@ import lombok.Setter;
 @ApiModel(value = "User对象", description = "账号表")
 public class User extends DataEntity {
 
-    @ApiModelProperty("手机号")
-    @TableField("mobile")
-    private String mobile;
+    @ApiModelProperty("用户名")
+    @TableField("username")
+    private String username;
+
+    @ApiModelProperty("密码")
+    @TableField("password")
+    private String password;
+
+    @ApiModelProperty("盐")
+    @TableField("salt")
+    private String salt;
 
     @ApiModelProperty("姓名")
     @TableField("real_name")
     private String realName;
-
-    @ApiModelProperty("钉钉ID")
-    @TableField("ding_id")
-    private String dingId;
-
-    @ApiModelProperty("职务")
-    @TableField("dutie")
-    private String dutie;
 
     @ApiModelProperty("是否删除0否1是")
     @TableField("is_del")

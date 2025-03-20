@@ -9,6 +9,7 @@ import com.xinkao.erp.user.entity.User;
 import com.xinkao.erp.user.vo.MenuVo;
 import com.xinkao.erp.user.vo.RoleVo;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -18,24 +19,22 @@ import lombok.Data;
  */
 @Data
 public class LoginUserVo implements OutputConverter<LoginUserVo, User>{
-    
-    @JsonIgnore
-    /**用户标识**/
-    private String id;
 
-    private String userId;
+    @ApiModelProperty("用户登录标识")
+    private String token;
 
-    private String mobile;
+    @ApiModelProperty("用户名")
+    private String username;
 
+    @ApiModelProperty("性别")
+    private Integer sex;
+
+    @ApiModelProperty("姓名")
     private String realName;
 
-    private String dutie;
-
-    private String dingId;
-
-    private Integer state;
-
+    @ApiModelProperty("角色ID")
     private Integer roleId;
 
-	
+    @ApiModelProperty("是否启用0否1是")
+    private Integer state;
 }

@@ -27,11 +27,11 @@ spring:
   # redis配置
   redis:
     # 地址
-    host: r-m5e4k2hn8ewqc2wxlspd.redis.rds.aliyuncs.com
+    host: 127.0.0.1
     # 端口，默认为6379
     port: 6379
     # 密码
-    password: xinkao@2019
+    password:
     # 连接超时时间
     timeout: 3s
     # jedis配置

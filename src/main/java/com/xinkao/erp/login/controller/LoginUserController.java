@@ -16,6 +16,8 @@ import com.xinkao.erp.common.util.HttpContextUtils;
 import com.xinkao.erp.login.mapper.VerifyCodeDao;
 import com.xinkao.erp.login.param.ApLoginParam;
 import com.xinkao.erp.login.service.impl.SimpleCharVerifyCodeGenImpl;
+import com.xinkao.erp.login.vo.LoginUserVo;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,18 +36,40 @@ import com.xinkao.erp.login.service.LoginService;
 public class LoginUserController extends BaseController{
 	@Resource
   	private LoginService loginService;
-	@Value("${ding.CORPID}")
-	private String CORPID;
+
+	@Autowired
+	private SimpleCharVerifyCodeGenImpl verifyCodeGenService;
 
 
 	/**
-	 * 获取CorpId
-	 *
+	 * @Description 获取验证码图片
+	 * @Date 2020/12/21 10:30
+	 * @Param [response]
 	 * @return
 	 */
-	@PostMapping("/getCorpId")
-	public BaseResponse getCorpId() {
-		return BaseResponse.ok("成功",CORPID);
+	@ApiOperation("获取验证码")
+	@GetMapping("/getVerificationCode")
+	public void verifyCode(HttpServletResponse response) throws IOException {
+		String uuid = RandomUtil.randomString(10);
+		System.out.println("uuid：" + uuid);
+		VerifyCodeDao verifyCode = verifyCodeGenService.generate(80, 28);
+		String code = verifyCode.getCode();
+		System.out.println("验证码：" + code);
+		// 将验证码信息放到Redis缓存中
+		redisUtil.set(uuid, code, 2, TimeUnit.MINUTES);
+		//设置响应头
+		response.setHeader("Pragma", "no-cache");
+		//设置响应头
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Access-Control-Expose-Headers", "*");
+		// 将uuid放入响应头，前端需要保存到浏览器缓存
+		response.setHeader("uuid", uuid);
+		//在代理服务器端防止缓冲
+		response.setDateHeader("Expires", 0);
+		//设置响应内容类型
+		response.setContentType("image/jpeg");
+		response.getOutputStream().write(verifyCode.getImgBytes());
+		response.getOutputStream().flush();
 	}
 
 	/**
@@ -54,7 +78,7 @@ public class LoginUserController extends BaseController{
 	 * @return
 	 */
 	@PostMapping("/login")
-	public BaseResponse login(@Valid @RequestBody ApLoginParam apLoginParam, HttpServletRequest request) {
+	public BaseResponse<LoginUserVo> login(@RequestBody @Valid ApLoginParam apLoginParam, HttpServletRequest request) {
 		return loginService.login(apLoginParam,request);
 	}
 

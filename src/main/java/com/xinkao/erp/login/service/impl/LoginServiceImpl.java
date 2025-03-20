@@ -11,12 +11,10 @@ import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
 import com.xinkao.erp.common.enums.CommonEnum;
 import com.xinkao.erp.common.model.BaseResponse;
-import com.xinkao.erp.common.util.DingUtils;
 import com.xinkao.erp.common.util.ip.IpRegionUtils;
 import com.xinkao.erp.common.util.ip.IpUtils;
 import com.xinkao.erp.login.vo.LoginUserVo;
 import com.xinkao.erp.user.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.xinkao.erp.common.constant.XinKaoConstant;
@@ -25,15 +23,10 @@ import com.xinkao.erp.common.util.RedisUtil;
 import com.xinkao.erp.common.util.ServletUtils;
 import com.xinkao.erp.login.param.ApLoginParam;
 import com.xinkao.erp.login.service.LoginService;
-import com.xinkao.erp.login.service.UserLoginTokenService;
 import com.xinkao.erp.login.vo.UserLoginResultVo;
 import com.xinkao.erp.system.service.AsyncService;
-import com.xinkao.erp.system.service.SysConfigService;
 import com.xinkao.erp.user.entity.User;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -48,61 +41,50 @@ public class LoginServiceImpl extends LoginCommonServiceImpl implements LoginSer
 	private UserService userService;
 	@Resource
 	private RedisUtil redisUtil;
-	@Autowired
-	private DingUtils dingUtils;
 
 	@Override
-	public BaseResponse login(ApLoginParam apLoginParam, HttpServletRequest request) {
-		String code = apLoginParam.getCode();
-		User user = dingUtils.getUser(code);
-		String dingId;
-		if ("11111111".equals(code)){//刘国园
-			dingId = "11111111";
-		}else if ("22222222".equals(code)){//国柱
-			dingId = "095340180832115701";
-		}else if ("33333333".equals(code)){//白纪华
-			dingId = "154400024230176545";
-		}else if ("77777".equals(code)){//卢东岳
-			dingId = "121063442221157113";
-		}else if ("88888".equals(code)){//常洪锐
-			dingId = "021242483124083806";
-		}else{
-			dingId = user.getDingId();
+	public BaseResponse<LoginUserVo> login(ApLoginParam loginParam, HttpServletRequest request) {
+		String userCode = redisUtil.get(loginParam.getUuid());
+		System.out.println("Redis缓存中的code：" + userCode);
+		if (!StrUtil.equalsIgnoreCase(loginParam.getCode(), userCode)){
+			return BaseResponse.fail("验证码不正确！");
 		}
-		User userInfo = userService.lambdaQuery().eq(User::getDingId,dingId).eq(User::getIsDel,0).last("limit 1").one();
-		Map<String, Object> map = new HashMap();
-		String token = RandomUtil.randomString(20); // 随机生成唯一token
-		if (userInfo == null){
-			userInfo = userService.lambdaQuery().eq(User::getMobile,user.getMobile()).eq(User::getIsDel,0).last("limit 1").one();
-			if (userInfo == null){
-				return BaseResponse.fail("用户未注册，请联系管理员！",map);
-			}else {
-				//插入钉钉ID
-				userInfo.setDingId(dingId);
-				userService.updateById(userInfo);
-			}
-		}
+		String username = loginParam.getUsername().trim();
+		String password = loginParam.getPassword().trim();
 
-		if (userInfo.getState() == 0) {
+		// 用户名不存在
+		User user = getAccountByUserName(username);
+		if (user == null) {
+			return BaseResponse.fail("用户名不存在！");
+		}
+		// 密码错误
+		if (!SecureUtil.md5(user.getSalt()+password).equals(user.getPassword())) {
+			return BaseResponse.fail("密码错误！");
+		}
+		if (user.getState() == 0) {
 			return BaseResponse.fail("该用户已被禁用！");
 		}
 		// 生成登录信息
 		LoginUser loginUser = new LoginUser();
+		String token = RandomUtil.randomString(20); // 随机生成唯一token
 		// 记录登录日志
-		UserLoginResultVo resultVo = crtLoginResult(userInfo.getMobile(),userInfo.getRealName(), XinKaoConstant.LOGIN_SUCCESS,"登录成功",request);
+		UserLoginResultVo resultVo = crtLoginResult(username,user.getRealName(), XinKaoConstant.LOGIN_SUCCESS,"登录成功",request);
 		asyncService.recordLogininfo(resultVo);
-		loginUser.setUser(userInfo);
+		loginUser.setUser(user);
 		loginUser.setToken(token);
 		loginUser.setLoginTs(System.currentTimeMillis());
 		setUserAgent(loginUser);
 
 		//存储用户登录信息
 		redisUtil.set(token, loginUser, 24, TimeUnit.HOURS);
-		LoginUserVo vo = BeanUtil.copyProperties(userInfo, LoginUserVo.class);
-		vo.setUserId(userInfo.getId().toString());
-		map.put("token",token);
-		map.put("user", vo);
-		return BaseResponse.ok("登录成功！", map);
+		LoginUserVo vo = BeanUtil.copyProperties(user, LoginUserVo.class);
+		vo.setToken(token);
+		return BaseResponse.ok("登录成功！", vo);
+	}
+
+	@Override
+	public User getAccountByUserName(String username){
+		return userService.lambdaQuery().eq(User::getUsername, username).eq(User::getIsDel, CommonEnum.IS_DEL.NO.getCode()).last("limit 1").one();
 	}
 
 	/**
