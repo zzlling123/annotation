@@ -11,6 +11,7 @@ import com.xinkao.erp.common.enums.system.OperationType;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.param.UpdateStateParam;
 import com.xinkao.erp.common.model.support.Pageable;
+import com.xinkao.erp.user.entity.Menu;
 import com.xinkao.erp.user.entity.Role;
 import com.xinkao.erp.user.param.RoleParam;
 import com.xinkao.erp.user.query.RoleQuery;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 角色相关
@@ -43,7 +45,7 @@ public class RoleController extends BaseController {
 	 */
 	@PostMapping("/getList")
 	@ApiOperation("根据用户权限获取用户菜单")
-	public BaseResponse getList() {
+	public BaseResponse<List<Role>> getList() {
 		return BaseResponse.ok(roleService.lambdaQuery()
 				.eq(Role::getIsDel, CommonEnum.IS_DEL.NO.getCode()).list());
 	}
@@ -71,7 +73,7 @@ public class RoleController extends BaseController {
 	@PrimaryDataSource
 	@PostMapping("/getRoleMenuList")
 	@ApiOperation("根据id获取角色权限列表")
-	public BaseResponse getRoleMenuList(@RequestBody RoleParam roleParam) {
+	public BaseResponse<List<Menu>> getRoleMenuList(@RequestBody RoleParam roleParam) {
 		return roleService.getRoleMenuList(roleParam);
 	}
 

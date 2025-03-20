@@ -87,6 +87,7 @@ public class LoginUserController extends BaseController{
 	 *
 	 * @return
 	 */
+	@PrimaryDataSource
 	@PostMapping("/logout")
 	@Log(content = "退出登录", operationType = OperationType.UPDATE, isSaveRequestData = false)
 	public BaseResponse logout() {

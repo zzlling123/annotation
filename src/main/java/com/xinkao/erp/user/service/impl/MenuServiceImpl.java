@@ -29,7 +29,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, Menu> implement
 
     //根据用户权限获取用户菜单
     @Override
-    public BaseResponse getList(){
+    public BaseResponse<List<Menu>> getList(){
         LoginUser loginUser = redisUtil.getInfoByToken();
         List<Menu> menuList = formatMenuList(menuMapper.getMenuRoleList(loginUser.getUser().getRoleId()));
         return BaseResponse.ok("成功！",menuList);

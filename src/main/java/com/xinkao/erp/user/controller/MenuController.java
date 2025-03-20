@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.xinkao.erp.common.annotation.PrimaryDataSource;
+import com.xinkao.erp.user.entity.Menu;
 import com.xinkao.erp.user.service.MenuService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +35,10 @@ public class MenuController extends BaseController {
 	 *
 	 * @return
 	 */
+	@PrimaryDataSource
 	@PostMapping("/getList")
 	@ApiOperation("根据用户权限获取用户菜单")
-	public BaseResponse getList() {
+	public BaseResponse<List<Menu>> getList() {
 		return menuService.getList();
 	}
 }

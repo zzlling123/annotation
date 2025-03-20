@@ -4,11 +4,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.common.service.BaseService;
+import com.xinkao.erp.user.entity.Menu;
 import com.xinkao.erp.user.entity.Role;
 import com.xinkao.erp.user.param.RoleParam;
 import com.xinkao.erp.user.query.RolePageQuery;
 import com.xinkao.erp.user.query.RoleQuery;
 import com.xinkao.erp.user.vo.RolePageVo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -26,7 +29,7 @@ public interface RoleService extends BaseService<Role> {
     Page<RolePageVo> page(RoleQuery query, Pageable pageable);
 
     //根据id获取角色权限列表
-    BaseResponse getRoleMenuList(RoleParam roleSaveParam);
+    BaseResponse<List<Menu>> getRoleMenuList(RoleParam roleSaveParam);
 
     //新增角色
     BaseResponse save(RoleParam roleSaveParam);

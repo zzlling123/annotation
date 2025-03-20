@@ -53,10 +53,4 @@ public class User extends DataEntity {
     @ApiModelProperty("ip")
     @TableField(exist = false)
     private String ip;
-
-    @TableField(exist = false)
-    private Integer level;
-
-
-
 }

@@ -17,7 +17,7 @@ import com.xinkao.erp.user.entity.Menu;
 public interface MenuService extends BaseService<Menu> {
 
     //根据用户权限获取用户菜单
-    BaseResponse getList();
+    BaseResponse<List<Menu>> getList();
 
     List<Menu> formatMenuList(List<Menu> menuList);
 }

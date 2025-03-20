@@ -58,6 +58,7 @@ public class LoginServiceImpl extends LoginCommonServiceImpl implements LoginSer
 			return BaseResponse.fail("用户名不存在！");
 		}
 		// 密码错误
+		System.out.println(SecureUtil.md5(user.getSalt()+password));
 		if (!SecureUtil.md5(user.getSalt()+password).equals(user.getPassword())) {
 			return BaseResponse.fail("密码错误！");
 		}

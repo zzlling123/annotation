@@ -20,26 +20,17 @@ import java.util.Date;
 @Setter
 public class UserPageVo extends BaseEntity {
 
-    @ApiModelProperty("用户ID")
-    private Integer id;
+    @ApiModelProperty("用户名")
+    private String username;
 
     @ApiModelProperty("姓名")
     private String realName;
 
-    @ApiModelProperty("手机号")
-    private String mobile;
-
-    @ApiModelProperty("职务")
-    private String dutie;
+    @ApiModelProperty("是否启用0否1是")
+    private Integer state;
 
     @ApiModelProperty("角色ID")
     private Integer roleId;
-
-    @ApiModelProperty("角色名称")
-    private String roleName;
-
-    @ApiModelProperty("是否启用0否1是")
-    private Integer state;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date createTime;

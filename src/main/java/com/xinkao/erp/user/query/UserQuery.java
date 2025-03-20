@@ -15,34 +15,22 @@ import java.util.List;
 
 
 /**
- * 用户下拉框查询
+ * 用户查询
  **/
 @Setter
 @Getter
-@ApiModel("用户下拉框查询")
+@ApiModel("用户查询")
 public class UserQuery extends BasePageQuery implements Serializable {
 
-    @ApiModelProperty("手机号")
-    private String mobile;
+    @ApiModelProperty("账号")
+    private String userName;
 
-    @ApiModelProperty("姓名")
+    @ApiModelProperty("用户名称")
     private String realName;
 
-    @ApiModelProperty("角色")
+    @ApiModelProperty("用户角色ID")
     private String roleId;
 
-    @ApiModelProperty("是否启用")
+    @ApiModelProperty("是否启用0否1是")
     private String state;
-
-    @ApiModelProperty("职务")
-    private String dutie;
-
-    @ApiModelProperty("部门ID")
-    private String departmentId;
-
-    @ApiModelProperty("部门下级IDs")
-    private List<Integer> departmentIds;
-
-
-
 }

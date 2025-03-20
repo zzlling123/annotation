@@ -1,13 +1,23 @@
 package com.xinkao.erp.user.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Validator;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.SecureUtil;
 import com.alibaba.fastjson.JSON;
+import com.xinkao.erp.common.enums.CommonEnum;
 import com.xinkao.erp.common.model.BaseResponse;
+import com.xinkao.erp.common.model.LoginUser;
 import com.xinkao.erp.common.model.param.UpdateStateParam;
 import com.xinkao.erp.login.service.UserOptLogService;
+import com.xinkao.erp.user.param.UserParam;
+import com.xinkao.erp.user.param.UserUpdateParam;
 import com.xinkao.erp.user.query.UserQuery;
 import com.xinkao.erp.user.vo.UserPageVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -35,6 +45,57 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	private UserMapper userMapper;
 	@Autowired
 	private UserOptLogService userOptLogService;
+	@Value("${resetPassword}")
+	private String resetPassword;
+
+	//分页
+	@Override
+	public Page<UserPageVo> page(UserQuery query, Pageable pageable) {
+		Page page = pageable.toPage();
+		return userMapper.page(page, query);
+	}
+
+	//新增
+	@Override
+	public BaseResponse save(UserParam userParam){
+		if (lambdaQuery().eq(User::getUsername,userParam.getUserName()).count()>0) {
+			return BaseResponse.fail("账号已存在！");
+		}
+		User user = new User();
+		//生成密码字段,6位随机盐加passWord
+		String salt = RandomUtil.randomString(20);
+		String PassWord = SecureUtil.md5(salt+userParam.getPassword());
+		user.setSalt(salt);
+		user.setPassword(PassWord);
+		return save(user)?BaseResponse.ok("新增成功！"): BaseResponse.fail("新增失败！");
+	}
+
+	//修改
+	@Override
+	public BaseResponse update(UserUpdateParam userUpdateParam){
+		User user = BeanUtil.copyProperties(userUpdateParam, User.class);
+		return updateById(user)?BaseResponse.ok("修改成功！"): BaseResponse.fail("修改失败！");
+	}
+
+	//删除
+	@Override
+	public BaseResponse del(String ids){
+		String[] idsArray = StrUtil.splitToArray(ids, ',');
+		lambdaUpdate().in(User::getId, idsArray).set(User::getIsDel, CommonEnum.GLOBAL_YN.YES.getCode()).update();
+		return BaseResponse.ok("删除成功！");
+	}
+
+	//重置密码
+	@Override
+	public BaseResponse resetPassword(int userId) {
+		User user = getById(userId);
+		String passwordStr = resetPassword;
+		String salt =  RandomUtil.randomString(6);
+		String password = SecureUtil.md5(salt+passwordStr);
+		user.setPassword(password);
+		user.setSalt(salt);
+		return updateById(user) ? BaseResponse.ok("重置成功,新密码为："+resetPassword) : BaseResponse.fail("重置失败！");
+	}
 
 
 	@Override

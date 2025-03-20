@@ -66,7 +66,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implement
 
     //根据id获取角色权限列表
     @Override
-    public BaseResponse getRoleMenuList(RoleParam roleParam){
+    public BaseResponse<List<Menu>> getRoleMenuList(RoleParam roleParam){
         //获取该企业下超级管理员的权限所有菜单
         LoginUser loginUser = redisUtil.getInfoByToken();
         User user = loginUser.getUser();

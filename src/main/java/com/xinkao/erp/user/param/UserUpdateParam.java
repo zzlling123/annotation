@@ -10,23 +10,22 @@ import lombok.Data;
  **/
 @Data
 public class UserUpdateParam {
+
     /**
-     * 用户名
+     * 姓名
      */
     @NotBlank(message = "姓名不能为空")
     private String realName;
+
     /**
      * 账号
      */
     @NotBlank(message = "账号不能为空")
-    private String account;
+    private String userName;
+
     /**
-     * 手机号
+     * 角色
      */
-    @NotBlank(message = "手机号不能为空")
-    private String mobile;
-    /**
-     * 头像
-     */
-    private String avatar;
+    @NotBlank(message = "角色不能为空")
+    private String roleId;
 }
