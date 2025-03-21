@@ -30,7 +30,7 @@ public class FastCodeGenerator {
 	// 数据库密码
 	private static final String PASSWORD = "b735c7b3d1f69a37";
 	// 项目根路径
-	private static final String projectRootPath = "D:\\workspace\\annotation";
+	private static final String projectRootPath = "E:\\test_project\\annotation";
 	// 根包名称
 	private static final String parentPackageName = "com.xinkao.erp";
 
@@ -38,11 +38,13 @@ public class FastCodeGenerator {
 	 * 执行此处
 	 */
 	public static void main(String[] args) {
-		String author = "Ldy";
+		String author = "zzl";
 		List<String> tableList = new ArrayList<String>();
-		tableList.add("user_field_sort_department");
-		tableList.add("user_fixed_field_department");
-        String busiModule = "fixed";
+		tableList.add("class_info");
+		String busiModule = "classInfo";
+		//tableList.add("course");
+		//tableList.add("course_chapter");
+		//tableList.add("course_resource");
 		String removePrefix = "";
 		completeGenerator(author,busiModule, tableList,removePrefix);
 	}
@@ -57,7 +59,7 @@ public class FastCodeGenerator {
 		String mapperXmlPath = getMapperXmlPath(module);
 		String servicePath = getServicePath(module);
 		String serviceImplPath = getServiceImplPath(module);
-//		String controllerPath = getControllerPath(module);
+		String controllerPath = getControllerPath(module);
 		// 【2】开始执行代码生成
 		FastAutoGenerator.create(URL, USERNAME, PASSWORD)
 				// 1. 全局配置
@@ -97,7 +99,7 @@ public class FastCodeGenerator {
 								// service层接口实现类的保存路径
 								put(OutputFile.serviceImpl, serviceImplPath);
 								// 控制类的保存路径
-//								put(OutputFile.controller, controllerPath);
+								put(OutputFile.controller, controllerPath);
 							}
 						}))
 
@@ -207,13 +209,13 @@ public class FastCodeGenerator {
 		return projectRootPath + "/src/main/java/" + getParentPackagePath() +"/"+ module +"/service/impl";
 	}
 
-//	/**
-//	 * 获取controller的路径
-//	 * 
-//	 * @return
-//	 */
-//	private static String getControllerPath(String module) {
-//		return projectRootPath + "/src/main/java/" + getParentPackagePath()  +"/"+module+"/controller";
-//	}
+	/**
+	 * 获取controller的路径
+	 *
+	 * @return
+	 */
+	private static String getControllerPath(String module) {
+		return projectRootPath + "/src/main/java/" + getParentPackagePath()  +"/"+module+"/controller";
+	}
 
 }
