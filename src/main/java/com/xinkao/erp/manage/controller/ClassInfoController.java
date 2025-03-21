@@ -21,7 +21,7 @@ import javax.validation.Valid;
 /**
  * 管理端班级相关服务
  * 
- * @author hys_thanks
+ * @author Ldy
  *
  */
 @RequestMapping("/class_info")
