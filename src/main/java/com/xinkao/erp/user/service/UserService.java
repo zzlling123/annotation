@@ -28,16 +28,17 @@ public interface UserService extends BaseService<User> {
 	Page<UserPageVo> page(UserQuery query, Pageable pageable);
 
 	//新增用户
-	BaseResponse save(UserParam userSaveParam);
+	BaseResponse<?> save(UserParam userSaveParam);
 
 	//修改用户
-	BaseResponse update(UserUpdateParam userUpdateParam);
+	BaseResponse<?> update(UserUpdateParam userUpdateParam);
 
+	//修改状态
+	BaseResponse<?> updateState(UpdateStateParam updateStateParam);
 
-	BaseResponse updateState(UpdateStateParam updateStateParam);
-
-	BaseResponse resetPassword(int userId);
+	//重置密码
+	BaseResponse<?> resetPassword(int userId);
 
 	//删除用户
-	BaseResponse del(String ids);
+	BaseResponse<?> del(String ids);
 }
