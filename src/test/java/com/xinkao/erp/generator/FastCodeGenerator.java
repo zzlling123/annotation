@@ -84,7 +84,8 @@ public class FastCodeGenerator {
 						// 输入模块名。
 //						.moduleName(module)
 						.entity(module+".entity").mapper(module+".mapper").service(module+".service").serviceImpl(module+".service.impl")
-						.controller(module+".controller").other("other")
+						.controller(module+".controller")
+						.other("other")
 						// 阶段2：所有文件的生成路径配置
 						.pathInfo(new HashMap<OutputFile, String>() {
 							{
@@ -209,11 +210,11 @@ public class FastCodeGenerator {
 		return projectRootPath + "/src/main/java/" + getParentPackagePath() +"/"+ module +"/service/impl";
 	}
 
-	/**
-	 * 获取controller的路径
-	 *
-	 * @return
-	 */
+//	/**
+//	 * 获取controller的路径
+//	 * 
+//	 * @return
+//	 */
 	private static String getControllerPath(String module) {
 		return projectRootPath + "/src/main/java/" + getParentPackagePath()  +"/"+module+"/controller";
 	}
