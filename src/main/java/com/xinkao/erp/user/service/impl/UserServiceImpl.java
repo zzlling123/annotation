@@ -58,10 +58,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	//新增
 	@Override
 	public BaseResponse save(UserParam userParam){
-		if (lambdaQuery().eq(User::getUsername,userParam.getUserName()).count()>0) {
+		if (lambdaQuery().eq(User::getUsername,userParam.getUsername()).count()>0) {
 			return BaseResponse.fail("账号已存在！");
 		}
 		User user = new User();
+		BeanUtil.copyProperties(userParam, user);
 		//生成密码字段,6位随机盐加passWord
 		String salt = RandomUtil.randomString(20);
 		String PassWord = SecureUtil.md5(salt+userParam.getPassword());

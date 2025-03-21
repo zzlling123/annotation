@@ -6,7 +6,9 @@ import javax.validation.Valid;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xinkao.erp.common.annotation.Log;
 import com.xinkao.erp.common.annotation.PrimaryDataSource;
+import com.xinkao.erp.common.enums.system.OperationType;
 import com.xinkao.erp.common.model.param.UpdateStateParam;
 import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.common.util.PasswordCheckUtil;
@@ -70,6 +72,7 @@ public class UserController extends BaseController {
 	@PrimaryDataSource
 	@PostMapping("/save")
 	@ApiOperation("新增用户")
+	@Log(content = "新增用户", operationType = OperationType.INSERT, isSaveRequestData = false)
 	public BaseResponse save(@Valid @RequestBody UserParam userParam) {
 		//校验密码格式
 		if (!PasswordCheckUtil.evalPassword(userParam.getPassword())) {
