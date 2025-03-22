@@ -1,5 +1,7 @@
 package com.xinkao.erp.manage.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xinkao.erp.common.enums.CommonEnum;
 import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.service.impl.BaseServiceImpl;
@@ -9,11 +11,8 @@ import com.xinkao.erp.manage.param.ClassInfoParam;
 import com.xinkao.erp.manage.query.ClassInfoQuery;
 import com.xinkao.erp.manage.service.ClassInfoService;
 import com.xinkao.erp.manage.vo.ClassInfoVo;
-import com.xinkao.erp.user.entity.User;
-import com.xinkao.erp.user.mapper.UserMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,29 +25,32 @@ public class ClassInfoServiceImpl extends BaseServiceImpl<ClassInfoMapper, Class
 
     @Override
     public Page<ClassInfoVo> page(ClassInfoQuery query, Pageable pageable) {
-        // 实现分页查询逻辑
-        log.info("Executing page query with query: {} and pageable: {}", query, pageable);
-        return null;
+        Page page = pageable.toPage();
+        return classInfoMapper.page(page, query);
     }
 
     @Override
     public BaseResponse<?> save(ClassInfoParam classInfoParam) {
-        // 实现新增逻辑
-        log.info("Saving class info with param: {}", classInfoParam);
-        return null;
+        if (lambdaQuery().eq(ClassInfo::getClassName, classInfoParam.getClassName()).eq(ClassInfo::getIsDel, CommonEnum.IS_DEL.NO.getCode()).count() > 0) {
+            return BaseResponse.fail("班级名称已存在！");
+        }
+        ClassInfo classInfo = new ClassInfo();
+        BeanUtils.copyProperties(classInfoParam, classInfo);
+        return save(classInfo) ? BaseResponse.ok("新增成功！") : BaseResponse.fail("新增失败！");
     }
 
     @Override
     public BaseResponse<?> update(ClassInfoParam classInfoParam) {
-        // 实现编辑逻辑
-        log.info("Updating class info with param: {}", classInfoParam);
-        return null;
+        if (lambdaQuery().eq(ClassInfo::getClassName, classInfoParam.getClassName()).ne(ClassInfo::getId, classInfoParam.getId()).eq(ClassInfo::getIsDel, CommonEnum.IS_DEL.NO.getCode()).count() > 0) {
+            return BaseResponse.fail("班级名称已存在！");
+        }
+        ClassInfo classInfo = new ClassInfo();
+        BeanUtils.copyProperties(classInfoParam, classInfo);
+        return updateById(classInfo) ? BaseResponse.ok("更新成功！") : BaseResponse.fail("更新失败！");
     }
 
     @Override
     public BaseResponse<?> delete(Integer id) {
-        // 实现删除逻辑
-        log.info("Deleting class info with id: {}", id);
-        return null;
+        return lambdaUpdate().eq(ClassInfo::getId, id).set(ClassInfo::getIsDel, CommonEnum.IS_DEL.YES.getCode()).update() ? BaseResponse.ok("删除成功！") : BaseResponse.fail("删除失败！");
     }
 }

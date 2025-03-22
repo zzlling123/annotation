@@ -14,6 +14,4 @@ public class ClassInfoQuery extends BasePageQuery implements Serializable {
     @ApiModelProperty("班级名称")
     private String className;
 
-    @ApiModelProperty("班级描述")
-    private String description;
 }

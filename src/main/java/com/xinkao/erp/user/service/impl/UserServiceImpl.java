@@ -82,7 +82,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	@Override
 	public BaseResponse del(String ids){
 		String[] idsArray = StrUtil.splitToArray(ids, ',');
-		lambdaUpdate().in(User::getId, idsArray).set(User::getIsDel, CommonEnum.GLOBAL_YN.YES.getCode()).update();
+		lambdaUpdate().in(User::getId, idsArray).set(User::getIsDel, CommonEnum.IS_DEL.YES.getCode()).update();
 		return BaseResponse.ok("删除成功！");
 	}
 
