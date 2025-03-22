@@ -1,0 +1,57 @@
+package com.xinkao.erp.question.service;
+
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xinkao.erp.common.model.BaseResponse;
+import com.xinkao.erp.common.model.param.DeleteParam;
+import com.xinkao.erp.common.model.support.Pageable;
+import com.xinkao.erp.question.entity.Question;
+import com.xinkao.erp.common.service.BaseService;
+import com.xinkao.erp.question.param.QuestionParam;
+import com.xinkao.erp.question.query.QuestionQuery;
+import com.xinkao.erp.question.vo.QuestionPageVo;
+
+import java.util.List;
+
+/**
+ * <p>
+ * 题库表 服务类
+ * </p>
+ *
+ * @author Ldy
+ * @since 2025-03-22 11:19:40
+ */
+public interface QuestionService extends BaseService<Question> {
+
+    /**
+     * 分页查询题库
+     *
+     * @param query 查询条件
+     * @param pageable 分页信息
+     * @return 分页结果
+     */
+    Page<QuestionPageVo> page(QuestionQuery query, Pageable pageable);
+
+    /**
+     * 新增题库
+     *
+     * @param questionParam 题库参数
+     * @return 操作结果
+     */
+    BaseResponse<?> save(QuestionParam questionParam);
+
+    /**
+     * 编辑题库
+     *
+     * @param questionParam 题库参数
+     * @return 操作结果
+     */
+    BaseResponse<?> update(QuestionParam questionParam);
+
+    /**
+     * 批量删除题库
+     *
+     * @param param 题库ID列表
+     * @return 操作结果
+     */
+    BaseResponse<?> del(DeleteParam param);
+}

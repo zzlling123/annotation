@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinkao.erp.question.mapper.QuestionMapper">
+
+    <select id="page" resultType="com.xinkao.erp.question.vo.QuestionPageVo">
+        SELECT q.*
+        FROM q_question q
+        WHERE
+            1 = 1
+        <if test="query.question != null and query.question != ''">
+            AND q.question LIKE CONCAT('%', #{query.question}, '%')
+        </if>
+        <if test="query.type != null and query.type != ''">
+            AND q.type = #{query.type}
+        </if>
+        <if test="query.difficultyLevel != null and query.difficultyLevel != ''">
+            AND q.difficulty_level = #{query.difficultyLevel}
+        </if>
+        <if test="query.state != null and query.state != ''">
+            AND q.state = #{query.state}
+        </if>
+        order by q.create_time desc
+    </select>
+</mapper>
