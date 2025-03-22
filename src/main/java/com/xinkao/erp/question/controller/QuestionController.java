@@ -16,6 +16,7 @@ import com.xinkao.erp.question.service.LabelService;
 import com.xinkao.erp.question.service.QuestionLabelService;
 import com.xinkao.erp.question.service.QuestionService;
 import com.xinkao.erp.question.service.QuestionTypeService;
+import com.xinkao.erp.question.vo.QuestionInfoVo;
 import com.xinkao.erp.question.vo.QuestionPageVo;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
@@ -79,6 +80,23 @@ public class QuestionController extends BaseController {
         Pageable pageable = query.getPageInfo();
         Page<QuestionPageVo> voPage = questionService.page(query, pageable);
         return BaseResponse.ok(voPage);
+    }
+
+    /**
+     * 获取题目详情
+     *
+     * @param id 题目ID
+     * @return 题目详情
+     */
+    @PrimaryDataSource
+    @GetMapping("/detail/{id}")
+    @ApiOperation("获取题目详情")
+    public BaseResponse<QuestionInfoVo> getQuestionDetail(@PathVariable Integer id) {
+        QuestionInfoVo question = questionService.getQuestionDetail(id);
+        if (question == null) {
+            return BaseResponse.fail("题目不存在！");
+        }
+        return BaseResponse.ok(question);
     }
 
     /**

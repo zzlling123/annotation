@@ -11,11 +11,11 @@ import com.xinkao.erp.user.entity.User;
 import lombok.Data;
 /**
  * 用户列表
- * @author hys_thanks
+ * @author Ldy
  *
  */
 @Data
-public class UserListVo extends UserInfoComVo implements OutputConverter<UserListVo, User>{
+public class UserListVo implements OutputConverter<UserListVo, User>{
     /** 账号主键 **/
 	private String userId;
     /**

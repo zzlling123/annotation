@@ -1,17 +1,22 @@
 package com.xinkao.erp.question.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.xinkao.erp.common.enums.CommonEnum;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.param.DeleteParam;
+import com.xinkao.erp.question.entity.Label;
 import com.xinkao.erp.question.entity.Question;
 import com.xinkao.erp.question.entity.QuestionLabel;
+import com.xinkao.erp.question.mapper.LabelMapper;
 import com.xinkao.erp.question.mapper.QuestionMapper;
 import com.xinkao.erp.question.service.QuestionService;
 import com.xinkao.erp.common.service.impl.BaseServiceImpl;
 import com.xinkao.erp.question.param.QuestionParam;
 import com.xinkao.erp.question.query.QuestionQuery;
+import com.xinkao.erp.question.vo.LabelVo;
+import com.xinkao.erp.question.vo.QuestionInfoVo;
 import com.xinkao.erp.question.vo.QuestionPageVo;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.common.model.support.Pageable;
@@ -27,6 +32,8 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
 
     @Autowired
     private QuestionMapper questionMapper;
+    @Autowired
+    private LabelMapper labelMapper;
     @Autowired
     private QuestionLabelServiceImpl questionLabelService;
 
@@ -135,6 +142,16 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         }
         options.append("]");
         return options.toString();
+    }
+
+    @Override
+    public QuestionInfoVo getQuestionDetail(Integer id) {
+        Question question = getById(id);
+        QuestionInfoVo questionInfoVo = BeanUtil.copyProperties(question, QuestionInfoVo.class);
+        //查询并赋值该题目关联的自定义标签
+        List<LabelVo> labelList = labelMapper.getLabelListByQid(id);
+        questionInfoVo.setLabelList(labelList);
+        return questionInfoVo;
     }
 
     @Override
