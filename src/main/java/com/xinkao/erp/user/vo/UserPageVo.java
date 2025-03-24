@@ -20,6 +20,9 @@ import java.util.Date;
 @Setter
 public class UserPageVo extends BaseEntity {
 
+    @ApiModelProperty("id")
+    private String id;
+
     @ApiModelProperty("用户名")
     private String username;
 
