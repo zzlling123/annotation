@@ -39,12 +39,12 @@ public class RoleController extends BaseController {
 	@Autowired
 	private RoleService roleService;
 	/**
-	 * 根据用户权限获取用户菜单
+	 * 获取角色列表
 	 *
 	 * @return
 	 */
 	@PostMapping("/getList")
-	@ApiOperation("根据用户权限获取用户菜单")
+	@ApiOperation("获取角色列表")
 	public BaseResponse<List<Role>> getList() {
 		return BaseResponse.ok(roleService.lambdaQuery()
 				.eq(Role::getIsDel, CommonEnum.IS_DEL.NO.getCode()).list());
