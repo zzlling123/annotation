@@ -1,11 +1,11 @@
 ##pdf模版以及文件保存根目录
 file:
   template:
-    root: D:\tmpfile\template
+    root: E:\tmpfile\template
   save:
-    root: D:\tmpfile
+    root: E:\tmpfile
   image:
-    default: D:\tmpfile\template\default.jpg
+    default: E:\tmpfile\template\default.jpg
 
 OBS:
   ak: 111
@@ -27,11 +27,11 @@ spring:
   # redis配置
   redis:
     # 地址
-    host: 127.0.0.1
+    host: 139.9.129.215
     # 端口，默认为6379
     port: 6379
     # 密码
-    password:
+    password: 123456
     # 连接超时时间
     timeout: 3s
     # jedis配置
@@ -91,9 +91,9 @@ spring:
   servlet:
     multipart:
       #单个文件最大为50M
-      max-file-size: 50MB
+      max-file-size: 5GB
       #单次请求文件总数大小为50M
-      max-request-size: 50MB
+      max-request-size: 5GB
 # 日志配置
 logging:
   level:
@@ -124,6 +124,6 @@ ipurl:
   url: http://127.0.0.1:10201
 
 path:
-  qrcode: D:/hz_asset/qrCode/
+  qrcode: E:/hz_asset/qrCode/
 
 resetPassword: Biaozhu@123
