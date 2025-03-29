@@ -20,7 +20,7 @@ import lombok.Setter;
 public class Question extends DataEntity {
 
     /**
-     * 题目类型:100-单选 200-多选 300-判断 400-主观题 500-操作题
+     * 题目类型:100-单选 200-多选 300-填空 400-主观题 500-操作题
      */
     @TableField("shape")
     private String shape;

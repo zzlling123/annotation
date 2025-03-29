@@ -20,7 +20,7 @@ public class QuestionInfoVo extends BaseEntity implements OutputConverter<Questi
     @ApiModelProperty("题目")
     private String question;
 
-    @TableField("题目类型:100-单选 200-多选 300-判断 400-主观题 500-操作题")
+    @TableField("题目类型:100-单选 200-多选 300-填空 400-主观题 500-操作题")
     private String shape;
 
     @ApiModelProperty("题型")
