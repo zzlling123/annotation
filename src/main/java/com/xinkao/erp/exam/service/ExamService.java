@@ -5,10 +5,12 @@ import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.exam.entity.Exam;
 import com.xinkao.erp.common.service.BaseService;
+import com.xinkao.erp.exam.excel.ExamPageSetImportModel;
 import com.xinkao.erp.exam.param.ExamParam;
 import com.xinkao.erp.exam.query.ExamQuery;
 import com.xinkao.erp.exam.vo.ExamDetailVo;
 import com.xinkao.erp.exam.vo.ExamPageVo;
+import java.util.List;
 
 /**
  * <p>
@@ -52,4 +54,11 @@ public interface ExamService extends BaseService<Exam> {
      * @return 操作结果
      */
     BaseResponse<?> update(ExamParam examParam);
+
+    /**
+     * 根据题目类型和试卷形状获取试卷填充题库数量
+     *
+     */
+    List<ExamPageSetImportModel> getExamPageSetByTypeAndShape(String examId);
+
 }

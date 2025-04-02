@@ -20,6 +20,12 @@ import lombok.Setter;
 public class ExamPageSet extends DataEntity {
 
     /**
+     * 考试ID
+     */
+    @TableField("exam_id")
+    private Integer examId;
+
+    /**
      * 总分
      */
     @TableField("score")

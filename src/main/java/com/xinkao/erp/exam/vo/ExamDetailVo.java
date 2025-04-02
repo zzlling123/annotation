@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.xinkao.erp.common.model.entity.BaseEntity;
 import com.xinkao.erp.exam.entity.ExamClass;
+import com.xinkao.erp.exam.entity.ExamPageSetType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -46,4 +47,7 @@ public class ExamDetailVo extends BaseEntity {
 
     @ApiModelProperty("班级列表")
     private List<ExamClass> classList;
+
+    @ApiModelProperty("题目设置分布详情")
+    private List<ExamPageSetType> examPageSetTypeVoList;
 }

@@ -32,6 +32,12 @@ public class ExamPageSetType extends DataEntity {
     private Integer typeId;
 
     /**
+     * 分类名称
+     */
+    @TableField("type_name")
+    private String typeName;
+
+    /**
      * 题目类型:100-单选 200-多选 300-填空 400-主观题 500-操作题
      */
     @TableField("shape")

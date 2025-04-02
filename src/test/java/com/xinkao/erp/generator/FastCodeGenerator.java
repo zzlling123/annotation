@@ -30,7 +30,7 @@ public class FastCodeGenerator {
 	// 数据库密码
 	private static final String PASSWORD = "b735c7b3d1f69a37";
 	// 项目根路径
-	private static final String projectRootPath = "E:\\test_project\\annotation";
+	private static final String projectRootPath = "D:\\workspace\\annotation";
 	// 根包名称
 	private static final String parentPackageName = "com.xinkao.erp";
 
@@ -38,14 +38,11 @@ public class FastCodeGenerator {
 	 * 执行此处
 	 */
 	public static void main(String[] args) {
-		String author = "zzl";
+		String author = "Ldy";
 		List<String> tableList = new ArrayList<String>();
-		tableList.add("class_info");
-		String busiModule = "classInfo";
-		//tableList.add("course");
-		//tableList.add("course_chapter");
-		//tableList.add("course_resource");
-		String removePrefix = "";
+		tableList.add("exam_class");
+		String busiModule = "exam";
+		String removePrefix = "q_";
 		completeGenerator(author,busiModule, tableList,removePrefix);
 	}
 

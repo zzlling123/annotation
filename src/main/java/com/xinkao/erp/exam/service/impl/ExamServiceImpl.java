@@ -5,6 +5,7 @@ import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.common.service.impl.BaseServiceImpl;
 import com.xinkao.erp.exam.entity.Exam;
+import com.xinkao.erp.exam.excel.ExamPageSetImportModel;
 import com.xinkao.erp.exam.mapper.ExamMapper;
 import com.xinkao.erp.exam.param.ExamParam;
 import com.xinkao.erp.exam.query.ExamQuery;
@@ -12,6 +13,8 @@ import com.xinkao.erp.exam.service.ExamService;
 import com.xinkao.erp.exam.vo.ExamDetailVo;
 import com.xinkao.erp.exam.vo.ExamPageVo;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -45,6 +48,12 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
     @Override
     public BaseResponse<?> update(ExamParam examParam) {
         // TODO: 实现编辑考试逻辑
+        return null;
+    }
+
+    @Override
+    public List<ExamPageSetImportModel> getExamPageSetByTypeAndShape(String examId) {
+        // TODO: 实现删除考试逻辑
         return null;
     }
 }
