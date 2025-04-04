@@ -60,5 +60,4 @@ public interface ExamService extends BaseService<Exam> {
      *
      */
     List<ExamPageSetImportModel> getExamPageSetByTypeAndShape(String examId);
-
 }

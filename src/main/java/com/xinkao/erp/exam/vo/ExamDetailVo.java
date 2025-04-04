@@ -46,7 +46,7 @@ public class ExamDetailVo extends BaseEntity {
     private Date createTime;
 
     @ApiModelProperty("班级列表")
-    private List<ExamClass> classList;
+    private List<Integer> classList;
 
     @ApiModelProperty("题目设置分布详情")
     private List<ExamPageSetType> examPageSetTypeVoList;

@@ -13,6 +13,9 @@ import java.util.Date;
 @Setter
 public class QuestionPageVo extends BaseEntity {
 
+    @ApiModelProperty("题目Id")
+    private String id;
+
     @ApiModelProperty("题目")
     private String question;
 

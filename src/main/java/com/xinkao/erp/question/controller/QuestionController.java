@@ -68,6 +68,16 @@ public class QuestionController extends BaseController {
     }
 
     /**
+     * 根据标签名称模糊查询标签
+     */
+    @PrimaryDataSource
+    @PostMapping("/getLabelList")
+    @ApiOperation("根据标签名称模糊查询标签")
+    public BaseResponse<List<Label>> getLabelList(@RequestParam String labelName) {
+        return BaseResponse.ok("成功", labelService.lambdaQuery().like(Label::getLabelName, labelName).list());
+    }
+
+    /**
      * 分页查询题库
      *
      * @param query 查询条件
