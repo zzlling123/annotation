@@ -6,6 +6,7 @@ import com.xinkao.erp.common.exception.BusinessException;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.common.service.impl.BaseServiceImpl;
+import com.xinkao.erp.exam.dto.QuestionTypeListDto;
 import com.xinkao.erp.exam.entity.Exam;
 import com.xinkao.erp.exam.entity.ExamClass;
 import com.xinkao.erp.exam.entity.ExamPageSetType;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -125,7 +127,31 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
      */
     @Override
     public List<ExamPageSetImportModel> getExamPageSetByTypeAndShape(String examId) {
-        List<ExamPageSetImportModel> examPageSetImportModels = new ArrayList<>();
-        return examPageSetImportModels;
+        List<QuestionTypeListDto> questionTypeListDtos = examMapper.getExamPageSetByTypeAndShape();
+        Map<Integer,List<QuestionTypeListDto>> map = questionTypeListDtos
+                .stream().collect(Collectors.groupingBy(QuestionTypeListDto::getId));
+        List<ExamPageSetImportModel> list = new ArrayList<>();
+        //按照分类，题型进行循环插入
+        for (Integer typeId : map.keySet()) {
+            //增加内容
+            List<QuestionTypeListDto> voList = map.get(typeId);
+            ExamPageSetImportModel examPageSetImportModel = new ExamPageSetImportModel();
+            for (QuestionTypeListDto vo : voList) {
+                examPageSetImportModel.setType(vo.getTypeName());
+                if ("100".equals(vo.getShape())){
+                    examPageSetImportModel.setChoiceSingleCount(vo.getQuestionOnNum());
+                }else if ("200".equals(vo.getShape())){
+                    examPageSetImportModel.setChoiceMultiCount(vo.getQuestionOnNum());
+                }else if ("300".equals(vo.getShape())){
+                    examPageSetImportModel.setChoiceFillCount(vo.getQuestionOnNum());
+                }else if ("400".equals(vo.getShape())){
+                    examPageSetImportModel.setChoiceAnswerCount(vo.getQuestionOnNum());
+                }else if ("500".equals(vo.getShape())){
+                    examPageSetImportModel.setChoicePracticeCount(vo.getQuestionOnNum());
+                }
+            }
+            list.add(examPageSetImportModel);
+        }
+        return list;
     }
 }

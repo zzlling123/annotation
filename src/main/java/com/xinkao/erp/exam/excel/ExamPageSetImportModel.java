@@ -26,7 +26,7 @@ public class ExamPageSetImportModel extends BaseExcelModel {
     private String type;
 
     @ExcelProperty(index = 1,value = "单选题库题数")
-    private String choiceSingleCount;
+    private String choiceSingleCount = "0";
 
     @ExcelProperty(index = 2,value = "单选抽取题数")
     private String choiceSingleChouCount;
@@ -35,7 +35,7 @@ public class ExamPageSetImportModel extends BaseExcelModel {
     private String choiceSingleScore;
 
     @ExcelProperty(index = 4,value = "多选题库题数")
-    private String choiceMultiCount;
+    private String choiceMultiCount = "0";
 
     @ExcelProperty(index = 5,value = "多选抽取题数")
     private String choiceMultiChouCount;
@@ -47,7 +47,7 @@ public class ExamPageSetImportModel extends BaseExcelModel {
     private String choiceMultiPerPart;
 
     @ExcelProperty(index = 8,value = "填空题库题数")
-    private String choiceFillCount;
+    private String choiceFillCount = "0";
 
     @ExcelProperty(index = 9,value = "填空抽取题数")
     private String choiceFillChouCount;
@@ -56,7 +56,7 @@ public class ExamPageSetImportModel extends BaseExcelModel {
     private String choiceFillScore;
 
     @ExcelProperty(index = 11,value = "问答题库题数")
-    private String choiceAnswerCount;
+    private String choiceAnswerCount = "0";
 
     @ExcelProperty(index = 12,value = "问答抽取题数")
     private String choiceAnswerChouCount;
@@ -65,7 +65,7 @@ public class ExamPageSetImportModel extends BaseExcelModel {
     private String choiceAnswerScore;
 
     @ExcelProperty(index = 14,value = "实践题库题数")
-    private String choicePracticeCount;
+    private String choicePracticeCount = "0";
 
     @ExcelProperty(index = 15,value = "实践抽取题数")
     private String choicePracticeChouCount;

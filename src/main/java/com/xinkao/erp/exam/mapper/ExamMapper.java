@@ -1,13 +1,15 @@
 package com.xinkao.erp.exam.mapper;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xinkao.erp.exam.dto.QuestionTypeListDto;
 import com.xinkao.erp.exam.entity.Exam;
 import com.xinkao.erp.common.mapper.BaseMapper;
 import com.xinkao.erp.exam.query.ExamQuery;
 import com.xinkao.erp.exam.vo.ExamPageVo;
-import com.xinkao.erp.manage.query.ClassInfoQuery;
-import com.xinkao.erp.manage.vo.ClassInfoVo;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+
 
 /**
  * <p>
@@ -21,4 +23,6 @@ import org.apache.ibatis.annotations.Mapper;
 public interface ExamMapper extends BaseMapper<Exam> {
 
     Page<ExamPageVo> page(Page page, ExamQuery query);
+
+    List<QuestionTypeListDto> getExamPageSetByTypeAndShape();
 }

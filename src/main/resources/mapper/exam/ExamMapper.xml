@@ -14,4 +14,18 @@
         ORDER BY create_time DESC
     </select>
 
+    <select id="getExamPageSetByTypeAndShape" resultType="com.xinkao.erp.exam.dto.QuestionTypeListDto">
+        SELECT * FROM exam_page_set_type
+        where 1=1 and is_del = 0
+        <if test="examId != null and examId != ''">
+            and exam_id = #{examId}
+        </if>
+        <if test="typeId != null">
+            and type_id = #{typeId}
+        </if>
+        <if test="shape != null">
+            and shape = #{shape}
+        </if>
+    </select>
+
 </mapper>
