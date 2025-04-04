@@ -21,4 +21,11 @@
         </if>
         order by q.create_time desc
     </select>
+
+    <select id="getRandQuestion" resultType="com.xinkao.erp.question.entity.Question">
+        SELECT *, #{examPageSetType.scorePer} as score,#{examPageSetType.scorePerPart} as scorePart FROM `q_question`
+        WHERE type_id = #{examPageSetType.typeId} and shape = #{examPageSetType.shape}
+          AND state = 1 AND is_del = 0
+        ORDER BY RAND() limit #{examPageSetType.questionNum}
+    </select>
 </mapper>

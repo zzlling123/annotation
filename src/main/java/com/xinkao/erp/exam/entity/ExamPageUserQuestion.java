@@ -47,14 +47,20 @@ public class ExamPageUserQuestion extends DataSnowIdEntity {
     /**
      * 题目分类
      */
-    @TableField("type_id")
-    private Integer typeId;
+    @TableField("type")
+    private Integer type;
 
     /**
      * 题目类型:100-单选 200-多选 300-填空 400-主观题 500-操作题
      */
     @TableField("shape")
     private String shape;
+
+    /**
+     * 题库来源试题主键
+     */
+    @TableField("old_question_id")
+    private Integer oldQuestionId;
 
     /**
      * 题干,json列表

@@ -38,6 +38,10 @@ public class User extends DataEntity {
     @TableField("real_name")
     private String realName;
 
+    @ApiModelProperty("班级ID")
+    @TableField("class_id")
+    private Integer classId;
+
     @ApiModelProperty("是否删除0否1是")
     @TableField("is_del")
     private Integer isDel;

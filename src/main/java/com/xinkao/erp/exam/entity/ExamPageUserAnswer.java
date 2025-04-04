@@ -32,6 +32,12 @@ public class ExamPageUserAnswer extends DataSnowIdEntity {
     private Integer examId;
 
     /**
+     * exam_page_user_question试题主键
+     */
+    @TableField("question_id")
+    private String questionId;
+
+    /**
      * 题号的数字格式
      */
     @TableField("num_sort")

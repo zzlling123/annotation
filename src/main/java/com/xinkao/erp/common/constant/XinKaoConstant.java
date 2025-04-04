@@ -109,4 +109,9 @@ public class XinKaoConstant {
      */
     public static final String REDIS_COMMON_CACHE = "xk:expt:";
 
+    /**
+     * 组卷前缀
+     */
+    public static final String ROLL_MAKING = "xk:bz:rollMaking:";
+
 }
