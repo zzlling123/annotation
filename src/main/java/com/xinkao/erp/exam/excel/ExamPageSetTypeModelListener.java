@@ -64,6 +64,7 @@ public class ExamPageSetTypeModelListener extends AnalysisEventListener<ExamPage
         this.redisUtils = SpringUtil.getBean(RedisUtil.class);
         this.resultUtils = SpringUtil.getBean(ResultUtils.class);
         this.questionTypeService = SpringUtil.getBean(QuestionTypeService.class);
+        this.examPageSetService = SpringUtil.getBean(ExamPageSetService.class);
     }
 
     @Override
@@ -257,8 +258,8 @@ public class ExamPageSetTypeModelListener extends AnalysisEventListener<ExamPage
                     examPageSetType.setTypeId(questionType.getId());
                     examPageSetType.setTypeName(questionType.getTypeName());
                     examPageSetType.setShape(200);
-                    examPageSetType.setQuestionNum(Integer.parseInt(choiceSingleChouCount));
-                    examPageSetType.setScore(Integer.parseInt(choiceSingleScore));
+                    examPageSetType.setQuestionNum(Integer.parseInt(choiceMultiChouCount));
+                    examPageSetType.setScore(Integer.parseInt(choiceMultiScore));
                     examPageSetType.setScorePart(Integer.parseInt(choiceMultiPerPart));
                     examPageSetTypes.add(examPageSetType);
                 }
@@ -304,8 +305,8 @@ public class ExamPageSetTypeModelListener extends AnalysisEventListener<ExamPage
                     examPageSetType.setTypeId(questionType.getId());
                     examPageSetType.setTypeName(questionType.getTypeName());
                     examPageSetType.setShape(300);
-                    examPageSetType.setQuestionNum(Integer.parseInt(choiceSingleChouCount));
-                    examPageSetType.setScore(Integer.parseInt(choiceSingleScore));
+                    examPageSetType.setQuestionNum(Integer.parseInt(choiceFillChouCount));
+                    examPageSetType.setScore(Integer.parseInt(choiceFillScore));
                     examPageSetTypes.add(examPageSetType);
                 }
             }
@@ -343,15 +344,15 @@ public class ExamPageSetTypeModelListener extends AnalysisEventListener<ExamPage
                 log.error("题目分类：{}，导入信息有误：{}", type, msg);
                 return;
             }else {
-                if(Integer.parseInt(choiceFillChouCount) > 0){
+                if(Integer.parseInt(choiceAnswerChouCount) > 0){
                     //添加主观题
                     ExamPageSetType examPageSetType = new ExamPageSetType();
                     examPageSetType.setExamId(examId);
                     examPageSetType.setTypeId(questionType.getId());
                     examPageSetType.setTypeName(questionType.getTypeName());
                     examPageSetType.setShape(400);
-                    examPageSetType.setQuestionNum(Integer.parseInt(choiceSingleChouCount));
-                    examPageSetType.setScore(Integer.parseInt(choiceSingleScore));
+                    examPageSetType.setQuestionNum(Integer.parseInt(choiceAnswerChouCount));
+                    examPageSetType.setScore(Integer.parseInt(choiceAnswerScore));
                     examPageSetTypes.add(examPageSetType);
                 }
             }
@@ -395,8 +396,8 @@ public class ExamPageSetTypeModelListener extends AnalysisEventListener<ExamPage
                     examPageSetType.setTypeId(questionType.getId());
                     examPageSetType.setTypeName(questionType.getTypeName());
                     examPageSetType.setShape(500);
-                    examPageSetType.setQuestionNum(Integer.parseInt(choiceSingleChouCount));
-                    examPageSetType.setScore(Integer.parseInt(choiceSingleScore));
+                    examPageSetType.setQuestionNum(Integer.parseInt(choicePracticeChouCount));
+                    examPageSetType.setScore(Integer.parseInt(choicePracticeScore));
                     examPageSetTypes.add(examPageSetType);
                 }
             }
@@ -407,9 +408,6 @@ public class ExamPageSetTypeModelListener extends AnalysisEventListener<ExamPage
                 addExamPageSetPointMap.put(examPageSet.getId(), examPageSetTypes);
             }
             //将正确的也进行保存（错误原因为空）
-            errorList.add(getHandleMsg(rowNum + 1, msg));
-            handleResult.setErrorList(errorList);
-
             ExamPageSetImportErrorModel examPageSetImportErrorModel = new ExamPageSetImportErrorModel();
             examPageSetImportErrorModel.setType(type);
             examPageSetImportErrorModel.setChoiceSingleCount(choiceSingleCount);

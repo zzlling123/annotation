@@ -2,6 +2,7 @@ package com.xinkao.erp.exam.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
@@ -60,7 +61,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
      * 	按照此次科目涉及的人，循环抽题
      * */
     @Override
-    public BaseResponse<JSONObject> rollMaking(ExamPageSet examPageSet, List<User> userList, String token) {
+    public void rollMaking(ExamPageSet examPageSet, List<User> userList, String token) {
         //想将考生添加至exam_page_stu表，方便后期查询进度
         List<ExamPageUser> examPageUserList = new ArrayList<>();
         List<ExamPageUserLog> examPageUserLogList = new ArrayList<>();
@@ -71,6 +72,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                     .eq(ExamPageUser::getSelectStatus,2)
                     .last("limit 1").one();
             if (examPageUser != null){
+                examPageUser.setSelectStatus(1);
                 examPageUserList.add(examPageUser);
             }else{
                 examPageUser = new ExamPageUser();
@@ -89,6 +91,13 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                 examPageUserLogList.add(examPageUserLog);
             }
         }
+        //移除之前的数据
+        examPageUserService.lambdaUpdate()
+                .eq(ExamPageUser::getExamId,examPageSet.getExamId())
+                .remove();
+        examPageUserLogService.lambdaUpdate()
+                .eq(ExamPageUserLog::getExamId,examPageSet.getExamId())
+                .remove();
         examPageUserService.saveBatch(examPageUserList);
         examPageUserLogService.saveBatch(examPageUserLogList);
         //获取设置中的知识点列表
@@ -222,20 +231,22 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                             .eq(ExamPageUserAnswer::getExamId,examPageUser.getExamId())
                             .eq(ExamPageUserAnswer::getUserId,examPageUser.getUserId()).remove();
                     int num = 0;
+                    List<ExamPageUserQuestion> examPageUserQuestionList = new ArrayList<>();
+                    List<ExamPageUserAnswer> examPageUserAnswerList = new ArrayList<>();
                     for (Integer integer : questionMap.keySet()) {
                         List<Question> questionList = questionMap.get(integer);
                         for (int i = 0;i < questionList.size();i++) {
                             Question question = questionList.get(i);
                             ExamPageUserQuestion examPageUserQuestion = new ExamPageUserQuestion();
                             BeanUtil.copyProperties(question,examPageUserQuestion);
-                            examPageUserQuestion.setId(null);
+                            examPageUserQuestion.setId(IdUtil.getSnowflakeNextIdStr());
                             examPageUserQuestion.setExamId(examPageUser.getExamId());
                             examPageUserQuestion.setUserId(examPageUser.getUserId());
                             examPageUserQuestion.setOldQuestionId(question.getId());
                             examPageUserQuestion.setNum(String.valueOf(num+1));
                             examPageUserQuestion.setNumSort(num+1);
                             examPageUserQuestion.setCreateTime(DateUtil.date());
-                            save(examPageUserQuestion);
+                            examPageUserQuestionList.add(examPageUserQuestion);
                             //生成用户答案模板
                             ExamPageUserAnswer examPageUserAnswer = new ExamPageUserAnswer();
                             BeanUtil.copyProperties(examPageUserQuestion,examPageUserAnswer);
@@ -245,10 +256,12 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                             examPageUserAnswer.setQuestionId(examPageUserQuestion.getId());
                             examPageUserAnswer.setRightAnswer(examPageUserQuestion.getAnswer());
                             examPageUserAnswer.setCreateTime(DateUtil.date());
-                            examPageUserAnswerService.save(examPageUserAnswer);
+                            examPageUserAnswerList.add(examPageUserAnswer);
                             num++;
                         }
                     }
+                    saveBatch(examPageUserQuestionList);
+                    examPageUserAnswerService.saveBatch(examPageUserAnswerList);
                     //修改该考生生成试卷状态为完成
                     examPageUser.setSelectStatus(2);
                     examPageUserService.updateById(examPageUser);
@@ -258,7 +271,6 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
             }
         }
         redisUtil.set(token, "1", 2, TimeUnit.HOURS);
-        return BaseResponse.ok("制卷中");
     }
 
     /**
@@ -271,7 +283,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
         List<Integer> classList = examClassService.lambdaQuery().eq(ExamClass::getExamId, examId).list().stream().map(ExamClass::getClassId).collect(Collectors.toList());
         Long count0 = userService.lambdaQuery().in(User::getClassId, classList).count();
         Map<String,Integer> map = new HashMap<>();
-        map.put("not",count0.intValue());
+        map.put("all",count0.intValue());
         Long count1 = examPageUserService.lambdaQuery()
                 .eq(ExamPageUser::getExamId,examId)
                 .eq(ExamPageUser::getSelectStatus, 1).count();

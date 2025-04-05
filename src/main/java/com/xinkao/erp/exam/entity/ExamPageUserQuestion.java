@@ -54,7 +54,7 @@ public class ExamPageUserQuestion extends DataSnowIdEntity {
      * 题目类型:100-单选 200-多选 300-填空 400-主观题 500-操作题
      */
     @TableField("shape")
-    private String shape;
+    private Integer shape;
 
     /**
      * 题库来源试题主键
@@ -91,6 +91,12 @@ public class ExamPageUserQuestion extends DataSnowIdEntity {
      */
     @TableField("answer")
     private String answer;
+
+    /**
+     * 用户答案
+     */
+    @TableField(exist = false)
+    private String userAnswer;
 
 
 }

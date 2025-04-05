@@ -30,11 +30,18 @@ public class ExamParam {
     private String endTime;
 
     @ApiModelProperty("总分")
-    private Integer score;
+    @NotBlank(message = "总分不能为空")
+    private String score;
+
+    @ApiModelProperty("合格分数")
+    @NotBlank(message = "合格分数不能为空")
+    private String scorePass;
 
     @ApiModelProperty("生成方式:0-同题同序 1-同题不同序 2-不同题不同序")
-    private Integer pageMode;
+    @NotBlank(message = "生成方式不能为空")
+    private String pageMode;
 
     @ApiModelProperty("班级列表(ID逗号隔开)")
+    @NotBlank(message = "班级列表不能为空")
     private String classIds;
 }

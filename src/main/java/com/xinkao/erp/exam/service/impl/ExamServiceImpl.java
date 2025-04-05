@@ -9,12 +9,14 @@ import com.xinkao.erp.common.service.impl.BaseServiceImpl;
 import com.xinkao.erp.exam.dto.QuestionTypeListDto;
 import com.xinkao.erp.exam.entity.Exam;
 import com.xinkao.erp.exam.entity.ExamClass;
+import com.xinkao.erp.exam.entity.ExamPageSet;
 import com.xinkao.erp.exam.entity.ExamPageSetType;
 import com.xinkao.erp.exam.excel.ExamPageSetImportModel;
 import com.xinkao.erp.exam.mapper.ExamMapper;
 import com.xinkao.erp.exam.param.ExamParam;
 import com.xinkao.erp.exam.query.ExamQuery;
 import com.xinkao.erp.exam.service.ExamClassService;
+import com.xinkao.erp.exam.service.ExamPageSetService;
 import com.xinkao.erp.exam.service.ExamPageSetTypeService;
 import com.xinkao.erp.exam.service.ExamService;
 import com.xinkao.erp.exam.vo.ExamDetailVo;
@@ -45,6 +47,8 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
     private ExamClassService examClassService;
     @Autowired
     private ExamPageSetTypeService examPageSetTypeService;
+    @Autowired
+    private ExamPageSetService examPageSetService;
 
     @Override
     public Page<ExamPageVo> page(ExamQuery query, Pageable pageable) {
@@ -78,6 +82,13 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
             return BaseResponse.fail("考试名称已存在");
         }
         save(exam);
+        //保存试卷设置
+        ExamPageSet examPageSet = new ExamPageSet();
+        examPageSet.setExamId(exam.getId());
+        examPageSet.setScore(Integer.valueOf(examParam.getScore()));
+        examPageSet.setScorePass(Integer.valueOf(examParam.getScorePass()));
+        examPageSet.setPageMode(Integer.valueOf(examParam.getPageMode()));
+        examPageSetService.save(examPageSet);
         //保存班级管理
         String[] classIds = examParam.getClassIds().split(",");
         List<ExamClass> examClassList = new ArrayList<>();
@@ -104,6 +115,25 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
                 .ne(Exam::getId, examParam.getId()).count() > 0) {
             return BaseResponse.fail("考试名称已存在");
         }
+        //考试状态已开启时不可编辑
+        if (exam.getState() > 10) {
+            return BaseResponse.fail("考试已开启，不可编辑");
+        }
+        //保存试卷设置
+        ExamPageSet examPageSet = examPageSetService.lambdaQuery().eq(ExamPageSet::getExamId, examParam.getId()).one();
+        if (examPageSet == null) {
+            return BaseResponse.fail("该考试设置信息不存在，请联系管理员");
+        }else{
+            //考试如果已经制卷，则不可修改
+            if (examPageSet.getQuestionStatus() == 1){
+                return BaseResponse.fail("该考试已制卷，不可修改");
+            }
+        }
+        examPageSet.setExamId(exam.getId());
+        examPageSet.setScore(Integer.valueOf(examParam.getScore()));
+        examPageSet.setScorePass(Integer.valueOf(examParam.getScorePass()));
+        examPageSet.setPageMode(Integer.valueOf(examParam.getPageMode()));
+        examPageSetService.saveOrUpdate(examPageSet);
         //清除后，保存班级管理
         examClassService.lambdaUpdate()
                 .eq(ExamClass::getExamId, examParam.getId())

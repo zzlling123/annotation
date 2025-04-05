@@ -60,7 +60,7 @@ public class ExamPageUserQuestionController {
             return BaseResponse.fail("编辑失败,试卷分布ID为空！");
         }
         Exam exam = examService.getById(examId);
-        ExamPageSet examPageSet = examPageSetService.lambdaQuery().eq(ExamPageSet::getId,examId).one();
+        ExamPageSet examPageSet = examPageSetService.lambdaQuery().eq(ExamPageSet::getExamId,examId).one();
         if (exam.getState() > 10){
             return BaseResponse.fail("该考试当前状态不允许制卷！");
         }
@@ -74,12 +74,15 @@ public class ExamPageUserQuestionController {
         String token = XinKaoConstant.ROLL_MAKING+examId;
         //验证该token是否有值，如果有则拦截
         if (redisUtil.get(token) != null){
+            System.out.println(redisUtil.get(token).toString());
             //如果value ！= 1则返回
-            if (!"0".equals(redisUtil.get(token))){
+            if (!"1".equals(redisUtil.get(token))){
                 return BaseResponse.fail("该考试正在制卷中，请勿重复操作！");
             }
         }
         redisUtil.set(token, "0", 2, TimeUnit.HOURS);
+        examPageSet.setQuestionStatus(0);
+        examPageSetService.updateById(examPageSet);
         //异步线程执行导入
         @Valid ExamPageSet finalExamPageSet = examPageSet;
         ThreadUtil.execAsync(() -> {

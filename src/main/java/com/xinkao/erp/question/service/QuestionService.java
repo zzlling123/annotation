@@ -63,4 +63,7 @@ public interface QuestionService extends BaseService<Question> {
      * @return 操作结果
      */
     BaseResponse<?> del(DeleteParam param);
+
+
+    void selfSave();
 }

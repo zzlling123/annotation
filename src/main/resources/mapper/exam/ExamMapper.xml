@@ -15,17 +15,15 @@
     </select>
 
     <select id="getExamPageSetByTypeAndShape" resultType="com.xinkao.erp.exam.dto.QuestionTypeListDto">
-        SELECT * FROM exam_page_set_type
-        where 1=1 and is_del = 0
-        <if test="examId != null and examId != ''">
-            and exam_id = #{examId}
-        </if>
-        <if test="typeId != null">
-            and type_id = #{typeId}
-        </if>
-        <if test="shape != null">
-            and shape = #{shape}
-        </if>
+        SELECT t.id,t.type_name,t.shape,
+               SUM(CASE t.state WHEN 1 then 1 else 0 end ) questionOnNum
+        FROM	(
+                    SELECT qt.id,qt.type_name,q.shape,q.state
+                    FROM q_question_type qt
+                             LEFT JOIN q_question q ON q.type = qt.id and q.is_del = 0
+                    WHERe 1=1
+                    GROUP BY qt.id,q.id,q.shape)
+                    t GROUP BY t.id,t.shape ORDER BY t.id,t.shape
     </select>
 
 </mapper>

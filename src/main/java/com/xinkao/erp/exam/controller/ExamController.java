@@ -90,6 +90,7 @@ public class ExamController {
     @PrimaryDataSource
     @PostMapping("/save")
     @ApiOperation("新增考试")
+    @Log(content = "新增考试",operationType = OperationType.INSERT)
     public BaseResponse<?> save(@Valid @RequestBody ExamParam examParam) {
         return examService.save(examParam);
     }
@@ -103,6 +104,7 @@ public class ExamController {
     @PrimaryDataSource
     @PostMapping("/update")
     @ApiOperation("编辑考试")
+    @Log(content = "编辑考试",operationType = OperationType.UPDATE)
     public BaseResponse<?> update(@Valid @RequestBody ExamParam examParam) {
         return examService.update(examParam);
     }
@@ -127,13 +129,14 @@ public class ExamController {
 
     // 导入试卷设置
     @PostMapping("/importExamPageSetPoint")
+    @ApiOperation(value = "导入试卷设置")
     @Log(content = "导入试卷设置",isSaveResponseData = false,operationType = OperationType.IMPORT)
-    public BaseResponse importExamPageSetPoint(HttpServletResponse response, @RequestParam(value="file") MultipartFile file, String examPageSetId) {
+    public BaseResponse importExamPageSetPoint(HttpServletResponse response, @RequestParam(value="file") MultipartFile file, @RequestParam String examId) {
         String token = RandomUtil.randomString(20);
         redisUtil.set(token, "", 1, TimeUnit.HOURS);
-        ExamPageSetTypeModelListener examPageSetPointModelListener =  new ExamPageSetTypeModelListener(response,token,examPageSetId);
+        ExamPageSetTypeModelListener examPageSetPointModelListener =  new ExamPageSetTypeModelListener(response,token,examId);
         try {
-            EasyExcel.read(file.getInputStream(), ExamPageSetImportModel.class, examPageSetPointModelListener).sheet().headRowNumber(3).doRead();
+            EasyExcel.read(file.getInputStream(), ExamPageSetImportModel.class, examPageSetPointModelListener).sheet().headRowNumber(1).doRead();
         } catch (IOException e) {
             throw new BusinessException("导入试卷设置失败");
         }
@@ -150,6 +153,7 @@ public class ExamController {
      * @return
      */
     @PostMapping("/getErrorExamPageSetPoint")
+    @ApiOperation(value = "下载错误文件")
     public void getErrorClassSubjectImportExcel(HttpServletResponse response,@RequestParam String token) {
         JSONArray json = JSON.parseObject(redisUtil.get(token)).getJSONArray("data");
         List<ExamPageSetImportErrorModel> examPageSetImportErrorModelList = BeanUtil.copyToList(json, ExamPageSetImportErrorModel.class);

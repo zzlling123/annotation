@@ -50,6 +50,19 @@ public class ExamPageUser extends DataSnowIdEntity {
     private String answerTs;
 
     /**
+     * 答题开始时间
+     */
+    @TableField("start_ts")
+    private String startTs;
+
+
+    /**
+     * 答题结束时间
+     */
+    @TableField("end_ts")
+    private String endTs;
+
+    /**
      * 最后得分
      */
     @TableField("score")

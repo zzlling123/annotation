@@ -16,11 +16,14 @@ import java.util.Date;
 @ApiModel("考试分页视图")
 public class ExamPageVo extends BaseEntity implements OutputConverter<ExamPageVo, Exam> {
 
+    @ApiModelProperty("id")
+    private String id;
+
     @ApiModelProperty("考试名称")
     private String examName;
 
     @ApiModelProperty("考试状态")
-    private Integer status;
+    private Integer state;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     @ApiModelProperty("开始时间")

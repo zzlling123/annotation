@@ -115,7 +115,7 @@ public class ExamPageSetServiceImpl extends BaseServiceImpl<ExamPageSetMapper, E
         if(!errorList.isEmpty()) {
             redisUtils.set(token, JSONObject.toJSONString(BaseResponse.other("导入失败",examPageSetImportErrorModelList)), 2, TimeUnit.HOURS);
         }else{
-            redisUtils.set(token, JSONObject.toJSONString(BaseResponse.ok("成功导入数据")), 2, TimeUnit.HOURS);
+            redisUtils.set(token, JSONObject.toJSONString(BaseResponse.ok("成功导入"+successCount+"条数据")), 2, TimeUnit.HOURS);
         }
     }
 }

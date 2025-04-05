@@ -2,6 +2,7 @@ package com.xinkao.erp.question.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.xinkao.erp.common.enums.CommonEnum;
 import com.xinkao.erp.common.model.BaseResponse;
@@ -9,12 +10,16 @@ import com.xinkao.erp.common.model.param.DeleteParam;
 import com.xinkao.erp.question.entity.Label;
 import com.xinkao.erp.question.entity.Question;
 import com.xinkao.erp.question.entity.QuestionLabel;
+import com.xinkao.erp.question.entity.QuestionType;
 import com.xinkao.erp.question.mapper.LabelMapper;
 import com.xinkao.erp.question.mapper.QuestionMapper;
+import com.xinkao.erp.question.service.LabelService;
+import com.xinkao.erp.question.service.QuestionLabelService;
 import com.xinkao.erp.question.service.QuestionService;
 import com.xinkao.erp.common.service.impl.BaseServiceImpl;
 import com.xinkao.erp.question.param.QuestionParam;
 import com.xinkao.erp.question.query.QuestionQuery;
+import com.xinkao.erp.question.service.QuestionTypeService;
 import com.xinkao.erp.question.vo.LabelVo;
 import com.xinkao.erp.question.vo.QuestionInfoVo;
 import com.xinkao.erp.question.vo.QuestionPageVo;
@@ -24,6 +29,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.BeanUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +43,8 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
     private LabelMapper labelMapper;
     @Autowired
     private QuestionLabelServiceImpl questionLabelService;
+    @Autowired
+    private QuestionTypeService questionTypeService;
 
     @Override
     public Page<QuestionPageVo> page(QuestionQuery query, Pageable pageable) {
@@ -159,5 +168,56 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         return lambdaUpdate().in(Question::getId, param.getIds())
                 .set(Question::getIsDel, CommonEnum.IS_DEL.YES.getCode())
                 .update() ? BaseResponse.ok("删除成功！") : BaseResponse.fail("删除失败！");
+    }
+
+    @Override
+    public void selfSave() {
+        // 定义题目分类和题型
+        List<QuestionType> types = questionTypeService.lambdaQuery().list();
+        List<Integer> shapes = Arrays.asList(100, 200, 300, 400, 500);
+        List<Question> questions = new ArrayList<>();
+        // 遍历每个分类和题型
+        for (QuestionType type : types) {
+            for (Integer shape : shapes) {
+                for (int i = 1; i <= 100; i++) {
+                    // 生成随机题目
+                    Question question = new Question();
+                    question.setQuestion("随机题目 " + i + " --- " + type.getTypeName() + ",题型为： --- " + shape);
+                    question.setQuestionText("随机题目 " + i + " --- " + type.getTypeName() + ",题型为： --- " + shape);
+                    question.setShape(shape);
+                    question.setAnswerTip("这里是答案讲解");
+                    question.setType(type.getId());
+                    question.setDifficultyLevel(RandomUtil.randomInt(1, 4)); // 随机生成难易度 (1: 简单, 2: 中等, 3: 困难)
+                    if (shape == 100 || shape == 200){
+                        question.setOptions("[A,B,C,D]");
+                        List<String> options = Arrays.asList("A", "B", "C", "D");
+                        question.setAnswer(generateRandomAnswer(shape, options));
+                    }else if (shape == 300){
+                        question.setAnswer("填空1答案&%&填空2答案&%&填空3答案");
+                    }else if (shape == 400){
+                        question.setAnswer("主观题答案！！！！！！！！");
+                    }
+                    questions.add(question);
+                }
+            }
+        }
+        saveBatch(questions);
+    }
+
+
+    private String generateRandomAnswer(Integer shape, List<String> options) {
+        if (shape == 100) {
+            // 单选题随机选择一个选项
+            return options.get(RandomUtil.randomInt(0, options.size()));
+        } else if (shape == 200) {
+            // 多选题随机选择多个选项
+            int count = RandomUtil.randomInt(1, options.size() + 1);
+            StringBuilder answer = new StringBuilder();
+            for (int i = 0; i < count; i++) {
+                answer.append(options.get(RandomUtil.randomInt(0, options.size())));
+            }
+            return answer.toString();
+        }
+        return "";
     }
 }

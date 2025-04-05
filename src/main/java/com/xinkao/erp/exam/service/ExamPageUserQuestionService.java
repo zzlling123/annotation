@@ -28,11 +28,11 @@ public interface ExamPageUserQuestionService extends BaseService<ExamPageUserQue
      * @param token
      * @return
      */
-    BaseResponse<JSONObject> rollMaking(ExamPageSet examPageSet, List<User> userList, String token);
+    void rollMaking(ExamPageSet examPageSet, List<User> userList, String token);
 
     /**
      * 查询生成进度
-     * @param examPageSet
+     * @param examId
      * @param token
      * @return
      */

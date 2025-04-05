@@ -147,4 +147,15 @@ public class QuestionController extends BaseController {
     public BaseResponse<?> del(@RequestBody DeleteParam param) {
         return questionService.del(param);
     }
+
+    /**
+     * 测试方法，题库按照分类、题型插入题目
+     * @return
+     */
+    @PrimaryDataSource
+    @PostMapping("/selfSave")
+    @ApiOperation("题库按照分类、题型插入题目")
+    public void selfSave(){
+        questionService.selfSave();
+    }
 }
