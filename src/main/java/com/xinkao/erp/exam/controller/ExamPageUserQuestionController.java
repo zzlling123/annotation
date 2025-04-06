@@ -66,7 +66,7 @@ public class ExamPageUserQuestionController {
         }
         //获取考试相关班级，然后查询班级下有多少人
         List<Integer> classList = examClassService.lambdaQuery().eq(ExamClass::getExamId, examId).list().stream().map(ExamClass::getClassId).collect(Collectors.toList());
-        List<User> userList = userService.lambdaQuery().in(User::getClassId, classList).list();
+        List<User> userList = userService.lambdaQuery().in(User::getClassId, classList).eq(User::getIsDel, 0).list();
         if (userList.isEmpty()){
             return BaseResponse.fail("该考试下没有考生，请检查关联班级");
         }

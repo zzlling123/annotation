@@ -65,32 +65,6 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
         //想将考生添加至exam_page_stu表，方便后期查询进度
         List<ExamPageUser> examPageUserList = new ArrayList<>();
         List<ExamPageUserLog> examPageUserLogList = new ArrayList<>();
-        for (User user : userList) {
-            //查询是否已生成过
-            ExamPageUser examPageUser = examPageUserService.lambdaQuery()
-                    .eq(ExamPageUser::getUserId,user.getId())
-                    .eq(ExamPageUser::getSelectStatus,2)
-                    .last("limit 1").one();
-            if (examPageUser != null){
-                examPageUser.setSelectStatus(1);
-                examPageUserList.add(examPageUser);
-            }else{
-                examPageUser = new ExamPageUser();
-                examPageUser.setId(null);
-                examPageUser.setUserId(user.getId());
-                examPageUser.setExamId(examPageSet.getExamId());
-                examPageUser.setSelectStatus(1);
-                examPageUser.setCreateTime(DateUtil.date());
-                examPageUserList.add(examPageUser);
-
-                //创建答题心跳记录备用
-                ExamPageUserLog examPageUserLog = new ExamPageUserLog();
-                BeanUtil.copyProperties(examPageUser, examPageUserLog);
-                examPageUserLog.setId(null);
-                examPageUserLog.setCreateTime(DateUtil.date());
-                examPageUserLogList.add(examPageUserLog);
-            }
-        }
         //移除之前的数据
         examPageUserService.lambdaUpdate()
                 .eq(ExamPageUser::getExamId,examPageSet.getExamId())
@@ -98,6 +72,26 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
         examPageUserLogService.lambdaUpdate()
                 .eq(ExamPageUserLog::getExamId,examPageSet.getExamId())
                 .remove();
+        //首先清除可能存在生成失败的无用数据
+        lambdaUpdate().eq(ExamPageUserQuestion::getExamId,examPageSet.getExamId()).remove();
+        //清除答题卡数据
+        examPageUserAnswerService.lambdaUpdate().eq(ExamPageUserAnswer::getExamId,examPageSet.getExamId()).remove();
+        for (User user : userList) {
+            //查询是否已生成过
+            ExamPageUser examPageUser = new  ExamPageUser();
+            examPageUser.setUserId(user.getId());
+            examPageUser.setExamId(examPageSet.getExamId());
+            examPageUser.setSelectStatus(1);
+            examPageUser.setCreateTime(DateUtil.date());
+            examPageUserList.add(examPageUser);
+
+            //创建答题心跳记录备用
+            ExamPageUserLog examPageUserLog = new ExamPageUserLog();
+            BeanUtil.copyProperties(examPageUser, examPageUserLog);
+            examPageUserLog.setId(null);
+            examPageUserLog.setCreateTime(DateUtil.date());
+            examPageUserLogList.add(examPageUserLog);
+        }
         examPageUserService.saveBatch(examPageUserList);
         examPageUserLogService.saveBatch(examPageUserLogList);
         //获取设置中的知识点列表
@@ -116,14 +110,6 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                     try{
                         examPageUser.setSelectStatus(1);
                         examPageUserService.updateById(examPageUser);
-                        //首先清除可能存在生成失败的无用数据
-                        lambdaUpdate().eq(ExamPageUserQuestion::getExamId,examPageUser.getExamId())
-                                .eq(ExamPageUserQuestion::getUserId,examPageUser.getUserId())
-                                .remove();
-                        //清除答题卡数据
-                        examPageUserAnswerService.lambdaUpdate()
-                                .eq(ExamPageUserAnswer::getExamId,examPageUser.getExamId())
-                                .eq(ExamPageUserAnswer::getUserId,examPageUser.getUserId()).remove();
                         int num = 0;
                         for (Integer integer : questionMap.keySet()) {
                             List<Question> questionList = questionMap.get(integer);
@@ -166,14 +152,6 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                         //修改该考生生成试卷状态为生成中
                         examPageUser.setSelectStatus(1);
                         examPageUserService.updateById(examPageUser);
-                        //首先清除可能存在生成失败的无用数据
-                        lambdaUpdate().eq(ExamPageUserQuestion::getExamId,examPageUser.getExamId())
-                                .eq(ExamPageUserQuestion::getUserId,examPageUser.getUserId())
-                                .remove();
-                        //清除答题卡数据
-                        examPageUserAnswerService.lambdaUpdate()
-                                .eq(ExamPageUserAnswer::getExamId,examPageUser.getExamId())
-                                .eq(ExamPageUserAnswer::getUserId,examPageUser.getUserId()).remove();
                         int allNum = 0;
                         Set<Integer> numSet = new HashSet<>();
                         for (Integer integer : questionMap.keySet()) {
@@ -222,34 +200,25 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                     //修改该考生生成试卷状态为生成中
                     examPageUser.setSelectStatus(1);
                     examPageUserService.updateById(examPageUser);
-                    //首先清除可能存在生成失败的无用数据
-                    lambdaUpdate().eq(ExamPageUserQuestion::getExamId,examPageUser.getExamId())
-                            .eq(ExamPageUserQuestion::getUserId,examPageUser.getUserId())
-                            .remove();
-                    //清除答题卡数据
-                    examPageUserAnswerService.lambdaUpdate()
-                            .eq(ExamPageUserAnswer::getExamId,examPageUser.getExamId())
-                            .eq(ExamPageUserAnswer::getUserId,examPageUser.getUserId()).remove();
                     int num = 0;
                     List<ExamPageUserQuestion> examPageUserQuestionList = new ArrayList<>();
                     List<ExamPageUserAnswer> examPageUserAnswerList = new ArrayList<>();
                     for (Integer integer : questionMap.keySet()) {
                         List<Question> questionList = questionMap.get(integer);
-                        for (int i = 0;i < questionList.size();i++) {
-                            Question question = questionList.get(i);
+                        for (Question question : questionList) {
                             ExamPageUserQuestion examPageUserQuestion = new ExamPageUserQuestion();
-                            BeanUtil.copyProperties(question,examPageUserQuestion);
+                            BeanUtil.copyProperties(question, examPageUserQuestion);
                             examPageUserQuestion.setId(IdUtil.getSnowflakeNextIdStr());
                             examPageUserQuestion.setExamId(examPageUser.getExamId());
                             examPageUserQuestion.setUserId(examPageUser.getUserId());
                             examPageUserQuestion.setOldQuestionId(question.getId());
-                            examPageUserQuestion.setNum(String.valueOf(num+1));
-                            examPageUserQuestion.setNumSort(num+1);
+                            examPageUserQuestion.setNum(String.valueOf(num + 1));
+                            examPageUserQuestion.setNumSort(num + 1);
                             examPageUserQuestion.setCreateTime(DateUtil.date());
                             examPageUserQuestionList.add(examPageUserQuestion);
                             //生成用户答案模板
                             ExamPageUserAnswer examPageUserAnswer = new ExamPageUserAnswer();
-                            BeanUtil.copyProperties(examPageUserQuestion,examPageUserAnswer);
+                            BeanUtil.copyProperties(examPageUserQuestion, examPageUserAnswer);
                             examPageUserAnswer.setId(null);
                             examPageUserQuestion.setExamId(examPageUser.getExamId());
                             examPageUserQuestion.setUserId(examPageUser.getUserId());
@@ -281,7 +250,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
     public BaseResponse<Map<String,Integer>> getProgress(String examId,String token) {
         //获取考试相关班级，然后查询班级下有多少人
         List<Integer> classList = examClassService.lambdaQuery().eq(ExamClass::getExamId, examId).list().stream().map(ExamClass::getClassId).collect(Collectors.toList());
-        Long count0 = userService.lambdaQuery().in(User::getClassId, classList).count();
+        Long count0 = userService.lambdaQuery().in(User::getClassId, classList).eq(User::getIsDel, 0).count();
         Map<String,Integer> map = new HashMap<>();
         map.put("all",count0.intValue());
         Long count1 = examPageUserService.lambdaQuery()
