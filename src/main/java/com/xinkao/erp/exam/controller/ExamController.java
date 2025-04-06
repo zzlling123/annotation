@@ -1,7 +1,6 @@
 package com.xinkao.erp.exam.controller;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSON;
@@ -9,12 +8,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.common.annotation.Log;
 import com.xinkao.erp.common.annotation.PrimaryDataSource;
-import com.xinkao.erp.common.constant.XinKaoConstant;
 import com.xinkao.erp.common.enums.system.OperationType;
 import com.xinkao.erp.common.exception.BusinessException;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.support.Pageable;
-import com.xinkao.erp.common.util.ExcelUtil;
 import com.xinkao.erp.common.util.ExcelUtils;
 import com.xinkao.erp.common.util.RedisUtil;
 import com.xinkao.erp.exam.excel.ExamPageSetImportErrorModel;
@@ -25,6 +22,7 @@ import com.xinkao.erp.exam.query.ExamQuery;
 import com.xinkao.erp.exam.service.ExamService;
 import com.xinkao.erp.exam.vo.ExamDetailVo;
 import com.xinkao.erp.exam.vo.ExamPageVo;
+import com.xinkao.erp.question.service.QuestionTypeService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -34,9 +32,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -54,12 +50,16 @@ public class ExamController {
     @Resource
     protected RedisUtil redisUtil;
 
+    @Autowired
+    private QuestionTypeService questionTypeService;
+
     /**
      * 分页查询考试信息
      *
      * @param query 查询条件
      * @return 分页结果
      */
+    @PrimaryDataSource
     @PostMapping("/page")
     @ApiOperation("分页查询考试信息")
     public BaseResponse<Page<ExamPageVo>> page(@RequestBody ExamQuery query) {
@@ -74,6 +74,7 @@ public class ExamController {
      * @param id 考试ID
      * @return 考试详情
      */
+    @PrimaryDataSource
     @GetMapping("/detail/{id}")
     @ApiOperation("查看考试详情")
     public BaseResponse<ExamDetailVo> detail(@PathVariable Integer id) {
