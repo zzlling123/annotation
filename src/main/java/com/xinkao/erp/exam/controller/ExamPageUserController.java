@@ -32,6 +32,17 @@ public class ExamPageUserController {
 
     /**
      *
+     * 根据用户信息获取考试列表
+     */
+    @PrimaryDataSource
+    @PostMapping("/getExamList")
+    @ApiOperation("根据用户信息获取考试列表")
+    public BaseResponse<List<ExamUserVo>> getExamList() {
+        return examPageUserService.getExamList();
+    }
+
+    /**
+     *
      * 根据用户ID，考试ID获取试卷信息
      */
     @PrimaryDataSource

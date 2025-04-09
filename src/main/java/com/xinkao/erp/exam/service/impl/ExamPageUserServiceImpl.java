@@ -49,6 +49,12 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
     private ExamPageSetService examPageSetService;
 
     @Override
+    public BaseResponse<List<ExamUserVo>> getExamList(){
+        LoginUser loginUser = redisUtil.getInfoByToken();
+        return null;
+    }
+
+    @Override
     public BaseResponse<ExamUserVo> getExamUserInfo(ExamUserQuery examUserQuery) {
         LoginUser loginUser = redisUtil.getInfoByToken();
         Integer userId = loginUser.getUser().getId();

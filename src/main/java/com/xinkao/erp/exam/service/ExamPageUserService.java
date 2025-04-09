@@ -14,6 +14,8 @@ import java.util.Map;
 
 public interface ExamPageUserService extends BaseService<ExamPageUser> {
 
+    BaseResponse<List<ExamUserVo>> getExamList();
+
     BaseResponse<ExamUserVo> getExamUserInfo(ExamUserQuery examUserQuery);
 
     BaseResponse<List<ExamProgressVo>> getExamUserProgress(ExamUserQuery examUserQuery);
