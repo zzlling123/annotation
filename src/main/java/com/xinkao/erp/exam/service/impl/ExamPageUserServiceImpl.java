@@ -5,19 +5,19 @@ import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xinkao.erp.common.model.BasePageQuery;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.LoginUser;
+import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.common.service.impl.BaseServiceImpl;
 import com.xinkao.erp.common.util.RedisUtil;
 import com.xinkao.erp.exam.entity.*;
-import com.xinkao.erp.exam.mapper.ExamMapper;
 import com.xinkao.erp.exam.mapper.ExamPageUserMapper;
 import com.xinkao.erp.exam.mapper.ExamPageUserQuestionMapper;
 import com.xinkao.erp.exam.model.vo.ExamPageUserQuestionVo;
 import com.xinkao.erp.exam.model.vo.ExamUserVo;
 import com.xinkao.erp.exam.model.vo.ExamProgressVo;
-import com.xinkao.erp.exam.model.vo.ExamResultVo;
 import com.xinkao.erp.exam.model.param.ExamUserQuery;
 import com.xinkao.erp.exam.model.param.ExamPageUserAnswerParam;
 import com.xinkao.erp.exam.model.param.SubmitParam;
@@ -27,10 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -39,6 +36,10 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
 
     @Autowired
     private RedisUtil redisUtil;
+    @Autowired
+    private ExamPageUserMapper examPageUserMapper;
+    @Autowired
+    private ExamService examService;
     @Autowired
     private ExamPageUserQuestionMapper examPageUserQuestionMapper;
     @Autowired
@@ -49,9 +50,10 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
     private ExamPageSetService examPageSetService;
 
     @Override
-    public BaseResponse<List<ExamUserVo>> getExamList(){
+    public Page<ExamUserVo> page(BasePageQuery query, Pageable pageable){
         LoginUser loginUser = redisUtil.getInfoByToken();
-        return null;
+        Page page = pageable.toPage();
+        return examPageUserMapper.page(page, query, loginUser.getUser().getId());
     }
 
     @Override
@@ -63,6 +65,7 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                 .eq(ExamPageUser::getUserId, userId)
                 .one();
         ExamUserVo vo = BeanUtil.copyProperties(examPageUser, ExamUserVo.class);
+        vo.setExamName(examService.getById(vo.getExamId()).getExamName());
         //插入题目详情
         LambdaQueryWrapper<ExamPageUserQuestion> examPageUserQuestionLambdaQueryWrapper = new LambdaQueryWrapper<>();
         examPageUserQuestionLambdaQueryWrapper.eq(ExamPageUserQuestion::getExamId, examId)
@@ -245,6 +248,8 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                 examPageUserLog.setStartTs(lastUpdateTs);
             }
             log.error("当前考试["+examId+","+userId+"],已考时长:["+diff+"],时间间隔["+difftime+"],上次时间["+startTs+","+lastUpdateTs+"]");
+        }else {
+            examPageUserLog.setStartTs(DateUtil.now());
         }
         examPageUserLog.setLastUpdateTs(now);
         examPageUserLog.setUpdateTime(DateUtil.date().toJdkDate());

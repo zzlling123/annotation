@@ -13,6 +13,9 @@ public class ExamUserVo {
     @ApiModelProperty("考试项目主键")
     private Integer examId;
 
+    @ApiModelProperty("考试项目名称")
+    private String examName;
+
     /**
      * 用户主键
      */

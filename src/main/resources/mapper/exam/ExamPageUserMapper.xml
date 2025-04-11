@@ -2,4 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xinkao.erp.exam.mapper.ExamPageUserMapper">
 
+    <select id="page" resultType="com.xinkao.erp.exam.model.vo.ExamUserVo">
+        SELECT epu.*,e.exam_name
+        FROM exam_page_user epu
+        LEFT JOIN exam e ON epu.exam_id = e.id
+        WHERE 1=1 and epu.user_id = #{userId} and e.is_del = 0
+    </select>
 </mapper>

@@ -1,6 +1,9 @@
 package com.xinkao.erp.exam.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xinkao.erp.common.model.BasePageQuery;
 import com.xinkao.erp.common.model.BaseResponse;
+import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.common.service.BaseService;
 import com.xinkao.erp.exam.entity.ExamPageUser;
 import com.xinkao.erp.exam.model.vo.ExamUserVo;
@@ -14,7 +17,7 @@ import java.util.Map;
 
 public interface ExamPageUserService extends BaseService<ExamPageUser> {
 
-    BaseResponse<List<ExamUserVo>> getExamList();
+    Page<ExamUserVo>page(BasePageQuery query, Pageable pageable);
 
     BaseResponse<ExamUserVo> getExamUserInfo(ExamUserQuery examUserQuery);
 

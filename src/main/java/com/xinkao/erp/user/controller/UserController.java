@@ -41,13 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserController extends BaseController {
 	@Resource
-	private RoleService roleService;
-	@Resource
 	protected UserService userService;
-	@Autowired
-	private UserMapper userMapper;
-	@Autowired
-	private UserOptLogService userOptLogService;
 
 	/**
 	 * 分页
