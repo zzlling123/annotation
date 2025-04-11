@@ -27,9 +27,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * <p>
  * 章节资源表 前端控制器
- * </p>
  *
  * @author zzl
  * @since 2025-03-21 17:19:23

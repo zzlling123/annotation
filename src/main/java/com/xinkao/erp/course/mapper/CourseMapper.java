@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.course.entity.Course;
 import com.xinkao.erp.common.mapper.BaseMapper;
 import com.xinkao.erp.course.query.CourseQuery;
-import com.xinkao.erp.manage.vo.ClassInfoVo;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

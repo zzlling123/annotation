@@ -19,9 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 /**
- * <p>
  * 课程表	 前端控制器
- * </p>
  *
  * @author zzl
  * @since 2025-03-21 17:19:23
