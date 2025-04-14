@@ -11,6 +11,9 @@ import java.util.Date;
 @Setter
 public class ClassInfoVo {
 
+    @ApiModelProperty("id")
+    private String id;
+
     @ApiModelProperty("班级名称")
     private String className;
 

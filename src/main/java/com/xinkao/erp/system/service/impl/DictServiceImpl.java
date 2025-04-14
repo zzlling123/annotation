@@ -4,6 +4,8 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.common.enums.busi.DictTypeEnum;
 import com.xinkao.erp.common.exception.BusinessException;
+import com.xinkao.erp.common.model.BaseResponse;
+import com.xinkao.erp.common.model.param.UpdateStateParam;
 import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.common.service.impl.BaseServiceImpl;
 import com.xinkao.erp.system.entity.Dict;
@@ -31,10 +33,10 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, Dict>
 	 * 分页查询字典
 	 */
 	@Override
-	public Page<Dict> pageDict(DictTypeEnum type, String dictValue, Pageable pageable) {
+	public Page<Dict> pageDict(String code, String dictValue, Pageable pageable) {
 		return lambdaQuery()
                 .like(StrUtil.isNotEmpty(dictValue), Dict::getDictValue,dictValue)
-                .eq(Dict::getDictType, type.getCode())
+                .eq(Dict::getDictType, code)
                 .orderByAsc(Dict::getSort)
                 .page(pageable.toPage());
 	}
@@ -42,26 +44,26 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, Dict>
 	 * 查询字典列表
 	 */
 	@Override
-	public List<Dict> selectBy(DictTypeEnum type) {
-		  return lambdaQuery().eq(Dict::getDictType, type.getCode()).orderByAsc(Dict::getSort).list();
+	public List<Dict> selectBy(String type) {
+		  return lambdaQuery().eq(Dict::getDictType, type).eq(Dict::getState, 1).orderByAsc(Dict::getSort).list();
 	}
 	/**
 	 * 保存字典值
 	 */
 	@Transactional(noRollbackFor = BusinessException.class)
 	@Override
-	public boolean saveBy(DictTypeEnum type, String dictValue) {
-		Dict dict = lambdaQuery().eq(Dict::getDictType, type.getCode())
+	public boolean saveBy(String type, String name, String dictValue) {
+		Dict dict = lambdaQuery().eq(Dict::getDictType, type)
         .eq(Dict::getDictValue, dictValue)
         .one();
 		if(dict != null){
 		    throw new BusinessException("此字典值已存在");
 		}
 		dict = new Dict();
-		dict.setDictType(type.getCode());
-		dict.setDictLabel(type.getName());
+		dict.setDictType(type);
+		dict.setDictLabel(name);
 		dict.setDictValue(dictValue);
-		Long count = lambdaQuery().eq(Dict::getDictType, type.getCode()).count();
+		Long count = lambdaQuery().eq(Dict::getDictType, type).count();
 		count = ( count == null ? 0L: count);
 		dict.setSort(count.intValue());
 		//保存
@@ -85,16 +87,16 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, Dict>
 	 * 获取单记录
 	 */
 	@Override
-	public Dict selectOne(DictTypeEnum type) {
-		return lambdaQuery().eq(Dict::getDictType, type.getCode())
+	public Dict selectOne(String type) {
+		return lambdaQuery().eq(Dict::getDictType, type).eq(Dict::getState, 1)
 				.last("limit 1").orderByDesc(Dict::getSort).one();
 	}
 	/**
 	 * 设置默认代码
 	 */
 	@Override
-	public Dict setDictBy(DictTypeEnum dictType, String dictValue) {
-		Dict dict = lambdaQuery().eq(Dict::getDictType, dictType.getCode())
+	public Dict setDictBy(String type, String name, String dictValue) {
+		Dict dict = lambdaQuery().eq(Dict::getDictType, type)
         .one();
 		if(dict != null){
 			dict.setDictValue(dictValue);
@@ -102,15 +104,22 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, Dict>
 			updateById(dict);
 		}else {
 			dict = new Dict();
-			dict.setDictType(dictType.getCode());
-			dict.setDictLabel(dictType.getName());
+			dict.setDictType(type);
+			dict.setDictLabel(name);
 			dict.setDictValue(dictValue);
-			Long count = lambdaQuery().eq(Dict::getDictType, dictType.getCode()).count();
+			Long count = lambdaQuery().eq(Dict::getDictType, type).count();
 			count = ( count == null ? 0L: count);
 			dict.setSort(count.intValue());
 			//保存
 			save(dict);
 		}
 		return dict;
+	}
+
+	@Override
+	public BaseResponse<?> updateState(UpdateStateParam updateStateParam) {
+		String[] ids = updateStateParam.getIds().split(",");
+		lambdaUpdate().in(Dict::getId, ids).set(Dict::getState, updateStateParam.getState()).update();
+		return BaseResponse.ok();
 	}
 }

@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.common.annotation.Log;
 import com.xinkao.erp.common.annotation.PrimaryDataSource;
 import com.xinkao.erp.common.controller.BaseController;
+import com.xinkao.erp.common.enums.CommonEnum;
 import com.xinkao.erp.common.enums.system.OperationType;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.support.Pageable;
+import com.xinkao.erp.manage.entity.ClassInfo;
 import com.xinkao.erp.manage.param.ClassInfoParam;
 import com.xinkao.erp.manage.query.ClassInfoQuery;
 import com.xinkao.erp.manage.service.ClassInfoService;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 管理端班级相关服务
@@ -45,6 +48,17 @@ public class ClassInfoController extends BaseController {
         Pageable pageable = query.getPageInfo();
         Page<ClassInfoVo> voPage = classInfoService.page(query, pageable);
         return BaseResponse.ok(voPage);
+    }
+
+    /**
+     * 下拉列表查询班级信息
+     *
+     */
+    @PrimaryDataSource
+	@PostMapping("/getList")
+    @ApiOperation("下拉列表班级信息")
+    public BaseResponse<List<ClassInfo>> getList() {
+        return BaseResponse.ok(classInfoService.lambdaQuery().eq(ClassInfo::getIsDel, CommonEnum.IS_DEL.NO.getCode()).list());
     }
 
     /**
