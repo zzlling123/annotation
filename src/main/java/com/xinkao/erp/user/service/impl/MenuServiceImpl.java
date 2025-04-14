@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.LoginUser;
+import com.xinkao.erp.user.param.MenuParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -65,5 +66,25 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, Menu> implement
         }
 
         return formatMenuList;
+    }
+
+    @Override
+    public BaseResponse save(MenuParam menuParam) {
+        Menu menu = menuParam.convertTo();
+        menuMapper.insert(menu);
+        return BaseResponse.ok("成功！");
+    }
+
+    @Override
+    public BaseResponse update(MenuParam menuParam) {
+        Menu menu = menuParam.convertTo();
+        menuMapper.updateById(menu);
+        return BaseResponse.ok("成功！");
+    }
+
+    @Override
+    public BaseResponse del(String id) {
+        menuMapper.deleteById(id);
+        return BaseResponse.ok("成功！");
     }
 }

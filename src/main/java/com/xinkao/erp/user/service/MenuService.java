@@ -5,6 +5,7 @@ import java.util.List;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.service.BaseService;
 import com.xinkao.erp.user.entity.Menu;
+import com.xinkao.erp.user.param.MenuParam;
 
 /**
  * <p>
@@ -20,4 +21,13 @@ public interface MenuService extends BaseService<Menu> {
     BaseResponse<List<Menu>> getList();
 
     List<Menu> formatMenuList(List<Menu> menuList);
+
+    //新增
+    BaseResponse save(MenuParam departmentParam);
+
+    //修改
+    BaseResponse update(MenuParam departmentParam);
+
+    //删除
+    BaseResponse del(String id);
 }
