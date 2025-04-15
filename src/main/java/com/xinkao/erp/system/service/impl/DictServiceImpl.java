@@ -75,11 +75,13 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, Dict>
 	 * 多个主键删除
 	 */
 	@Override
-	public boolean deleteByIds(DeleteParam param) {
-		if(param.getIds().isEmpty()) {
+	public boolean deleteByIds(String ids) {
+		if(StringUtils.isEmpty(ids)) {
 			return false;
 		}
-		removeByIds(param.getIds());
+		String[] idArr = StringUtils.split(ids, ",");
+		List<String> idList = Stream.of(idArr).collect(Collectors.toList());
+		removeByIds(idList);
 		return true;
 	}
 	/**

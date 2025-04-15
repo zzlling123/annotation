@@ -44,10 +44,10 @@ public interface DictService extends BaseService<Dict> {
     boolean saveBy(String type, String name, String dictValue);
     /**
      * 删除字典
-     * @param param
+     * @param ids
      * @return
      */
-	boolean deleteByIds(DeleteParam param);
+	boolean deleteByIds(String ids);
 	/**
 	 * 设置字典值,默认为空
 	 * @param type
