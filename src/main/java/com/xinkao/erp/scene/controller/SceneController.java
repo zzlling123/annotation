@@ -133,16 +133,6 @@ public class SceneController {
         return sceneService.save1(scene);// 保存产品到数据库，不包括图片文件本身，只保存图片的URL或路径。
     }
 
-//    /**
-//     * 请帮我写一个方法，可以解析pcd文件，并解析出关键帧对应的图片集合，并保存到数据库中，并返回图片集合的url或路径
-//     */
-//    @PostMapping("/parsePsd")
-//    public BaseResponse<?> parsePsd(@RequestParam("psdFile") MultipartFile psdFile) {
-//        List<String> imageUrls = PSDParser.parsePSDAndSaveImages(psdFile.getOriginalFilename(), UPLOAD_DIR);
-//        return BaseResponse.ok(imageUrls);
-//    }
-
-
 
     /**
      * 编辑场景记录表信息
