@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * <p>
- * 操作记录表 前端控制器
- * </p>
+ * 操作日志
  *
  * @author Ldy
  * @since 2023-12-14 21:07:45

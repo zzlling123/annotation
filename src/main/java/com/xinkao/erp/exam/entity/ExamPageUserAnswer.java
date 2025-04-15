@@ -6,6 +6,8 @@ import com.xinkao.erp.common.model.entity.DataSnowIdEntity;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
+
 /**
  * <p>
  * 考生作答表
@@ -96,6 +98,20 @@ public class ExamPageUserAnswer extends DataSnowIdEntity {
      */
     @TableField("user_score")
     private Integer userScore;
+
+    /**
+     * 批改人ID
+     */
+    @TableField("correct_id")
+    private Integer correctId;
+
+    /**
+     * 批改时间
+     */
+    @TableField("correct_time")
+    private Date correctTime;
+
+
 
 
 }

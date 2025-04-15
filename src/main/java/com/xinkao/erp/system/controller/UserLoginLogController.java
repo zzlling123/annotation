@@ -19,9 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * <p>
- * 用户登录表 前端控制器
- * </p>
+ * 登录日志
  *
  * @author Ldy
  * @since 2023-12-14 21:07:45
@@ -59,11 +57,11 @@ public class UserLoginLogController extends BaseController {
      *
      * @return
      */
-    @PrimaryDataSource
-    @PostMapping("/getMobileById")
-    @ApiOperation("获取用户手机号")
-    public BaseResponse getMobileById(@RequestBody UserLoginLog userLoginLog) {
-        return BaseResponse.ok("成功",userLoginLogService.getById(userLoginLog.getId()).getAccount());
-    }
+//    @PrimaryDataSource
+//    @PostMapping("/getMobileById")
+//    @ApiOperation("获取用户手机号")
+//    public BaseResponse getMobileById(@RequestBody UserLoginLog userLoginLog) {
+//        return BaseResponse.ok("成功",userLoginLogService.getById(userLoginLog.getId()).getAccount());
+//    }
 
 }

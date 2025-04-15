@@ -80,5 +80,17 @@ public class ExamPageUser extends DataSnowIdEntity {
     @TableField("pass_status")
     private Integer passStatus;
 
+    /**
+     * 是否已经全部批改0否1是
+     */
+    @TableField("on_correct")
+    private Integer onCorrect;
+
+    /**
+     * 是否需要批改0否1是
+     */
+    @TableField("need_correct")
+    private Integer needCorrect;
+
 
 }

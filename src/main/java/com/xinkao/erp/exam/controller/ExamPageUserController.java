@@ -105,7 +105,6 @@ public class ExamPageUserController {
     @PrimaryDataSource
     @RequestMapping("/heartBeat")
     @ApiOperation("心跳检测")
-    @Log(content = "心跳检测",operationType = OperationType.INSERT)
     public BaseResponse<?> heartBeat(@Valid @RequestBody ExamUserQuery examUserQuery) {
         return examPageUserService.heartBeat(examUserQuery);
     }
