@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.common.enums.busi.DictTypeEnum;
 import com.xinkao.erp.common.exception.BusinessException;
 import com.xinkao.erp.common.model.BaseResponse;
+import com.xinkao.erp.common.model.param.DeleteParam;
 import com.xinkao.erp.common.model.param.UpdateStateParam;
 import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.common.service.impl.BaseServiceImpl;
@@ -74,13 +75,11 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, Dict>
 	 * 多个主键删除
 	 */
 	@Override
-	public boolean deleteByIds(String ids) {
-		if(StringUtils.isEmpty(ids)) {
+	public boolean deleteByIds(DeleteParam param) {
+		if(param.getIds().isEmpty()) {
 			return false;
 		}
-		String[] idArr = StringUtils.split(ids, ",");
-		List<String> idList = Stream.of(idArr).collect(Collectors.toList());
-		removeByIds(idList);
+		removeByIds(param.getIds());
 		return true;
 	}
 	/**

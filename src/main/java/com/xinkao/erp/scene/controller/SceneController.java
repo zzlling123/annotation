@@ -11,7 +11,7 @@ import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.scene.entity.Scene;
 import com.xinkao.erp.scene.query.SceneQuery;
 import com.xinkao.erp.scene.service.SceneService;
-import com.xinkao.erp.scene.utils.PSDParser;
+//import com.xinkao.erp.scene.utils.PSDParser;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

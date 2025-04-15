@@ -5,6 +5,7 @@ import java.util.List;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.common.enums.busi.DictTypeEnum;
 import com.xinkao.erp.common.model.BaseResponse;
+import com.xinkao.erp.common.model.param.DeleteParam;
 import com.xinkao.erp.common.model.param.UpdateStateParam;
 import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.common.service.BaseService;
@@ -43,10 +44,10 @@ public interface DictService extends BaseService<Dict> {
     boolean saveBy(String type, String name, String dictValue);
     /**
      * 删除字典
-     * @param ids
+     * @param param
      * @return
      */
-	boolean deleteByIds(String ids);
+	boolean deleteByIds(DeleteParam param);
 	/**
 	 * 设置字典值,默认为空
 	 * @param type
