@@ -99,7 +99,7 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
             examClassList.add(examClass);
         }
         examClassService.saveBatch(examClassList);
-        return BaseResponse.ok("新增成功");
+        return BaseResponse.ok("新增成功", exam.getId());
     }
 
     @Override

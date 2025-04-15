@@ -11,7 +11,6 @@ import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.scene.entity.Scene;
 import com.xinkao.erp.scene.query.SceneQuery;
 import com.xinkao.erp.scene.service.SceneService;
-import com.xinkao.erp.scene.utils.PSDParser;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +25,7 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- *  前端控制器
+ *  场景管理 前端控制器
  *
  * @author zzl
  * @since 2025-04-12 23:11:56
@@ -134,14 +133,14 @@ public class SceneController {
         return sceneService.save1(scene);// 保存产品到数据库，不包括图片文件本身，只保存图片的URL或路径。
     }
 
-    /**
-     * 请帮我写一个方法，可以解析psd文件，并解析出关键帧对应的图片集合，并保存到数据库中，并返回图片集合的url或路径
-     */
-    @PostMapping("/parsePsd")
-    public BaseResponse<?> parsePsd(@RequestParam("psdFile") MultipartFile psdFile) {
-        List<String> imageUrls = PSDParser.parsePSDAndSaveImages(psdFile.getOriginalFilename(), UPLOAD_DIR);
-        return BaseResponse.ok(imageUrls);
-    }
+//    /**
+//     * 可以解析psd文件，并解析出关键帧对应的图片集合，并保存到数据库中，并返回图片集合的url或路径
+//     */
+//    @PostMapping("/parsePsd")
+//    public BaseResponse<?> parsePsd(@RequestParam("psdFile") MultipartFile psdFile) {
+//        List<String> imageUrls = PSDParser.parsePSDAndSaveImages(psdFile.getOriginalFilename(), UPLOAD_DIR);
+//        return BaseResponse.ok(imageUrls);
+//    }
 
     /**
      * 编辑场景记录表信息
