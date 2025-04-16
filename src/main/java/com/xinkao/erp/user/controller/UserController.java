@@ -3,16 +3,19 @@ package com.xinkao.erp.user.controller;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.common.annotation.Log;
 import com.xinkao.erp.common.annotation.PrimaryDataSource;
+import com.xinkao.erp.common.enums.CommonEnum;
 import com.xinkao.erp.common.enums.system.OperationType;
 import com.xinkao.erp.common.model.param.UpdateStateParam;
 import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.common.util.PasswordCheckUtil;
 import com.xinkao.erp.login.service.UserOptLogService;
+import com.xinkao.erp.manage.entity.ClassInfo;
 import com.xinkao.erp.user.entity.User;
 import com.xinkao.erp.user.mapper.UserMapper;
 import com.xinkao.erp.user.param.UserParam;
@@ -29,6 +32,8 @@ import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.user.service.RoleService;
 
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 /**
  * 管理端用户相关服务
@@ -56,6 +61,20 @@ public class UserController extends BaseController {
 		Pageable pageable = query.getPageInfo();
 		Page<UserPageVo> voPage = userService.page(query, pageable);
 		return BaseResponse.ok(voPage);
+	}
+
+	/**
+	 * 下拉列表教师信息
+	 *
+	 */
+	@PrimaryDataSource
+	@PostMapping("/getList")
+	@ApiOperation("下拉列表教师信息")
+	public BaseResponse<List<UserPageVo>> getList() {
+		//查询所有教师角色用户
+		List<User> userList = userService.lambdaQuery().eq(User::getIsDel, CommonEnum.IS_DEL.NO.getCode()).eq(User::getRoleId, 2).list();
+		List<UserPageVo> userPageVoList = BeanUtil.copyToList(userList, UserPageVo.class);
+		return BaseResponse.ok("成功",userPageVoList);
 	}
 
 	/**
