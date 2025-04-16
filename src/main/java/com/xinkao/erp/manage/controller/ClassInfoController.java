@@ -7,6 +7,7 @@ import com.xinkao.erp.common.controller.BaseController;
 import com.xinkao.erp.common.enums.CommonEnum;
 import com.xinkao.erp.common.enums.system.OperationType;
 import com.xinkao.erp.common.model.BaseResponse;
+import com.xinkao.erp.common.model.LoginUser;
 import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.manage.entity.ClassInfo;
 import com.xinkao.erp.manage.param.ClassInfoParam;
@@ -59,6 +60,18 @@ public class ClassInfoController extends BaseController {
     @ApiOperation("下拉列表班级信息")
     public BaseResponse<List<ClassInfo>> getList() {
         return BaseResponse.ok(classInfoService.lambdaQuery().eq(ClassInfo::getIsDel, CommonEnum.IS_DEL.NO.getCode()).list());
+    }
+
+    /**
+     * 班级负责人--下拉列表
+     *
+     */
+    @PrimaryDataSource
+	@PostMapping("/getListForTea")
+    @ApiOperation("班级负责人--下拉列表")
+    public BaseResponse<List<ClassInfo>> getListForTea() {
+        LoginUser loginUser = redisUtil.getInfoByToken();
+        return BaseResponse.ok(classInfoService.lambdaQuery().eq(ClassInfo::getDirectorId, loginUser.getUser().getId()).eq(ClassInfo::getIsDel, CommonEnum.IS_DEL.NO.getCode()).list());
     }
 
     /**

@@ -3,9 +3,10 @@
 <mapper namespace="com.xinkao.erp.user.mapper.UserMapper">
 <!-- 分页查询 -->
 	<select id="page" resultType="com.xinkao.erp.user.vo.UserPageVo">
-		SELECT u.id,u.username,u.real_name,u.role_id,r.role_name,u.create_time,u.state
+		SELECT u.id,u.username,u.real_name,u.role_id,r.role_name,u.create_time,u.state,u.class_id,c.class_name
 		FROM `user` u
 		LEFT JOIN role r ON r.id = u.role_id
+		LEFT JOIN class_info c ON c.id = u.class_id
 		WHERE 1=1 and u.is_del = 0
 		<if test="userQuery.realName != null and userQuery.realName != ''">
 			and u.real_name LIKE CONCAT('%', #{userQuery.realName}, '%')

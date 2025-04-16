@@ -31,6 +31,9 @@ public class UserQuery extends BasePageQuery implements Serializable {
     @ApiModelProperty("用户角色ID")
     private String roleId;
 
+    @ApiModelProperty("班级ID")
+    private String classId;
+
     @ApiModelProperty("是否启用0否1是")
     private String state;
 }
