@@ -76,6 +76,11 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
         lambdaUpdate().eq(ExamPageUserQuestion::getExamId,examPageSet.getExamId()).remove();
         //清除答题卡数据
         examPageUserAnswerService.lambdaUpdate().eq(ExamPageUserAnswer::getExamId,examPageSet.getExamId()).remove();
+        //查询题型分布设置中是否包含主观题，如果包含，则ExamPageUser中needCorrect为1，否则为0
+        boolean needCorrect = examPageSetTypeService.lambdaQuery()
+                .eq(ExamPageSetType::getExamId,examPageSet.getExamId())
+                .eq(ExamPageSetType::getShape,400)
+                .count() > 0;
         for (User user : userList) {
             //查询是否已生成过
             ExamPageUser examPageUser = new  ExamPageUser();
@@ -83,6 +88,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
             examPageUser.setExamId(examPageSet.getExamId());
             examPageUser.setSelectStatus(1);
             examPageUser.setCreateTime(DateUtil.date());
+            examPageUser.setNeedCorrect(needCorrect?1:0);
             examPageUserList.add(examPageUser);
 
             //创建答题心跳记录备用

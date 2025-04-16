@@ -62,6 +62,12 @@ public class Question extends DataEntity {
     private String answer;
 
     /**
+     * 如果是填空题，则为有几个空
+     */
+    @TableField("answer_count")
+    private Integer answerCount;
+
+    /**
      * 答案说明
      */
     @TableField("answer_tip")

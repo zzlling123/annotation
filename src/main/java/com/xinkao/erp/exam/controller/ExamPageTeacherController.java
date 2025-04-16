@@ -13,6 +13,7 @@ import com.xinkao.erp.exam.model.param.SubmitParam;
 import com.xinkao.erp.exam.model.vo.ExamProgressVo;
 import com.xinkao.erp.exam.model.vo.ExamUserVo;
 import com.xinkao.erp.exam.service.ExamPageUserService;
+import com.xinkao.erp.exam.vo.ExamPageTeacherVo;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,16 +38,9 @@ public class ExamPageTeacherController {
     private ExamPageUserService examPageUserService;
 
     @PrimaryDataSource
-    @PostMapping("/getClassList")
-    @ApiOperation("根据当前登录教师获取负责的班级列表")
-    public BaseResponse<?> getClassList() {
-        return null;
-    }
-
-    @PrimaryDataSource
     @PostMapping("/page")
     @ApiOperation("根据当前登录教师获取考试列表(已批阅/应批阅)(固定筛选一个班级)")
-    public BaseResponse<?> page() {
+    public BaseResponse<Page<ExamPageTeacherVo>> page() {
         return BaseResponse.ok();
     }
 
