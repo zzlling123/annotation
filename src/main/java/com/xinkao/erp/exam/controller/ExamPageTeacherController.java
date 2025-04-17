@@ -13,7 +13,9 @@ import com.xinkao.erp.exam.model.param.SubmitParam;
 import com.xinkao.erp.exam.model.vo.ExamProgressVo;
 import com.xinkao.erp.exam.model.vo.ExamUserVo;
 import com.xinkao.erp.exam.service.ExamPageUserService;
+import com.xinkao.erp.exam.vo.ExamPageAnswerVo;
 import com.xinkao.erp.exam.vo.ExamPageTeacherVo;
+import com.xinkao.erp.exam.vo.ExamPageUserListVo;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,15 +49,15 @@ public class ExamPageTeacherController {
     @PrimaryDataSource
     @PostMapping("/getExamUserListForExamId")
     @ApiOperation("根据试卷id、班级ID获取学生列表")
-    public BaseResponse<?> getExamUserListForExamId(@RequestBody @Valid ExamUserQuery examUserQuery) {
+    public BaseResponse<List<ExamPageUserListVo>> getExamUserListForExamId(@RequestBody @Valid ExamUserQuery examUserQuery) {
         return null;
     }
 
     @PrimaryDataSource
     @PostMapping("/getExamUserInfo")
     @ApiOperation("点击学生，获取该学生此次试卷答题信息")
-    public BaseResponse<ExamUserVo> getExamUserInfo(@RequestBody @Valid ExamUserQuery examUserQuery) {
-        return examPageUserService.getExamUserInfo(examUserQuery);
+    public BaseResponse<ExamPageAnswerVo> getExamUserInfo(@RequestBody @Valid ExamUserQuery examUserQuery) {
+        return null;
     }
 
     @PrimaryDataSource

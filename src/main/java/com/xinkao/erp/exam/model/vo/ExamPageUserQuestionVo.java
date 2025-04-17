@@ -12,6 +12,12 @@ import lombok.Data;
 public class ExamPageUserQuestionVo {
 
 	/**
+	 * 试题主键
+	 */
+	@ApiModelProperty("试题主键")
+	private String id;
+
+	/**
 	 * 试卷主键
 	 */
 	@ApiModelProperty("试卷主键")
