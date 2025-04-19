@@ -26,8 +26,11 @@ public class ExamPageUserListVo extends BaseEntity implements OutputConverter<Ex
     private String userId;
 
     @ApiModelProperty("用户名称")
-    private String username;
+    private String realName;
 
     @ApiModelProperty("是否已经全部批改0否1是")
-    private Integer on_correct;
+    private Integer onCorrect;
+
+    @ApiModelProperty("是否需要批改0否1是")
+    private Integer needCorrect;
 }

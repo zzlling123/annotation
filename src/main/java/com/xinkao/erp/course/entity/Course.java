@@ -32,9 +32,9 @@ public class Course extends DataEntity {
     private String courseName;
 
     /**
-     * 课程状态(0:禁用 1:启用)
+     * 课程状态(1启用0禁用)
      */
-    @ApiModelProperty("课程状态(0启用: 1:禁用)")
+    @ApiModelProperty("课程状态(1启用0禁用)")
     @TableField("course_status")
     private Integer courseStatus;
 
@@ -44,6 +44,12 @@ public class Course extends DataEntity {
     @TableField("total_chapters")
     @ApiModelProperty("章节总数")
     private Integer totalChapters;
+
+    /**
+     * 是否删除0否1是
+     */
+    @TableField("is_del")
+    private Integer isDel;
 
 
 }

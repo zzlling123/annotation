@@ -50,14 +50,16 @@ public class ExamPageTeacherController {
     @PrimaryDataSource
     @PostMapping("/getExamUserListForExamId")
     @ApiOperation("根据试卷id、班级ID获取学生列表")
-    public BaseResponse<List<ExamPageUserListVo>> getExamUserListForExamId(@RequestBody @Valid ExamUserQuery examUserQuery) {
-        return null;
+    public BaseResponse<Page<ExamPageUserListVo>> getExamUserListForExamId(@RequestBody @Valid ExamUserQuery query) {
+        Pageable pageable = query.getPageInfo();
+        Page<ExamPageUserListVo> voPage = examPageUserService.getExamUserListForExamId(query, pageable);
+        return BaseResponse.ok("成功",voPage);
     }
 
     @PrimaryDataSource
-    @PostMapping("/getExamUserInfo")
+    @PostMapping("/getExamUserInfo/{examPageUserId}")
     @ApiOperation("点击学生，获取该学生此次试卷答题信息")
-    public BaseResponse<ExamPageAnswerVo> getExamUserInfo(@RequestBody @Valid ExamUserQuery examUserQuery) {
+    public BaseResponse<ExamPageAnswerVo> getExamUserInfo(@PathVariable Integer examPageUserId) {
         return null;
     }
 

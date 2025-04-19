@@ -5,6 +5,7 @@ import com.xinkao.erp.common.annotation.Log;
 import com.xinkao.erp.common.annotation.PrimaryDataSource;
 import com.xinkao.erp.common.enums.system.OperationType;
 import com.xinkao.erp.common.model.BaseResponse;
+import com.xinkao.erp.common.model.param.UpdateStateParam;
 import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.course.entity.Course;
 import com.xinkao.erp.course.entity.CourseChapter;
@@ -83,5 +84,12 @@ public class CourseController {
     @Log(content = "删除课程信息", operationType = OperationType.DELETE, isSaveRequestData = false)
     public BaseResponse<?> delete(@PathVariable Integer id) {
         return courseService.delete(id);
+    }
+
+    @PrimaryDataSource
+    @PostMapping("/updateState")
+    @ApiOperation("修改课程状态")
+    public BaseResponse<?> updateState(@RequestBody UpdateStateParam param) {
+        return courseService.updateState(param);
     }
 }

@@ -1,8 +1,10 @@
 package com.xinkao.erp.course.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.common.enums.CommonEnum;
 import com.xinkao.erp.common.model.BaseResponse;
+import com.xinkao.erp.common.model.param.UpdateStateParam;
 import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.course.entity.Course;
 import com.xinkao.erp.course.mapper.CourseChapterMapper;
@@ -10,8 +12,11 @@ import com.xinkao.erp.course.mapper.CourseMapper;
 import com.xinkao.erp.course.query.CourseQuery;
 import com.xinkao.erp.course.service.CourseService;
 import com.xinkao.erp.common.service.impl.BaseServiceImpl;
+import com.xinkao.erp.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 /**
  * <p>
@@ -51,6 +56,13 @@ public class CourseServiceImpl extends BaseServiceImpl<CourseMapper, Course> imp
 
     @Override
     public BaseResponse<?> delete(Integer id) {
-        return lambdaUpdate().eq(Course::getId, id).set(Course::getCourseStatus, CommonEnum.IS_DEL.YES.getCode()).update() ? BaseResponse.ok("删除成功！") : BaseResponse.fail("删除失败！");
+        return lambdaUpdate().eq(Course::getId, id).set(Course::getIsDel, CommonEnum.IS_DEL.YES.getCode()).update() ? BaseResponse.ok("删除成功！") : BaseResponse.fail("删除失败！");
+    }
+
+    @Override
+    public BaseResponse updateState(UpdateStateParam updateStateParam){
+        String[] ids = updateStateParam.getIds().split(",");
+        String content = Objects.equals(updateStateParam.getState(), "1") ? "启用" :"禁用";
+        return lambdaUpdate().in(Course::getId, ids).set(Course::getCourseStatus, updateStateParam.getState()).update()?BaseResponse.ok(content+"成功！"):BaseResponse.fail(content+"失败！");
     }
 }

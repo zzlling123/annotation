@@ -2,4 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xinkao.erp.course.mapper.CourseChapterMapper">
 
+    <select id="page" resultType="com.xinkao.erp.course.entity.CourseChapter">
+        SELECT * FROM course_chapter
+        where 1=1 and is_del = 0 and course_id = #{query.courseId}
+        <if test="query.chapterTitle != null and query.chapterTitle != ''">
+            and chapter_title LIKE CONCAT('%', #{query.chapterTitle}, '%')
+        </if>
+        ORDER BY create_time DESC
+    </select>
 </mapper>

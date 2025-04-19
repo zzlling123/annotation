@@ -29,22 +29,11 @@ public class CourseQuery extends BasePageQuery implements Serializable {
      */
     @ApiModelProperty("课程名字")
     @Size(min = 1, max = 100, message = "课程名字长度应在1到100个字符之间")
-    @TableField("course_name")
     private String courseName;
 
     /**
      * 课程状态(0:禁用 1:启用)
      */
     @ApiModelProperty("课程状态(0启用: 1:禁用)")
-    @TableField("course_status")
     private Integer courseStatus;
-
-    /**
-     * 章节总数
-     */
-    @TableField("total_chapters")
-    @ApiModelProperty("章节总数")
-    private Integer totalChapters;
-
-
 }

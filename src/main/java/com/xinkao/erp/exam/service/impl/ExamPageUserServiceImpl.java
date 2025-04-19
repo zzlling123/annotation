@@ -24,6 +24,7 @@ import com.xinkao.erp.exam.model.param.SubmitParam;
 import com.xinkao.erp.exam.query.ExamTeacherQuery;
 import com.xinkao.erp.exam.service.*;
 import com.xinkao.erp.exam.vo.ExamPageTeacherVo;
+import com.xinkao.erp.exam.vo.ExamPageUserListVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -262,5 +263,11 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
     public Page<ExamPageTeacherVo>pageTeacher(ExamTeacherQuery query, Pageable pageable){
         Page page = pageable.toPage();
         return examPageUserMapper.pageTeacher(page, query);
+    }
+
+    @Override
+    public Page<ExamPageUserListVo>getExamUserListForExamId(ExamUserQuery query, Pageable pageable){
+        Page page = pageable.toPage();
+        return examPageUserMapper.getExamUserListForExamId(page, query);
     }
 }
