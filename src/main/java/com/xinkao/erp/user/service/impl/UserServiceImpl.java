@@ -9,11 +9,13 @@ import cn.hutool.crypto.SecureUtil;
 import com.alibaba.fastjson.JSON;
 import com.xinkao.erp.common.enums.CommonEnum;
 import com.xinkao.erp.common.model.BaseResponse;
+import com.xinkao.erp.common.model.HandleResult;
 import com.xinkao.erp.common.model.LoginUser;
 import com.xinkao.erp.common.model.param.UpdateStateParam;
 import com.xinkao.erp.exam.entity.ExamPageUser;
 import com.xinkao.erp.exam.service.ExamPageUserService;
 import com.xinkao.erp.login.service.UserOptLogService;
+import com.xinkao.erp.user.excel.UserImportErrorModel;
 import com.xinkao.erp.user.param.UserParam;
 import com.xinkao.erp.user.param.UserUpdateParam;
 import com.xinkao.erp.user.query.UserQuery;
@@ -29,7 +31,9 @@ import com.xinkao.erp.user.entity.User;
 import com.xinkao.erp.user.mapper.UserMapper;
 import com.xinkao.erp.user.service.UserService;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -118,5 +122,10 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 		String userNames = lambdaQuery().in(User::getId, ids).select(User::getRealName).list().stream().map(User::getRealName).reduce((a, b) -> a + "," + b).get();
 		userOptLogService.saveLog("用户"+content+",姓名："+userNames, JSON.toJSONString(updateStateParam));
 		return lambdaUpdate().in(User::getId, ids).set(User::getState, updateStateParam.getState()).update()?BaseResponse.ok(content+"成功！"):BaseResponse.fail(content+"失败！");
+	}
+
+	@Override
+	public void importUser(HttpServletResponse response, Map<Integer, User> addUserMap, HandleResult handleResult, List<UserImportErrorModel> userImportErrorModelList, String token) {
+
 	}
 }

@@ -2,14 +2,20 @@ package com.xinkao.erp.user.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.common.model.BaseResponse;
+import com.xinkao.erp.common.model.HandleResult;
 import com.xinkao.erp.common.model.param.UpdateStateParam;
 import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.common.service.BaseService;
 import com.xinkao.erp.user.entity.User;
+import com.xinkao.erp.user.excel.UserImportErrorModel;
 import com.xinkao.erp.user.param.UserParam;
 import com.xinkao.erp.user.param.UserUpdateParam;
 import com.xinkao.erp.user.query.UserQuery;
 import com.xinkao.erp.user.vo.UserPageVo;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -41,4 +47,7 @@ public interface UserService extends BaseService<User> {
 
 	//删除用户
 	BaseResponse<?> del(String ids);
+
+	void importUser(HttpServletResponse response, Map<Integer, User> addUserMap, HandleResult handleResult, List<UserImportErrorModel> userImportErrorModelList, String token);
+
 }

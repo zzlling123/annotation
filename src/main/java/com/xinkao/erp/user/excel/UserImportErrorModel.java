@@ -18,7 +18,7 @@ import lombok.Setter;
 @HeadRowHeight(20)
 @Setter
 @Getter
-public class UserImportModel extends BaseExcelModel {
+public class UserImportErrorModel extends BaseExcelModel {
 
     @ExcelProperty(value = "用户名", index = 0)
     @Excel(prompt = "必填")
@@ -60,4 +60,7 @@ public class UserImportModel extends BaseExcelModel {
     @ColumnWidth(20)
     private String email;
 
+    @ExcelProperty(value = "错误信息", index = 8)
+    @ColumnWidth(20)
+    private String errorInfo;
 }
