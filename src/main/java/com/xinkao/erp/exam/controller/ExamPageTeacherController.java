@@ -12,15 +12,14 @@ import com.xinkao.erp.exam.model.param.ExamUserQuery;
 import com.xinkao.erp.exam.model.param.SubmitParam;
 import com.xinkao.erp.exam.model.vo.ExamProgressVo;
 import com.xinkao.erp.exam.model.vo.ExamUserVo;
+import com.xinkao.erp.exam.param.ExamCorrectParam;
+import com.xinkao.erp.exam.query.ExamTeacherQuery;
 import com.xinkao.erp.exam.service.ExamPageUserService;
 import com.xinkao.erp.exam.vo.ExamPageAnswerVo;
 import com.xinkao.erp.exam.vo.ExamPageTeacherVo;
 import com.xinkao.erp.exam.vo.ExamPageUserListVo;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -42,8 +41,10 @@ public class ExamPageTeacherController {
     @PrimaryDataSource
     @PostMapping("/page")
     @ApiOperation("根据当前登录教师获取考试列表(已批阅/应批阅)(固定筛选一个班级)")
-    public BaseResponse<Page<ExamPageTeacherVo>> page() {
-        return BaseResponse.ok();
+    public BaseResponse<Page<ExamPageTeacherVo>> page(@RequestBody @Valid ExamTeacherQuery query) {
+        Pageable pageable = query.getPageInfo();
+        Page<ExamPageTeacherVo> voPage = examPageUserService.pageTeacher(query, pageable);
+        return BaseResponse.ok("成功",voPage);
     }
 
     @PrimaryDataSource
@@ -63,7 +64,7 @@ public class ExamPageTeacherController {
     @PrimaryDataSource
     @PostMapping("/correct")
     @ApiOperation("批改，提交分数(如果是该学生该试卷最后一道问答题则会进行计算总分)")
-    public BaseResponse<?> correct() {
+    public BaseResponse<?> correct(@RequestBody @Valid ExamCorrectParam param) {
         return null;
     }
 

@@ -21,7 +21,9 @@ import com.xinkao.erp.exam.model.vo.ExamProgressVo;
 import com.xinkao.erp.exam.model.param.ExamUserQuery;
 import com.xinkao.erp.exam.model.param.ExamPageUserAnswerParam;
 import com.xinkao.erp.exam.model.param.SubmitParam;
+import com.xinkao.erp.exam.query.ExamTeacherQuery;
 import com.xinkao.erp.exam.service.*;
+import com.xinkao.erp.exam.vo.ExamPageTeacherVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -254,5 +256,11 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
         examPageUserLog.setLastUpdateTs(now);
         examPageUserLog.setUpdateTime(DateUtil.date().toJdkDate());
         return examPageUserLogService.updateById(examPageUserLog)?BaseResponse.ok("成功",diff):BaseResponse.fail("失败");
+    }
+
+    @Override
+    public Page<ExamPageTeacherVo>pageTeacher(ExamTeacherQuery query, Pageable pageable){
+        Page page = pageable.toPage();
+        return examPageUserMapper.pageTeacher(page, query);
     }
 }

@@ -32,6 +32,12 @@ public class ExamPageUser extends DataSnowIdEntity {
     private Integer userId;
 
     /**
+     * 班级主键
+     */
+    @TableField("class_id")
+    private Integer classId;
+
+    /**
      * 选题状态:0-未选题 1-选题中 2-选题完成
      */
     @TableField("select_status")

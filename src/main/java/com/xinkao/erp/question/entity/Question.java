@@ -44,6 +44,12 @@ public class Question extends DataEntity {
     private String question;
 
     /**
+     * 操作题文件路径JSON
+     */
+    @TableField("json_url")
+    private String jsonUrl;
+
+    /**
      * 题干纯文字
      */
     @TableField("question_text")
@@ -90,6 +96,12 @@ public class Question extends DataEntity {
      */
     @TableField("is_del")
     private Integer isDel;
+
+    @TableField(exist = false)
+    private String score;
+
+    @TableField(exist = false)
+    private String scorePart;
 
 
 }

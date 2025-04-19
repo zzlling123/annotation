@@ -6,6 +6,8 @@ import com.xinkao.erp.exam.entity.ExamPageUser;
 import com.xinkao.erp.common.mapper.BaseMapper;
 import com.xinkao.erp.exam.model.vo.ExamUserVo;
 import com.xinkao.erp.exam.query.ExamQuery;
+import com.xinkao.erp.exam.query.ExamTeacherQuery;
+import com.xinkao.erp.exam.vo.ExamPageTeacherVo;
 import com.xinkao.erp.exam.vo.ExamPageVo;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -21,4 +23,6 @@ import org.apache.ibatis.annotations.Mapper;
 public interface ExamPageUserMapper extends BaseMapper<ExamPageUser> {
 
     Page<ExamUserVo> page(Page page, BasePageQuery query, Integer userId);
+
+    Page<ExamPageTeacherVo> pageTeacher(Page page, ExamTeacherQuery query);
 }

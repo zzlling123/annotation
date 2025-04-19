@@ -11,6 +11,8 @@ import com.xinkao.erp.exam.model.vo.ExamProgressVo;
 import com.xinkao.erp.exam.model.param.ExamUserQuery;
 import com.xinkao.erp.exam.model.param.ExamPageUserAnswerParam;
 import com.xinkao.erp.exam.model.param.SubmitParam;
+import com.xinkao.erp.exam.query.ExamTeacherQuery;
+import com.xinkao.erp.exam.vo.ExamPageTeacherVo;
 
 import java.util.List;
 import java.util.Map;
@@ -28,4 +30,7 @@ public interface ExamPageUserService extends BaseService<ExamPageUser> {
     BaseResponse<Map<String,Integer>> submitExam(SubmitParam submitParam);
 
     BaseResponse<?> heartBeat(ExamUserQuery examUserQuery);
+
+    //教师批改部分
+    Page<ExamPageTeacherVo>pageTeacher(ExamTeacherQuery query, Pageable pageable);
 }

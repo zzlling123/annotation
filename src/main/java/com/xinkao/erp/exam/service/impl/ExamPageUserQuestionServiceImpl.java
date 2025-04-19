@@ -85,6 +85,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
             //查询是否已生成过
             ExamPageUser examPageUser = new  ExamPageUser();
             examPageUser.setUserId(user.getId());
+            examPageUser.setClassId(user.getClassId());
             examPageUser.setExamId(examPageSet.getExamId());
             examPageUser.setSelectStatus(1);
             examPageUser.setCreateTime(DateUtil.date());
