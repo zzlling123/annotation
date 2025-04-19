@@ -11,6 +11,8 @@ import com.xinkao.erp.common.enums.CommonEnum;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.LoginUser;
 import com.xinkao.erp.common.model.param.UpdateStateParam;
+import com.xinkao.erp.exam.entity.ExamPageUser;
+import com.xinkao.erp.exam.service.ExamPageUserService;
 import com.xinkao.erp.login.service.UserOptLogService;
 import com.xinkao.erp.user.param.UserParam;
 import com.xinkao.erp.user.param.UserUpdateParam;
@@ -45,6 +47,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	private UserMapper userMapper;
 	@Autowired
 	private UserOptLogService userOptLogService;
+	@Autowired
+	private ExamPageUserService examPageUserService;
 	@Value("${resetPassword}")
 	private String resetPassword;
 
@@ -74,8 +78,15 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	//修改
 	@Override
 	public BaseResponse update(UserUpdateParam userUpdateParam){
+		User oldUser = getById(userUpdateParam.getId());
 		User user = BeanUtil.copyProperties(userUpdateParam, User.class);
-		return updateById(user)?BaseResponse.ok("修改成功！"): BaseResponse.fail("修改失败！");
+		//如果classId发生了变动，则同时修改examPageUser中的classId
+		updateById(user);
+		if (oldUser.getClassId()!=user.getClassId()){
+			//涉及一个新旧考试数据的问题(后续再讨论，如果发生了变动，但是新班级没有这个考试，就会丢失数据)
+//			examPageUserService.lambdaUpdate().eq(ExamPageUser::getUserId,user.getId()).set(ExamPageUser::getClassId,user.getClassId()).update();
+		}
+		return BaseResponse.ok("修改成功！");
 	}
 
 	//删除

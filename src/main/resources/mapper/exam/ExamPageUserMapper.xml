@@ -12,7 +12,7 @@
     <select id="pageTeacher" resultType="com.xinkao.erp.exam.vo.ExamPageTeacherVo">
         SELECT e.id examId,e.exam_name,e.state,e.start_time,e.end_time,e.create_time,
                SUM(IF(epu.need_correct = 1 and epu.on_correct = 1,1,0)) correctNum,
-               SUM(IF(epu.need_correct = 1,1,0)) shouldNum
+               SUM(IF(epu.need_correct = 1,1,0)) shouldCorrectNum
         FROM exam_class ec
                  LEFT JOIN exam e ON e.id = ec.exam_id
                  LEFT JOIN exam_page_user epu ON epu.exam_id = e.id and epu.class_id = #{query.classId}

@@ -14,6 +14,12 @@ import lombok.Data;
 public class UserUpdateParam {
 
     /**
+     * id
+     */
+    @NotBlank(message = "id不能为空")
+    private String id;
+
+    /**
      * 姓名
      */
     @NotBlank(message = "姓名不能为空")

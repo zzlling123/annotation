@@ -41,6 +41,18 @@ public class UserPageVo extends BaseEntity {
     @ApiModelProperty("班级名称")
     private String className;
 
+    @ApiModelProperty("身份证号")
+    private String idCard;
+
+    @ApiModelProperty("手机号")
+    private String mobile;
+
+    @ApiModelProperty("邮箱")
+    private String email;
+
+    @ApiModelProperty("职务")
+    private String duty;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date createTime;
 }

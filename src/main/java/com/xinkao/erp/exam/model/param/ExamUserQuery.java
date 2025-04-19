@@ -17,6 +17,5 @@ public class ExamUserQuery extends BasePageQuery implements Serializable {
     private String examId;
 
     @ApiModelProperty("班级id")
-    @NotBlank(message = "班级id不能为空")
     private String classId;
 }

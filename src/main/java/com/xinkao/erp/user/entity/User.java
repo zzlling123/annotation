@@ -33,11 +33,6 @@ public class User extends DataEntity {
     @ApiModelProperty("盐")
     @TableField("salt")
     private String salt;
-    //id_card
-    //head_img
-    //mobile
-    //email
-    //duty
 
     @ApiModelProperty("身份证号")
     @TableField("id_card")
