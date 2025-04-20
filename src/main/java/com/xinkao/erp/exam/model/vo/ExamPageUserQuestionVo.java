@@ -106,6 +106,12 @@ public class ExamPageUserQuestionVo {
 	private String userAnswer;
 
 	/**
+	 * 用户得分
+	 */
+	@ApiModelProperty("用户得分")
+	private Integer userScore;
+
+	/**
 	 * 批改人ID
 	 */
 	@ApiModelProperty("批改人ID")

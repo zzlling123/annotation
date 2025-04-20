@@ -302,6 +302,7 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
             //查询是否已作答
             ExamPageUserAnswer examPageUserAnswer = examPageUserAnswerMap.get(examPageUserQuestionVo.getId());
             examPageUserQuestionVo.setUserAnswer(examPageUserAnswer == null ? "" : examPageUserAnswer.getUserAnswer());
+            examPageUserQuestionVo.setUserScore(examPageUserAnswer == null ? 0 : examPageUserAnswer.getUserScore());
             examPageUserQuestionVo.setNeedCorrect(examPageUserAnswer.getNeedCorrect());
             examPageUserQuestionVo.setCorrectId(examPageUserAnswer.getCorrectId().toString());
             examPageUserQuestionVo.setCorrectTime(examPageUserAnswer.getCorrectTime());
@@ -359,6 +360,7 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                 .eq(ExamPageUser::getUserId,userId)
                 .last("limit 1")
                 .one();
+        examPageUser.setOnCorrect(1);
         examPageUser.setScore(allScore);
         examPageUser.setScoreTs(DateUtil.now());
         //计算是否合格

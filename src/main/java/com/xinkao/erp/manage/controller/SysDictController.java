@@ -43,7 +43,7 @@ public class SysDictController {
     @ApiOperation("分页查询字典信息")
     public BaseResponse<Page<Dict>> page(@Valid @RequestBody DictQuery query) {
         Pageable pageable = query.getPageInfo();
-        Page<Dict> voPage = sysDictService.pageDict(query.getCode(), query.getValue(), pageable);
+        Page<Dict> voPage = sysDictService.pageDict(query.getType(), query.getValue(), pageable);
         return BaseResponse.ok(voPage);
     }
 

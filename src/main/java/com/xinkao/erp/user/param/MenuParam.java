@@ -16,7 +16,7 @@ import java.util.List;
 public class MenuParam implements InputConverter<Menu> {
 
 	//修改时有值
-	private String id;
+	private String menuId;
 	/**
 	 * 菜单名称
 	 */

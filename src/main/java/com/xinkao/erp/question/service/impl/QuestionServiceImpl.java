@@ -7,19 +7,13 @@ import com.alibaba.fastjson.JSON;
 import com.xinkao.erp.common.enums.CommonEnum;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.param.DeleteParam;
-import com.xinkao.erp.question.entity.Label;
-import com.xinkao.erp.question.entity.Question;
-import com.xinkao.erp.question.entity.QuestionLabel;
-import com.xinkao.erp.question.entity.QuestionType;
+import com.xinkao.erp.question.entity.*;
 import com.xinkao.erp.question.mapper.LabelMapper;
 import com.xinkao.erp.question.mapper.QuestionMapper;
-import com.xinkao.erp.question.service.LabelService;
-import com.xinkao.erp.question.service.QuestionLabelService;
-import com.xinkao.erp.question.service.QuestionService;
+import com.xinkao.erp.question.service.*;
 import com.xinkao.erp.common.service.impl.BaseServiceImpl;
 import com.xinkao.erp.question.param.QuestionParam;
 import com.xinkao.erp.question.query.QuestionQuery;
-import com.xinkao.erp.question.service.QuestionTypeService;
 import com.xinkao.erp.question.vo.LabelVo;
 import com.xinkao.erp.question.vo.QuestionInfoVo;
 import com.xinkao.erp.question.vo.QuestionPageVo;
@@ -42,7 +36,9 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
     @Autowired
     private LabelMapper labelMapper;
     @Autowired
-    private QuestionLabelServiceImpl questionLabelService;
+    private QuestionLabelService questionLabelService;
+    @Autowired
+    private QuestionMarkService questionMarkService;
     @Autowired
     private QuestionTypeService questionTypeService;
 
@@ -76,6 +72,16 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
             return questionLabel;
         }).collect(Collectors.toList());
         questionLabelService.saveBatch(questionLabels);
+        //保存标记关联关系
+        if (param.getMarkIds() != null && "500".equals(param.getShape())){
+            List<QuestionMark> questionMarkList = param.getMarkIds().stream().map(item -> {
+                QuestionMark questionMark = new QuestionMark();
+                questionMark.setQid(question.getId());
+                questionMark.setMid(item);
+                return questionMark;
+            }).collect(Collectors.toList());
+            questionMarkService.saveBatch(questionMarkList);
+        }
         return BaseResponse.ok("新增成功！");
     }
 
@@ -99,6 +105,17 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
             return questionLabel;
         }).collect(Collectors.toList());
         questionLabelService.saveBatch(questionLabels);
+        questionMarkService.lambdaUpdate().eq(QuestionMark::getQid, question.getId()).remove();
+        //保存标记关联关系
+        if (param.getMarkIds() != null && "500".equals(param.getShape())){
+            List<QuestionMark> questionMarkList = param.getMarkIds().stream().map(item -> {
+                QuestionMark questionMark = new QuestionMark();
+                questionMark.setQid(question.getId());
+                questionMark.setMid(item);
+                return questionMark;
+            }).collect(Collectors.toList());
+            questionMarkService.saveBatch(questionMarkList);
+        }
         return updateById(question) ? BaseResponse.ok("编辑成功！") : BaseResponse.fail("编辑失败！");
     }
 

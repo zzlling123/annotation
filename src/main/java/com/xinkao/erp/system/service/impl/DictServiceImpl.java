@@ -34,10 +34,10 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, Dict>
 	 * 分页查询字典
 	 */
 	@Override
-	public Page<Dict> pageDict(String code, String dictValue, Pageable pageable) {
+	public Page<Dict> pageDict(String type, String dictValue, Pageable pageable) {
 		return lambdaQuery()
                 .like(StrUtil.isNotEmpty(dictValue), Dict::getDictValue,dictValue)
-                .eq(Dict::getDictType, code)
+                .eq(StrUtil.isNotEmpty(type),Dict::getDictType, type)
                 .orderByAsc(Dict::getSort)
                 .page(pageable.toPage());
 	}

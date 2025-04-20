@@ -9,12 +9,8 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-public class DictQuery extends BasePageQuery implements Serializable {
+public class MarkQuery implements Serializable {
 
-    @ApiModelProperty("查询主键")
+    @ApiModelProperty("分类ID")
     private String type;
-
-    @ApiModelProperty("字典值")
-    private String value;
-
 }
