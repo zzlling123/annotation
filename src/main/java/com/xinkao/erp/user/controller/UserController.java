@@ -75,6 +75,32 @@ public class UserController extends BaseController {
 	}
 
 	/**
+	 * 用户导出
+	 * @param response
+	 * @param query
+	 */
+	@PrimaryDataSource
+	@ApiOperation(value = "用户导出")
+	@RequestMapping(value = "/exportUser", method = RequestMethod.POST, produces = "application/octet-stream")
+	public void exportUser(HttpServletResponse response,@RequestBody UserQuery query) {
+		Pageable pageable = new Pageable();
+		pageable.setPage(1);
+		pageable.setPageSize(9999999);
+		Page<UserPageVo> voPage = userService.page(query, pageable);
+		List<UserPageVo> voPageList = voPage.getRecords();
+		for (UserPageVo userPageVo : voPageList) {
+			userPageVo.setSex("1".equals(userPageVo.getSex()) ? "男" : "女");
+		}
+		List<UserImportModel> list = BeanUtil.copyToList(voPage.getRecords(), UserImportModel.class);
+		try {
+			ExcelUtils.writeExcel(response, list, "用户模板", "用户模板",
+					UserImportModel.class);
+		} catch (IOException e) {
+			throw new BusinessException("导出用户模板失败");
+		}
+	}
+
+	/**
 	 * 下拉列表教师信息
 	 *
 	 */

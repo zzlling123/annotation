@@ -11,7 +11,9 @@ import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.HandleResult;
 import com.xinkao.erp.common.util.RedisUtil;
 import com.xinkao.erp.common.util.ResultUtils;
+import com.xinkao.erp.manage.entity.ClassInfo;
 import com.xinkao.erp.manage.service.ClassInfoService;
+import com.xinkao.erp.user.entity.Role;
 import com.xinkao.erp.user.entity.User;
 import com.xinkao.erp.user.service.RoleService;
 import com.xinkao.erp.user.service.UserService;
@@ -120,12 +122,60 @@ public class UserModelListener extends AnalysisEventListener<UserImportModel> {
             return;
         }
 
+        ClassInfo classInfo = classInfoService.lambdaQuery().eq(ClassInfo::getClassName,className).eq(ClassInfo::getIsDel,0).one();
+        if (classInfo == null){
+            msg = "该班级不存在";
+            errorList.add(getHandleMsg(rowNum + 1, msg));
+            handleResult.setErrorList(errorList);
 
+            UserImportErrorModel userImportErrorModel = new UserImportErrorModel();
+            userImportErrorModel.setUsername(username);
+            userImportErrorModel.setSex(sex);
+            userImportErrorModel.setRealName(realName);
+            userImportErrorModel.setClassName(className);
+            userImportErrorModel.setRoleName(roleName);
+            userImportErrorModel.setMobile(mobile);
+            userImportErrorModel.setIdCard(idCard);
+            userImportErrorModel.setEmail(email);
+            userImportErrorModel.setErrorInfo(msg);
+            userImportErrorModelList.add(userImportErrorModel);
 
+            log.error("姓名：{}，导入信息有误：{}", realName, msg);
+            return;
+        }
 
+        Role role = roleService.lambdaQuery().eq(Role::getRoleName,roleName).eq(Role::getIsDel,0).one();
+        if (role == null){
+            msg = "该角色不存在";
+            errorList.add(getHandleMsg(rowNum + 1, msg));
+            handleResult.setErrorList(errorList);
+
+            UserImportErrorModel userImportErrorModel = new UserImportErrorModel();
+            userImportErrorModel.setUsername(username);
+            userImportErrorModel.setSex(sex);
+            userImportErrorModel.setRealName(realName);
+            userImportErrorModel.setClassName(className);
+            userImportErrorModel.setRoleName(roleName);
+            userImportErrorModel.setMobile(mobile);
+            userImportErrorModel.setIdCard(idCard);
+            userImportErrorModel.setEmail(email);
+            userImportErrorModel.setErrorInfo(msg);
+            userImportErrorModelList.add(userImportErrorModel);
+
+            log.error("姓名：{}，导入信息有误：{}", realName, msg);
+            return;
+        }
 
         try {
             User addUser = new User();
+            addUser.setUsername(username);
+            addUser.setSex("男".equals(sex)?1:2);
+            addUser.setRealName(realName);
+            addUser.setClassId(classInfo.getId());
+            addUser.setRoleId(role.getId());
+            addUser.setMobile(mobile);
+            addUser.setIdCard(idCard);
+            addUser.setEmail(email);
             //赋值
             addUserMap.put(rowNum, addUser);
             //将正确的也进行保存（错误原因为空）

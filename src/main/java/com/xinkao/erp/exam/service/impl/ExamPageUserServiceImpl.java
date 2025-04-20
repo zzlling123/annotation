@@ -162,8 +162,8 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                 .list();
         int allScores = 0;
         for (ExamPageUserAnswer examPageUserAnswer : examPageUserAnswers) {
-            //如果是单选题或判断题，判断是否正确
-            if (100 == examPageUserAnswer.getShape()|| 300 == examPageUserAnswer.getShape()){
+            //如果是单选题，判断是否正确,//填空题(暂时先按照全部正确才给分)
+            if (100 == examPageUserAnswer.getShape() || 300 == examPageUserAnswer.getShape()){
                 if (examPageUserAnswer.getUserAnswer().equals(examPageUserAnswer.getRightAnswer())){
                     examPageUserAnswer.setUserScore(examPageUserAnswer.getScore());
                     allScores += examPageUserAnswer.getScore();

@@ -35,6 +35,9 @@ public class UserPageVo extends BaseEntity {
     @ApiModelProperty("角色ID")
     private Integer roleId;
 
+    @ApiModelProperty("角色名称")
+    private String roleName;
+
     @ApiModelProperty("班级ID")
     private Integer classId;
 
@@ -52,6 +55,9 @@ public class UserPageVo extends BaseEntity {
 
     @ApiModelProperty("职务")
     private String duty;
+
+    @ApiModelProperty("性别")
+    private String sex;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date createTime;

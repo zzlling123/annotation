@@ -70,6 +70,12 @@ public class ExamPageUserQuestionVo {
 	private String question;
 
 	/**
+	 * 操作题文件路径JSON
+	 */
+	@TableField("json_url")
+	private String jsonUrl;
+
+	/**
 	 * 选项列表 json
 	 */
 	@ApiModelProperty("选项列表 json")
