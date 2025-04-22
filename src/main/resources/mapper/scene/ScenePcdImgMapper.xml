@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xinkao.erp.scene.mapper.ScenePcdImgMapper">
+    <select id="page" resultType="com.xinkao.erp.scene.entity.ScenePcdImg">
+        SELECT * FROM scene_pcd_img
+        where 1=1 and is_del = 0
+        <if test="query.pcdId != null and query.pcdId != ''">
+            and pcd_id LIKE CONCAT('%', #{query.pcdId}, '%')
+        </if>
+        ORDER BY create_time DESC
+    </select>
 
 </mapper>

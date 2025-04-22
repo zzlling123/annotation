@@ -35,7 +35,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/question")
-public class QuestionController extends BaseController {
+public class    QuestionController extends BaseController {
 
     @Resource
     private QuestionService questionService;

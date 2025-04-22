@@ -367,16 +367,4 @@ public class ExerciseRecordsController {
         return exerciseRecordsService.delete(id);
     }
 
-    /**
-     * 获取练习记录表
-     *
-     * @return {@link String}
-     */
-    @RequestMapping("/get/{id}")
-    @ApiOperation("根据id获取练习记录详情")
-    public String get() {
-        return "根据id获取练习记录详情";
-    }
-
-
 }

@@ -1,7 +1,11 @@
 package com.xinkao.erp.scene.mapper;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xinkao.erp.scene.entity.Scene;
 import com.xinkao.erp.scene.entity.ScenePcdImg;
 import com.xinkao.erp.common.mapper.BaseMapper;
+import com.xinkao.erp.scene.query.ScenePcdImgQuery;
+import com.xinkao.erp.scene.query.SceneQuery;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -15,4 +19,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface ScenePcdImgMapper extends BaseMapper<ScenePcdImg> {
 
+    Page<ScenePcdImg> page(Page page, ScenePcdImgQuery query);
 }

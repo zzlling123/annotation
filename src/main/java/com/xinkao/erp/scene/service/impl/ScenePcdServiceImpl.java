@@ -1,10 +1,13 @@
 package com.xinkao.erp.scene.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.common.enums.CommonEnum;
 import com.xinkao.erp.common.model.BaseResponse;
+import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.scene.entity.Scene;
 import com.xinkao.erp.scene.entity.ScenePcd;
 import com.xinkao.erp.scene.mapper.ScenePcdMapper;
+import com.xinkao.erp.scene.query.ScenePcdQuery;
 import com.xinkao.erp.scene.service.ScenePcdService;
 import com.xinkao.erp.common.service.impl.BaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,13 @@ public class ScenePcdServiceImpl extends BaseServiceImpl<ScenePcdMapper, ScenePc
 
     @Autowired
     private ScenePcdMapper scenePcdMapper;
+
+    @Override
+    public Page<ScenePcd> page(ScenePcdQuery query, Pageable pageable) {
+        Page page = pageable.toPage();
+        return scenePcdMapper.page(page, query);
+    }
+
     @Override
     public BaseResponse<?> save1(ScenePcd scenePcd) {
         if (lambdaQuery().eq(ScenePcd::getPcdPath, scenePcd.getPcdPath()).eq(ScenePcd::getIsDel, CommonEnum.IS_DEL.NO.getCode()).count() > 0) {
