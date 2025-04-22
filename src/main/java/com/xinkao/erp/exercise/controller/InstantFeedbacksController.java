@@ -45,9 +45,9 @@ public class InstantFeedbacksController {
     }
 
     /**
-     * 新增课程章节信息
+     * 新增练习记录表信息
      *
-     * @param instantFeedbacks 课程章节信息参数
+     * @param instantFeedbacks 练习记录表信息参数
      * @return 操作结果
      */
     @PrimaryDataSource
@@ -59,9 +59,9 @@ public class InstantFeedbacksController {
     }
 
     /**
-     * 编辑课程章节信息
+     * 编辑练习记录表信息
      *
-     * @param instantFeedbacks 课程章节信息参数
+     * @param instantFeedbacks 练习记录表
      * @return 操作结果
      */
     @PostMapping("/update")
@@ -75,7 +75,7 @@ public class InstantFeedbacksController {
     }
 
     /**
-     * 删除课程章节信息
+     * 删除练习记录表信息
      *
      * @param id 课程章节ID
      * @return 操作结果
