@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.common.mapper.BaseMapper;
 import com.xinkao.erp.user.query.UserQuery;
 import com.xinkao.erp.user.vo.UserDepartmentVo;
+import com.xinkao.erp.user.vo.UserInfoVo;
 import com.xinkao.erp.user.vo.UserPageVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -28,4 +29,6 @@ public interface UserMapper extends BaseMapper<User> {
 	List<String> getDutiesList(@Param("userQuery") UserQuery userQuery);
 
 	List<UserDepartmentVo> getUserDepartmentList();
+
+	UserInfoVo getUserInfoBySelf(@Param("userId") Integer userId);
 }

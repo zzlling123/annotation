@@ -41,4 +41,12 @@
 		WHERE u.is_del = 0 and ud.department_id is not NULL
 		GROUP BY u.id,ud.department_id
 	</select>
+
+	<select id="getUserInfoBySelf" resultType="com.xinkao.erp.user.vo.UserInfoVo">
+		SELECT u.*,r.role_name,c.class_name
+		FROM `user` u
+		LEFT JOIN `role` r ON r.id = u.role_id
+		LEFT JOIN class_info c ON c.id = u.class_id
+		WHERE 1=1 and u.is_del = 0 and u.id = #{userId}
+	</select>
 </mapper>
