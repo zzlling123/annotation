@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * <p>
@@ -41,6 +42,10 @@ public class Scene extends DataEntity {
     @TableField(exist = false)
     @ApiModelProperty("场景文件")
     private MultipartFile sceneFile;
+
+    @TableField(exist = false)
+    @ApiModelProperty("场景PCD文件")
+    private List<ScenePcd> scenePcdFileList;
 
     /**
      * 场景图片

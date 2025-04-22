@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xinkao.erp.exercise.mapper.ExerciseRecordsMapper">
-
+    <select id="page" resultType="com.xinkao.erp.exercise.entity.ExerciseRecords">
+        SELECT * FROM exercise_records
+        where 1=1 and is_del = 0
+        <if test="query.moduleId != null and query.moduleId != ''">
+            and module_id LIKE CONCAT('%', #{query.moduleId}, '%')
+        </if>
+        ORDER BY create_time DESC
+    </select>
 </mapper>
