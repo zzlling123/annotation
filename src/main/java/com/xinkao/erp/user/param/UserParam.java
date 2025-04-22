@@ -38,6 +38,12 @@ public class UserParam implements InputConverter<User>{
     @NotBlank(message = "姓名不能为空")
     private String realName;
 
+    @ApiModelProperty("所属班级")
+    private String classId;
+
+    @ApiModelProperty("性别")
+    private String sex;
+
     /**
      * 角色
      */

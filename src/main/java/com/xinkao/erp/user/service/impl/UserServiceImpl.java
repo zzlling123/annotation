@@ -7,15 +7,22 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.xinkao.erp.common.enums.CommonEnum;
 import com.xinkao.erp.common.model.BaseResponse;
+import com.xinkao.erp.common.model.HandleResult;
 import com.xinkao.erp.common.model.LoginUser;
 import com.xinkao.erp.common.model.param.UpdateStateParam;
+import com.xinkao.erp.common.util.ResultUtils;
+import com.xinkao.erp.exam.entity.ExamPageUser;
+import com.xinkao.erp.exam.service.ExamPageUserService;
 import com.xinkao.erp.login.service.UserOptLogService;
+import com.xinkao.erp.user.excel.UserImportErrorModel;
 import com.xinkao.erp.user.param.UserParam;
 import com.xinkao.erp.user.param.UserUpdateParam;
 import com.xinkao.erp.user.query.UserQuery;
 import com.xinkao.erp.user.vo.UserPageVo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -27,8 +34,11 @@ import com.xinkao.erp.user.entity.User;
 import com.xinkao.erp.user.mapper.UserMapper;
 import com.xinkao.erp.user.service.UserService;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -38,6 +48,7 @@ import java.util.Objects;
  * @author hanhys
  * @since 2023-03-15 10:19:43
  */
+@Slf4j
 @Service
 public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implements UserService {
 
@@ -45,8 +56,12 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	private UserMapper userMapper;
 	@Autowired
 	private UserOptLogService userOptLogService;
+	@Autowired
+	private ExamPageUserService examPageUserService;
 	@Value("${resetPassword}")
 	private String resetPassword;
+	@Autowired
+	private ResultUtils resultUtils;
 
 	//分页
 	@Override
@@ -74,8 +89,15 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	//修改
 	@Override
 	public BaseResponse update(UserUpdateParam userUpdateParam){
+		User oldUser = getById(userUpdateParam.getId());
 		User user = BeanUtil.copyProperties(userUpdateParam, User.class);
-		return updateById(user)?BaseResponse.ok("修改成功！"): BaseResponse.fail("修改失败！");
+		//如果classId发生了变动，则同时修改examPageUser中的classId
+		updateById(user);
+		if (oldUser.getClassId()!=user.getClassId()){
+			//涉及一个新旧考试数据的问题(后续再讨论，如果发生了变动，但是新班级没有这个考试，就会丢失数据)
+//			examPageUserService.lambdaUpdate().eq(ExamPageUser::getUserId,user.getId()).set(ExamPageUser::getClassId,user.getClassId()).update();
+		}
+		return BaseResponse.ok("修改成功！");
 	}
 
 	//删除
@@ -107,5 +129,44 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 		String userNames = lambdaQuery().in(User::getId, ids).select(User::getRealName).list().stream().map(User::getRealName).reduce((a, b) -> a + "," + b).get();
 		userOptLogService.saveLog("用户"+content+",姓名："+userNames, JSON.toJSONString(updateStateParam));
 		return lambdaUpdate().in(User::getId, ids).set(User::getState, updateStateParam.getState()).update()?BaseResponse.ok(content+"成功！"):BaseResponse.fail(content+"失败！");
+	}
+
+	@Override
+	public void importUser(HttpServletResponse response, Map<Integer, User> addUserMap, HandleResult handleResult, List<UserImportErrorModel> userImportErrorModelList, String token) {
+		Integer successCount = handleResult.getSuccessCount();
+		List<String> errorList = handleResult.getErrorList();
+
+		if(errorList.isEmpty()){
+			if (!addUserMap.isEmpty()) {
+				for (Integer rowNum : addUserMap.keySet()) {
+					try {
+						User addUser = addUserMap.get(rowNum);
+						//赋值默认密码
+						String passwordStr = resetPassword;
+						String salt =  RandomUtil.randomString(6);
+						String password = SecureUtil.md5(salt+passwordStr);
+						addUser.setPassword(password);
+						addUser.setSalt(salt);
+						save(addUser);
+						successCount++;
+					} catch (Exception e) {
+						log.error("出现异常: {}", e);
+						errorList.add(resultUtils.getErrMsg(rowNum + 1,
+								"修改时出现异常：" + e.getMessage()));
+					}
+				}
+			}
+			resultUtils.getResult(handleResult,successCount,errorList);
+			//记录日志
+			if(successCount > 0){
+				userOptLogService.saveLog( "导入用户:" + successCount+"条", null);
+			}
+		}
+
+		if(!errorList.isEmpty()) {
+			redisUtil.set(token, JSONObject.toJSONString(BaseResponse.fail("导入失败",userImportErrorModelList)), 2, TimeUnit.HOURS);
+		}else{
+			redisUtil.set(token, JSONObject.toJSONString(BaseResponse.ok("成功导入数据"+successCount+"条")), 2, TimeUnit.HOURS);
+		}
 	}
 }

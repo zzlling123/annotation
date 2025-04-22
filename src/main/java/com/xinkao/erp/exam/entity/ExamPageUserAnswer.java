@@ -111,7 +111,11 @@ public class ExamPageUserAnswer extends DataSnowIdEntity {
     @TableField("correct_time")
     private Date correctTime;
 
-
+    /**
+     * 是否需要批改0否1是
+     */
+    @TableField("need_correct")
+    private Integer needCorrect;
 
 
 }

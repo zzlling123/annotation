@@ -50,6 +50,20 @@ public class MenuController extends BaseController {
 	}
 
 	/**
+	 * 获取所有菜单树状图
+	 *
+	 * @return
+	 */
+	@PrimaryDataSource
+	@PostMapping("/getAllList")
+	@ApiOperation("获取所有菜单树状图")
+	public BaseResponse<List<Menu>> getAllList() {
+		return menuService.getAllList();
+	}
+
+
+
+	/**
 	 * 新增菜单
 	 *
 	 * @return

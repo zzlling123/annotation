@@ -1,23 +1,30 @@
 package com.xinkao.erp.user.controller;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.common.annotation.Log;
 import com.xinkao.erp.common.annotation.PrimaryDataSource;
 import com.xinkao.erp.common.enums.CommonEnum;
 import com.xinkao.erp.common.enums.system.OperationType;
+import com.xinkao.erp.common.exception.BusinessException;
 import com.xinkao.erp.common.model.param.UpdateStateParam;
 import com.xinkao.erp.common.model.support.Pageable;
+import com.xinkao.erp.common.util.ExcelUtils;
 import com.xinkao.erp.common.util.PasswordCheckUtil;
-import com.xinkao.erp.login.service.UserOptLogService;
-import com.xinkao.erp.manage.entity.ClassInfo;
+import com.xinkao.erp.common.util.RedisUtil;
 import com.xinkao.erp.user.entity.User;
-import com.xinkao.erp.user.mapper.UserMapper;
+import com.xinkao.erp.user.excel.UserImportErrorModel;
+import com.xinkao.erp.user.excel.UserImportModel;
+import com.xinkao.erp.user.excel.UserModelListener;
 import com.xinkao.erp.user.param.UserParam;
 import com.xinkao.erp.user.param.UserUpdateParam;
 import com.xinkao.erp.user.query.UserQuery;
@@ -29,11 +36,13 @@ import org.springframework.web.bind.annotation.*;
 
 import com.xinkao.erp.common.controller.BaseController;
 import com.xinkao.erp.common.model.BaseResponse;
-import com.xinkao.erp.user.service.RoleService;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 管理端用户相关服务
@@ -47,6 +56,8 @@ import java.util.List;
 public class UserController extends BaseController {
 	@Resource
 	protected UserService userService;
+	@Autowired
+	private RedisUtil redisUtils;
 
 	/**
 	 * 分页
@@ -61,6 +72,32 @@ public class UserController extends BaseController {
 		Pageable pageable = query.getPageInfo();
 		Page<UserPageVo> voPage = userService.page(query, pageable);
 		return BaseResponse.ok(voPage);
+	}
+
+	/**
+	 * 用户导出
+	 * @param response
+	 * @param query
+	 */
+	@PrimaryDataSource
+	@ApiOperation(value = "用户导出")
+	@RequestMapping(value = "/exportUser", method = RequestMethod.POST, produces = "application/octet-stream")
+	public void exportUser(HttpServletResponse response,@RequestBody UserQuery query) {
+		Pageable pageable = new Pageable();
+		pageable.setPage(1);
+		pageable.setPageSize(9999999);
+		Page<UserPageVo> voPage = userService.page(query, pageable);
+		List<UserPageVo> voPageList = voPage.getRecords();
+		for (UserPageVo userPageVo : voPageList) {
+			userPageVo.setSex("1".equals(userPageVo.getSex()) ? "男" : "女");
+		}
+		List<UserImportModel> list = BeanUtil.copyToList(voPage.getRecords(), UserImportModel.class);
+		try {
+			ExcelUtils.writeExcel(response, list, "用户模板", "用户模板",
+					UserImportModel.class);
+		} catch (IOException e) {
+			throw new BusinessException("导出用户模板失败");
+		}
 	}
 
 	/**
@@ -146,5 +183,49 @@ public class UserController extends BaseController {
 			return BaseResponse.fail("重置密码,userId不可为空！");
 		}
 		return userService.resetPassword(user.getId());
+	}
+
+	/**
+	 * 导入用户
+	 * @param file
+	 * @return
+	 */
+	@PrimaryDataSource
+	@ApiOperation(value = "导入用户")
+	@RequestMapping(value = "/importUpdateClass", method = RequestMethod.POST)
+	public BaseResponse importUpdateClass(HttpServletResponse response, @RequestParam(value="file") MultipartFile file) {
+		String token = RandomUtil.randomString(20);
+		redisUtils.set(token, "", 2, TimeUnit.HOURS);
+		UserModelListener userModelListener =  new UserModelListener(response,token);
+		try {
+			EasyExcel.read(file.getInputStream(), UserImportModel.class, userModelListener).sheet().doRead();
+		} catch (IOException e) {
+			throw new BusinessException("导入用户失败");
+		}
+		BaseResponse baseResponse = BeanUtil.copyProperties(JSON.parseObject(redisUtils.get(token)),BaseResponse.class);
+		if ("ok".equals(baseResponse.getState())){
+			return BaseResponse.ok(baseResponse.getMsg());
+		}else{
+			return BaseResponse.other(token);
+		}
+	}
+
+	/**
+	 * 下载错误用户导入文件
+	 * @return
+	 */
+	@PrimaryDataSource
+	@ApiOperation(value = "下载错误用户导入名单")
+	@RequestMapping(value = "/getErrorUpdateClassImportExcel", method = RequestMethod.POST)
+	public void getErrorUpdateClassImportExcel(HttpServletResponse response,@RequestParam String token) {
+		JSONArray json = JSON.parseObject(redisUtils.get(token)).getJSONArray("data");
+		List<UserImportErrorModel> stuUpdateClassImportErrorModels = BeanUtil.copyToList(json, UserImportErrorModel.class);
+		//下载文件
+		try {
+			ExcelUtils.writeExcel(response, stuUpdateClassImportErrorModels, "错误用户文件", "错误用户",
+					UserImportErrorModel.class);
+		} catch (IOException e) {
+			throw new BusinessException("导出错误用户导入文件失败");
+		}
 	}
 }

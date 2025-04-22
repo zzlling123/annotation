@@ -36,6 +36,13 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, Menu> implement
         return BaseResponse.ok("成功！",menuList);
     }
 
+    //根据用户权限获取用户菜单
+    @Override
+    public BaseResponse<List<Menu>> getAllList(){
+        List<Menu> menuList = formatMenuList(lambdaQuery().eq(Menu::getIsDel,0).list());
+        return BaseResponse.ok("成功！",menuList);
+    }
+
     //递归获取子集列表
     /**
      * 格式化菜单列表
@@ -78,7 +85,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, Menu> implement
     @Override
     public BaseResponse update(MenuParam menuParam) {
         Menu menu = menuParam.convertTo();
-        menuMapper.updateById(menu);
+        updateById(menu);
         return BaseResponse.ok("成功！");
     }
 

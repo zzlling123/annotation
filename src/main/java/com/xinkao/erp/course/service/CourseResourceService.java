@@ -21,8 +21,8 @@ import java.util.List;
  * @since 2025-03-21 17:19:23
  */
 public interface CourseResourceService extends BaseService<CourseResource> {
-    public void convertToHLS(String inputPath, String outputDir) throws IOException;
-    public List<CourseResource> getListByChapterId(Long chapterId);
+    void convertToHLS(String inputPath, String outputDir) throws IOException;
+    List<CourseResource> getListByChapterId(Long chapterId);
     Page<CourseResource> page(CourseResourceQuery query, Pageable pageable);
     BaseResponse<?> save1(CourseResource courseResource);
     BaseResponse<?> update(CourseResource courseResource);

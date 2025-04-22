@@ -64,13 +64,13 @@ public class CourseResourceController {
      * @param courseResource 课程章节信息参数
      * @return 操作结果
      */
-//    @PrimaryDataSource
-//    @PostMapping("/save")
-//    @ApiOperation("新增课程章节资源信息")
-//    @Log(content = "新增课程章节资源信息", operationType = OperationType.INSERT, isSaveRequestData = false)
-//    public BaseResponse<?> save(@Valid @RequestBody CourseResource courseResource) {
-//        return courseResourceService.save1(courseResource);
-//    }
+    @PrimaryDataSource
+    @PostMapping("/save")
+    @ApiOperation("新增课程章节资源信息")
+    @Log(content = "新增课程章节资源信息", operationType = OperationType.INSERT, isSaveRequestData = false)
+    public BaseResponse<?> save(@Valid @RequestBody CourseResource courseResource) {
+        return courseResourceService.save1(courseResource);
+    }
 
     /**
      * 编辑课程章节信息

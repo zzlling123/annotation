@@ -17,12 +17,12 @@ import com.xinkao.erp.system.entity.Dict;
 public interface DictService extends BaseService<Dict> {
 	/**
 	 * 分页查询字典列表
-	 * @param code 类型
+	 * @param type 类型
 	 * @param dictValue 模糊查询字典值
 	 * @param pageable
 	 * @return
 	 */
-	Page<Dict> pageDict(String code, String dictValue, Pageable pageable);
+	Page<Dict> pageDict(String type, String dictValue, Pageable pageable);
 	/**
 	 * 查询字典列表
 	 * @param type 类型

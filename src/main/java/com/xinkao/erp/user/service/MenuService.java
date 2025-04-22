@@ -20,6 +20,8 @@ public interface MenuService extends BaseService<Menu> {
     //根据用户权限获取用户菜单
     BaseResponse<List<Menu>> getList();
 
+    BaseResponse<List<Menu>> getAllList();
+
     List<Menu> formatMenuList(List<Menu> menuList);
 
     //新增

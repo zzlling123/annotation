@@ -3,6 +3,7 @@ package com.xinkao.erp.exam.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -21,8 +22,10 @@ import com.xinkao.erp.exam.model.vo.ExamProgressVo;
 import com.xinkao.erp.exam.model.param.ExamUserQuery;
 import com.xinkao.erp.exam.model.param.ExamPageUserAnswerParam;
 import com.xinkao.erp.exam.model.param.SubmitParam;
+import com.xinkao.erp.exam.param.ExamCorrectParam;
 import com.xinkao.erp.exam.query.ExamTeacherQuery;
 import com.xinkao.erp.exam.service.*;
+import com.xinkao.erp.exam.vo.ExamPageAnswerVo;
 import com.xinkao.erp.exam.vo.ExamPageTeacherVo;
 import com.xinkao.erp.exam.vo.ExamPageUserListVo;
 import lombok.extern.slf4j.Slf4j;
@@ -159,8 +162,8 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                 .list();
         int allScores = 0;
         for (ExamPageUserAnswer examPageUserAnswer : examPageUserAnswers) {
-            //如果是单选题或判断题，判断是否正确
-            if (100 == examPageUserAnswer.getShape()|| 300 == examPageUserAnswer.getShape()){
+            //如果是单选题，判断是否正确,//填空题(暂时先按照全部正确才给分)
+            if (100 == examPageUserAnswer.getShape() || 300 == examPageUserAnswer.getShape()){
                 if (examPageUserAnswer.getUserAnswer().equals(examPageUserAnswer.getRightAnswer())){
                     examPageUserAnswer.setUserScore(examPageUserAnswer.getScore());
                     allScores += examPageUserAnswer.getScore();
@@ -191,16 +194,22 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                 .one();
         examPageUser.setAnswerStatus(2);
         examPageUser.setAnswerTs(DateUtil.now());
-        examPageUser.setScore(allScores);
-        //计算是否合格
-        ExamPageSet examPageSet = examPageSetService.lambdaQuery()
-                .eq(ExamPageSet::getExamId,examId)
-                .one();
-        int passStatus = 0;
-        if (allScores >= examPageSet.getScorePass()){
-            passStatus = 1;
-            examPageUser.setPassStatus(passStatus);
+        //判断是否需要批改，如果需要则先不赋分
+        if (examPageUser.getNeedCorrect() == 1){
+            examPageUser.setScore(0);
+        }else{
+            examPageUser.setScore(allScores);
+            //计算是否合格
+            ExamPageSet examPageSet = examPageSetService.lambdaQuery()
+                    .eq(ExamPageSet::getExamId,examId)
+                    .one();
+            int passStatus = 0;
+            if (allScores >= examPageSet.getScorePass()){
+                passStatus = 1;
+                examPageUser.setPassStatus(passStatus);
+            }
         }
+
 //        if (1 == submitParam.getForceDeadline()){
 //            examPageUser.setForceDeadline(1);
 //        }
@@ -209,10 +218,7 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
         examPageUserLogService.lambdaUpdate().eq(ExamPageUserLog::getExamId,examId)
                 .eq(ExamPageUserLog::getUserId,userId)
                 .set(ExamPageUserLog::getSubmitStatus,1).update();
-        Map<String,Integer>map = new HashMap<>();
-        map.put("allScores", allScores);
-        map.put("passStatus", passStatus);
-        return examPageUserAnswerService.updateBatchById(examPageUserAnswers)?BaseResponse.ok("成功",map):BaseResponse.fail("失败");
+        return examPageUserAnswerService.updateBatchById(examPageUserAnswers)?BaseResponse.ok("交卷成功"):BaseResponse.fail("交卷失败");
     }
 
     @Override
@@ -269,5 +275,103 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
     public Page<ExamPageUserListVo>getExamUserListForExamId(ExamUserQuery query, Pageable pageable){
         Page page = pageable.toPage();
         return examPageUserMapper.getExamUserListForExamId(page, query);
+    }
+
+    @Override
+    public BaseResponse<ExamPageAnswerVo> getExamUserAnswerInfo(String examPageUserId){
+        ExamPageUser examPageUser = getById(examPageUserId);
+        if (examPageUser == null){
+            return BaseResponse.fail("考试用户不存在");
+        }
+        //获取答题详情及学生答案
+        ExamPageAnswerVo vo = BeanUtil.copyProperties(examPageUser, ExamPageAnswerVo.class);
+        Integer examId = examPageUser.getExamId();
+        Integer userId = examPageUser.getUserId();
+        //插入题目详情
+        LambdaQueryWrapper<ExamPageUserQuestion> examPageUserQuestionLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        examPageUserQuestionLambdaQueryWrapper.eq(ExamPageUserQuestion::getExamId, examId)
+                .eq(ExamPageUserQuestion::getUserId, userId)
+                .orderByAsc(ExamPageUserQuestion::getNumSort);
+        List<ExamPageUserQuestion> questionList = examPageUserQuestionMapper.selectList(examPageUserQuestionLambdaQueryWrapper);
+        Map<String, ExamPageUserAnswer> examPageUserAnswerMap = examPageUserAnswerService.lambdaQuery()
+                .eq(ExamPageUserAnswer::getExamId,examId)
+                .eq(ExamPageUserAnswer::getUserId,userId)
+                .list().stream().collect(Collectors.toMap(ExamPageUserAnswer::getQuestionId, s->s));
+        List<ExamPageUserQuestionVo> voList = BeanUtil.copyToList(questionList, ExamPageUserQuestionVo.class);
+        for (ExamPageUserQuestionVo examPageUserQuestionVo : voList) {
+            //查询是否已作答
+            ExamPageUserAnswer examPageUserAnswer = examPageUserAnswerMap.get(examPageUserQuestionVo.getId());
+            examPageUserQuestionVo.setUserAnswer(examPageUserAnswer == null ? "" : examPageUserAnswer.getUserAnswer());
+            examPageUserQuestionVo.setUserScore(examPageUserAnswer == null ? 0 : examPageUserAnswer.getUserScore());
+            examPageUserQuestionVo.setNeedCorrect(examPageUserAnswer.getNeedCorrect());
+            examPageUserQuestionVo.setCorrectId(examPageUserAnswer.getCorrectId().toString());
+            examPageUserQuestionVo.setCorrectTime(examPageUserAnswer.getCorrectTime());
+        }
+        vo.setExamPageUserQuestionVoList(voList);
+        return BaseResponse.ok("成功",vo);
+    }
+
+    @Override
+    public BaseResponse<?> correct(ExamCorrectParam param){
+        LoginUser loginUser = redisUtil.getInfoByToken();
+        ExamPageUserAnswer examPageUserAnswer = examPageUserAnswerService.lambdaQuery()
+                .eq(ExamPageUserAnswer::getQuestionId, param.getUserQuestionId()).last("limit 1")
+                .one();
+        //判断分数是否超过该题总分
+        if (examPageUserAnswer.getScore() < Integer.parseInt(param.getScore())){
+            return BaseResponse.fail("分数不能超过该题总分");
+        }
+        examPageUserAnswer.setCorrectId(loginUser.getUser().getId());
+        examPageUserAnswer.setCorrectTime(DateUtil.date());
+        examPageUserAnswer.setUserScore(Integer.parseInt(param.getScore()));
+        //修改
+        examPageUserAnswerService.updateById(examPageUserAnswer);
+        //异步执行计算总分
+        ThreadUtil.execAsync(()->{
+            //计算总分
+            sumScore(examPageUserAnswer.getUserId(),examPageUserAnswer.getExamId());
+        });
+        return BaseResponse.ok("批改成功");
+    }
+
+    @Override
+    public void sumScore(Integer userId,Integer examId){
+        //查询表中是否还有待批改的题目
+        if (examPageUserAnswerService.lambdaQuery()
+                .eq(ExamPageUserAnswer::getExamId,examId)
+                .eq(ExamPageUserAnswer::getUserId,userId)
+                .eq(ExamPageUserAnswer::getNeedCorrect,1)
+                .isNull(ExamPageUserAnswer::getCorrectId)
+                .count() > 0){
+            return;
+        }
+        Integer allScore = 0;
+        //如果没有，则计算总分进行修改和状态更新
+        List<ExamPageUserAnswer> examPageUserAnswerList = examPageUserAnswerService.lambdaQuery()
+                .eq(ExamPageUserAnswer::getExamId,examId)
+                .eq(ExamPageUserAnswer::getUserId,userId)
+                .list();
+        for (ExamPageUserAnswer examPageUserAnswer : examPageUserAnswerList) {
+            allScore += examPageUserAnswer.getUserScore();
+        }
+        //修改分数及状态
+        ExamPageUser examPageUser = lambdaQuery()
+                .eq(ExamPageUser::getExamId,examId)
+                .eq(ExamPageUser::getUserId,userId)
+                .last("limit 1")
+                .one();
+        examPageUser.setOnCorrect(1);
+        examPageUser.setScore(allScore);
+        examPageUser.setScoreTs(DateUtil.now());
+        //计算是否合格
+        ExamPageSet examPageSet = examPageSetService.lambdaQuery()
+                .eq(ExamPageSet::getExamId,examId)
+                .one();
+        int passStatus = 0;
+        if (allScore >= examPageSet.getScorePass()){
+            passStatus = 1;
+            examPageUser.setPassStatus(passStatus);
+        }
+        updateById(examPageUser);
     }
 }

@@ -59,15 +59,15 @@ public class ExamPageTeacherController {
     @PrimaryDataSource
     @PostMapping("/getExamUserInfo/{examPageUserId}")
     @ApiOperation("点击学生，获取该学生此次试卷答题信息")
-    public BaseResponse<ExamPageAnswerVo> getExamUserInfo(@PathVariable Integer examPageUserId) {
-        return null;
+    public BaseResponse<ExamPageAnswerVo> getExamUserAnswerInfo(@PathVariable String examPageUserId) {
+        return examPageUserService.getExamUserAnswerInfo(examPageUserId);
     }
 
     @PrimaryDataSource
     @PostMapping("/correct")
     @ApiOperation("批改，提交分数(如果是该学生该试卷最后一道问答题则会进行计算总分)")
     public BaseResponse<?> correct(@RequestBody @Valid ExamCorrectParam param) {
-        return null;
+        return examPageUserService.correct(param);
     }
 
 

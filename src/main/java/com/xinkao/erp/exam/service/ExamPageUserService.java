@@ -11,7 +11,9 @@ import com.xinkao.erp.exam.model.vo.ExamProgressVo;
 import com.xinkao.erp.exam.model.param.ExamUserQuery;
 import com.xinkao.erp.exam.model.param.ExamPageUserAnswerParam;
 import com.xinkao.erp.exam.model.param.SubmitParam;
+import com.xinkao.erp.exam.param.ExamCorrectParam;
 import com.xinkao.erp.exam.query.ExamTeacherQuery;
+import com.xinkao.erp.exam.vo.ExamPageAnswerVo;
 import com.xinkao.erp.exam.vo.ExamPageTeacherVo;
 import com.xinkao.erp.exam.vo.ExamPageUserListVo;
 
@@ -36,4 +38,10 @@ public interface ExamPageUserService extends BaseService<ExamPageUser> {
     Page<ExamPageTeacherVo>pageTeacher(ExamTeacherQuery query, Pageable pageable);
 
     Page<ExamPageUserListVo>getExamUserListForExamId(ExamUserQuery query, Pageable pageable);
+
+    BaseResponse<ExamPageAnswerVo> getExamUserAnswerInfo(String examPageUserId);
+
+    BaseResponse<?> correct(ExamCorrectParam param);
+
+    void sumScore(Integer userId,Integer examId);
 }

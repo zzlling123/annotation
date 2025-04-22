@@ -14,6 +14,12 @@ import lombok.Data;
 public class UserUpdateParam {
 
     /**
+     * id
+     */
+    @NotBlank(message = "id不能为空")
+    private String id;
+
+    /**
      * 姓名
      */
     @NotBlank(message = "姓名不能为空")
@@ -23,7 +29,7 @@ public class UserUpdateParam {
      * 账号
      */
     @NotBlank(message = "账号不能为空")
-    private String userName;
+    private String username;
 
     /**
      * 角色
@@ -45,4 +51,13 @@ public class UserUpdateParam {
 
     @ApiModelProperty("职务")
     private String duty;
+
+    @ApiModelProperty("所属班级")
+    private String classId;
+
+    @ApiModelProperty("性别")
+    private String sex;
+
+    @ApiModelProperty("状态")
+    private String state;
 }

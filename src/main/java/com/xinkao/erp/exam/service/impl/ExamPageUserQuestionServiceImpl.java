@@ -227,11 +227,13 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                             ExamPageUserAnswer examPageUserAnswer = new ExamPageUserAnswer();
                             BeanUtil.copyProperties(examPageUserQuestion, examPageUserAnswer);
                             examPageUserAnswer.setId(null);
-                            examPageUserQuestion.setExamId(examPageUser.getExamId());
-                            examPageUserQuestion.setUserId(examPageUser.getUserId());
                             examPageUserAnswer.setQuestionId(examPageUserQuestion.getId());
                             examPageUserAnswer.setRightAnswer(examPageUserQuestion.getAnswer());
                             examPageUserAnswer.setCreateTime(DateUtil.date());
+                            if(examPageUserAnswer.getShape() == 400){
+                                //如果是主观题则为需要批改
+                                examPageUserAnswer.setNeedCorrect(1);
+                            }
                             examPageUserAnswerList.add(examPageUserAnswer);
                             num++;
                         }

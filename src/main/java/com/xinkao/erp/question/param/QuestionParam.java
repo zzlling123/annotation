@@ -50,4 +50,7 @@ public class QuestionParam {
 
     @ApiModelProperty("自定义标签ID列表")
     private List<Integer> labels;
+
+    @ApiModelProperty("markId列表")
+    private List<Integer> markIds;
 }

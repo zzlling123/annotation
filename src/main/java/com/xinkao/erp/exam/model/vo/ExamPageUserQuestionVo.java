@@ -1,7 +1,11 @@
 package com.xinkao.erp.exam.model.vo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * 题目返回实体
@@ -66,6 +70,12 @@ public class ExamPageUserQuestionVo {
 	private String question;
 
 	/**
+	 * 操作题文件路径JSON
+	 */
+	@TableField("json_url")
+	private String jsonUrl;
+
+	/**
 	 * 选项列表 json
 	 */
 	@ApiModelProperty("选项列表 json")
@@ -95,5 +105,28 @@ public class ExamPageUserQuestionVo {
 	@ApiModelProperty("用户答案")
 	private String userAnswer;
 
+	/**
+	 * 用户得分
+	 */
+	@ApiModelProperty("用户得分")
+	private Integer userScore;
 
+	/**
+	 * 批改人ID
+	 */
+	@ApiModelProperty("批改人ID")
+	private String correctId;
+
+	/**
+	 * 批改时间
+	 */
+	@ApiModelProperty("批改时间")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
+	private Date correctTime;
+
+	/**
+	 * 是否需要批改0否1是
+	 */
+	@ApiModelProperty("是否需要批改0否1是")
+	private Integer needCorrect;
 }
