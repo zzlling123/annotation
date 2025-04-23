@@ -25,10 +25,15 @@ import com.xinkao.erp.user.entity.User;
 import com.xinkao.erp.user.excel.UserImportErrorModel;
 import com.xinkao.erp.user.excel.UserImportModel;
 import com.xinkao.erp.user.excel.UserModelListener;
+import com.xinkao.erp.user.param.AccountUpdatePwdParam;
 import com.xinkao.erp.user.param.UserParam;
 import com.xinkao.erp.user.param.UserUpdateParam;
+import com.xinkao.erp.user.query.ExamAndPracticeBarQuery;
 import com.xinkao.erp.user.query.UserQuery;
 import com.xinkao.erp.user.service.UserService;
+import com.xinkao.erp.user.vo.ExamAndPracticeBarVo;
+import com.xinkao.erp.user.vo.ExamAndPracticePieVo;
+import com.xinkao.erp.user.vo.UserInfoVo;
 import com.xinkao.erp.user.vo.UserPageVo;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -227,5 +232,52 @@ public class UserController extends BaseController {
 		} catch (IOException e) {
 			throw new BusinessException("导出错误用户导入文件失败");
 		}
+	}
+
+
+	//-------------------------------------------------------个人中心------------------------------------------------
+
+	/**
+	 * 获取登录用户信息
+	 * @return
+	 */
+	@PrimaryDataSource
+	@PostMapping("/getUserInfoBySelf")
+	@ApiOperation("获取用户信息")
+	public BaseResponse<UserInfoVo> getUserInfoBySelf() {
+		return BaseResponse.ok(userService.getUserInfoBySelf());
+	}
+
+	/**
+	 * 修改密码
+	 * @return
+	 */
+	@PrimaryDataSource
+	@PostMapping("/updatePassword")
+	@ApiOperation("修改密码")
+	public BaseResponse updatePassword(@RequestBody @Valid AccountUpdatePwdParam param) {
+		return userService.updatePassword(param);
+	}
+
+	/**
+	 * 获取练习/考试柱状图，计算练习，考试下各个题型分类type下的得分率
+	 * @return
+	 */
+	@PrimaryDataSource
+	@PostMapping("/getExamAndPracticeBar")
+	@ApiOperation("获取练习/考试柱状图，计算练习，考试下各个题型分类type下的得分率")
+	public BaseResponse<List<ExamAndPracticeBarVo>> getExamAndPracticeBar(@RequestBody ExamAndPracticeBarQuery query) {
+		return null;
+	}
+
+	/**
+	 * 获取练习/考试饼状图，计算练习，考试下所有题在各题型中的占比
+	 * @return
+	 */
+	@PrimaryDataSource
+	@PostMapping("/getExamAndPracticePie")
+	@ApiOperation("获取练习/考试饼状图，计算练习，考试下所有题在各题型中的占比")
+	public BaseResponse<ExamAndPracticePieVo> getExamAndPracticePie(@RequestBody ExamAndPracticeBarQuery query) {
+		return null;
 	}
 }

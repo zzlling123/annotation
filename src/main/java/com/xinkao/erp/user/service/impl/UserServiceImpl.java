@@ -18,9 +18,11 @@ import com.xinkao.erp.exam.entity.ExamPageUser;
 import com.xinkao.erp.exam.service.ExamPageUserService;
 import com.xinkao.erp.login.service.UserOptLogService;
 import com.xinkao.erp.user.excel.UserImportErrorModel;
+import com.xinkao.erp.user.param.AccountUpdatePwdParam;
 import com.xinkao.erp.user.param.UserParam;
 import com.xinkao.erp.user.param.UserUpdateParam;
 import com.xinkao.erp.user.query.UserQuery;
+import com.xinkao.erp.user.vo.UserInfoVo;
 import com.xinkao.erp.user.vo.UserPageVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -168,5 +170,16 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 		}else{
 			redisUtil.set(token, JSONObject.toJSONString(BaseResponse.ok("成功导入数据"+successCount+"条")), 2, TimeUnit.HOURS);
 		}
+	}
+
+	@Override
+	public UserInfoVo getUserInfoBySelf() {
+		LoginUser loginUser = redisUtil.getInfoByToken();
+		return userMapper.getUserInfoBySelf(loginUser.getUser().getId());
+	}
+
+	@Override
+	public BaseResponse<?> updatePassword(AccountUpdatePwdParam param){
+		return null;
 	}
 }

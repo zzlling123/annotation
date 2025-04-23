@@ -8,9 +8,11 @@ import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.common.service.BaseService;
 import com.xinkao.erp.user.entity.User;
 import com.xinkao.erp.user.excel.UserImportErrorModel;
+import com.xinkao.erp.user.param.AccountUpdatePwdParam;
 import com.xinkao.erp.user.param.UserParam;
 import com.xinkao.erp.user.param.UserUpdateParam;
 import com.xinkao.erp.user.query.UserQuery;
+import com.xinkao.erp.user.vo.UserInfoVo;
 import com.xinkao.erp.user.vo.UserPageVo;
 
 import javax.servlet.http.HttpServletResponse;
@@ -50,4 +52,7 @@ public interface UserService extends BaseService<User> {
 
 	void importUser(HttpServletResponse response, Map<Integer, User> addUserMap, HandleResult handleResult, List<UserImportErrorModel> userImportErrorModelList, String token);
 
+	UserInfoVo getUserInfoBySelf();
+
+	BaseResponse<?> updatePassword(AccountUpdatePwdParam param);
 }
