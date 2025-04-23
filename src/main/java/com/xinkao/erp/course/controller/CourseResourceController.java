@@ -120,7 +120,7 @@ public class CourseResourceController {
                 multipartFile.transferTo(file);
                 CourseResource courseResource = new CourseResource();
                 courseResource.setFileName(multipartFile.getOriginalFilename());
-                courseResource.setResourceType(FileTypeChecker.getFileType(multipartFile.getOriginalFilename()));
+                courseResource.setResourceType(FileTypeChecker.getExtension(multipartFile.getOriginalFilename()));
                 courseResource.setFilePath(file.getAbsolutePath());
                 courseResource.setChapterId(chapterId);
                 courseResource.setFileSize(file.length());
