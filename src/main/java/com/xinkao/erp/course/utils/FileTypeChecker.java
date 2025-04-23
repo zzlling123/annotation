@@ -38,7 +38,7 @@ public class FileTypeChecker {
         return fileTypeMap.getOrDefault(extension, "未知文件类型");
     }
 
-    private static String getExtension(String filePath) {
+    public static String getExtension(String filePath) {
         // 获取文件路径中的文件名部分
         String fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
         // 获取文件的扩展名
