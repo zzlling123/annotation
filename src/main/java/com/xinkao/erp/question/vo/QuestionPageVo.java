@@ -19,6 +19,9 @@ public class QuestionPageVo extends BaseEntity {
     @ApiModelProperty("题目")
     private String question;
 
+    @ApiModelProperty("题目text")
+    private String questionText;
+
     @TableField("题目类型:100-单选 200-多选 300-填空 400-主观题 500-操作题")
     private String shape;
 

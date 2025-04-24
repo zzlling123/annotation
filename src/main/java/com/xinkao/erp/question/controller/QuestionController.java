@@ -103,6 +103,7 @@ public class    QuestionController extends BaseController {
     @ApiOperation("获取题目详情")
     public BaseResponse<QuestionInfoVo> getQuestionDetail(@PathVariable Integer id) {
         QuestionInfoVo question = questionService.getQuestionDetail(id);
+        //将选项转为List<String>
         if (question == null) {
             return BaseResponse.fail("题目不存在！");
         }
