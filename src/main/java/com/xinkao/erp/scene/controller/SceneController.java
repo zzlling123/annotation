@@ -3,9 +3,7 @@ package com.xinkao.erp.scene.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.xinkao.erp.common.annotation.Log;
 import com.xinkao.erp.common.annotation.PrimaryDataSource;
-import com.xinkao.erp.common.enums.system.OperationType;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.LoginUser;
 import com.xinkao.erp.common.model.support.Pageable;
@@ -21,7 +19,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -31,7 +28,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.UUID;
 
 /**
  *  场景管理 前端控制器
@@ -103,9 +99,9 @@ public class SceneController {
     @ApiOperation("自动扫描磁盘路径下的场景pcd文件，并自动加入到数据库中")
     @PostMapping("/scan")
     public BaseResponse<?> scan() {
-        //LoginUser loginUserAll = redisUtil.getInfoByToken();
-        //String loginUserId = loginUserAll.getUser().getUsername();
-        String loginUserId = "1";
+        LoginUser loginUserAll = redisUtil.getInfoByToken();
+        String loginUserId = loginUserAll.getUser().getUsername();
+        //String loginUserId = "1";
         // 扫描磁盘路径下的场景E://mark_view文件夹下pcd文件，并读取所有pcd文件
         String scanPath = "F://mark_view/data";
         System.out.println("正在扫描磁盘"+scanPath);
