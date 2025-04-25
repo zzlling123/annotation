@@ -59,8 +59,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         if (!"ok".equals(taskVerState.getState())){
             return taskVerState;
         }
-        Question question = new Question();
-        BeanUtils.copyProperties(param, question);
+        Question question = BeanUtil.copyProperties(param, Question.class);
         question.setOptions(getRealOptions(param.getOptions()));
         question.setQuestionText(StripHT(question.getQuestion()));
         save(question);
@@ -87,13 +86,12 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
 
     @Override
     public BaseResponse<?> update(QuestionParam param) {
-        Question question = new Question();
         //验证主题数据格式
         BaseResponse<?> taskVerState = verificationTaskTeaSaveParam(param);
         if (!"ok".equals(taskVerState.getState())){
             return taskVerState;
         }
-        BeanUtils.copyProperties(param, question);
+        Question question = BeanUtil.copyProperties(param, Question.class);
         question.setOptions(getRealOptions(param.getOptions()));
         question.setQuestionText(StripHT(question.getQuestion()));
         //删除原有标签关联关系
@@ -122,9 +120,11 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
     public BaseResponse<?> verificationTaskTeaSaveParam(QuestionParam param){
         List<String> optionList = param.getOptions();
         if (optionList.isEmpty()){
-            return BaseResponse.fail("选项不可为空！");
+            if ("100".equals(param.getShape()) || "200".equals(param.getShape())){
+                return BaseResponse.fail("选项不可为空！");
+            }
         }
-        if ("100".equals(param.getType()) || "300".equals(param.getType())){
+        if ("100".equals(param.getShape())){
             //如果正确答案不在选项中
             if (!ObjectUtil.contains(optionList,param.getAnswer())){
                 return BaseResponse.fail("答案必须在选项中！");

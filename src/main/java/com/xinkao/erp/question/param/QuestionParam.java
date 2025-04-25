@@ -1,5 +1,8 @@
 package com.xinkao.erp.question.param;
 
+import com.xinkao.erp.common.model.support.InputConverter;
+import com.xinkao.erp.manage.entity.Mark;
+import com.xinkao.erp.question.entity.Question;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +13,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class QuestionParam {
+public class QuestionParam implements InputConverter<Question> {
 
     @ApiModelProperty("题库ID")
     private Integer id;

@@ -37,7 +37,7 @@ public class XinKaoWebMvcConfig implements WebMvcConfigurer {
 
     private final String uploadUrlPattern;
 
-    @Value("${path.qrcode}")
+    @Value("${path.fileUrl}")
     private String QRCODE_PATH;
 
     public XinKaoWebMvcConfig(XinKaoProperties xinKaoProperties) {
@@ -70,7 +70,7 @@ public class XinKaoWebMvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("doc.html").addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
 //        registry.addResourceHandler("/qrCode/**").addResourceLocations("classpath:/META-INF/resources/static/qrCode/");
-        registry.addResourceHandler("/qrCode/**").addResourceLocations("file:"+QRCODE_PATH);
+        registry.addResourceHandler("/fileUrl/**").addResourceLocations("file:"+QRCODE_PATH);
     }
     /**
      * 增加图片转换器

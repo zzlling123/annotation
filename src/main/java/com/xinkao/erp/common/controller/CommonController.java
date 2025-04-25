@@ -3,20 +3,26 @@ package com.xinkao.erp.common.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.xinkao.erp.common.annotation.PrimaryDataSource;
+import com.xinkao.erp.common.exception.BusinessException;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.service.CommonService;
 import com.xinkao.erp.common.util.RedisUtil;
+import com.xinkao.erp.course.entity.CourseResource;
+import com.xinkao.erp.course.utils.FileTypeChecker;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
+import java.util.UUID;
 
 /**
- * <p>
- *  前端控制器
- * </p>
+ * 基础方法
  *
  * @author Ldy
  * @since 2022-06-02 16:50:19
@@ -29,6 +35,10 @@ public class CommonController {
     private RedisUtil redisUtil;
     @Autowired
     private CommonService commonService;
+    @Value("${path.fileUrl}")
+    private String fileUrl;
+    @Value("${ipurl.url}")
+    private String ipurl;
 
 
     /**
@@ -60,6 +70,30 @@ public class CommonController {
     }
 
 
+    // 使用HttpServletRequest作为参数
+    @PrimaryDataSource
+    @PostMapping("/upload/file")
+    @ApiOperation("上传文件")
+    public BaseResponse<String> uploadRequest(@RequestParam(value="file") MultipartFile file, HttpServletRequest request) {
+        try {
+            String saveFileName;
+            File file1 = new File(fileUrl);
+            if (!file1.exists()){
+                file1.mkdirs();
+            }
+            if (file.isEmpty()) {
+                throw new BusinessException("文件为空");
+            }
+            System.out.println("fileName:" + file.getOriginalFilename());
+            saveFileName = UUID.randomUUID().toString()+file.getOriginalFilename();
+            File fileNew = new File(fileUrl,saveFileName);
+            file.transferTo(fileNew);
+            return BaseResponse.ok(ipurl+"/annotation/fileUrl/"+saveFileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new BusinessException("上传失败");
+        }
 
+    }
 
 }

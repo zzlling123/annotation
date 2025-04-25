@@ -6,7 +6,7 @@
         SELECT q.*
         FROM q_question q
         WHERE
-            1 = 1
+            1 = 1 and q.is_del = 0
         <if test="query.question != null and query.question != ''">
             AND q.question LIKE CONCAT('%', #{query.question}, '%')
         </if>
