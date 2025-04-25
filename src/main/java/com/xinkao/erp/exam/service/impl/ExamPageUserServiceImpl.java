@@ -166,6 +166,7 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
             if (100 == examPageUserAnswer.getShape() || 300 == examPageUserAnswer.getShape()){
                 if (examPageUserAnswer.getUserAnswer().equals(examPageUserAnswer.getRightAnswer())){
                     examPageUserAnswer.setUserScore(examPageUserAnswer.getScore());
+
                     allScores += examPageUserAnswer.getScore();
                 }
             }else if (200 == examPageUserAnswer.getShape()){
