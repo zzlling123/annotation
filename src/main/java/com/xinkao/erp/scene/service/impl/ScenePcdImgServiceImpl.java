@@ -40,9 +40,9 @@ public class ScenePcdImgServiceImpl extends BaseServiceImpl<ScenePcdImgMapper, S
 
     @Override
     public BaseResponse<?> update(ScenePcdImg scenePcdImg) {
-        if (lambdaQuery().eq(ScenePcdImg::getPcdId, scenePcdImg.getPcdId()).eq(ScenePcdImg::getIsDel, CommonEnum.IS_DEL.NO.getCode()).count() > 0){
-            return BaseResponse.fail("场景pcd图片已存在！");
-        }
+//        if (lambdaQuery().eq(ScenePcdImg::getPcdId, scenePcdImg.getPcdId()).eq(ScenePcdImg::getIsDel, CommonEnum.IS_DEL.NO.getCode()).count() > 0){
+//            return BaseResponse.fail("场景pcd图片已存在！");
+//        }
         return updateById(scenePcdImg) ? BaseResponse.ok("修改成功！") : BaseResponse.fail("修改失败！");
     }
 
