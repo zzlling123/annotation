@@ -41,6 +41,9 @@ public class QuestionParam implements InputConverter<Question> {
     @ApiModelProperty("选项列表")
     private List<String> options;
 
+    @ApiModelProperty("答案数量(填空题)")
+    private String answerCount;
+
     @ApiModelProperty("答案")
     @NotBlank(message = "答案不能为空")
     private String answer;
