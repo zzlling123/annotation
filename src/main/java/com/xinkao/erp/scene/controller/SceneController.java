@@ -329,8 +329,26 @@ public class SceneController {
      */
     @RequestMapping("/get/{id}")
     @ApiOperation("根据id获取场景记录详情")
-    public String get() {
-        return "根据id获取场景记录详情";
+    public BaseResponse<?> get(@PathVariable Integer id) {
+        LambdaQueryWrapper<Scene> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(Scene::getIsDel, 0);
+        wrapper.eq(Scene::getId, id);
+        wrapper.orderByDesc(Scene::getCreateTime);
+        wrapper.select(Scene::getId, Scene::getSceneName, Scene::getScenePath, Scene::getScenePic, Scene::getSceneDescription, Scene::getSceneFrameNum, Scene::getSceneFrameNumPics);
+        Scene scene = sceneService.getOne(wrapper);
+        //通过场景id查询场景pcd文件
+        List<ScenePcd> scenePcds = scenePcdService.lambdaQuery()
+                .eq(ScenePcd::getSceneId, scene.getId())
+                .list();
+        scene.setScenePcdFileList(scenePcds);
+        //通过pcdid查询场景pcd图片
+        for (ScenePcd scenePcd : scenePcds) {
+            List<ScenePcdImg> scenePcdImgs = scenePcdImgService.lambdaQuery()
+                    .eq(ScenePcdImg::getPcdId, scenePcd.getId())
+                    .list();
+            scenePcd.setScenePcdImgList(scenePcdImgs);
+        }
+        return BaseResponse.ok(scene);
     }
 
 }
