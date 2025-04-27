@@ -151,12 +151,12 @@ public class SceneController {
                                 String[] img_pcds = img_pcd.split(" ");
                                 ScenePcd scenePcd = new ScenePcd();
                                 scenePcd.setSceneId(sceneId);
-                                scenePcd.setPcdPath(imgPath+ img_pcds[1]+".pcd");
+                                scenePcd.setPcdPath(pcdPath+scene.getSceneName()+"/"+ img_pcds[1]+".pcd");
                                 scenePcd.setCreateBy(loginUserId);
                                 scenePcd.setUpdateBy(loginUserId);
                                 scenePcdService.save(scenePcd);
                                 ScenePcd scenePcd1 = scenePcdService.getOne(Wrappers.lambdaQuery(ScenePcd.class)
-                                        .eq(ScenePcd::getPcdPath, imgPath + img_pcds[1]+".pcd")
+                                        .eq(ScenePcd::getPcdPath, pcdPath+scene.getSceneName()+"/"+ img_pcds[1]+".pcd")
                                         .eq(ScenePcd::getSceneId, scene1.getId()));
                                 Integer scenePcdId = scenePcd1.getId();
                                 for (File file_txt_img : txtFiles) {
@@ -168,7 +168,7 @@ public class SceneController {
                                             if (s.contains(img_pcds[1])){
                                                 ScenePcdImg scenePcdImg = new ScenePcdImg();
                                                 scenePcdImg.setPcdId(scenePcdId);
-                                                scenePcdImg.setImgPath(imgPath+s.split(" ")[0]);
+                                                scenePcdImg.setImgPath(imgPath+scene.getSceneName()+"/"+file_txt.getName() + "/"+s.split(" ")[0]);
                                                 scenePcdImg.setImgDirection("");
                                                 scenePcdImg.setCreateBy(loginUserId);
                                                 scenePcdImg.setUpdateBy(loginUserId);
