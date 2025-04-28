@@ -82,6 +82,12 @@ public class ExamPageUserQuestionVo {
 	private String options;
 
 	/**
+	 * 如果是填空题，则为有几个空
+	 */
+	@TableField("answer_count")
+	private Integer answerCount;
+
+	/**
 	 * 题目分数
 	 */
 	@ApiModelProperty("题目分数")

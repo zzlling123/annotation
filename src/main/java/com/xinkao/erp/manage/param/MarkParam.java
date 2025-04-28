@@ -15,12 +15,17 @@ import javax.validation.constraints.NotEmpty;
 public class MarkParam implements InputConverter<Mark> {
 
 	//修改时有值
-	private String markId;
+	private String id;
 	/**
 	 * 标记名称
 	 */
 	@NotEmpty(message = "标记名称不能为空")
 	private String markName;
+
+	/**
+	 * 标记Id
+	 */
+	private String type;
 
 	/**
 	 * 父级标记

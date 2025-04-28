@@ -21,7 +21,7 @@ public class QuestionInfoVo extends BaseEntity implements OutputConverter<Questi
     private String question;
 
     @ApiModelProperty("题目text")
-    private String question_text;
+    private String questionText;
 
     @ApiModelProperty("题目答案")
     private String answer;

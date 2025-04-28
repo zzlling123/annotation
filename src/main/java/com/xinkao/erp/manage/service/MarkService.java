@@ -21,7 +21,7 @@ public interface MarkService extends BaseService<Mark> {
     //根据用户权限获取用户菜单
     BaseResponse<List<Mark>> getList(MarkQuery query);
 
-    List<Mark> formatMarkList(List<Mark> menuList);
+    List<Mark> formatMarkList(Integer pid ,List<Mark> menuList);
 
     //新增
     BaseResponse save(MarkParam departmentParam);
