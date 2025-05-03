@@ -65,6 +65,9 @@ public class QuestionInfoVo extends BaseEntity implements OutputConverter<Questi
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date createTime;
 
+    @ApiModelProperty("是否需要批改0否1是")
+    private Integer needCorrect;
+
     @ApiModelProperty("自定义标签列表")
     private List<LabelVo> labelList;
 }

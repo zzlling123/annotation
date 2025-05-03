@@ -105,6 +105,12 @@ public class ExamPageUserQuestion extends DataSnowIdEntity {
     private String answer;
 
     /**
+     * 是否需要批改0否1是
+     */
+    @TableField("need_correct")
+    private Integer needCorrect;
+
+    /**
      * 用户答案
      */
     @TableField(exist = false)

@@ -54,6 +54,9 @@ public class QuestionParam implements InputConverter<Question> {
     @ApiModelProperty("是否启用0否1是")
     private Integer state;
 
+    @ApiModelProperty("是否需要批改0否1是")
+    private Integer needCorrect;
+
     @ApiModelProperty("自定义标签ID列表")
     private List<Integer> labels;
 

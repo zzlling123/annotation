@@ -26,15 +26,15 @@ public class QuestionMarkController extends BaseController {
     @Resource
     private QuestionMarkService questionMarkService;
 
-    /**
-     * 根据题目ID获取标记树状图
-     *
-     * @return
-     */
-    @PrimaryDataSource
-    @PostMapping("/getListByQid/{qid}")
-    @ApiOperation("根据题目ID获取标记树状图")
-    public BaseResponse<List<Mark>> getListByQid(@PathVariable Integer qid) {
-        return questionMarkService.getListByQid(qid);
-    }
+//    /**
+//     * 根据题目ID获取标记树状图
+//     *
+//     * @return
+//     */
+//    @PrimaryDataSource
+//    @PostMapping("/getListByQid/{qid}")
+//    @ApiOperation("根据题目ID获取标记树状图")
+//    public BaseResponse<List<Mark>> getListByQid(@PathVariable Integer qid) {
+//        return questionMarkService.getListByQid(qid);
+//    }
 }

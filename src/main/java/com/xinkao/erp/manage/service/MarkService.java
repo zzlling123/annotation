@@ -23,6 +23,8 @@ public interface MarkService extends BaseService<Mark> {
 
     List<Mark> formatMarkList(Integer pid ,List<Mark> menuList);
 
+    List<Mark> formatMarkForStuList(Integer pid ,List<Mark> menuList,List<Integer> ids);
+
     //新增
     BaseResponse save(MarkParam departmentParam);
 

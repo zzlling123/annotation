@@ -53,6 +53,14 @@ public class Mark extends DataEntity {
     @TableField("pid")
     private Integer pid;
 
+    @ApiModelProperty("父级ID列表")
+    @TableField("parent")
+    private String parent;
+
+    @ApiModelProperty("父级名称列表")
+    @TableField("parent_route")
+    private String parentRoute;
+
     /**
      * 排序
      */

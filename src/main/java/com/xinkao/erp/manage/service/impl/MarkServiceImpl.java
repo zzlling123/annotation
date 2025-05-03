@@ -78,6 +78,35 @@ public class MarkServiceImpl extends BaseServiceImpl<MarkMapper, Mark> implement
         return treeList;
     }
 
+
+    //递归获取子集列表--学生做题页面，pid在dis的白名单中才会显示
+    /**
+     * 格式化菜单列表
+     *
+     * @param markList 菜单列表
+     * @return 格式化后的菜单列表
+     */
+    @Override
+    public List<Mark> formatMarkForStuList(Integer pid, List<Mark> markList,List<Integer> ids) {
+        List<Mark> treeList = new ArrayList<>();
+
+        // 1. 筛选当前层级的子节点
+        for (Mark mark : markList) {
+            if (pid.equals(mark.getPid())) {
+                treeList.add(mark);
+
+                // 2. 递归获取子节点
+                List<Mark> children = formatMarkList(mark.getId(), markList);
+
+                // 3. 设置子节点列表（非空时设置）
+                if (!children.isEmpty()) {
+                    mark.setChildMarkList(children);
+                }
+            }
+        }
+        return treeList;
+    }
+
     @Override
     public BaseResponse<?> save(MarkParam markParam) {
         Mark mark = BeanUtil.copyProperties(markParam, Mark.class);
@@ -90,6 +119,19 @@ public class MarkServiceImpl extends BaseServiceImpl<MarkMapper, Mark> implement
             mark.setType(markPid.getType());
             mark.setTypeName(markPid.getTypeName());
         }
+        //增加父级部门记录
+        String parent;
+        String parentRoute;
+        if ("0".equals(markParam.getPid())) {
+            parent = "0";
+            parentRoute = markParam.getMarkName();
+        } else {
+            Mark markParent = getById(markParam.getPid());
+            parent = markParent.getParent() + "," + markParam.getPid();
+            parentRoute = markParent.getParentRoute() + "-" + markParam.getMarkName();
+        }
+        mark.setParent(parent);
+        mark.setParentRoute(parentRoute);
         save(mark);
         return BaseResponse.ok("成功！");
     }
@@ -106,6 +148,19 @@ public class MarkServiceImpl extends BaseServiceImpl<MarkMapper, Mark> implement
             mark.setType(markPid.getType());
             mark.setTypeName(markPid.getTypeName());
         }
+        //增加父级部门记录
+        String parent;
+        String parentRoute;
+        if ("0".equals(markParam.getPid())) {
+            parent = "0";
+            parentRoute = markParam.getMarkName();
+        } else {
+            Mark markParent = getById(markParam.getPid());
+            parent = markParent.getParent() + "," + markParam.getPid();
+            parentRoute = markParent.getParentRoute() + "-" + markParam.getMarkName();
+        }
+        mark.setParent(parent);
+        mark.setParentRoute(parentRoute);
         updateById(mark);
         return BaseResponse.ok("成功！");
     }
@@ -123,9 +178,15 @@ public class MarkServiceImpl extends BaseServiceImpl<MarkMapper, Mark> implement
         questionMarkLambdaQueryWrapper.eq(QuestionMark::getQid, id);
         List<QuestionMark> questionMarkList = questionMarkMapper.selectList(questionMarkLambdaQueryWrapper);
         List<Integer> questionMarkIdList = questionMarkList.stream().map(QuestionMark::getMid).collect(Collectors.toList());
-        List<Mark> markListAll = lambdaQuery().eq(Mark::getIsDel, 0).in(Mark::getId, questionMarkIdList).list();
-        List<Mark> markList = formatMarkList(0,markListAll);
-        return BaseResponse.ok("成功！",markList);
+        //查询所有父级中包含此id的标记
+        List<Mark> markListAll = new ArrayList<>();
+        List<Mark> markList;
+        for (Integer mid : questionMarkIdList) {
+            markList = lambdaQuery().eq(Mark::getIsDel, 0).apply(true,"FIND_IN_SET ('"+mid+"',parent)").list();
+            markListAll.addAll(markList);
+        }
+        List<Mark> markReportList = formatMarkList(0,markListAll);
+        return BaseResponse.ok("成功！",markReportList);
     }
 
 

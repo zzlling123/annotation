@@ -92,6 +92,12 @@ public class Question extends DataEntity {
     private Integer state;
 
     /**
+     * 是否需要批改0否1是
+     */
+    @TableField("need_correct")
+    private Integer needCorrect;
+
+    /**
      * 状态:0-正常 1-删除
      */
     @TableField("is_del")

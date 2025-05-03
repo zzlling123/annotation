@@ -76,11 +76,6 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
         lambdaUpdate().eq(ExamPageUserQuestion::getExamId,examPageSet.getExamId()).remove();
         //清除答题卡数据
         examPageUserAnswerService.lambdaUpdate().eq(ExamPageUserAnswer::getExamId,examPageSet.getExamId()).remove();
-        //查询题型分布设置中是否包含主观题，如果包含，则ExamPageUser中needCorrect为1，否则为0
-        boolean needCorrect = examPageSetTypeService.lambdaQuery()
-                .eq(ExamPageSetType::getExamId,examPageSet.getExamId())
-                .eq(ExamPageSetType::getShape,400)
-                .count() > 0;
         for (User user : userList) {
             //查询是否已生成过
             ExamPageUser examPageUser = new  ExamPageUser();
@@ -89,7 +84,6 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
             examPageUser.setExamId(examPageSet.getExamId());
             examPageUser.setSelectStatus(1);
             examPageUser.setCreateTime(DateUtil.date());
-            examPageUser.setNeedCorrect(needCorrect?1:0);
             examPageUserList.add(examPageUser);
 
             //创建答题心跳记录备用
@@ -113,6 +107,10 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
             //如果为0则进行循环插入
             if (examPageSet.getPageMode() == 0) {
                 for (ExamPageUser examPageUser : examPageUserList) {
+                    List<ExamPageUserQuestion> examPageUserQuestionList = new ArrayList<>();
+                    List<ExamPageUserAnswer> examPageUserAnswerList = new ArrayList<>();
+                    //查询题型分布设置中是否包含主观题，如果包含，则ExamPageUser中needCorrect为1，否则为0
+                    boolean needCorrect = false;
                     //修改该考生生成试卷状态为生成中
                     try{
                         examPageUser.setSelectStatus(1);
@@ -143,10 +141,16 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                                 examPageUserAnswer.setCreateTime(DateUtil.date());
                                 examPageUserAnswerService.save(examPageUserAnswer);
                                 num++;
+                                if(question.getNeedCorrect() == 1){
+                                    needCorrect = true;
+                                }
                             }
                         }
+                        saveBatch(examPageUserQuestionList);
+                        examPageUserAnswerService.saveBatch(examPageUserAnswerList);
                         //修改该考生生成试卷状态为完成
                         examPageUser.setSelectStatus(2);
+                        examPageUser.setNeedCorrect(needCorrect?1:0);
                         examPageUserService.updateById(examPageUser);
                     }catch (Exception e){
                         continue;
@@ -155,6 +159,10 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
             }else {
                 //如果为1则生成题目列表后进行随机排列题号后进行插入
                 for (ExamPageUser examPageUser : examPageUserList) {
+                    List<ExamPageUserQuestion> examPageUserQuestionList = new ArrayList<>();
+                    List<ExamPageUserAnswer> examPageUserAnswerList = new ArrayList<>();
+                    //查询题型分布设置中是否包含主观题，如果包含，则ExamPageUser中needCorrect为1，否则为0
+                    boolean needCorrect = false;
                     try{
                         //修改该考生生成试卷状态为生成中
                         examPageUser.setSelectStatus(1);
@@ -177,7 +185,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                                 examPageUserQuestion.setNum(String.valueOf(num));
                                 examPageUserQuestion.setNumSort(num);
                                 examPageUserQuestion.setCreateTime(DateUtil.date());
-                                save(examPageUserQuestion);
+                                examPageUserQuestionList.add(examPageUserQuestion);
                                 //生成用户答案模板
                                 ExamPageUserAnswer examPageUserAnswer = new ExamPageUserAnswer();
                                 BeanUtil.copyProperties(examPageUserQuestion,examPageUserAnswer);
@@ -187,11 +195,17 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                                 examPageUserAnswer.setQuestionId(examPageUserQuestion.getId());
                                 examPageUserAnswer.setRightAnswer(examPageUserQuestion.getAnswer());
                                 examPageUserAnswer.setCreateTime(DateUtil.date());
-                                examPageUserAnswerService.save(examPageUserAnswer);
+                                examPageUserAnswerList.add(examPageUserAnswer);
+                                if(question.getNeedCorrect() == 1){
+                                    needCorrect = true;
+                                }
                             }
                         }
+                        saveBatch(examPageUserQuestionList);
+                        examPageUserAnswerService.saveBatch(examPageUserAnswerList);
                         //修改该考生生成试卷状态为完成
                         examPageUser.setSelectStatus(2);
+                        examPageUser.setNeedCorrect(needCorrect?1:0);
                         examPageUserService.updateById(examPageUser);
                     }catch (Exception e){
                         continue;
@@ -210,6 +224,8 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                     int num = 0;
                     List<ExamPageUserQuestion> examPageUserQuestionList = new ArrayList<>();
                     List<ExamPageUserAnswer> examPageUserAnswerList = new ArrayList<>();
+                    //查询题型分布设置中是否包含主观题，如果包含，则ExamPageUser中needCorrect为1，否则为0
+                    boolean needCorrect = false;
                     for (Integer integer : questionMap.keySet()) {
                         List<Question> questionList = questionMap.get(integer);
                         for (Question question : questionList) {
@@ -230,18 +246,18 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                             examPageUserAnswer.setQuestionId(examPageUserQuestion.getId());
                             examPageUserAnswer.setRightAnswer(examPageUserQuestion.getAnswer());
                             examPageUserAnswer.setCreateTime(DateUtil.date());
-                            if(examPageUserAnswer.getShape() == 400){
-                                //如果是主观题则为需要批改
-                                examPageUserAnswer.setNeedCorrect(1);
-                            }
                             examPageUserAnswerList.add(examPageUserAnswer);
                             num++;
+                            if(question.getNeedCorrect() == 1){
+                                needCorrect = true;
+                            }
                         }
                     }
                     saveBatch(examPageUserQuestionList);
                     examPageUserAnswerService.saveBatch(examPageUserAnswerList);
                     //修改该考生生成试卷状态为完成
                     examPageUser.setSelectStatus(2);
+                    examPageUser.setNeedCorrect(needCorrect?1:0);
                     examPageUserService.updateById(examPageUser);
                 }catch (Exception e){
                     continue;

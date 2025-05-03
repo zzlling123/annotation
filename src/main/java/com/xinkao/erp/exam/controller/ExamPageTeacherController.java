@@ -66,6 +66,7 @@ public class ExamPageTeacherController {
     @PrimaryDataSource
     @PostMapping("/correct")
     @ApiOperation("批改，提交分数(如果是该学生该试卷最后一道问答题则会进行计算总分)")
+    @Log(content = "批改",operationType = OperationType.INSERT)
     public BaseResponse<?> correct(@RequestBody @Valid ExamCorrectParam param) {
         return examPageUserService.correct(param);
     }

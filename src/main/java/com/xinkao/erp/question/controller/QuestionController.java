@@ -1,8 +1,10 @@
 package com.xinkao.erp.question.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xinkao.erp.common.annotation.Log;
 import com.xinkao.erp.common.annotation.PrimaryDataSource;
 import com.xinkao.erp.common.controller.BaseController;
+import com.xinkao.erp.common.enums.system.OperationType;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.param.DeleteParam;
 import com.xinkao.erp.common.model.support.Pageable;
@@ -119,6 +121,7 @@ public class    QuestionController extends BaseController {
     @PrimaryDataSource
     @PostMapping("/save")
     @ApiOperation("新增题目")
+    @Log(content = "新增题目",operationType = OperationType.INSERT)
     public BaseResponse<?> save(@Valid @RequestBody QuestionParam questionParam) {
         return questionService.save(questionParam);
     }
@@ -132,6 +135,7 @@ public class    QuestionController extends BaseController {
     @PrimaryDataSource
     @PostMapping("/update")
     @ApiOperation("编辑题目")
+    @Log(content = "编辑题目",operationType = OperationType.UPDATE)
     public BaseResponse<?> update(@Valid @RequestBody QuestionParam questionParam) {
         return questionService.update(questionParam);
     }
@@ -145,6 +149,7 @@ public class    QuestionController extends BaseController {
     @PrimaryDataSource
     @PostMapping("/del")
     @ApiOperation("批量删除题目")
+    @Log(content = "批量删除题目",operationType = OperationType.DELETE)
     public BaseResponse<?> del(@RequestBody DeleteParam param) {
         return questionService.del(param);
     }
