@@ -149,6 +149,7 @@ public class CourseResourceController {
             System.out.println("fileName:" + file.getOriginalFilename());
             saveFileName = UUID.randomUUID().toString()+file.getOriginalFilename();
             File dest = new File(savaLaction,saveFileName);
+
             file.transferTo(dest);
             CourseResource courseResource = new CourseResource();
             courseResource.setFileName(file.getOriginalFilename());

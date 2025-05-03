@@ -39,6 +39,12 @@ public class XinKaoWebMvcConfig implements WebMvcConfigurer {
 
     @Value("${path.fileUrl}")
     private String QRCODE_PATH;
+    @Value("${scene.scan.imgPath}")
+    private String IMAGE_PATH;
+    @Value("${scene.scan.pcdPath}")
+    private String PCD_PATH;
+    @Value("${path.cres}")
+    private String cres;
 
     public XinKaoWebMvcConfig(XinKaoProperties xinKaoProperties) {
         this.xinKaoProperties = xinKaoProperties;
@@ -71,6 +77,9 @@ public class XinKaoWebMvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
 //        registry.addResourceHandler("/qrCode/**").addResourceLocations("classpath:/META-INF/resources/static/qrCode/");
         registry.addResourceHandler("/fileUrl/**").addResourceLocations("file:"+QRCODE_PATH);
+        registry.addResourceHandler("/image/**").addResourceLocations("file:"+IMAGE_PATH);
+        registry.addResourceHandler("/pcd/**").addResourceLocations("file:"+PCD_PATH);
+        registry.addResourceHandler("/cres/**").addResourceLocations("file:"+cres);
     }
     /**
      * 增加图片转换器
