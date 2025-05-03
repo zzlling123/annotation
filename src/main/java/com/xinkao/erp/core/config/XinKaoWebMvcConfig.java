@@ -39,12 +39,18 @@ public class XinKaoWebMvcConfig implements WebMvcConfigurer {
 
     @Value("${path.fileUrl}")
     private String QRCODE_PATH;
+    @Value("${scene.scan.imgPath}")
+    private String IMAGE_PATH;
+    @Value("${scene.scan.pcdPath}")
+    private String PCD_PATH;
+    @Value("${path.cres}")
+    private String cres;
 
     public XinKaoWebMvcConfig(XinKaoProperties xinKaoProperties) {
         this.xinKaoProperties = xinKaoProperties;
         this.uploadUrlPattern = addSuffixIfNot(
-            addPrefixIfNot(xinKaoProperties.getUploadDir(),  URL_SEPARATOR),
-            URL_SEPARATOR) + "**";
+                addPrefixIfNot(xinKaoProperties.getUploadDir(),  URL_SEPARATOR),
+                URL_SEPARATOR) + "**";
     }
 
     /**
@@ -54,12 +60,12 @@ public class XinKaoWebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(repeatSubmitInterceptor).addPathPatterns("/**");
         registry.addInterceptor(dataAuthCheckInterceptor).addPathPatterns("/**").excludePathPatterns(
-        		"/ap/**",
-        		"/attach/**",
-        		"/manual/page",
-        		"/manual/view/**",
-        		"/user/**"
-        		);
+                "/ap/**",
+                "/attach/**",
+                "/manual/page",
+                "/manual/view/**",
+                "/user/**"
+        );
     }
 
     @Override
@@ -71,6 +77,9 @@ public class XinKaoWebMvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
 //        registry.addResourceHandler("/qrCode/**").addResourceLocations("classpath:/META-INF/resources/static/qrCode/");
         registry.addResourceHandler("/fileUrl/**").addResourceLocations("file:"+QRCODE_PATH);
+        registry.addResourceHandler("/image/**").addResourceLocations("file:"+IMAGE_PATH);
+        registry.addResourceHandler("/pcd/**").addResourceLocations("file:"+PCD_PATH);
+        registry.addResourceHandler("/cres/**").addResourceLocations("file:"+cres);
     }
     /**
      * 增加图片转换器
