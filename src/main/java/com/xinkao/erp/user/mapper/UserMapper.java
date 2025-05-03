@@ -1,6 +1,7 @@
 package com.xinkao.erp.user.mapper;
 
 import com.xinkao.erp.user.entity.User;
+import com.xinkao.erp.user.query.ExamAndPracticeBarQuery;
 import com.xinkao.erp.user.query.UserPageQuery;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.List;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.common.mapper.BaseMapper;
 import com.xinkao.erp.user.query.UserQuery;
+import com.xinkao.erp.user.vo.ExamAndPracticeBarVo;
 import com.xinkao.erp.user.vo.UserDepartmentVo;
 import com.xinkao.erp.user.vo.UserInfoVo;
 import com.xinkao.erp.user.vo.UserPageVo;
@@ -31,4 +33,6 @@ public interface UserMapper extends BaseMapper<User> {
 	List<UserDepartmentVo> getUserDepartmentList();
 
 	UserInfoVo getUserInfoBySelf(@Param("userId") Integer userId);
+
+	List<ExamAndPracticeBarVo> getExamAndPracticeBarForExam(ExamAndPracticeBarQuery query);
 }

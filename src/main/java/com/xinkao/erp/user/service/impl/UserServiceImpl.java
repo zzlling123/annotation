@@ -1,8 +1,7 @@
 package com.xinkao.erp.user.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.lang.Validator;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
@@ -13,15 +12,17 @@ import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.HandleResult;
 import com.xinkao.erp.common.model.LoginUser;
 import com.xinkao.erp.common.model.param.UpdateStateParam;
+import com.xinkao.erp.common.util.PasswordCheckUtil;
 import com.xinkao.erp.common.util.ResultUtils;
-import com.xinkao.erp.exam.entity.ExamPageUser;
 import com.xinkao.erp.exam.service.ExamPageUserService;
 import com.xinkao.erp.login.service.UserOptLogService;
 import com.xinkao.erp.user.excel.UserImportErrorModel;
 import com.xinkao.erp.user.param.AccountUpdatePwdParam;
 import com.xinkao.erp.user.param.UserParam;
 import com.xinkao.erp.user.param.UserUpdateParam;
+import com.xinkao.erp.user.query.ExamAndPracticeBarQuery;
 import com.xinkao.erp.user.query.UserQuery;
+import com.xinkao.erp.user.vo.ExamAndPracticeBarVo;
 import com.xinkao.erp.user.vo.UserInfoVo;
 import com.xinkao.erp.user.vo.UserPageVo;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,8 @@ import com.xinkao.erp.user.mapper.UserMapper;
 import com.xinkao.erp.user.service.UserService;
 
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -180,6 +183,43 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 
 	@Override
 	public BaseResponse<?> updatePassword(AccountUpdatePwdParam param){
-		return null;
+		LoginUser loginUser = redisUtil.getInfoByToken();
+		User user = getById(loginUser.getUser().getId());
+		//验证旧密码
+		if (!SecureUtil.md5(user.getSalt()+param.getOldPwd()).equals(user.getPassword())) {
+			return BaseResponse.fail("密码错误！");
+		}
+		//验证两次新密码
+		if (!param.getNewPwd().equals(param.getNewPwdAgain())) {
+			return BaseResponse.fail("两次密码不一致！");
+		}
+		//验证密码安全性
+		if (!PasswordCheckUtil.evalPassword(param.getNewPwd())) {
+			return BaseResponse.fail("新密码须6-18位，包含字母和数字，不能连续，且必须含有大写和小写字母");
+		}
+		String salt =  RandomUtil.randomString(6);
+		user.setSalt(salt);
+		user.setPassword(SecureUtil.md5(salt+param.getNewPwd()));
+		return updateById(user)? BaseResponse.ok("修改成功！"): BaseResponse.fail("修改失败！");
+	}
+
+	@Override
+	public BaseResponse<List<ExamAndPracticeBarVo>> getExamAndPracticeBar(ExamAndPracticeBarQuery query){
+		if (query.getQueryType().equals("1")){
+			List<ExamAndPracticeBarVo> examAndPracticeBarVoList = new ArrayList<>();
+			return BaseResponse.ok(examAndPracticeBarVoList);
+		}else {
+			//考试
+			List<ExamAndPracticeBarVo> examAndPracticeBarVoList = userMapper.getExamAndPracticeBarForExam(query);
+			for (ExamAndPracticeBarVo examAndPracticeBarVo : examAndPracticeBarVoList) {
+				//赋值百分比
+				if ("0".equals(examAndPracticeBarVo.getUserScore()) || "0".equals(examAndPracticeBarVo.getScore())){
+					examAndPracticeBarVo.setScoreRate("0.00%");
+				}else{
+					examAndPracticeBarVo.setScoreRate(NumberUtil.round(new BigDecimal(examAndPracticeBarVo.getUserScore()).divide(new BigDecimal(examAndPracticeBarVo.getScore()),2,BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100)),2).toString()+"%");
+				}
+			}
+			return BaseResponse.ok(examAndPracticeBarVoList);
+		}
 	}
 }

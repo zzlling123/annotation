@@ -255,7 +255,7 @@ public class UserController extends BaseController {
 	@PrimaryDataSource
 	@PostMapping("/updatePassword")
 	@ApiOperation("修改密码")
-	public BaseResponse updatePassword(@RequestBody @Valid AccountUpdatePwdParam param) {
+	public BaseResponse<?> updatePassword(@RequestBody @Valid AccountUpdatePwdParam param) {
 		return userService.updatePassword(param);
 	}
 
@@ -267,7 +267,7 @@ public class UserController extends BaseController {
 	@PostMapping("/getExamAndPracticeBar")
 	@ApiOperation("获取练习/考试柱状图，计算练习，考试下各个题型分类type下的得分率")
 	public BaseResponse<List<ExamAndPracticeBarVo>> getExamAndPracticeBar(@RequestBody ExamAndPracticeBarQuery query) {
-		return null;
+		return userService.getExamAndPracticeBar(query);
 	}
 
 	/**
