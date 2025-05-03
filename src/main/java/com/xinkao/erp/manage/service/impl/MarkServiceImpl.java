@@ -1,5 +1,6 @@
 package com.xinkao.erp.manage.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.LoginUser;
@@ -71,7 +72,7 @@ public class MarkServiceImpl extends BaseServiceImpl<MarkMapper, Mark> implement
 
     @Override
     public BaseResponse save(MarkParam markParam) {
-        Mark mark = markParam.convertTo();
+        Mark mark = BeanUtil.copyProperties(markParam, Mark.class);
         if ("0".equals(markParam.getPid())){
             QuestionType questionType = questionTypeService.getById(markParam.getType());
             mark.setType(questionType.getId());
@@ -87,7 +88,7 @@ public class MarkServiceImpl extends BaseServiceImpl<MarkMapper, Mark> implement
 
     @Override
     public BaseResponse update(MarkParam markParam) {
-        Mark mark = markParam.convertTo();
+        Mark mark = BeanUtil.copyProperties(markParam, Mark.class);
         if ("0".equals(markParam.getPid())){
             QuestionType questionType = questionTypeService.getById(markParam.getType());
             mark.setType(questionType.getId());
