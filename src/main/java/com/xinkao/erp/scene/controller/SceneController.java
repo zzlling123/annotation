@@ -11,7 +11,6 @@ import com.xinkao.erp.common.util.RedisUtil;
 import com.xinkao.erp.scene.entity.Scene;
 import com.xinkao.erp.scene.entity.ScenePcd;
 import com.xinkao.erp.scene.entity.ScenePcdImg;
-import com.xinkao.erp.scene.param.ImagePathParam;
 import com.xinkao.erp.scene.query.SceneQuery;
 import com.xinkao.erp.scene.service.ScenePcdImgService;
 import com.xinkao.erp.scene.service.ScenePcdService;
@@ -19,14 +18,9 @@ import com.xinkao.erp.scene.service.SceneService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
@@ -48,17 +42,11 @@ public class SceneController {
     @Value("${scene.scan.imgPath}")
     String imgPath;
 
-    @Value("${scene.scan.scanPath}")
-    String scanPath;
-
     @Value("${scene.scan.txtPath}")
     String txtPath ;
 
     @Value("${scene.scan.pcdPath}")
     String pcdPath;
-
-    @Value("${ipurl.url}")
-    private String ipurl;
 
     @Autowired
     private SceneService sceneService;
@@ -103,25 +91,6 @@ public class SceneController {
         return BaseResponse.ok(scenes);
     }
 
-    @PostMapping("/image")
-    public BaseResponse<String> serveImage(@RequestBody ImagePathParam imagePath) throws IOException {
-        String[] strings = imagePath.getImagePath().split("/");
-        return BaseResponse.ok(ipurl+"/annotation/image/"+strings[strings.length-3]+"/"+strings[strings.length-2]+"/"+strings[strings.length-1]);
-    }
-
-    @PostMapping("/pcd")
-    public BaseResponse<String> servePcd(@RequestBody ImagePathParam imagePath) throws IOException {
-        String[] strings = imagePath.getImagePath().split("/");
-        return BaseResponse.ok(ipurl+"/annotation/pcd/"+strings[strings.length-3]+"/"+strings[strings.length-1]);
-    }
-
-    @PostMapping("/cres")
-    public BaseResponse<String> serveCres(@RequestBody ImagePathParam imagePath) throws IOException {
-        //将字符串的\换成/
-        imagePath.setImagePath(imagePath.getImagePath().replace("\\", "/"));
-        String[] strings = imagePath.getImagePath().split("/");
-        return BaseResponse.ok(ipurl+"/annotation/cres/"+strings[strings.length-1]);
-    }
 
     /**
      * 自动扫描磁盘路径下的场景pcd文件，并自动加入到数据库中
@@ -134,6 +103,7 @@ public class SceneController {
         String loginUserId = loginUserAll.getUser().getUsername();
         //String loginUserId = "1";
         // 扫描磁盘路径下的场景E://mark_view文件夹下pcd文件，并读取所有pcd文件
+        String scanPath = "F://mark_view/data";
         System.out.println("正在扫描磁盘"+scanPath);
         // 判断磁盘路径是否存在
         if (!new File(scanPath).exists()) {
@@ -152,7 +122,7 @@ public class SceneController {
                 }
                 Scene scene = new Scene();
                 scene.setSceneName(file.getName());
-                scene.setScenePath(file.getAbsolutePath());
+                scene.setScenePath(file.getAbsolutePath() + "/" + file.getName());
                 scene.setScenePic("");
                 scene.setSceneDescription(file.getName());
                 scene.setSceneFrameNum(10);
@@ -173,45 +143,32 @@ public class SceneController {
                         try {
                             Path path = Paths.get(file_txt.getPath());
                             String content = new String(Files.readAllBytes(path));
-                            System.out.println("正在读取txt文件"+content);
-                            //根据操作系统 判断换行符
-                            String[] split = content.split("\\n");
-                            System.out.println("正在读取txt文件,文件数组个数"+split.length);
+                            String[] split = content.split("\\r\\n");
                             //从split字符串数组中随机取10个下标连续的字符串
                             int randomIndex = (int) (Math.random() * (split.length-10));
-                            int endNum = randomIndex + 10;
-                            if (randomIndex < 0){
-                                randomIndex = 0;
-                            }
-                            if (randomIndex+10 > split.length){
-                                endNum = split.length;
-                            } else if (randomIndex+10 <= split.length){
-                                endNum = 10;
-                            }
-                            System.out.println(randomIndex);
-                            for (int i = 0; i < endNum; i++) {
+                            for (int i = 0; i < 10; i++) {
                                 String img_pcd = split[randomIndex+i];
                                 String[] img_pcds = img_pcd.split(" ");
                                 ScenePcd scenePcd = new ScenePcd();
                                 scenePcd.setSceneId(sceneId);
-                                scenePcd.setPcdPath(pcdPath+scene.getSceneName()+"/"+file_txt.getName().split("\\.txt")[0] + "/"+ img_pcds[1]+".pcd");
+                                scenePcd.setPcdPath(pcdPath+scene.getSceneName()+"/"+ img_pcds[1]+".pcd");
                                 scenePcd.setCreateBy(loginUserId);
                                 scenePcd.setUpdateBy(loginUserId);
                                 scenePcdService.save(scenePcd);
                                 ScenePcd scenePcd1 = scenePcdService.getOne(Wrappers.lambdaQuery(ScenePcd.class)
-                                        .eq(ScenePcd::getPcdPath, pcdPath+scene.getSceneName()+"/"+file_txt.getName().split("\\.txt")[0] + "/"+ img_pcds[1]+".pcd")
+                                        .eq(ScenePcd::getPcdPath, pcdPath+scene.getSceneName()+"/"+ img_pcds[1]+".pcd")
                                         .eq(ScenePcd::getSceneId, scene1.getId()));
                                 Integer scenePcdId = scenePcd1.getId();
                                 for (File file_txt_img : txtFiles) {
                                     if (file_txt_img.getName().endsWith(".txt")){
                                         Path path_txt_img = Paths.get(file_txt_img.getPath());
                                         String content_txt_img = new String(Files.readAllBytes(path_txt_img));
-                                        String[] split_txt_img = content_txt_img.split("\\n");
+                                        String[] split_txt_img = content_txt_img.split("\\r\\n");
                                         for (String s : split_txt_img) {
                                             if (s.contains(img_pcds[1])){
                                                 ScenePcdImg scenePcdImg = new ScenePcdImg();
                                                 scenePcdImg.setPcdId(scenePcdId);
-                                                scenePcdImg.setImgPath(imgPath+scene.getSceneName()+"/"+file_txt.getName().split("\\.txt")[0] + "/"+s.split(" ")[0]);
+                                                scenePcdImg.setImgPath(imgPath+scene.getSceneName()+"/"+file_txt.getName() + "/"+s.split(" ")[0]);
                                                 scenePcdImg.setImgDirection("");
                                                 scenePcdImg.setCreateBy(loginUserId);
                                                 scenePcdImg.setUpdateBy(loginUserId);
@@ -372,26 +329,8 @@ public class SceneController {
      */
     @RequestMapping("/get/{id}")
     @ApiOperation("根据id获取场景记录详情")
-    public BaseResponse<?> get(@PathVariable Integer id) {
-        LambdaQueryWrapper<Scene> wrapper = Wrappers.lambdaQuery();
-        wrapper.eq(Scene::getIsDel, 0);
-        wrapper.eq(Scene::getId, id);
-        wrapper.orderByDesc(Scene::getCreateTime);
-        wrapper.select(Scene::getId, Scene::getSceneName, Scene::getScenePath, Scene::getScenePic, Scene::getSceneDescription, Scene::getSceneFrameNum, Scene::getSceneFrameNumPics);
-        Scene scene = sceneService.getOne(wrapper);
-        //通过场景id查询场景pcd文件
-        List<ScenePcd> scenePcds = scenePcdService.lambdaQuery()
-                .eq(ScenePcd::getSceneId, scene.getId())
-                .list();
-        scene.setScenePcdFileList(scenePcds);
-        //通过pcdid查询场景pcd图片
-        for (ScenePcd scenePcd : scenePcds) {
-            List<ScenePcdImg> scenePcdImgs = scenePcdImgService.lambdaQuery()
-                    .eq(ScenePcdImg::getPcdId, scenePcd.getId())
-                    .list();
-            scenePcd.setScenePcdImgList(scenePcdImgs);
-        }
-        return BaseResponse.ok(scene);
+    public String get() {
+        return "根据id获取场景记录详情";
     }
 
 }

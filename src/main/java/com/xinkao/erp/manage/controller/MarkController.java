@@ -97,4 +97,16 @@ public class MarkController extends BaseController {
         }
         return markService.del(updateStateParam.getIds());
     }
+
+    /**
+     * 根据题目ID获取标记树状图
+     *
+     * @return
+     */
+    @PrimaryDataSource
+    @PostMapping("/getListByQuestionId/{qid}")
+    @ApiOperation("根据题目ID获取标记树状图")
+    public BaseResponse<List<Mark>> getListByQuestionId(@PathVariable Integer qid){
+        return markService.getListByQuestionId(qid);
+    }
 }

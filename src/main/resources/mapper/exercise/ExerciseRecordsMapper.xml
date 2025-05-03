@@ -7,18 +7,6 @@
         <if test="query.moduleId != null and query.moduleId != ''">
             and module_id LIKE CONCAT('%', #{query.moduleId}, '%')
         </if>
-        <if test="query.userId != null and query.userId != ''">
-            and user_id LIKE CONCAT('%', #{query.userId}, '%')
-        </if>
-        <if test="query.shape != null and query.shape != ''">
-            and shape LIKE CONCAT('%', #{query.shape}, '%')
-        </if>
-        <if test="query.questionScore != null and query.questionScore != ''">
-            and question_score LIKE CONCAT('%', #{query.questionScore}, '%')
-        </if>
-        <if test="query.completionStatus != null and query.completionStatus != ''">
-            and completion_status LIKE CONCAT('%', #{query.completionStatus}, '%')
-        </if>
         ORDER BY create_time DESC
     </select>
 </mapper>

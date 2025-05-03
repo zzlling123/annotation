@@ -2,21 +2,27 @@ package com.xinkao.erp.manage.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.LoginUser;
+import com.xinkao.erp.exam.entity.ExamPageUserQuestion;
 import com.xinkao.erp.manage.entity.Mark;
 import com.xinkao.erp.manage.mapper.MarkMapper;
 import com.xinkao.erp.manage.param.MarkParam;
 import com.xinkao.erp.manage.query.MarkQuery;
 import com.xinkao.erp.manage.service.MarkService;
 import com.xinkao.erp.common.service.impl.BaseServiceImpl;
+import com.xinkao.erp.question.entity.QuestionMark;
 import com.xinkao.erp.question.entity.QuestionType;
+import com.xinkao.erp.question.mapper.QuestionMarkMapper;
+import com.xinkao.erp.question.service.QuestionMarkService;
 import com.xinkao.erp.question.service.QuestionTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -33,6 +39,8 @@ public class MarkServiceImpl extends BaseServiceImpl<MarkMapper, Mark> implement
     private MarkMapper markMapper;
     @Autowired
     private QuestionTypeService questionTypeService;
+    @Autowired
+    private QuestionMarkMapper questionMarkMapper;
 
     //根据用户权限获取用户菜单
     @Override
@@ -71,7 +79,7 @@ public class MarkServiceImpl extends BaseServiceImpl<MarkMapper, Mark> implement
     }
 
     @Override
-    public BaseResponse save(MarkParam markParam) {
+    public BaseResponse<?> save(MarkParam markParam) {
         Mark mark = BeanUtil.copyProperties(markParam, Mark.class);
         if ("0".equals(markParam.getPid())){
             QuestionType questionType = questionTypeService.getById(markParam.getType());
@@ -87,7 +95,7 @@ public class MarkServiceImpl extends BaseServiceImpl<MarkMapper, Mark> implement
     }
 
     @Override
-    public BaseResponse update(MarkParam markParam) {
+    public BaseResponse<?> update(MarkParam markParam) {
         Mark mark = BeanUtil.copyProperties(markParam, Mark.class);
         if ("0".equals(markParam.getPid())){
             QuestionType questionType = questionTypeService.getById(markParam.getType());
@@ -103,9 +111,22 @@ public class MarkServiceImpl extends BaseServiceImpl<MarkMapper, Mark> implement
     }
 
     @Override
-    public BaseResponse del(String ids) {
+    public BaseResponse<?> del(String ids) {
         String[] idsStr = ids.split(",");
         lambdaUpdate().in(Mark::getId, idsStr).set(Mark::getIsDel, 1).update();
         return BaseResponse.ok("成功！");
     }
+
+    @Override
+    public BaseResponse<List<Mark>> getListByQuestionId(Integer id) {
+        LambdaQueryWrapper<QuestionMark> questionMarkLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        questionMarkLambdaQueryWrapper.eq(QuestionMark::getQid, id);
+        List<QuestionMark> questionMarkList = questionMarkMapper.selectList(questionMarkLambdaQueryWrapper);
+        List<Integer> questionMarkIdList = questionMarkList.stream().map(QuestionMark::getMid).collect(Collectors.toList());
+        List<Mark> markListAll = lambdaQuery().eq(Mark::getIsDel, 0).in(Mark::getId, questionMarkIdList).list();
+        List<Mark> markList = formatMarkList(0,markListAll);
+        return BaseResponse.ok("成功！",markList);
+    }
+
+
 }
