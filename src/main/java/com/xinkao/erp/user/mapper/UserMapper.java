@@ -34,5 +34,5 @@ public interface UserMapper extends BaseMapper<User> {
 
 	UserInfoVo getUserInfoBySelf(@Param("userId") Integer userId);
 
-	List<ExamAndPracticeBarVo> getExamAndPracticeBarForExam(ExamAndPracticeBarQuery query);
+	List<ExamAndPracticeBarVo> getExamAndPracticeBarForExam(ExamAndPracticeBarQuery query,Integer userId);
 }

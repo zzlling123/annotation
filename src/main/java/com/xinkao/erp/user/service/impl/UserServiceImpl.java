@@ -205,12 +205,13 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 
 	@Override
 	public BaseResponse<List<ExamAndPracticeBarVo>> getExamAndPracticeBar(ExamAndPracticeBarQuery query){
+		LoginUser loginUser = redisUtil.getInfoByToken();
 		if (query.getQueryType().equals("1")){
 			List<ExamAndPracticeBarVo> examAndPracticeBarVoList = new ArrayList<>();
 			return BaseResponse.ok(examAndPracticeBarVoList);
 		}else {
 			//考试
-			List<ExamAndPracticeBarVo> examAndPracticeBarVoList = userMapper.getExamAndPracticeBarForExam(query);
+			List<ExamAndPracticeBarVo> examAndPracticeBarVoList = userMapper.getExamAndPracticeBarForExam(query,loginUser.getUser().getId());
 			for (ExamAndPracticeBarVo examAndPracticeBarVo : examAndPracticeBarVoList) {
 				//赋值百分比
 				if ("0".equals(examAndPracticeBarVo.getUserScore()) || "0".equals(examAndPracticeBarVo.getScore())){

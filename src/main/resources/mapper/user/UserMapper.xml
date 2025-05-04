@@ -53,7 +53,7 @@
 	<select id="getExamAndPracticeBarForExam" resultType="com.xinkao.erp.user.vo.ExamAndPracticeBarVo">
 		SELECT qt.id,qt.type_name,IF(SUM(ea.score) is null,0,SUM(ea.score)) allScore,IF(SUM(ea.user_score) is null,0,SUM(ea.user_score)) userScore
 		FROM q_question_type qt
-		LEFT JOIN `exam_page_user_answer` ea ON qt.id = ea.type and user_id = 44 and ea.answer_status = 1
+		LEFT JOIN `exam_page_user_answer` ea ON qt.id = ea.type and user_id = #{userId} and ea.answer_status = 1
 		<if test="query.startTime != null and query.startTime != ''">
 			and ea.create_time >= #{query.startTime}
 		</if>
