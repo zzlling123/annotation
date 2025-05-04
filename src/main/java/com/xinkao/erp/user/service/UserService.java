@@ -13,10 +13,7 @@ import com.xinkao.erp.user.param.UserParam;
 import com.xinkao.erp.user.param.UserUpdateParam;
 import com.xinkao.erp.user.query.ExamAndPracticeBarQuery;
 import com.xinkao.erp.user.query.UserQuery;
-import com.xinkao.erp.user.vo.ExamAndPracticeBarVo;
-import com.xinkao.erp.user.vo.ExamAndPracticePieVo;
-import com.xinkao.erp.user.vo.UserInfoVo;
-import com.xinkao.erp.user.vo.UserPageVo;
+import com.xinkao.erp.user.vo.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -61,5 +58,5 @@ public interface UserService extends BaseService<User> {
 
 	BaseResponse<List<ExamAndPracticeBarVo>> getExamAndPracticeBar(ExamAndPracticeBarQuery query);
 
-	BaseResponse<List<ExamAndPracticePieVo>> getExamAndPracticePie(ExamAndPracticeBarQuery query);
+	BaseResponse<List<ExamAndPracticePieAllVo>> getExamAndPracticePie(ExamAndPracticeBarQuery query);
 }

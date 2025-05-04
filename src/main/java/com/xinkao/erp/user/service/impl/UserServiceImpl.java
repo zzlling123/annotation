@@ -22,10 +22,7 @@ import com.xinkao.erp.user.param.UserParam;
 import com.xinkao.erp.user.param.UserUpdateParam;
 import com.xinkao.erp.user.query.ExamAndPracticeBarQuery;
 import com.xinkao.erp.user.query.UserQuery;
-import com.xinkao.erp.user.vo.ExamAndPracticeBarVo;
-import com.xinkao.erp.user.vo.ExamAndPracticePieVo;
-import com.xinkao.erp.user.vo.UserInfoVo;
-import com.xinkao.erp.user.vo.UserPageVo;
+import com.xinkao.erp.user.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -216,9 +213,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 			for (ExamAndPracticeBarVo examAndPracticeBarVo : examAndPracticeBarVoList) {
 				//赋值百分比
 				if ("0".equals(examAndPracticeBarVo.getUserScore()) || "0".equals(examAndPracticeBarVo.getScore())){
-					examAndPracticeBarVo.setScoreRate("0.00%");
+					examAndPracticeBarVo.setScoreRate("0.00");
 				}else{
-					examAndPracticeBarVo.setScoreRate(NumberUtil.round(new BigDecimal(examAndPracticeBarVo.getUserScore()).divide(new BigDecimal(examAndPracticeBarVo.getScore()),2,BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100)),2).toString()+"%");
+					examAndPracticeBarVo.setScoreRate(NumberUtil.round(new BigDecimal(examAndPracticeBarVo.getUserScore()).divide(new BigDecimal(examAndPracticeBarVo.getScore()),2,BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100)),2).toString());
 				}
 			}
 			return BaseResponse.ok(examAndPracticeBarVoList);
@@ -226,15 +223,29 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	}
 
 	@Override
-	public BaseResponse<List<ExamAndPracticePieVo>> getExamAndPracticePie(ExamAndPracticeBarQuery query){
+	public BaseResponse<List<ExamAndPracticePieAllVo>> getExamAndPracticePie(ExamAndPracticeBarQuery query){
 		LoginUser loginUser = redisUtil.getInfoByToken();
 		if (query.getQueryType().equals("1")){
-			List<ExamAndPracticePieVo> examAndPracticePieVoList = new ArrayList<>();
-			return BaseResponse.ok(examAndPracticePieVoList);
+			List<ExamAndPracticePieAllVo> voList = new ArrayList<>();
+			return BaseResponse.ok(voList);
 		}else {
 			//考试
 			List<ExamAndPracticePieVo> examAndPracticePieVoList = userMapper.getExamAndPracticePieForExam(query,loginUser.getUser().getId());
-			return BaseResponse.ok(examAndPracticePieVoList);
+			List<ExamAndPracticePieAllVo> allVoList = new ArrayList<>();
+			int allNum = 0;
+			for (ExamAndPracticePieVo examAndPracticePieVo : examAndPracticePieVoList) {
+				ExamAndPracticePieAllVo vo = new ExamAndPracticePieAllVo();
+				allNum += Integer.parseInt(examAndPracticePieVo.getTeaNum());
+				allNum = allNum - Integer.parseInt(examAndPracticePieVo.getUserTeaNum());
+				vo.setTypeName(examAndPracticePieVo.getTypeName());
+				vo.setUserTeaNum(examAndPracticePieVo.getUserTeaNum());
+				allVoList.add(vo);
+			}
+			ExamAndPracticePieAllVo vo = new ExamAndPracticePieAllVo();
+			vo.setTypeName("未完成");
+			vo.setUserTeaNum(Integer.toString(allNum));
+			allVoList.add(vo);
+			return BaseResponse.ok(allVoList);
 		}
 	}
 }

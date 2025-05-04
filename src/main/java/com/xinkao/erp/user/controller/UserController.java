@@ -31,10 +31,7 @@ import com.xinkao.erp.user.param.UserUpdateParam;
 import com.xinkao.erp.user.query.ExamAndPracticeBarQuery;
 import com.xinkao.erp.user.query.UserQuery;
 import com.xinkao.erp.user.service.UserService;
-import com.xinkao.erp.user.vo.ExamAndPracticeBarVo;
-import com.xinkao.erp.user.vo.ExamAndPracticePieVo;
-import com.xinkao.erp.user.vo.UserInfoVo;
-import com.xinkao.erp.user.vo.UserPageVo;
+import com.xinkao.erp.user.vo.*;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -277,7 +274,7 @@ public class UserController extends BaseController {
 	@PrimaryDataSource
 	@PostMapping("/getExamAndPracticePie")
 	@ApiOperation("获取练习/考试饼状图，计算练习，考试下所有题在各题型中的占比")
-	public BaseResponse<List<ExamAndPracticePieVo>> getExamAndPracticePie(@RequestBody ExamAndPracticeBarQuery query) {
+	public BaseResponse<List<ExamAndPracticePieAllVo>> getExamAndPracticePie(@RequestBody ExamAndPracticeBarQuery query) {
 		return userService.getExamAndPracticePie(query);
 	}
 }

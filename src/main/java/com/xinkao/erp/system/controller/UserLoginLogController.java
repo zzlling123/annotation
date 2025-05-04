@@ -43,12 +43,6 @@ public class UserLoginLogController extends BaseController {
         //获取用户信息
         Pageable pageable = query.getPageInfo();
         Page<UserLoginLogPageVo> voPage = userLoginLogService.page(query, pageable);
-        //处理手机号脱敏
-        for (UserLoginLogPageVo record : voPage.getRecords()) {
-            // 处理手机号加密
-            String hideMobile = hideMobile(record.getAccount());// hideMobile(user.getMobile());
-            record.setAccount(hideMobile);
-        }
         return BaseResponse.ok(voPage);
     }
 

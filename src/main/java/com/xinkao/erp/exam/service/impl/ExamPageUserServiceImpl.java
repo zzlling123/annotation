@@ -184,8 +184,17 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                 }
             }else if (400 == examPageUserAnswer.getShape()){
                 //问答题
+                if (examPageUserAnswer.getNeedCorrect() == 0){
+                    if (examPageUserAnswer.getUserAnswer().equals(examPageUserAnswer.getRightAnswer())){
+                        examPageUserAnswer.setUserScore(examPageUserAnswer.getScore());
+                        allScores += examPageUserAnswer.getScore();
+                    }
+                }
             }else if (500 == examPageUserAnswer.getShape()){
                 //操作题
+                if (examPageUserAnswer.getNeedCorrect() == 0){
+                    //
+                }
             }
         }
         //准备更新exam_page_stu表
