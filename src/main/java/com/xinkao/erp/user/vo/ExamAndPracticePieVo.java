@@ -19,9 +19,15 @@ import java.util.Map;
 @Setter
 public class ExamAndPracticePieVo extends BaseEntity {
 
-    @ApiModelProperty("做题总数")
-    private String allNum;
+    @ApiModelProperty("分类ID")
+    private String type;
 
-    @ApiModelProperty("各题型分布数量")
-    private Map<String, String> typeNum;
+    @ApiModelProperty("分类名")
+    private String typeName;
+
+    @ApiModelProperty("分类下的总题目数量")
+    private String teaNum;
+
+    @ApiModelProperty("分类下的用户已作答数量")
+    private String userTeaNum;
 }

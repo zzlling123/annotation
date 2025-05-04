@@ -23,6 +23,7 @@ import com.xinkao.erp.user.param.UserUpdateParam;
 import com.xinkao.erp.user.query.ExamAndPracticeBarQuery;
 import com.xinkao.erp.user.query.UserQuery;
 import com.xinkao.erp.user.vo.ExamAndPracticeBarVo;
+import com.xinkao.erp.user.vo.ExamAndPracticePieVo;
 import com.xinkao.erp.user.vo.UserInfoVo;
 import com.xinkao.erp.user.vo.UserPageVo;
 import lombok.extern.slf4j.Slf4j;
@@ -221,6 +222,19 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 				}
 			}
 			return BaseResponse.ok(examAndPracticeBarVoList);
+		}
+	}
+
+	@Override
+	public BaseResponse<List<ExamAndPracticePieVo>> getExamAndPracticePie(ExamAndPracticeBarQuery query){
+		LoginUser loginUser = redisUtil.getInfoByToken();
+		if (query.getQueryType().equals("1")){
+			List<ExamAndPracticePieVo> examAndPracticePieVoList = new ArrayList<>();
+			return BaseResponse.ok(examAndPracticePieVoList);
+		}else {
+			//考试
+			List<ExamAndPracticePieVo> examAndPracticePieVoList = userMapper.getExamAndPracticePieForExam(query,loginUser.getUser().getId());
+			return BaseResponse.ok(examAndPracticePieVoList);
 		}
 	}
 }

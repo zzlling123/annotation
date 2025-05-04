@@ -9,10 +9,7 @@ import java.util.List;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.common.mapper.BaseMapper;
 import com.xinkao.erp.user.query.UserQuery;
-import com.xinkao.erp.user.vo.ExamAndPracticeBarVo;
-import com.xinkao.erp.user.vo.UserDepartmentVo;
-import com.xinkao.erp.user.vo.UserInfoVo;
-import com.xinkao.erp.user.vo.UserPageVo;
+import com.xinkao.erp.user.vo.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -35,4 +32,6 @@ public interface UserMapper extends BaseMapper<User> {
 	UserInfoVo getUserInfoBySelf(@Param("userId") Integer userId);
 
 	List<ExamAndPracticeBarVo> getExamAndPracticeBarForExam(ExamAndPracticeBarQuery query,Integer userId);
+
+	List<ExamAndPracticePieVo> getExamAndPracticePieForExam(ExamAndPracticeBarQuery query, Integer userId);
 }

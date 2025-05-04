@@ -14,6 +14,7 @@ import com.xinkao.erp.user.param.UserUpdateParam;
 import com.xinkao.erp.user.query.ExamAndPracticeBarQuery;
 import com.xinkao.erp.user.query.UserQuery;
 import com.xinkao.erp.user.vo.ExamAndPracticeBarVo;
+import com.xinkao.erp.user.vo.ExamAndPracticePieVo;
 import com.xinkao.erp.user.vo.UserInfoVo;
 import com.xinkao.erp.user.vo.UserPageVo;
 
@@ -59,4 +60,6 @@ public interface UserService extends BaseService<User> {
 	BaseResponse<?> updatePassword(AccountUpdatePwdParam param);
 
 	BaseResponse<List<ExamAndPracticeBarVo>> getExamAndPracticeBar(ExamAndPracticeBarQuery query);
+
+	BaseResponse<List<ExamAndPracticePieVo>> getExamAndPracticePie(ExamAndPracticeBarQuery query);
 }

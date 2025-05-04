@@ -277,7 +277,7 @@ public class UserController extends BaseController {
 	@PrimaryDataSource
 	@PostMapping("/getExamAndPracticePie")
 	@ApiOperation("获取练习/考试饼状图，计算练习，考试下所有题在各题型中的占比")
-	public BaseResponse<ExamAndPracticePieVo> getExamAndPracticePie(@RequestBody ExamAndPracticeBarQuery query) {
-		return null;
+	public BaseResponse<List<ExamAndPracticePieVo>> getExamAndPracticePie(@RequestBody ExamAndPracticeBarQuery query) {
+		return userService.getExamAndPracticePie(query);
 	}
 }
