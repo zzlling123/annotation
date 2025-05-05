@@ -194,28 +194,28 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                 }
             }else if (500 == examPageUserAnswer.getShape()){
                 //操作题
+                Integer score = 0;
                 if (examPageUserAnswer.getNeedCorrect() == 0){
-                    Integer score = 0;
                     if (examPageUserAnswer.getType() == 1 || examPageUserAnswer.getType() == 3){
                         //图像标注与OCR标注直接验证与答案完全一致则可以得分
                         if (examPageUserAnswer.getUserAnswer().equals(examPageUserAnswer.getRightAnswer())){
                             examPageUserAnswer.setUserScore(examPageUserAnswer.getScore());
                             allScores += examPageUserAnswer.getUserScore();
-                        }else if (examPageUserAnswer.getType() == 2){
-                            //3D点云标注
-                            score = pointSubmitUtil.get3DPointScore(examPageUserAnswer);
-                            examPageUserAnswer.setUserScore(score);
-                            allScores += score;
-                        }else if (examPageUserAnswer.getType() == 4){
-                            //语音标注
-                            examPageUserAnswer.setUserScore(score);
-                            allScores += score;
-                        }else if (examPageUserAnswer.getType() == 5 || examPageUserAnswer.getType() == 6){
-                            //2D标注、人脸关键点标注
-                            examPageUserAnswer.setUserScore(score);
-                            allScores += score;
                         }
                     }
+                }else if (examPageUserAnswer.getType() == 2){
+                    //3D点云标注
+                    score = pointSubmitUtil.get3DPointScore(examPageUserAnswer);
+                    examPageUserAnswer.setUserScore(score);
+                    allScores += score;
+                }else if (examPageUserAnswer.getType() == 4){
+                    //语音标注
+                    examPageUserAnswer.setUserScore(score);
+                    allScores += score;
+                }else if (examPageUserAnswer.getType() == 5 || examPageUserAnswer.getType() == 6){
+                    //2D标注、人脸关键点标注
+                    examPageUserAnswer.setUserScore(score);
+                    allScores += score;
                 }
             }
         }
