@@ -202,20 +202,20 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                             examPageUserAnswer.setUserScore(examPageUserAnswer.getScore());
                             allScores += examPageUserAnswer.getUserScore();
                         }
+                    }else if (examPageUserAnswer.getType() == 2){
+                        //3D点云标注
+                        score = pointSubmitUtil.get3DPointScore(examPageUserAnswer);
+                        examPageUserAnswer.setUserScore(score);
+                        allScores += score;
+                    }else if (examPageUserAnswer.getType() == 4){
+                        //语音标注
+                        examPageUserAnswer.setUserScore(score);
+                        allScores += score;
+                    }else if (examPageUserAnswer.getType() == 5 || examPageUserAnswer.getType() == 6){
+                        //2D标注、人脸关键点标注
+                        examPageUserAnswer.setUserScore(score);
+                        allScores += score;
                     }
-                }else if (examPageUserAnswer.getType() == 2){
-                    //3D点云标注
-                    score = pointSubmitUtil.get3DPointScore(examPageUserAnswer);
-                    examPageUserAnswer.setUserScore(score);
-                    allScores += score;
-                }else if (examPageUserAnswer.getType() == 4){
-                    //语音标注
-                    examPageUserAnswer.setUserScore(score);
-                    allScores += score;
-                }else if (examPageUserAnswer.getType() == 5 || examPageUserAnswer.getType() == 6){
-                    //2D标注、人脸关键点标注
-                    examPageUserAnswer.setUserScore(score);
-                    allScores += score;
                 }
             }
         }
