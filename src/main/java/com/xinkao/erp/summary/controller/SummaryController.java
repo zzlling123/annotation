@@ -73,7 +73,7 @@ public class SummaryController {
      * @param summaryParam 其中type 是考试还是练习 0 练习 1 考试；classId 是班级id
      * @return
      */
-    @RequestMapping("/classSummary/{type}")
+    @RequestMapping("/classSummary")
     @ApiOperation("班级成绩统计，summaryParam 其中type 是考试还是练习 0 练习 1 考试；classId 是班级id")
     @PrimaryDataSource
     public BaseResponse<?> classSummary(@RequestBody SummaryParam  summaryParam) {
