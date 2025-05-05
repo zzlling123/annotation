@@ -12,6 +12,7 @@ import com.xinkao.erp.exam.model.param.ExamUserQuery;
 import com.xinkao.erp.exam.model.param.ExamPageUserAnswerParam;
 import com.xinkao.erp.exam.model.param.SubmitParam;
 import com.xinkao.erp.exam.param.ExamCorrectParam;
+import com.xinkao.erp.exam.query.ExamQuery;
 import com.xinkao.erp.exam.query.ExamTeacherQuery;
 import com.xinkao.erp.exam.vo.ExamPageAnswerVo;
 import com.xinkao.erp.exam.vo.ExamPageTeacherVo;
@@ -22,7 +23,7 @@ import java.util.Map;
 
 public interface ExamPageUserService extends BaseService<ExamPageUser> {
 
-    Page<ExamUserVo>page(BasePageQuery query, Pageable pageable);
+    Page<ExamUserVo>page(ExamQuery query, Pageable pageable);
 
     BaseResponse<ExamUserVo> getExamUserInfo(ExamUserQuery examUserQuery);
 

@@ -24,7 +24,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface ExamPageUserMapper extends BaseMapper<ExamPageUser> {
 
-    Page<ExamUserVo> page(Page page, BasePageQuery query, Integer userId);
+    Page<ExamUserVo> page(Page page, ExamQuery query, Integer userId);
 
     Page<ExamPageTeacherVo> pageTeacher(Page page, ExamTeacherQuery query);
 

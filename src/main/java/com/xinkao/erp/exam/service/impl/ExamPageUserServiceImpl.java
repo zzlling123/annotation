@@ -24,6 +24,7 @@ import com.xinkao.erp.exam.model.param.ExamUserQuery;
 import com.xinkao.erp.exam.model.param.ExamPageUserAnswerParam;
 import com.xinkao.erp.exam.model.param.SubmitParam;
 import com.xinkao.erp.exam.param.ExamCorrectParam;
+import com.xinkao.erp.exam.query.ExamQuery;
 import com.xinkao.erp.exam.query.ExamTeacherQuery;
 import com.xinkao.erp.exam.service.*;
 import com.xinkao.erp.exam.vo.ExamPageAnswerVo;
@@ -59,7 +60,7 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
     private ExamPageSetService examPageSetService;
 
     @Override
-    public Page<ExamUserVo> page(BasePageQuery query, Pageable pageable){
+    public Page<ExamUserVo> page(ExamQuery query, Pageable pageable){
         LoginUser loginUser = redisUtil.getInfoByToken();
         Page page = pageable.toPage();
         return examPageUserMapper.page(page, query, loginUser.getUser().getId());

@@ -6,7 +6,14 @@
         SELECT epu.*,e.exam_name
         FROM exam_page_user epu
         LEFT JOIN exam e ON epu.exam_id = e.id
-        WHERE 1=1 and epu.user_id = #{userId} and e.is_del = 0
+        WHERE 1=1
+        <if test="query.examName != null and query.examName != ''">
+            and e.exam_name LIKE CONCAT('%', #{query.examName}, '%')
+        </if>
+        <if test="query.status != null and query.examName != ''">
+            and e.state = #{query.status}
+        </if>
+        and epu.user_id = #{userId} and e.is_del = 0
     </select>
 
     <select id="pageTeacher" resultType="com.xinkao.erp.exam.vo.ExamPageTeacherVo">
