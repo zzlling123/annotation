@@ -12,6 +12,7 @@ import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.LoginUser;
 import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.common.service.impl.BaseServiceImpl;
+import com.xinkao.erp.common.util.PointSubmitUtil;
 import com.xinkao.erp.common.util.RedisUtil;
 import com.xinkao.erp.exam.entity.*;
 import com.xinkao.erp.exam.mapper.ExamPageUserMapper;
@@ -42,6 +43,8 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
 
     @Autowired
     private RedisUtil redisUtil;
+    @Autowired
+    private PointSubmitUtil pointSubmitUtil;
     @Autowired
     private ExamPageUserMapper examPageUserMapper;
     @Autowired
@@ -166,7 +169,6 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
             if (100 == examPageUserAnswer.getShape() || 300 == examPageUserAnswer.getShape()){
                 if (examPageUserAnswer.getUserAnswer().equals(examPageUserAnswer.getRightAnswer())){
                     examPageUserAnswer.setUserScore(examPageUserAnswer.getScore());
-
                     allScores += examPageUserAnswer.getScore();
                 }
             }else if (200 == examPageUserAnswer.getShape()){
@@ -187,13 +189,33 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                 if (examPageUserAnswer.getNeedCorrect() == 0){
                     if (examPageUserAnswer.getUserAnswer().equals(examPageUserAnswer.getRightAnswer())){
                         examPageUserAnswer.setUserScore(examPageUserAnswer.getScore());
-                        allScores += examPageUserAnswer.getScore();
+                        allScores += examPageUserAnswer.getUserScore();
                     }
                 }
             }else if (500 == examPageUserAnswer.getShape()){
                 //操作题
                 if (examPageUserAnswer.getNeedCorrect() == 0){
-                    //
+                    Integer score = 0;
+                    if (examPageUserAnswer.getType() == 1 || examPageUserAnswer.getType() == 3){
+                        //图像标注与OCR标注直接验证与答案完全一致则可以得分
+                        if (examPageUserAnswer.getUserAnswer().equals(examPageUserAnswer.getRightAnswer())){
+                            examPageUserAnswer.setUserScore(examPageUserAnswer.getScore());
+                            allScores += examPageUserAnswer.getUserScore();
+                        }else if (examPageUserAnswer.getType() == 2){
+                            //3D点云标注
+                            score = pointSubmitUtil.get3DPointScore(examPageUserAnswer);
+                            examPageUserAnswer.setUserScore(score);
+                            allScores += score;
+                        }else if (examPageUserAnswer.getType() == 4){
+                            //语音标注
+                            examPageUserAnswer.setUserScore(score);
+                            allScores += score;
+                        }else if (examPageUserAnswer.getType() == 5 || examPageUserAnswer.getType() == 6){
+                            //2D标注、人脸关键点标注
+                            examPageUserAnswer.setUserScore(score);
+                            allScores += score;
+                        }
+                    }
                 }
             }
         }
