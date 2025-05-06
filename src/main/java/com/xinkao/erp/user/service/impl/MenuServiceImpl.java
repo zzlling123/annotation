@@ -3,9 +3,11 @@ package com.xinkao.erp.user.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.LoginUser;
 import com.xinkao.erp.user.param.MenuParam;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -77,14 +79,14 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, Menu> implement
 
     @Override
     public BaseResponse save(MenuParam menuParam) {
-        Menu menu = menuParam.convertTo();
+        Menu menu = BeanUtil.copyProperties(menuParam, Menu.class);
         menuMapper.insert(menu);
         return BaseResponse.ok("成功！");
     }
 
     @Override
     public BaseResponse update(MenuParam menuParam) {
-        Menu menu = menuParam.convertTo();
+        Menu menu = BeanUtil.copyProperties(menuParam, Menu.class);
         updateById(menu);
         return BaseResponse.ok("成功！");
     }

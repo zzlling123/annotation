@@ -27,6 +27,12 @@ public class ClassInfo extends DataEntity {
     private String className;
 
     /**
+     * 班级描述
+     */
+    @TableField("description")
+    private String description;
+
+    /**
      * 是否显示1显示0隐藏
      */
     @TableField("state")
