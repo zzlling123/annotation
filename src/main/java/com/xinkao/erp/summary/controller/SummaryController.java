@@ -4,18 +4,17 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.xinkao.erp.common.annotation.PrimaryDataSource;
 import com.xinkao.erp.common.model.BaseResponse;
-import com.xinkao.erp.common.model.LoginUser;
 import com.xinkao.erp.common.util.RedisUtil;
 import com.xinkao.erp.exam.entity.ExamPageUser;
 import com.xinkao.erp.exam.service.ExamPageUserService;
 import com.xinkao.erp.exercise.entity.ExerciseRecords;
 import com.xinkao.erp.exercise.service.ExerciseRecordsService;
 import com.xinkao.erp.summary.param.SummaryParam;
+import com.xinkao.erp.summary.param.SummaryStuParam;
 import com.xinkao.erp.user.entity.User;
 import com.xinkao.erp.user.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,23 +43,26 @@ public class SummaryController {
 
     /**
      * 学生成绩统
-     * @param type 是考试还是练习 0 练习 1 考试
+     * @param summaryStuParam 其中type 是考试还是练习 0 练习 1 考试；stuId 是学生id
      * @return
      */
-    @RequestMapping("/stuSummary/{type}")
+    @RequestMapping("/stuSummary")
     @ApiOperation("学生成绩统计，type 是考试还是练习 0 练习 1 考试")
     @PrimaryDataSource
-    public BaseResponse<?> stuSummary(@PathVariable  Integer type) {
+    public BaseResponse<?> stuSummary(@RequestBody SummaryStuParam  summaryStuParam) {
         //获取当前登录用户信息
-        LoginUser loginUserAll = redisUtil.getInfoByToken();
-        if (type == 0){
+        //LoginUser loginUserAll = redisUtil.getInfoByToken();
+        Integer useId = summaryStuParam.getStuId();
+        if (summaryStuParam.getType() == 0){
             LambdaQueryWrapper<ExerciseRecords> wrapper = Wrappers.lambdaQuery();
-            wrapper.eq(ExerciseRecords::getUserId,loginUserAll.getUser().getId());
+            wrapper.eq(ExerciseRecords::getUserId,useId);
+            wrapper.orderByAsc(ExerciseRecords::getCreateTime);
             List<ExerciseRecords> exerciseRecordsList = exerciseRecordsService.list(wrapper);
             return BaseResponse.ok(exerciseRecordsList);
-        }else if (type == 1){
+        }else if (summaryStuParam.getType() == 1){
             LambdaQueryWrapper<ExamPageUser> wrapper = Wrappers.lambdaQuery();
-            wrapper.eq(ExamPageUser::getUserId,loginUserAll.getUser().getId());
+            wrapper.eq(ExamPageUser::getUserId,useId);
+            wrapper.orderByAsc(ExamPageUser::getCreateTime);
             List<ExamPageUser> examPageUserList = examPageUserService.list(wrapper);
             return BaseResponse.ok(examPageUserList);
         }else {
