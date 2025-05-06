@@ -19,6 +19,7 @@ import com.xinkao.erp.exercise.param.SubmitParam;
 import com.xinkao.erp.exercise.query.ExerciseRecordsQuery;
 import com.xinkao.erp.exercise.service.ExerciseRecordsService;
 import com.xinkao.erp.exercise.service.InstantFeedbacksService;
+import com.xinkao.erp.exercise.utils.MarkQuestionUtils;
 import com.xinkao.erp.question.entity.Question;
 import com.xinkao.erp.question.service.QuestionService;
 import io.swagger.annotations.ApiOperation;
@@ -262,7 +263,7 @@ public class ExerciseRecordsController {
         //根据题号找到当前题并获取答案
         InstantFeedbacks feedbacks = instantFeedbacksService.getById(feedbacksId);
         String answer = feedbacks.getCorrectAnswer();
-        int score = checkAnswer(userAnswer, answer, exerciseRecords.getShape(),exerciseRecords.getScore());
+        int score = MarkQuestionUtils.checkAnswer(userAnswer, answer, exerciseRecords.getShape(),exerciseRecords.getScore(),exerciseRecords.getModuleId());
         InstantFeedbacks instantFeedbacks = instantFeedbacksService.getById(feedbacksId);
         instantFeedbacks.setUserAnswer(userAnswer);
         instantFeedbacks.setUserScore(score);
@@ -473,58 +474,6 @@ public class ExerciseRecordsController {
         exerciseRecordsService.updateById(exerciseRecords);
         return BaseResponse.ok("完成测试，满分100分，得分"+exerciseRecords.getScore());
     }
-
-    /**
-     * 判断输入的答案是否正确，如果正确，则设置用户得分为题目的得分，否则设置为0
-     * */
-    public int checkAnswer(String userAnswer, String correctAnswer, int shape, Integer score) {
-        //shape题目类型:100-单选 200-多选 300-填空 400-主观题 500-操作题
-        if (shape == 100) {
-            if (userAnswer.equals(correctAnswer)) {
-                return score;
-            }
-        }else if (shape == 200) {
-            //选题少答的一半分数，错答得0分
-            String [] userAnswers = userAnswer.split("");
-            String [] correctAnswers = correctAnswer.split("");
-            if (userAnswer.length() == correctAnswer.length()) {
-                for (int i = 0; i < userAnswers.length; i++) {
-                    if (userAnswers[i].equals(correctAnswers[i])) {
-                        continue;
-                    }else {
-                        return 0;
-                    }
-                }
-                return score;
-            }else if (userAnswer.length() > correctAnswer.length()) {
-                for (int i = 0; i < userAnswers.length; i++) {
-                    if (userAnswers[i].equals(correctAnswers[i])) {
-                        continue;
-                    }else {
-                        return 0;
-                    }
-                }
-                return score/2;
-            }else if (userAnswer.length() < correctAnswer.length()) {
-                return 0;
-            }
-        }else if (shape == 300) {
-            if (userAnswer.equals(correctAnswer)) {
-                return score;
-            }
-        }else if (shape == 400) {
-            if (userAnswer.equals(correctAnswer)) {
-                return score;
-            }
-        }else if (shape == 500) {
-            if (userAnswer.equals(correctAnswer)) {
-                return score;
-            }
-        }
-        return 0;
-    }
-
-
 
     /**
      * 分页查询
