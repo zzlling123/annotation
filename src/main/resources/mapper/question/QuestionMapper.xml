@@ -13,6 +13,9 @@
         <if test="query.type != null and query.type != ''">
             AND q.type = #{query.type}
         </if>
+        <if test="query.shape != null and query.shape != ''">
+            AND q.shape = #{query.shape}
+        </if>
         <if test="query.difficultyLevel != null and query.difficultyLevel != ''">
             AND q.difficulty_level = #{query.difficultyLevel}
         </if>
