@@ -1,15 +1,22 @@
 package com.xinkao.erp.exercise.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.xinkao.erp.common.util.PointSubmitUtil;
+import com.xinkao.erp.exam.entity.ExamPageUserAnswer;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
+@Component
 public class MarkQuestionUtils {
+    @Resource
+    private PointSubmitUtil pointSubmitUtil;
     /**
      * 判断输入的答案是否正确，如果正确，则设置用户得分为题目的得分，否则设置为0
      * */
-    public static int checkAnswer(String userAnswer, String correctAnswer, int shape, Integer score, int moduleId) {
+    public int checkAnswer(String userAnswer, String correctAnswer, int shape, Integer score, int moduleId) {
         //shape题目类型:100-单选 200-多选 300-填空 400-主观题 500-操作题
         if (shape == 100) {
             if (userAnswer.equals(correctAnswer)) {
@@ -52,7 +59,12 @@ public class MarkQuestionUtils {
             if (moduleId==1){//1	图像标注
                 return check_answer(userAnswer,correctAnswer)?score:0;
             }else if (moduleId==2){//2	3D点云标注
-                return check_answer(userAnswer,correctAnswer)?score:0;
+                ExamPageUserAnswer examPageUserAnswer = new ExamPageUserAnswer();
+                examPageUserAnswer.setUserAnswer(userAnswer);
+                examPageUserAnswer.setRightAnswer(correctAnswer);
+                examPageUserAnswer.setShape(shape);
+                examPageUserAnswer.setScore(score);
+                return pointSubmitUtil.get3DPointScore(examPageUserAnswer);
             }else if (moduleId==3){//3	OCR标注
                 return check_answer(userAnswer,correctAnswer)?score:0;
             }else if (moduleId==4){//4	语音标注
@@ -66,7 +78,7 @@ public class MarkQuestionUtils {
         return 0;
     }
 
-    public static boolean check_answer(String userAnswer, String correctAnswer){
+    public boolean check_answer(String userAnswer, String correctAnswer){
         ObjectMapper objectMapper = new ObjectMapper();
         boolean is_correct = true;
         try {
@@ -98,7 +110,7 @@ public class MarkQuestionUtils {
     /**
      * 2D标注判断对错
      * */
-    public static boolean check_answer_2D(String userAnswer, String correctAnswer){
+    public boolean check_answer_2D(String userAnswer, String correctAnswer){
         ObjectMapper objectMapper = new ObjectMapper();
         boolean is_correct = true;
         try {
@@ -204,7 +216,7 @@ public class MarkQuestionUtils {
     /**
      * 语音标注判断对错
      * */
-    public static boolean check_answer_voice(String userAnswer, String correctAnswer){
+    public boolean check_answer_voice(String userAnswer, String correctAnswer){
         ObjectMapper objectMapper = new ObjectMapper();
         boolean is_correct = true;
         try {
@@ -312,9 +324,9 @@ public class MarkQuestionUtils {
 //        String correctAnswer = "{\"9\":[{\"attr\":[[\"24\"],[\"29\"],[\"33\"]],\"position\":{\"x\":73.17498779296875,\"y\":100.60000610351562},\"size\":{\"width\":70,\"height\":102.60000610351562}}],\"10\":[{\"attr\":[[\"51\"],[\"113\"],[\"186\"]],\"position\":{\"x\":275.17498779296875,\"y\":152.60000610351562},\"size\":{\"width\":100,\"height\":152.60000610351562}}]}";
 //        System.out.println("userAnswer:"+check_answer_2D(userAnswer,correctAnswer));
 
-        String userAnswer1 = "[{\"key\":\"wavesurfer_9ds7rp7qkj8\",\"id\":\"wavesurfer_9ds7rp7qkj8\",\"start\":9.299782779947916,\"end\":12.772280557725695,\"label\":\"未命名片段\",\"content\":\"无内容\",\"role\":\"AI\",\"text\":\"你好\"},{\"key\":\"wavesurfer_s0li512f2vo\",\"id\":\"wavesurfer_s0li512f2vo\",\"start\":30.94863611328125,\"end\":36.32015611328124,\"label\":\"未命名片段\",\"content\":\"无内容\",\"role\":\"真人\",\"text\":\"世界\"}]";
-        String correctAnswer1 = "[{\"key\":\"wavesurfer_9ds7rp7qkj8\",\"id\":\"wavesurfer_9ds7rp7qkj8\",\"start\":8.299782779947916,\"end\":10.772280557725695,\"label\":\"未命名片段\",\"content\":\"无内容\",\"role\":\"AI\",\"text\":\"你好\"},{\"key\":\"wavesurfer_s0li512f2vo\",\"id\":\"wavesurfer_s0li512f2vo\",\"start\":30.94863611328125,\"end\":36.32015611328124,\"label\":\"未命名片段\",\"content\":\"无内容\",\"role\":\"真人\",\"text\":\"世界\"}]";
-        System.out.println("userAnswer:"+check_answer_voice(userAnswer1,correctAnswer1));
+//        String userAnswer1 = "[{\"key\":\"wavesurfer_9ds7rp7qkj8\",\"id\":\"wavesurfer_9ds7rp7qkj8\",\"start\":9.299782779947916,\"end\":12.772280557725695,\"label\":\"未命名片段\",\"content\":\"无内容\",\"role\":\"AI\",\"text\":\"你好\"},{\"key\":\"wavesurfer_s0li512f2vo\",\"id\":\"wavesurfer_s0li512f2vo\",\"start\":30.94863611328125,\"end\":36.32015611328124,\"label\":\"未命名片段\",\"content\":\"无内容\",\"role\":\"真人\",\"text\":\"世界\"}]";
+//        String correctAnswer1 = "[{\"key\":\"wavesurfer_9ds7rp7qkj8\",\"id\":\"wavesurfer_9ds7rp7qkj8\",\"start\":8.299782779947916,\"end\":10.772280557725695,\"label\":\"未命名片段\",\"content\":\"无内容\",\"role\":\"AI\",\"text\":\"你好\"},{\"key\":\"wavesurfer_s0li512f2vo\",\"id\":\"wavesurfer_s0li512f2vo\",\"start\":30.94863611328125,\"end\":36.32015611328124,\"label\":\"未命名片段\",\"content\":\"无内容\",\"role\":\"真人\",\"text\":\"世界\"}]";
+//        System.out.println("userAnswer:"+check_answer_voice(userAnswer1,correctAnswer1));
 
     }
 }
