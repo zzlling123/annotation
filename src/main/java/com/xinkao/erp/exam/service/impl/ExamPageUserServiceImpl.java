@@ -30,6 +30,7 @@ import com.xinkao.erp.exam.service.*;
 import com.xinkao.erp.exam.vo.ExamPageAnswerVo;
 import com.xinkao.erp.exam.vo.ExamPageTeacherVo;
 import com.xinkao.erp.exam.vo.ExamPageUserListVo;
+import com.xinkao.erp.exercise.utils.MarkQuestionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,8 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
     private ExamPageUserLogService examPageUserLogService;
     @Autowired
     private ExamPageSetService examPageSetService;
+    @Autowired
+    private MarkQuestionUtils markQuestionUtils;
 
     @Override
     public Page<ExamUserVo> page(ExamQuery query, Pageable pageable){
@@ -210,10 +213,20 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                         allScores += score;
                     }else if (examPageUserAnswer.getType() == 4){
                         //语音标注
+                        if(markQuestionUtils.check_answer_voice(examPageUserAnswer.getUserAnswer(),examPageUserAnswer.getRightAnswer())){
+                            score = examPageUserAnswer.getScore();
+                        }else {
+                            score = 0;
+                        }
                         examPageUserAnswer.setUserScore(score);
                         allScores += score;
                     }else if (examPageUserAnswer.getType() == 5 || examPageUserAnswer.getType() == 6){
                         //2D标注、人脸关键点标注
+                        if(markQuestionUtils.check_answer_2D(examPageUserAnswer.getUserAnswer(),examPageUserAnswer.getRightAnswer())){
+                            score = examPageUserAnswer.getScore();
+                        }else {
+                            score = 0;
+                        }
                         examPageUserAnswer.setUserScore(score);
                         allScores += score;
                     }

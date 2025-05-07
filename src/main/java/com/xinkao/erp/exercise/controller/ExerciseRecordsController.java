@@ -53,6 +53,8 @@ public class ExerciseRecordsController {
     private RedisUtil redisUtil;
     @Autowired
     private InstantFeedbacksService instantFeedbacksService;
+    @Autowired
+    private MarkQuestionUtils markQuestionUtils;
 
 
     /**
@@ -263,7 +265,7 @@ public class ExerciseRecordsController {
         //根据题号找到当前题并获取答案
         InstantFeedbacks feedbacks = instantFeedbacksService.getById(feedbacksId);
         String answer = feedbacks.getCorrectAnswer();
-        int score = MarkQuestionUtils.checkAnswer(userAnswer, answer, exerciseRecords.getShape(),exerciseRecords.getScore(),exerciseRecords.getModuleId());
+        int score = markQuestionUtils.checkAnswer(userAnswer, answer, exerciseRecords.getShape(),exerciseRecords.getScore(),exerciseRecords.getModuleId());
         InstantFeedbacks instantFeedbacks = instantFeedbacksService.getById(feedbacksId);
         instantFeedbacks.setUserAnswer(userAnswer);
         instantFeedbacks.setUserScore(score);
