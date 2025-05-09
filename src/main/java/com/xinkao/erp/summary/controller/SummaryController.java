@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.xinkao.erp.common.annotation.PrimaryDataSource;
 import com.xinkao.erp.common.model.BaseResponse;
+import com.xinkao.erp.common.model.LoginUser;
 import com.xinkao.erp.common.util.RedisUtil;
 import com.xinkao.erp.exam.entity.ExamPageUser;
 import com.xinkao.erp.exam.service.ExamPageUserService;
@@ -15,6 +16,7 @@ import com.xinkao.erp.user.entity.User;
 import com.xinkao.erp.user.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,14 +42,13 @@ public class SummaryController {
 //    学生成绩统计	详细记录每个学生的练习和考试成绩，生成个人成绩单和进步曲线图，帮助学生了解自己的学习效果。
 //    班级成绩统计	汇总整个班级的成绩数据，生成班级平均分、最高分、最低分等统计信息，便于教师评估教学效果。
 
-
     /**
      * 学生成绩统
      * @param summaryStuParam 其中type 是考试还是练习 0 练习 1 考试；stuId 是学生id
      * @return
      */
     @RequestMapping("/stuSummary")
-    @ApiOperation("学生成绩统计，type 是考试还是练习 0 练习 1 考试")
+    @ApiOperation("学生成绩统计，type 是考试还是练习 0 练习 1 考试，stuId是学生id")
     @PrimaryDataSource
     public BaseResponse<?> stuSummary(@RequestBody SummaryStuParam  summaryStuParam) {
         //获取当前登录用户信息
@@ -62,6 +63,46 @@ public class SummaryController {
         }else if (summaryStuParam.getType() == 1){
             LambdaQueryWrapper<ExamPageUser> wrapper = Wrappers.lambdaQuery();
             wrapper.eq(ExamPageUser::getUserId,useId);
+            wrapper.orderByAsc(ExamPageUser::getCreateTime);
+            List<ExamPageUser> examPageUserList = examPageUserService.list(wrapper);
+            return BaseResponse.ok(examPageUserList);
+        }else {
+            return BaseResponse.fail("参数错误");
+        }
+    }
+
+    @RequestMapping("/stuSummaryByUserRole/{type}")
+    @ApiOperation("根据登录用户查询所带班级学生成绩统计，admin查看所有学生，type 是考试还是练习 0 练习 1 考试")
+    @PrimaryDataSource
+    public BaseResponse<?> stuSummaryByUserRole(@PathVariable int type) {
+        //获取当前登录用户信息
+        List<Integer> userIds = null;
+        LoginUser loginUserAll = redisUtil.getInfoByToken();
+        if (loginUserAll.getUser().getRoleId() == 1){
+            //获取用户管理的班级
+            LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery();
+            wrapper.eq(User::getRoleId,2);
+            List<User> userList = userService.list(wrapper);
+            userIds = userList.stream().map(User::getId).collect(Collectors.toList());
+        }else if (loginUserAll.getUser().getRoleId() == 2){
+            //获取用户管理的班级
+            LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery();
+            wrapper.eq(User::getClassId,loginUserAll.getUser().getClassId());
+            wrapper.eq(User::getRoleId,3);
+            List<User> userList = userService.list(wrapper);
+            userIds = userList.stream().map(User::getId).collect(Collectors.toList());
+        }else {
+            return BaseResponse.fail("参数错误");
+        }
+        if (userIds != null&&type == 0){
+            LambdaQueryWrapper<ExerciseRecords> wrapper = Wrappers.lambdaQuery();
+            wrapper.in(ExerciseRecords::getUserId,userIds);
+            wrapper.orderByAsc(ExerciseRecords::getCreateTime);
+            List<ExerciseRecords> exerciseRecordsList = exerciseRecordsService.list(wrapper);
+            return BaseResponse.ok(exerciseRecordsList);
+        }else if (userIds != null&&type == 1){
+            LambdaQueryWrapper<ExamPageUser> wrapper = Wrappers.lambdaQuery();
+            wrapper.eq(ExamPageUser::getUserId,userIds);
             wrapper.orderByAsc(ExamPageUser::getCreateTime);
             List<ExamPageUser> examPageUserList = examPageUserService.list(wrapper);
             return BaseResponse.ok(examPageUserList);
