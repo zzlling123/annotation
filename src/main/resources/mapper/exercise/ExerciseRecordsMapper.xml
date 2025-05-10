@@ -8,7 +8,7 @@
             and module_id LIKE CONCAT('%', #{query.moduleId}, '%')
         </if>
         <if test="query.userId != null and query.userId != ''">
-            and user_id LIKE CONCAT('%', #{query.userId}, '%')
+            and user_id =  #{query.userId}
         </if>
         <if test="query.shape != null and query.shape != ''">
             and shape LIKE CONCAT('%', #{query.shape}, '%')
