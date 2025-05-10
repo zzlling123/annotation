@@ -18,6 +18,7 @@ import com.xinkao.erp.common.enums.system.OperationType;
 import com.xinkao.erp.common.exception.BusinessException;
 import com.xinkao.erp.common.model.param.UpdateStateParam;
 import com.xinkao.erp.common.model.support.Pageable;
+import com.xinkao.erp.common.param.ErrorImportTokenParam;
 import com.xinkao.erp.common.util.ExcelUtils;
 import com.xinkao.erp.common.util.PasswordCheckUtil;
 import com.xinkao.erp.common.util.RedisUtil;
@@ -219,8 +220,8 @@ public class UserController extends BaseController {
 	@PrimaryDataSource
 	@ApiOperation(value = "下载错误用户导入名单")
 	@RequestMapping(value = "/getErrorUpdateClassImportExcel", method = RequestMethod.POST)
-	public void getErrorUpdateClassImportExcel(HttpServletResponse response,@RequestParam String token) {
-		JSONArray json = JSON.parseObject(redisUtils.get(token)).getJSONArray("data");
+	public void getErrorUpdateClassImportExcel(HttpServletResponse response,@RequestBody ErrorImportTokenParam param) {
+		JSONArray json = JSON.parseObject(redisUtils.get(param.getToken())).getJSONArray("data");
 		List<UserImportErrorModel> stuUpdateClassImportErrorModels = BeanUtil.copyToList(json, UserImportErrorModel.class);
 		//下载文件
 		try {
