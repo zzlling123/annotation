@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -51,9 +52,14 @@ public class    QuestionController extends BaseController {
      * 获取题目分类下拉列表
      */
     @PrimaryDataSource
-    @PostMapping("/getQuestionType")
+    @PostMapping("/getQuestionType/{shape}")
     @ApiOperation("获取题目分类下拉列表")
-    public BaseResponse<List<QuestionType>> getQuestionType() {
+    public BaseResponse<List<QuestionType>> getQuestionType(@PathVariable String shape) {
+        if ("500".equals(shape)){
+            //创建固定字符串集合：2,3,4,5
+            List<Integer> ids = Arrays.asList(2, 4, 5 ,6);
+            return BaseResponse.ok("成功", questionTypeService.lambdaQuery().in(QuestionType::getId, ids).list());
+        }
         return BaseResponse.ok("成功", questionTypeService.list());
     }
 
