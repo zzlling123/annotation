@@ -5,13 +5,13 @@
         SELECT * FROM scene_pcd
         where 1=1
         <if test="query.isDel != null and query.isDel != ''">
-            and is_del LIKE CONCAT('%', #{query.isDel}, '%')
+            and is_del =  #{query.isDel}
         </if>
         <if test="query.sceneId != null and query.sceneId != ''">
-            and scene_id LIKE CONCAT('%', #{query.sceneId}, '%')
+            and scene_id = #{query.sceneId}
         </if>
         <if test="query.pcdPath != null and query.pcdPath != ''">
-            and pcd_path LIKE CONCAT('%', #{query.pcdPath}, '%')
+            and pcd_path = #{query.pcdPath}
         </if>
         ORDER BY create_time DESC
     </select>
