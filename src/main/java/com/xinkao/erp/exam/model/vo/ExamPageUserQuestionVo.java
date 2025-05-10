@@ -64,6 +64,12 @@ public class ExamPageUserQuestionVo {
 	private Integer oldQuestionId;
 
 	/**
+	 * 操作题标头
+	 */
+	@TableField("title")
+	private String title;
+
+	/**
 	 * 题干,json列表
 	 */
 	@ApiModelProperty("题干,json列表")

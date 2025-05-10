@@ -96,10 +96,12 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
         examPageUserService.saveBatch(examPageUserList);
         examPageUserLogService.saveBatch(examPageUserLogList);
         //获取设置中的知识点列表
-        Map<Integer,List<ExamPageSetType>> examPageSetTypeMap = examPageSetTypeService.lambdaQuery()
+        List<ExamPageSetType> examPageSetTypeList = examPageSetTypeService.lambdaQuery()
                 .eq(ExamPageSetType::getExamId,examPageSet.getExamId())
                 .orderByAsc(ExamPageSetType::getShape)
-                .list().stream().collect(Collectors.groupingBy(ExamPageSetType::getShape));
+                .list();
+        //按照之前shape的排列顺序分组成map格式
+        Map<Integer,List<ExamPageSetType>> examPageSetTypeMap = examPageSetTypeList.stream().collect(Collectors.groupingBy(ExamPageSetType::getShape));
         //如果是0-同题同序 1-同题不同序则先获取一套试题
         if (0 == examPageSet.getPageMode()|| 1 == examPageSet.getPageMode()) {
             //根据知识点获取随机题目
@@ -129,7 +131,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                                 examPageUserQuestion.setNum(String.valueOf(num+1));
                                 examPageUserQuestion.setNumSort(num+1);
                                 examPageUserQuestion.setCreateTime(DateUtil.date());
-                                save(examPageUserQuestion);
+                                examPageUserQuestionList.add(examPageUserQuestion);
                                 //生成用户答案模板
                                 ExamPageUserAnswer examPageUserAnswer = new ExamPageUserAnswer();
                                 BeanUtil.copyProperties(examPageUserQuestion,examPageUserAnswer);
@@ -139,7 +141,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                                 examPageUserAnswer.setQuestionId(examPageUserQuestion.getId());
                                 examPageUserAnswer.setRightAnswer(question.getAnswer());
                                 examPageUserAnswer.setCreateTime(DateUtil.date());
-                                examPageUserAnswerService.save(examPageUserAnswer);
+                                examPageUserAnswerList.add(examPageUserAnswer);
                                 num++;
                                 if(question.getNeedCorrect() == 1){
                                     needCorrect = true;
@@ -306,7 +308,9 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
             }
             questionMap.put(integer,questionList);
         }
-        return questionMap;
+        return questionMap.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
     }
 
     public int getQuestionNum(Set<Integer> set,int max){

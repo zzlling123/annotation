@@ -16,6 +16,9 @@ public class QuestionPageVo extends BaseEntity {
     @ApiModelProperty("题目Id")
     private String id;
 
+    @ApiModelProperty("操作题标头")
+    private String title;
+
     @ApiModelProperty("题目")
     private String question;
 

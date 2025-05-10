@@ -17,6 +17,9 @@ import java.util.List;
 @Setter
 public class QuestionInfoVo extends BaseEntity implements OutputConverter<QuestionInfoVo, Question> {
 
+    @ApiModelProperty("操作题标头")
+    private String title;
+
     @ApiModelProperty("题目")
     private String question;
 

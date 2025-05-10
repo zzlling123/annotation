@@ -18,6 +18,9 @@ public class QuestionParam implements InputConverter<Question> {
     @ApiModelProperty("题库ID")
     private Integer id;
 
+    @ApiModelProperty("操作题标头")
+    private String title;
+
     @ApiModelProperty("题目")
     @NotBlank(message = "题目不能为空")
     @Size(min = 1, max = 255, message = "题目长度应在1到255个字符之间")

@@ -74,7 +74,6 @@ public class ExamPageUserQuestionController {
         String token = XinKaoConstant.ROLL_MAKING+examId;
         //验证该token是否有值，如果有则拦截
         if (redisUtil.get(token) != null){
-            System.out.println(redisUtil.get(token).toString());
             //如果value ！= 1则返回
             if (!"1".equals(redisUtil.get(token))){
                 return BaseResponse.fail("该考试正在制卷中，请勿重复操作！");
