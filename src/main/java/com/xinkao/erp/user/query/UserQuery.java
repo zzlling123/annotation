@@ -23,7 +23,7 @@ import java.util.List;
 public class UserQuery extends BasePageQuery implements Serializable {
 
     @ApiModelProperty("账号")
-    private String userName;
+    private String username;
 
     @ApiModelProperty("用户名称")
     private String realName;
