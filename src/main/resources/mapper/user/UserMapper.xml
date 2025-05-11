@@ -12,7 +12,7 @@
 			and u.real_name LIKE CONCAT('%', #{userQuery.realName}, '%')
 		</if>
 		<if test="userQuery.username != null and userQuery.username != ''">
-			and u.username = #{userQuery.username}
+			and u.username LIKE CONCAT('%', #{userQuery.username}, '%')
 		</if>
 		<if test="userQuery.roleId != null and userQuery.roleId != ''">
 			and u.role_id = #{userQuery.roleId}
