@@ -124,7 +124,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                                 Question question = questionList.get(i);
                                 ExamPageUserQuestion examPageUserQuestion = new ExamPageUserQuestion();
                                 BeanUtil.copyProperties(question,examPageUserQuestion);
-                                examPageUserQuestion.setId(null);
+                                examPageUserQuestion.setId(IdUtil.getSnowflakeNextIdStr());
                                 examPageUserQuestion.setExamId(examPageUser.getExamId());
                                 examPageUserQuestion.setUserId(examPageUser.getUserId());
                                 examPageUserQuestion.setOldQuestionId(question.getId());
@@ -180,7 +180,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                                 Question question = questionList.get(i);
                                 ExamPageUserQuestion examPageUserQuestion = new ExamPageUserQuestion();
                                 BeanUtil.copyProperties(question,examPageUserQuestion);
-                                examPageUserQuestion.setId(null);
+                                examPageUserQuestion.setId(IdUtil.getSnowflakeNextIdStr());
                                 examPageUserQuestion.setExamId(examPageUser.getExamId());
                                 examPageUserQuestion.setUserId(examPageUser.getUserId());
                                 examPageUserQuestion.setOldQuestionId(question.getId());
