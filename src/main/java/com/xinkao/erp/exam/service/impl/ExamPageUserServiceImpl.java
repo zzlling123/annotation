@@ -100,6 +100,21 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
     }
 
     @Override
+    public BaseResponse<ExamPageUserQuestionVo> getUserQuestionInfo(String id) {
+        //题目详情
+        ExamPageUserQuestion examPageUserQuestion = examPageUserQuestionMapper.selectById(id);
+        Map<String, ExamPageUserAnswer> examPageUserAnswerMap = examPageUserAnswerService.lambdaQuery()
+                .eq(ExamPageUserAnswer::getQuestionId,id)
+                .list().stream().collect(Collectors.toMap(ExamPageUserAnswer::getQuestionId, s->s));
+        //查询是否已作答
+        ExamPageUserAnswer examPageUserAnswer = examPageUserAnswerMap.get(examPageUserQuestion.getId());
+        examPageUserQuestion.setAnswer("");
+        examPageUserQuestion.setUserAnswer(examPageUserAnswer == null ? "" : examPageUserAnswer.getUserAnswer());
+        ExamPageUserQuestionVo vo = BeanUtil.copyProperties(examPageUserQuestion, ExamPageUserQuestionVo.class);
+        return BaseResponse.ok("成功",vo);
+    }
+
+    @Override
     public BaseResponse<List<ExamProgressVo>> getExamUserProgress(ExamUserQuery examUserQuery) {
         LoginUser loginUser = redisUtil.getInfoByToken();
         Integer userId = loginUser.getUser().getId();

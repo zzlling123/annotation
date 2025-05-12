@@ -6,6 +6,7 @@ import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.common.service.BaseService;
 import com.xinkao.erp.exam.entity.ExamPageUser;
+import com.xinkao.erp.exam.model.vo.ExamPageUserQuestionVo;
 import com.xinkao.erp.exam.model.vo.ExamUserVo;
 import com.xinkao.erp.exam.model.vo.ExamProgressVo;
 import com.xinkao.erp.exam.model.param.ExamUserQuery;
@@ -26,6 +27,8 @@ public interface ExamPageUserService extends BaseService<ExamPageUser> {
     Page<ExamUserVo>page(ExamQuery query, Pageable pageable);
 
     BaseResponse<ExamUserVo> getExamUserInfo(ExamUserQuery examUserQuery);
+
+    BaseResponse<ExamPageUserQuestionVo> getUserQuestionInfo(String id);
 
     BaseResponse<List<ExamProgressVo>> getExamUserProgress(ExamUserQuery examUserQuery);
 
