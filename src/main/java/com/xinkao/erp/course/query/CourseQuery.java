@@ -36,4 +36,10 @@ public class CourseQuery extends BasePageQuery implements Serializable {
      */
     @ApiModelProperty("课程状态(0启用: 1:禁用)")
     private Integer courseStatus;
+
+    /**
+     * 章节总数
+     */
+    @ApiModelProperty("章节总数")
+    private Integer totalChapters;
 }

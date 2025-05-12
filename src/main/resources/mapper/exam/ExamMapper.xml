@@ -9,7 +9,7 @@
             and exam_name LIKE CONCAT('%', #{query.examName}, '%')
         </if>
         <if test="query.status != null">
-            and status = #{query.status}
+            and state = #{query.status}
         </if>
         ORDER BY create_time DESC
     </select>

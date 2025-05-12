@@ -52,6 +52,16 @@ public class    QuestionController extends BaseController {
      * 获取题目分类下拉列表
      */
     @PrimaryDataSource
+    @PostMapping("/getQuestionType")
+    @ApiOperation("获取题目分类下拉列表")
+    public BaseResponse<List<QuestionType>> getQuestionType() {
+        return BaseResponse.ok("成功", questionTypeService.list());
+    }
+
+    /**
+     * 获取题目分类下拉列表
+     */
+    @PrimaryDataSource
     @PostMapping("/getQuestionType/{shape}")
     @ApiOperation("获取题目分类下拉列表")
     public BaseResponse<List<QuestionType>> getQuestionType(@PathVariable String shape) {
