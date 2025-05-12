@@ -1,10 +1,12 @@
 package com.xinkao.erp.exam.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.HandleResult;
 import com.xinkao.erp.common.util.RedisUtil;
 import com.xinkao.erp.common.util.ResultUtils;
+import com.xinkao.erp.exam.entity.Exam;
 import com.xinkao.erp.exam.entity.ExamPageSet;
 import com.xinkao.erp.exam.entity.ExamPageSetType;
 import com.xinkao.erp.exam.excel.ExamPageSetImportErrorModel;
@@ -12,6 +14,7 @@ import com.xinkao.erp.exam.mapper.ExamPageSetMapper;
 import com.xinkao.erp.exam.service.ExamPageSetService;
 import com.xinkao.erp.common.service.impl.BaseServiceImpl;
 import com.xinkao.erp.exam.service.ExamPageSetTypeService;
+import com.xinkao.erp.exam.service.ExamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -78,6 +81,10 @@ public class ExamPageSetServiceImpl extends BaseServiceImpl<ExamPageSetMapper, E
                     redisUtils.set(token, JSONObject.toJSONString(BaseResponse.fail("导入试卷分布试题计算总分与设置总分不相等")), 2, TimeUnit.HOURS);
                     return;
                 }else{
+                    //删除原题目分类数据
+                    examPageSetTypeService.lambdaUpdate()
+                            .eq(ExamPageSetType::getExamId,examPageSet.getExamId())
+                            .remove();
                     for (Integer examPageSetTypeId : addExamPageSetTypeMap.keySet()) {
                         int questionCount = 0;
                         try {
@@ -89,12 +96,6 @@ public class ExamPageSetServiceImpl extends BaseServiceImpl<ExamPageSetMapper, E
                             }
                             examPageSet.setQuestionCount(questionCount);
                             examPageSet.setQuestionStatus(1);
-                            //修改设置
-                            updateById(examPageSet);
-                            //删除原题目分类数据
-                            examPageSetTypeService.lambdaUpdate()
-                                    .eq(ExamPageSetType::getExamId,examPageSet.getExamId())
-                                    .remove();
                             //新增题目分类数据
                             examPageSetTypeService.saveBatch(examPageSetTypes);
                             successCount++;
@@ -105,6 +106,8 @@ public class ExamPageSetServiceImpl extends BaseServiceImpl<ExamPageSetMapper, E
                         }
                         rowNum++;
                     }
+                    //修改设置
+                    updateById(examPageSet);
                     //清除预览题目数据
 //                    examPageReviewService.removePreview(examPageSet.getId());
                 }
@@ -115,7 +118,7 @@ public class ExamPageSetServiceImpl extends BaseServiceImpl<ExamPageSetMapper, E
         if(!errorList.isEmpty()) {
             redisUtils.set(token, JSONObject.toJSONString(BaseResponse.other("导入失败",examPageSetImportErrorModelList)), 2, TimeUnit.HOURS);
         }else{
-            redisUtils.set(token, JSONObject.toJSONString(BaseResponse.ok("成功导入"+successCount+"条数据")), 2, TimeUnit.HOURS);
+            redisUtils.set(token, JSONObject.toJSONString(BaseResponse.ok("成功导入")), 2, TimeUnit.HOURS);
         }
     }
 }
