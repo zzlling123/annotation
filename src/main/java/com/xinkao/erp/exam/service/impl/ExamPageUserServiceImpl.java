@@ -18,6 +18,7 @@ import com.xinkao.erp.exam.entity.*;
 import com.xinkao.erp.exam.mapper.ExamPageUserMapper;
 import com.xinkao.erp.exam.mapper.ExamPageUserQuestionMapper;
 import com.xinkao.erp.exam.model.vo.ExamPageUserQuestionVo;
+import com.xinkao.erp.exam.model.vo.ExamPageUserVo;
 import com.xinkao.erp.exam.model.vo.ExamUserVo;
 import com.xinkao.erp.exam.model.vo.ExamProgressVo;
 import com.xinkao.erp.exam.model.param.ExamUserQuery;
@@ -434,5 +435,10 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
             examPageUser.setPassStatus(passStatus);
         }
         updateById(examPageUser);
+    }
+
+    @Override
+    public List<ExamPageUserVo> getExamPageUserName(Integer classId) {
+        return examPageUserMapper.getExamPageUserName(classId);
     }
 }

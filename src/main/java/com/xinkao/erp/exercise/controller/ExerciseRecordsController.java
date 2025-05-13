@@ -179,9 +179,9 @@ public class ExerciseRecordsController {
 //    }
 
     //查看练习记录
-    @PostMapping("/detail/{exerciseRecordsId}")
+    @GetMapping("/detail/{exerciseRecordsId}")
     @ApiOperation("查看练习记录表,list_question是试题集合，instantFeedbacksList是学生的练习记录")
-    @PrimaryDataSource
+    //@PrimaryDataSource
     public BaseResponse<?> detail(@PathVariable Integer exerciseRecordsId) {
         //获取当前用户
         LoginUser loginUserAll = redisUtil.getInfoByToken();
@@ -242,7 +242,6 @@ public class ExerciseRecordsController {
             instantFeedbacks.setUpdateBy(loginUserAll.getUser().getRealName());
             instantFeedbacks.setCorrectAnswer(question.getAnswer());
             instantFeedbacksService.save(instantFeedbacks);
-
         }
         List<InstantFeedbacks> feedbacks_list = instantFeedbacksService.list(new QueryWrapper<InstantFeedbacks>().eq("record_id", exerciseRecords.getId()));
         HashMap<String, Object> map = new HashMap<String, Object>();

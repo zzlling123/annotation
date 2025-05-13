@@ -7,9 +7,13 @@ import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.LoginUser;
 import com.xinkao.erp.common.util.RedisUtil;
 import com.xinkao.erp.exam.entity.ExamPageUser;
+import com.xinkao.erp.exam.model.vo.ExamPageUserVo;
 import com.xinkao.erp.exam.service.ExamPageUserService;
 import com.xinkao.erp.exercise.entity.ExerciseRecords;
 import com.xinkao.erp.exercise.service.ExerciseRecordsService;
+import com.xinkao.erp.manage.entity.ClassInfo;
+import com.xinkao.erp.manage.service.ClassInfoService;
+import com.xinkao.erp.summary.param.ClassSummaryParam;
 import com.xinkao.erp.summary.param.SummaryParam;
 import com.xinkao.erp.summary.param.SummaryStuParam;
 import com.xinkao.erp.user.entity.User;
@@ -37,6 +41,8 @@ public class SummaryController {
     private RedisUtil redisUtil;
     @Autowired
     private UserService userService;
+    @Autowired
+    private ClassInfoService classInfoService;
 
 //    统计
 //    学生成绩统计	详细记录每个学生的练习和考试成绩，生成个人成绩单和进步曲线图，帮助学生了解自己的学习效果。
@@ -54,6 +60,7 @@ public class SummaryController {
         //获取当前登录用户信息
         //LoginUser loginUserAll = redisUtil.getInfoByToken();
         Integer useId = summaryStuParam.getStuId();
+
         if (summaryStuParam.getType() == 0){
             LambdaQueryWrapper<ExerciseRecords> wrapper = Wrappers.lambdaQuery();
             wrapper.eq(ExerciseRecords::getUserId,useId);
@@ -85,11 +92,14 @@ public class SummaryController {
             List<User> userList = userService.list(wrapper);
             userIds = userList.stream().map(User::getId).collect(Collectors.toList());
         }else if (loginUserAll.getUser().getRoleId() == 2){
+            LambdaQueryWrapper<ClassInfo> wrapper = Wrappers.lambdaQuery();
+            wrapper.eq(ClassInfo::getDirectorId,loginUserAll.getUser().getId());
+            List<Integer> classIds = classInfoService.list(wrapper).stream().map(ClassInfo::getId).collect(Collectors.toList());
             //获取用户管理的班级
-            LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery();
-            wrapper.eq(User::getClassId,loginUserAll.getUser().getClassId());
-            wrapper.eq(User::getRoleId,3);
-            List<User> userList = userService.list(wrapper);
+            LambdaQueryWrapper<User> wrapper1 = Wrappers.lambdaQuery();
+            wrapper1.in(User::getClassId,classIds);
+            wrapper1.eq(User::getRoleId,3);
+            List<User> userList = userService.list(wrapper1);
             userIds = userList.stream().map(User::getId).collect(Collectors.toList());
         }else {
             return BaseResponse.fail("参数错误");
@@ -118,7 +128,6 @@ public class SummaryController {
      */
     @RequestMapping("/classSummary")
     @ApiOperation("班级成绩统计，summaryParam 其中type 是考试还是练习 0 练习 1 考试；classId 是班级id")
-    @PrimaryDataSource
     public BaseResponse<?> classSummary(@RequestBody SummaryParam  summaryParam) {
         //根据班级id获取班级下的所有学生
         List<User> userList = null;
@@ -140,24 +149,23 @@ public class SummaryController {
             return BaseResponse.ok(exerciseRecordsList);
         }
         else if (summaryParam.getType() == 1){
-            LambdaQueryWrapper<ExamPageUser> wrapper = Wrappers.lambdaQuery();
-            wrapper.eq(ExamPageUser::getClassId,summaryParam.getClassId());
-            //创建返回的map集合
-            HashMap<String, Object> map = new HashMap<>();
-            List<ExamPageUser> examPageUserList = examPageUserService.list(wrapper);
+            //关联user表查询考试记录并返回学生姓名
+            List<ExamPageUserVo> examPageUserList = examPageUserService.getExamPageUserName(summaryParam.getClassId());
             //获取考试id
-            List<Integer> examIds = examPageUserList.stream().map(ExamPageUser::getExamId).distinct().collect(Collectors.toList());
+            List<Integer> examIds = examPageUserList.stream().map(ExamPageUserVo::getExamId).distinct().collect(Collectors.toList());
+            ClassSummaryParam classSummaryParam = new ClassSummaryParam();
             for (Integer examId : examIds){
-                List<ExamPageUser> examPageUserList1 = examPageUserList.stream().filter(examPageUser -> examPageUser.getExamId().equals(examId)).collect(Collectors.toList());
-                map.put(examId+"",examPageUserList1);
-                Integer maxScore = examPageUserList1.stream().mapToInt(ExamPageUser::getScore).max().orElse(0);
-                Integer minScore = examPageUserList1.stream().mapToInt(ExamPageUser::getScore).min().orElse(0);
-                Integer avgScore = examPageUserList1.stream().mapToInt(ExamPageUser::getScore).sum()/examPageUserList1.size();
-                map.put(examId+"_max",maxScore);
-                map.put(examId+"_min",minScore);
-                map.put(examId+"_avg",avgScore);
+                List<ExamPageUserVo> examPageUserList1 = examPageUserList.stream().filter(examPageUser -> examPageUser.getExamId().equals(examId)).collect(Collectors.toList());
+                Integer maxScore = examPageUserList1.stream().mapToInt(ExamPageUserVo::getScore).max().orElse(0);
+                Integer minScore = examPageUserList1.stream().mapToInt(ExamPageUserVo::getScore).min().orElse(0);
+                Integer avgScore = examPageUserList1.stream().mapToInt(ExamPageUserVo::getScore).sum()/examPageUserList1.size();
+                classSummaryParam.setExamId(examId+"");
+                classSummaryParam.setAvgScore(avgScore+"");
+                classSummaryParam.setMaxScore(maxScore+"");
+                classSummaryParam.setMinScore(minScore+"");
+                classSummaryParam.setExamPageUserVoList(examPageUserList1);
             }
-            return BaseResponse.ok(map);
+            return BaseResponse.ok(classSummaryParam);
         }else {
             return BaseResponse.fail("参数错误");
         }
