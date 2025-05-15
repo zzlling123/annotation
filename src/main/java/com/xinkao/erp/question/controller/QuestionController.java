@@ -1,5 +1,6 @@
 package com.xinkao.erp.question.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.common.annotation.Log;
 import com.xinkao.erp.common.annotation.PrimaryDataSource;
@@ -13,6 +14,7 @@ import com.xinkao.erp.question.entity.Question;
 import com.xinkao.erp.question.entity.QuestionLabel;
 import com.xinkao.erp.question.entity.QuestionType;
 import com.xinkao.erp.question.param.QuestionParam;
+import com.xinkao.erp.question.param.QuestionTypeParam;
 import com.xinkao.erp.question.query.QuestionQuery;
 import com.xinkao.erp.question.service.LabelService;
 import com.xinkao.erp.question.service.QuestionLabelService;
@@ -56,6 +58,31 @@ public class    QuestionController extends BaseController {
     @ApiOperation("获取题目分类下拉列表")
     public BaseResponse<List<QuestionType>> getQuestionType() {
         return BaseResponse.ok("成功", questionTypeService.list());
+    }
+
+    /**
+     * 修改题目分类
+     */
+    @PrimaryDataSource
+    @PostMapping("/updateQuestionType")
+    @ApiOperation("修改题目分类")
+    public BaseResponse<?> updateQuestionType(@RequestBody @Valid QuestionTypeParam param) {
+        return questionTypeService.update(param);
+    }
+
+    /**
+     * 获取题目分类说明文档
+     */
+    @PrimaryDataSource
+    @PostMapping("/getQuestionTypeFileUrl/{questionTypeId}")
+    @ApiOperation("获取题目分类说明文档")
+    public BaseResponse<String> updateQuestionType(@PathVariable String questionTypeId) {
+        QuestionType questionType = questionTypeService.getById(questionTypeId);
+        String fileUrl = "";
+        if (StrUtil.isNotBlank(questionType.getFileUrl())){
+            return BaseResponse.ok("成功","https://view.xdocin.com/view?src=${"+questionType.getFileUrl()+"}");
+        }
+        return BaseResponse.ok(fileUrl);
     }
 
     /**

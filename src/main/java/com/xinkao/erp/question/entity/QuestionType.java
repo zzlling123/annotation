@@ -25,5 +25,11 @@ public class QuestionType extends DataEntity {
     @TableField("type_name")
     private String typeName;
 
+    /**
+     * 题目分类文档地址
+     */
+    @TableField("file_url")
+    private String fileUrl;
+
 
 }
