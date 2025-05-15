@@ -33,4 +33,11 @@
         LEFT JOIN `user` u ON u.id = epu.user_id
         WHERE epu.exam_id = #{query.examId} and epu.class_id = #{query.classId}
     </select>
+
+    <select id="getExamPageUserName" resultType="com.xinkao.erp.exam.model.vo.ExamPageUserVo">
+        SELECT epu.*,u.real_name
+        FROM `exam_page_user` epu
+                 LEFT JOIN `user` u ON u.id = epu.user_id
+        WHERE  epu.class_id = #{query.classId}
+    </select>
 </mapper>

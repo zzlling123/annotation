@@ -7,6 +7,7 @@ import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.common.service.BaseService;
 import com.xinkao.erp.exam.entity.ExamPageUser;
 import com.xinkao.erp.exam.model.vo.ExamPageUserQuestionVo;
+import com.xinkao.erp.exam.model.vo.ExamPageUserVo;
 import com.xinkao.erp.exam.model.vo.ExamUserVo;
 import com.xinkao.erp.exam.model.vo.ExamProgressVo;
 import com.xinkao.erp.exam.model.param.ExamUserQuery;
@@ -28,8 +29,6 @@ public interface ExamPageUserService extends BaseService<ExamPageUser> {
 
     BaseResponse<ExamUserVo> getExamUserInfo(ExamUserQuery examUserQuery);
 
-    BaseResponse<ExamPageUserQuestionVo> getUserQuestionInfo(String id);
-
     BaseResponse<List<ExamProgressVo>> getExamUserProgress(ExamUserQuery examUserQuery);
 
     BaseResponse<?> submitAnswer(ExamPageUserAnswerParam examPageUserAnswerParam);
@@ -48,4 +47,8 @@ public interface ExamPageUserService extends BaseService<ExamPageUser> {
     BaseResponse<?> correct(ExamCorrectParam param);
 
     void sumScore(Integer userId,Integer examId);
+
+    public BaseResponse<ExamPageUserQuestionVo> getUserQuestionInfo(String id);
+
+    List<ExamPageUserVo> getExamPageUserName(Integer classId);
 }
