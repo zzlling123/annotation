@@ -15,6 +15,7 @@ import com.xinkao.erp.common.util.RedisUtil;
 import com.xinkao.erp.exercise.entity.ExerciseRecords;
 import com.xinkao.erp.exercise.entity.InstantFeedbacks;
 import com.xinkao.erp.exercise.param.CreateParam;
+import com.xinkao.erp.exercise.param.SubmitAllParam;
 import com.xinkao.erp.exercise.param.SubmitParam;
 import com.xinkao.erp.exercise.query.ExerciseRecordsQuery;
 import com.xinkao.erp.exercise.service.ExerciseRecordsService;
@@ -77,6 +78,7 @@ public class ExerciseRecordsController {
         exerciseRecords.setCreateBy(loginUserAll.getUser().getRealName());
         exerciseRecords.setUpdateBy(loginUserAll.getUser().getRealName());
         exerciseRecords.setCompletionStatus(0);
+        exerciseRecords.setScore(0);
 //        exerciseRecords.setUserId(1);
 //        exerciseRecords.setCreateBy("admin");
 //        exerciseRecords.setUpdateBy("admin");
@@ -223,9 +225,23 @@ public class ExerciseRecordsController {
     public BaseResponse<?> start(@PathVariable Integer id, HttpServletRequest request) {
         LoginUser loginUserAll = redisUtil.getInfoByToken();
         ExerciseRecords exerciseRecords = exerciseRecordsService.getById(id);
-        exerciseRecords.setStartTime(java.time.LocalDateTime.now());
+        if (exerciseRecords == null){
+            return BaseResponse.fail("练习记录不存在！");
+        }else if (exerciseRecords.getIsDel() == 1){
+            return BaseResponse.fail("练习记录不存在！");
+        }
+        if (!loginUserAll.getUser().getId().equals(exerciseRecords.getUserId())){
+            return BaseResponse.fail("您没有权限开始练习！");
+        }
+        if(exerciseRecords.getCompletionStatus()==2){
+
+        }else if (exerciseRecords.getCompletionStatus() == 1){
+            return BaseResponse.fail("您已经完成了练习！");
+        }else if (exerciseRecords.getCompletionStatus() == 0){
+            exerciseRecords.setStartTime(java.time.LocalDateTime.now());
+            exerciseRecords.setCompletionStatus(2);
+        }
         exerciseRecords.setUpdateBy(loginUserAll.getUser().getRealName());
-        exerciseRecords.setCompletionStatus(2);
         exerciseRecordsService.updateById(exerciseRecords);
 
         //根据feedback存储的题号返回第一道题的信息
@@ -252,8 +268,28 @@ public class ExerciseRecordsController {
         return BaseResponse.ok(map);
     }
 
+
+    @PostMapping("/submitAll")
+    @ApiOperation("提交总练习")
+    public BaseResponse<?> submitAll(@RequestBody SubmitAllParam submitAllParam) {
+        LoginUser loginUserAll = redisUtil.getInfoByToken();
+        ExerciseRecords exerciseRecords = exerciseRecordsService.getById(submitAllParam.getExerciseRecordsId());
+        if (exerciseRecords == null) {
+            return BaseResponse.fail("练习记录不存在！");
+        }else if (exerciseRecords.getIsDel() == 1) {
+            return BaseResponse.fail("练习记录不存在！");
+        }
+        //更新练习记录的完成状态和完成时间
+        exerciseRecords.setCompletionStatus(1);
+        exerciseRecords.setUpdateBy(loginUserAll.getUser().getRealName());
+        exerciseRecords.setEndTime(java.time.LocalDateTime.now());
+        exerciseRecords.setDuration(java.time.Duration.between(exerciseRecords.getStartTime(), exerciseRecords.getEndTime()).toMinutes());
+        exerciseRecordsService.updateById(exerciseRecords);
+        return BaseResponse.ok();
+    }
+
     @PostMapping("/submit")
-    @ApiOperation("提交答案并进行答案的判断，并返回正确答案和是否回答正确，并返回下一道题的信息,hasNext 返回下一道题的信息，如果有下一题则返回true，如果没有下一题则返回false,question 返回当前题的信息,exerciseRecordsId 练习记录编号，开始练习时候返回的练习记录编号")
+    @ApiOperation("提交单个题答案")
     @PrimaryDataSource
     public BaseResponse<?> submit(@RequestBody SubmitParam submitParam) {
         LoginUser loginUserAll = redisUtil.getInfoByToken();
