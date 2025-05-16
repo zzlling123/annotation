@@ -204,6 +204,7 @@ public class ExerciseRecordsController {
         List<Question> list_question = questionService.list(new LambdaQueryWrapper<Question>().in(Question::getId, feedback_list));
         HashMap<String, Object> map = new HashMap<String, Object>();
         map.put("instantFeedbacksList", instantFeedbacksList);
+        map.put("exerciseRecords", exerciseRecords);
         map.put("list_question", list_question);
         return BaseResponse.ok(map);
     }
@@ -216,7 +217,7 @@ public class ExerciseRecordsController {
      * @return question 返回当前题的信息
      * @return exerciseRecordsId 练习记录编号，开始练习时候返回的练习记录编号
      * */
-    @PostMapping("/start/{id}")
+    @GetMapping("/start/{id}")
     @ApiOperation("开始练习并返回所有题的信息，feedbacks_list是练习详情记录，有userAnswer答案是做了，没有答案是没有完成的，list_question所有题的信息。")
     @PrimaryDataSource
     public BaseResponse<?> start(@PathVariable Integer id, HttpServletRequest request) {
@@ -234,20 +235,20 @@ public class ExerciseRecordsController {
             Question question = questionService.getById(feedback_arr[i]);
             list_question.add(question);
             //创建一个InstantFeedbacks对象并按着信息存储到instantfeedbacks表中
-            InstantFeedbacks instantFeedbacks = new InstantFeedbacks();
-            instantFeedbacks.setRecordId(exerciseRecords.getId());
-            instantFeedbacks.setQuestionId(question.getId());
-            instantFeedbacks.setShape(question.getShape());
-            instantFeedbacks.setCreateBy(loginUserAll.getUser().getRealName());
-            instantFeedbacks.setUpdateBy(loginUserAll.getUser().getRealName());
-            instantFeedbacks.setCorrectAnswer(question.getAnswer());
-            instantFeedbacksService.save(instantFeedbacks);
+//            InstantFeedbacks instantFeedbacks = new InstantFeedbacks();
+//            instantFeedbacks.setRecordId(exerciseRecords.getId());
+//            instantFeedbacks.setQuestionId(question.getId());
+//            instantFeedbacks.setShape(question.getShape());
+//            instantFeedbacks.setCreateBy(loginUserAll.getUser().getRealName());
+//            instantFeedbacks.setUpdateBy(loginUserAll.getUser().getRealName());
+//            instantFeedbacks.setCorrectAnswer(question.getAnswer());
+//            instantFeedbacksService.save(instantFeedbacks);
         }
         List<InstantFeedbacks> feedbacks_list = instantFeedbacksService.list(new QueryWrapper<InstantFeedbacks>().eq("record_id", exerciseRecords.getId()));
         HashMap<String, Object> map = new HashMap<String, Object>();
         map.put("list_question", list_question);
-        map.put("exerciseRecordsId", exerciseRecords.getId());
-        map.put("feedbacks_list", feedbacks_list);
+        map.put("exerciseRecords", exerciseRecords);
+        map.put("instantFeedbacksList", feedbacks_list);
         return BaseResponse.ok(map);
     }
 
@@ -257,12 +258,26 @@ public class ExerciseRecordsController {
     public BaseResponse<?> submit(@RequestBody SubmitParam submitParam) {
         LoginUser loginUserAll = redisUtil.getInfoByToken();
         Integer exerciseRecordsId = submitParam.getExerciseRecordsId();
-        Integer feedbacksId = submitParam.getFeedbacksId();
+        Integer questionId = submitParam.getQuestionId();
         String userAnswer = submitParam.getUserAnswer();
 
         ExerciseRecords exerciseRecords = exerciseRecordsService.getById(exerciseRecordsId);
         //根据题号找到当前题并获取答案
-        InstantFeedbacks feedbacks = instantFeedbacksService.getById(feedbacksId);
+        Question question = questionService.getById(questionId);
+        //根据questionId和exerciseRecordsId找到InstantFeedbacks的记录，要是不存在就创建
+        InstantFeedbacks feedbacks = instantFeedbacksService.getOne(new QueryWrapper<InstantFeedbacks>().eq("record_id", exerciseRecordsId).eq("question_id", questionId));
+        if (feedbacks == null) {
+            feedbacks = new InstantFeedbacks();
+            feedbacks.setRecordId(exerciseRecordsId);
+            feedbacks.setQuestionId(questionId);
+            feedbacks.setShape(question.getShape());
+            feedbacks.setCreateBy(loginUserAll.getUser().getRealName());
+            feedbacks.setUpdateBy(loginUserAll.getUser().getRealName());
+            feedbacks.setCorrectAnswer(question.getAnswer());
+            instantFeedbacksService.save(feedbacks);
+        }
+        feedbacks = instantFeedbacksService.getOne(new QueryWrapper<InstantFeedbacks>().eq("record_id", exerciseRecordsId).eq("question_id", questionId));
+        Integer feedbacksId = feedbacks.getId();
         String answer = feedbacks.getCorrectAnswer();
         int score = markQuestionUtils.checkAnswer(userAnswer, answer, exerciseRecords.getShape(),exerciseRecords.getScore(),exerciseRecords.getModuleId());
         InstantFeedbacks instantFeedbacks = instantFeedbacksService.getById(feedbacksId);
