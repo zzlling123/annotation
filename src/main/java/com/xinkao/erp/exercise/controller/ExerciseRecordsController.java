@@ -266,6 +266,7 @@ public class ExerciseRecordsController {
         Question question = questionService.getById(questionId);
         //根据questionId和exerciseRecordsId找到InstantFeedbacks的记录，要是不存在就创建
         InstantFeedbacks feedbacks = instantFeedbacksService.getOne(new QueryWrapper<InstantFeedbacks>().eq("record_id", exerciseRecordsId).eq("question_id", questionId));
+        int score_exercise = exerciseRecords.getScore();
         if (feedbacks == null) {
             feedbacks = new InstantFeedbacks();
             feedbacks.setRecordId(exerciseRecordsId);
@@ -275,15 +276,17 @@ public class ExerciseRecordsController {
             feedbacks.setUpdateBy(loginUserAll.getUser().getRealName());
             feedbacks.setCorrectAnswer(question.getAnswer());
             instantFeedbacksService.save(feedbacks);
+        }else {
+            score_exercise = score_exercise - feedbacks.getUserScore();
         }
         feedbacks = instantFeedbacksService.getOne(new QueryWrapper<InstantFeedbacks>().eq("record_id", exerciseRecordsId).eq("question_id", questionId));
         Integer feedbacksId = feedbacks.getId();
         String answer = feedbacks.getCorrectAnswer();
-        int score = markQuestionUtils.checkAnswer(userAnswer, answer, exerciseRecords.getShape(),exerciseRecords.getScore(),exerciseRecords.getModuleId());
+        int score = markQuestionUtils.checkAnswer(userAnswer, answer, exerciseRecords.getShape(),5,exerciseRecords.getModuleId());
         InstantFeedbacks instantFeedbacks = instantFeedbacksService.getById(feedbacksId);
         instantFeedbacks.setUserAnswer(userAnswer);
         instantFeedbacks.setUserScore(score);
-        exerciseRecords.setScore(exerciseRecords.getScore() + score);
+        exerciseRecords.setScore(score_exercise + score);
         //如果是最后一道题就更新练习记录的完成状态和分数
         String[] feedback_arr = exerciseRecords.getFeedback().split(",");
         if (feedbacksId == Integer.parseInt(feedback_arr[feedback_arr.length-1])) {
