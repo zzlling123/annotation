@@ -6,6 +6,7 @@ import com.xinkao.erp.common.annotation.Log;
 import com.xinkao.erp.common.annotation.PrimaryDataSource;
 import com.xinkao.erp.common.controller.BaseController;
 import com.xinkao.erp.common.enums.system.OperationType;
+import com.xinkao.erp.common.exception.BusinessException;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.param.DeleteParam;
 import com.xinkao.erp.common.model.support.Pageable;
@@ -23,12 +24,18 @@ import com.xinkao.erp.question.service.QuestionTypeService;
 import com.xinkao.erp.question.vo.QuestionInfoVo;
 import com.xinkao.erp.question.vo.QuestionPageVo;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * <p>
@@ -48,6 +55,10 @@ public class    QuestionController extends BaseController {
     private QuestionTypeService questionTypeService;
     @Resource
     private LabelService labelService;
+    @Value("${path.fileUrl}")
+    private String fileUrl;
+    @Value("${ipurl.url}")
+    private String ipurl;
 
 
     /**
@@ -68,6 +79,32 @@ public class    QuestionController extends BaseController {
     @ApiOperation("修改题目分类")
     public BaseResponse<?> updateQuestionType(@RequestBody @Valid QuestionTypeParam param) {
         return questionTypeService.update(param);
+    }
+
+    @PrimaryDataSource
+    @PostMapping("/upload/file")
+    @ApiOperation("上传文件")
+    public BaseResponse<String> uploadRequest(@RequestParam(value="file") MultipartFile file,@RequestParam String id, HttpServletRequest request) {
+        try {
+            String saveFileName;
+            File file1 = new File(fileUrl);
+            if (!file1.exists()){
+                file1.mkdirs();
+            }
+            if (file.isEmpty()) {
+                throw new BusinessException("文件为空");
+            }
+            System.out.println("fileName:" + file.getOriginalFilename());
+            saveFileName = UUID.randomUUID().toString()+file.getOriginalFilename();
+            File fileNew = new File(fileUrl,saveFileName);
+            file.transferTo(fileNew);
+            String newFileUrl = ipurl+"/annotation/fileUrl/"+saveFileName;
+            return questionTypeService.lambdaUpdate().eq(QuestionType::getId,id).set(QuestionType::getFileUrl,newFileUrl).update()?BaseResponse.ok("上传成功"):BaseResponse.fail("上传失败");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new BusinessException("上传失败");
+        }
+
     }
 
     /**
