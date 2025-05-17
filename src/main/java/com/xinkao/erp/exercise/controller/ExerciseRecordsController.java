@@ -93,23 +93,27 @@ public class ExerciseRecordsController {
         if (list_question==null ||list_question.size() == 0) {
             return BaseResponse.fail("没有题目");
         }
+
         String feedback = "" ;
-        List<Integer> selectedQuestionIds = new ArrayList<>();
         if (list_question.size() <= 20) {
             //把所有的题号存到redis中
             for (Question question : list_question) {
                 int q_id = question.getId();
                 feedback += q_id + ",";
+                //去掉最后一个逗号
+                feedback = feedback.substring(0, feedback.length() - 1);
+
             }
         }else if (list_question.size() > 20) {
+            List<Integer> selectedQuestionIds = new ArrayList<>();
             //随机出20道题,不允许出现重复
             Collections.shuffle(list_question); // 打乱顺序
             int limit = Math.min(20, list_question.size());
             for (int i = 0; i < limit; i++) {
                 selectedQuestionIds.add(list_question.get(i).getId());
             }
+            feedback = String.join(",", selectedQuestionIds.stream().map(String::valueOf).collect(Collectors.toList()));
         }
-        feedback = String.join(",", selectedQuestionIds.stream().map(String::valueOf).collect(Collectors.toList()));
         exerciseRecords.setFeedback(feedback);
         exerciseRecordsService.save(exerciseRecords);
         return BaseResponse.ok();
