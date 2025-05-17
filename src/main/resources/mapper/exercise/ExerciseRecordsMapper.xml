@@ -21,4 +21,13 @@
         </if>
         ORDER BY create_time DESC
     </select>
+    <select id="getListUserName" resultType="com.xinkao.erp.exercise.query.ExerciseRecordsQuery">
+        SELECT er.*,  u.real_name FROM exercise_records er left join
+            user u on er.user_id = u.id
+        WHERE 1 = 1
+        <if test="summaryStuParam.stuId != null and summaryStuParam.stuId!=0">
+            and er.user_id = #{summaryStuParam.stuId}
+        </if>
+        ORDER BY create_time DESC
+    </select>
 </mapper>

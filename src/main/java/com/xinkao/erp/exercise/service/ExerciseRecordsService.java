@@ -6,6 +6,9 @@ import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.exercise.entity.ExerciseRecords;
 import com.xinkao.erp.common.service.BaseService;
 import com.xinkao.erp.exercise.query.ExerciseRecordsQuery;
+import com.xinkao.erp.summary.param.SummaryStuParam;
+
+import java.util.List;
 
 /**
  * <p>
@@ -21,4 +24,5 @@ public interface ExerciseRecordsService extends BaseService<ExerciseRecords> {
     BaseResponse<?> update(ExerciseRecords exerciseRecords);
     BaseResponse<?> delete(Integer id);
     ExerciseRecords detailById(ExerciseRecords exerciseRecords);
+    List<ExerciseRecordsQuery> getListUserName(SummaryStuParam summaryStuParam);
 }
