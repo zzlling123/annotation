@@ -131,7 +131,7 @@ public class    QuestionController extends BaseController {
     public BaseResponse<List<QuestionType>> getQuestionType(@PathVariable String shape) {
         if ("500".equals(shape)){
             //创建固定字符串集合：2,3,4,5
-            List<Integer> ids = Arrays.asList(2, 4, 5 ,6);
+            List<Integer> ids = Arrays.asList(2,4,5,6,7);
             return BaseResponse.ok("成功", questionTypeService.lambdaQuery().in(QuestionType::getId, ids).list());
         }
         return BaseResponse.ok("成功", questionTypeService.list());
