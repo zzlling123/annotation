@@ -101,9 +101,8 @@ public class ExerciseRecordsController {
                 int q_id = question.getId();
                 feedback += q_id + ",";
                 //去掉最后一个逗号
-                feedback = feedback.substring(0, feedback.length() - 1);
-
             }
+            feedback = feedback.substring(0, feedback.length() - 1);
         }else if (list_question.size() > 20) {
             List<Integer> selectedQuestionIds = new ArrayList<>();
             //随机出20道题,不允许出现重复
