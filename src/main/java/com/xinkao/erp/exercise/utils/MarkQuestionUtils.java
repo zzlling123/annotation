@@ -26,9 +26,11 @@ public class MarkQuestionUtils {
             //选题少答的一半分数，错答得0分
             String [] userAnswers = userAnswer.split("");
             String [] correctAnswers = correctAnswer.split("");
+
             if (userAnswer.length() == correctAnswer.length()) {
                 for (int i = 0; i < userAnswers.length; i++) {
-                    if (userAnswers[i].equals(correctAnswers[i])) {
+                    //判断用户答案是否存在与正确答案的数组中，如果存在则继续，如果不存在则返回0
+                    if(correctAnswer.contains(userAnswers[i])){
                         continue;
                     }else {
                         return 0;
