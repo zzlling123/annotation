@@ -1,5 +1,6 @@
 package com.xinkao.erp.summary.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.xinkao.erp.common.annotation.PrimaryDataSource;
@@ -10,6 +11,7 @@ import com.xinkao.erp.exam.entity.ExamPageUser;
 import com.xinkao.erp.exam.model.vo.ExamPageUserVo;
 import com.xinkao.erp.exam.service.ExamPageUserService;
 import com.xinkao.erp.exercise.entity.ExerciseRecords;
+import com.xinkao.erp.exercise.query.ExerciseRecordsQuery;
 import com.xinkao.erp.exercise.service.ExerciseRecordsService;
 import com.xinkao.erp.manage.entity.ClassInfo;
 import com.xinkao.erp.manage.service.ClassInfoService;
@@ -59,20 +61,29 @@ public class SummaryController {
     public BaseResponse<?> stuSummary(@RequestBody SummaryStuParam  summaryStuParam) {
         //获取当前登录用户信息
         //LoginUser loginUserAll = redisUtil.getInfoByToken();
-        Integer useId = summaryStuParam.getStuId();
-
         if (summaryStuParam.getType() == 0){
-            LambdaQueryWrapper<ExerciseRecords> wrapper = Wrappers.lambdaQuery();
-            wrapper.eq(ExerciseRecords::getUserId,useId);
-            wrapper.orderByAsc(ExerciseRecords::getCreateTime);
-            List<ExerciseRecords> exerciseRecordsList = exerciseRecordsService.list(wrapper);
+//            LambdaQueryWrapper<ExerciseRecords> wrapper = Wrappers.lambdaQuery();
+//            if  (summaryStuParam.getStuId() != null&&summaryStuParam.getStuId() == 0){
+//                Integer useId = summaryStuParam.getStuId();
+//                wrapper.eq(ExerciseRecords::getUserId,useId);
+//            }
+//            wrapper.orderByAsc(ExerciseRecords::getCreateTime);
+//            List<ExerciseRecords> exerciseRecordsList = exerciseRecordsService.list(wrapper);
+            List<ExerciseRecordsQuery> exerciseRecordsList = exerciseRecordsService.getListUserName(summaryStuParam);
             return BaseResponse.ok(exerciseRecordsList);
         }else if (summaryStuParam.getType() == 1){
             LambdaQueryWrapper<ExamPageUser> wrapper = Wrappers.lambdaQuery();
-            wrapper.eq(ExamPageUser::getUserId,useId);
+            if  (summaryStuParam.getStuId() != null&&summaryStuParam.getStuId() == 0){
+                Integer useId = summaryStuParam.getStuId();
+                wrapper.eq(ExamPageUser::getUserId,useId);
+            }
             wrapper.orderByAsc(ExamPageUser::getCreateTime);
             List<ExamPageUser> examPageUserList = examPageUserService.list(wrapper);
-            return BaseResponse.ok(examPageUserList);
+            List<ExamPageUserVo> voList = BeanUtil.copyToList(examPageUserList, ExamPageUserVo.class);
+            voList.forEach(examPageUserVo -> {
+                examPageUserVo.setRealName(userService.getById(examPageUserVo.getUserId()).getRealName());
+            });
+            return BaseResponse.ok(voList);
         }else {
             return BaseResponse.fail("参数错误");
         }
