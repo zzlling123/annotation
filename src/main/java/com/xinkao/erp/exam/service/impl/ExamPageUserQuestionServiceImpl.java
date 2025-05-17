@@ -38,6 +38,8 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
     @Resource
     private ExamPageUserService examPageUserService;
     @Resource
+    private ExamService examservice;
+    @Resource
     private ExamPageUserLogService examPageUserLogService;
     @Resource
     private ExamPageSetTypeService examPageSetTypeService;
@@ -291,6 +293,12 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
         String isOver = redisUtil.get(token);
         if(StrUtil.isNotBlank(isOver)){
             map.put("isOver", Integer.valueOf(isOver));
+            if ("1".equals(isOver)){
+                examservice.lambdaUpdate()
+                        .eq(Exam::getId,examId)
+                        .set(Exam::getRollMakeOver,1)
+                        .update();
+            }
         }else{
             map.put("isOver",0);
         }

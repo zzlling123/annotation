@@ -222,8 +222,8 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                             examPageUserAnswer.setUserScore(examPageUserAnswer.getScore());
                             allScores += examPageUserAnswer.getUserScore();
                         }
-                    }else if (examPageUserAnswer.getType() == 2){
-                        //3D点云标注
+                    }else if (examPageUserAnswer.getType() == 2 || examPageUserAnswer.getType() == 7){
+                        //3D点云标注或者2D+3D标注
                         score = pointSubmitUtil.get3DPointScore(examPageUserAnswer);
                         examPageUserAnswer.setUserScore(score);
                         allScores += score;
