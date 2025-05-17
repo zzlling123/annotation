@@ -34,6 +34,7 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -79,22 +80,17 @@ public class ExerciseRecordsController {
         exerciseRecords.setUpdateBy(loginUserAll.getUser().getRealName());
         exerciseRecords.setCompletionStatus(0);
         exerciseRecords.setScore(0);
-//        exerciseRecords.setUserId(1);
-//        exerciseRecords.setCreateBy("admin");
-//        exerciseRecords.setUpdateBy("admin");
         exerciseRecords.setStartTime(java.time.LocalDateTime.now());
-
         //设置createby是当前用户
         exerciseRecords.setShape(shape);
-
         exerciseRecords.setModuleId(moduleId);
-
-        //随机出题20道题，20道题的id保存到redis中，并返回给前端
+        //随机出题20道题
         //根据类型首先查出所有符合类型的题的编号
         LambdaQueryWrapper<Question> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(Question::getType, moduleId).eq(Question::getShape, shape);
         List<Question> list_question = questionService.getBaseMapper().selectList(wrapper);
         String feedback = "" ;
+        List<Integer> selectedQuestionIds = new ArrayList<>();
         if (list_question.size() <= 20) {
             //把所有的题号存到redis中
             for (Question question : list_question) {
@@ -102,15 +98,14 @@ public class ExerciseRecordsController {
                 feedback += q_id + ",";
             }
         }else if (list_question.size() > 20) {
-            //随机出20道题
-            for (int i = 0; i < 20; i++) {
-                int index = (int) (Math.random() * list_question.size());
-                Question question = list_question.get(index);
-                int q_id = question.getId();
-                feedback += q_id + ",";
+            //随机出20道题,不允许出现重复
+            Collections.shuffle(list_question); // 打乱顺序
+            int limit = Math.min(20, list_question.size());
+            for (int i = 0; i < limit; i++) {
+                selectedQuestionIds.add(list_question.get(i).getId());
             }
         }
-        feedback = feedback.substring(0, feedback.length() - 1);
+        feedback = String.join(",", selectedQuestionIds.stream().map(String::valueOf).collect(Collectors.toList()));
         exerciseRecords.setFeedback(feedback);
         exerciseRecordsService.save(exerciseRecords);
         return BaseResponse.ok();
