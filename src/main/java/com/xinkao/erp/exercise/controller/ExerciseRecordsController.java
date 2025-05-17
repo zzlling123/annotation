@@ -89,6 +89,10 @@ public class ExerciseRecordsController {
         LambdaQueryWrapper<Question> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(Question::getType, moduleId).eq(Question::getShape, shape);
         List<Question> list_question = questionService.getBaseMapper().selectList(wrapper);
+        //判断list_question是否是空的
+        if (list_question==null ||list_question.size() == 0) {
+            return BaseResponse.fail("没有题目");
+        }
         String feedback = "" ;
         List<Integer> selectedQuestionIds = new ArrayList<>();
         if (list_question.size() <= 20) {
