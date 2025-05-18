@@ -24,7 +24,7 @@ public class PointSubmitUtil {
         // 解析标准答案和学生作答答案
         Map<String,List<Map<String, List<Map<String, Object>>>>> rightAnswer = getAnswerFor3dJson(examPageUserAnswer.getRightAnswer());
         Map<String,List<Map<String, List<Map<String, Object>>>>> userAnswer = getAnswerFor3dJson(examPageUserAnswer.getUserAnswer());
-
+        PanJuanParam dto = new PanJuanParam();
         int biao = 0;//正确标注个数
         int cuo = 0;//应该标注未标注个数
         int wu = 0;//错误标注个数
@@ -32,6 +32,19 @@ public class PointSubmitUtil {
         int zong = 0;//总共需要标注个数
         int da = 0;//学生标注个数
         boolean is_error  = false;
+        if (rightAnswer.size() == 0 || userAnswer.size() == 0){
+            dto.setIsCorrect(1);
+            dto.setBiao(biao);
+            dto.setCuo(cuo);
+            dto.setWu(wu);
+            dto.setShu(shu);
+            dto.setZong(zong);
+            dto.setDa(da);
+            dto.setAccuracyRate(new BigDecimal(0));
+            dto.setCoverageRate(new BigDecimal(0));
+            dto.setScore(0);
+            return dto;
+        }
         // 比对帧的个数
         if (rightAnswer.size() != userAnswer.size()) {
             is_error = true;
@@ -87,7 +100,7 @@ public class PointSubmitUtil {
                         shu++;
                         // 计算position的误差
                         Map<String, BigDecimal> rightPosition = (Map<String, BigDecimal>) rightAttrs.get(j).get("position");
-                        Map<String, Integer> rightSize = (Map<String, Integer>) rightAttrs.get(j).get("size");
+                        Map<String, Object> rightSize = (Map<String, Object>) rightAttrs.get(j).get("size");
                         for (int k = 0; k < userAttrs.size(); k++){
                             //循环遍历userAttrs，判断是否有attr一致且误差值小于0.95或不大于1.05，如果循环完毕没有符合的则返回0
                             JSONArray userAttr = (JSONArray) userAttrs.get(k).get("attr");
@@ -103,10 +116,10 @@ public class PointSubmitUtil {
                                 continue;
                             }
                             Map<String, BigDecimal> userPosition = (Map<String, BigDecimal>) userAttrs.get(k).get("position");
-                            Map<String, Integer> userSize = (Map<String, Integer>) userAttrs.get(k).get("size");
+                            Map<String, Object> userSize = (Map<String, Object>) userAttrs.get(k).get("size");
                             //组成Cuboid进行比对
-                            Cuboid cuboid1 = new Cuboid(get3DDouble(rightPosition.get("x")), get3DDouble(rightPosition.get("y")), get3DDouble(rightPosition.get("z")), rightSize.get("x"), rightSize.get("y"), rightSize.get("z"));
-                            Cuboid cuboid2 = new Cuboid(get3DDouble(userPosition.get("x")), get3DDouble(userPosition.get("y")), get3DDouble(userPosition.get("z")), userSize.get("x"), userSize.get("y"), userSize.get("z"));
+                            Cuboid cuboid1 = new Cuboid(get3DDouble(rightPosition.get("x")), get3DDouble(rightPosition.get("y")), get3DDouble(rightPosition.get("z")), get3DDoubleStr(rightSize.get("x")), get3DDoubleStr(rightSize.get("y")), get3DDoubleStr(rightSize.get("z")));
+                            Cuboid cuboid2 = new Cuboid(get3DDouble(userPosition.get("x")), get3DDouble(userPosition.get("y")), get3DDouble(userPosition.get("z")), get3DDoubleStr(userSize.get("x")), get3DDoubleStr(userSize.get("y")), get3DDoubleStr(userSize.get("z")));
 
                             double iou = calculateIoU(cuboid1, cuboid2);
                             System.out.println("重叠率: " + iou); // 输出约为0.0667（6.67%）
@@ -131,7 +144,7 @@ public class PointSubmitUtil {
         double score = (biao  / (float)zong) * examPageUserAnswer.getScore();
         String str = String.valueOf(score);
         str = str.substring(0, str.indexOf("."));
-        PanJuanParam dto = new PanJuanParam();
+
         dto.setIsCorrect(is_error ? 0 : 1);
         dto.setBiao(biao);
         dto.setCuo(cuo);
@@ -153,8 +166,16 @@ public class PointSubmitUtil {
         return Double.parseDouble(str.substring(0, str.indexOf(".") + 2));
     }
 
+    public double get3DDoubleStr(Object str){
+        String newStr = String.valueOf(str);
+        return Double.parseDouble(newStr.substring(0, newStr.indexOf(".") + 2));
+    }
+
     public Map<String,List<Map<String, List<Map<String, Object>>>>> getAnswerFor3dJson(String answer){
         Map<String,List<Map<String, List<Map<String, Object>>>>> answerMap = new HashMap<>();
+        if (StrUtil.isBlank(answer)){
+            return answerMap;
+        }
         //解析JSON
         JSONArray jsonArray = JSON.parseArray(answer);
         for (int i = 0; i < jsonArray.size(); i++) {
