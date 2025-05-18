@@ -254,12 +254,17 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                         allScores += score;
                     }else if (examPageUserAnswer.getType() == 5 || examPageUserAnswer.getType() == 6){
                         //2D标注、人脸关键点标注
-                        if(markQuestionUtils.check_answer_2D(examPageUserAnswer.getUserAnswer(),examPageUserAnswer.getRightAnswer())){
-                            score = examPageUserAnswer.getScore();
-                        }else {
-                            score = 0;
-                        }
+                        PanJuanParam dto = markQuestionUtils.check_answer_2D_xyq(examPageUserAnswer.getUserAnswer(),examPageUserAnswer.getRightAnswer());
+                        score = dto.getCoverageRate().multiply(new BigDecimal(score)).setScale(0, RoundingMode.HALF_UP).intValueExact();
                         examPageUserAnswer.setUserScore(score);
+                        examPageUserAnswer.setBiao(dto.getBiao());
+                        examPageUserAnswer.setCuo(dto.getCuo());
+                        examPageUserAnswer.setWu(dto.getWu());
+                        examPageUserAnswer.setShu(dto.getShu());
+                        examPageUserAnswer.setZong(dto.getZong());
+                        examPageUserAnswer.setDa(dto.getDa());
+                        examPageUserAnswer.setAccuracyRate(dto.getAccuracyRate());
+                        examPageUserAnswer.setCoverageRate(dto.getCoverageRate());
                         allScores += score;
                     }
                 }
