@@ -71,6 +71,9 @@ public class ClassInfoController extends BaseController {
     @ApiOperation("班级负责人--下拉列表")
     public BaseResponse<List<ClassInfo>> getListForTea() {
         LoginUser loginUser = redisUtil.getInfoByToken();
+        if (loginUser.getUser().getRoleId() == 1){
+            return BaseResponse.ok(classInfoService.lambdaQuery().eq(ClassInfo::getIsDel, CommonEnum.IS_DEL.NO.getCode()).list());
+        }
         return BaseResponse.ok(classInfoService.lambdaQuery().eq(ClassInfo::getDirectorId, loginUser.getUser().getId()).eq(ClassInfo::getIsDel, CommonEnum.IS_DEL.NO.getCode()).list());
     }
 
