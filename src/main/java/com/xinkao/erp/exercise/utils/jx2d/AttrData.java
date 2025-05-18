@@ -1,0 +1,36 @@
+package com.xinkao.erp.exercise.utils.jx2d;
+
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class AttrData {
+    public List<List<String>> attr;
+    public Position position;
+    public Size size;
+
+    public AttrData(JSONObject obj) {
+        this.attr = new ArrayList<>();
+        JSONArray attrArray = obj.getJSONArray("attr");
+        if (attrArray == null) {
+            return;
+        }
+        for (int i = 0; i < attrArray.size(); i++) {
+            JSONArray subArray = attrArray.getJSONArray(i);
+            List<String> innerList = new ArrayList<>();
+            for (int j = 0; j < subArray.size(); j++) {
+                innerList.add(subArray.getString(j));
+            }
+            this.attr.add(innerList);
+        }
+
+        JSONObject positionObj = obj.getJSONObject("position");
+        this.position = new Position(positionObj);
+
+        JSONObject sizeObj = obj.getJSONObject("size");
+        this.size = new Size(sizeObj);
+    }
+}

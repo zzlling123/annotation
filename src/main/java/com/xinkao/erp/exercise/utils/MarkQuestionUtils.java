@@ -1,11 +1,22 @@
 package com.xinkao.erp.exercise.utils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xinkao.erp.common.util.PointSubmitUtil;
 import com.xinkao.erp.exam.entity.ExamPageUserAnswer;
+import com.xinkao.erp.exercise.param.PanJuanParam;
+import com.xinkao.erp.exercise.utils.jx2d.AttrData;
+import com.xinkao.erp.exercise.utils.jx2d.Segment;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +48,7 @@ public class MarkQuestionUtils {
                     }
                 }
                 return score;
-            }else if (userAnswer.length() > correctAnswer.length()) {
+            }else if (userAnswer.length() < correctAnswer.length()) {
                 for (int i = 0; i < userAnswers.length; i++) {
                     if (userAnswers[i].equals(correctAnswers[i])) {
                         continue;
@@ -46,7 +57,7 @@ public class MarkQuestionUtils {
                     }
                 }
                 return score/2;
-            }else if (userAnswer.length() < correctAnswer.length()) {
+            }else if (userAnswer.length() > correctAnswer.length()) {
                 return 0;
             }
         }else if (shape == 300) {
@@ -57,27 +68,136 @@ public class MarkQuestionUtils {
             if (userAnswer.equals(correctAnswer)) {
                 return score;
             }
-        }else if (shape == 500) {
-            if (moduleId==1){//1	图像标注
-                return check_answer(userAnswer,correctAnswer)?score:0;
-            }else if (moduleId==2){//2	3D点云标注
-                ExamPageUserAnswer examPageUserAnswer = new ExamPageUserAnswer();
-                examPageUserAnswer.setUserAnswer(userAnswer);
-                examPageUserAnswer.setRightAnswer(correctAnswer);
-                examPageUserAnswer.setShape(shape);
-                examPageUserAnswer.setScore(score);
-                return pointSubmitUtil.get3DPointScore(examPageUserAnswer);
-            }else if (moduleId==3){//3	OCR标注
-                return check_answer(userAnswer,correctAnswer)?score:0;
-            }else if (moduleId==4){//4	语音标注
-                return check_answer_voice(userAnswer,correctAnswer)?score:0;
-            }else if (moduleId==5){//5	2D标注
-                return check_answer_2D(userAnswer,correctAnswer)?score:0;
-            }else if (moduleId==6){//6	人脸关键点标注
-                return check_answer(userAnswer,correctAnswer)?score:0;
-            }
         }
         return 0;
+    }
+
+    public PanJuanParam checkAnswerCaoZuo(String userAnswer, String correctAnswer, int shape, Integer score, int moduleId) {
+        if (moduleId==1){//1// 	图像标注
+            PanJuanParam panJuanParam = check_answer_2D_xyq(userAnswer,correctAnswer);
+            //return panJuanParam.getCoverageRate()*score;
+            //return panJuanParam.getCoverageRate().multiply(new BigDecimal(score)).setScale(0, RoundingMode.HALF_UP).intValueExact();
+        }else if (moduleId==2){//2	3D点云标注
+//            ExamPageUserAnswer examPageUserAnswer = new ExamPageUserAnswer();
+//            examPageUserAnswer.setUserAnswer(userAnswer);
+//            examPageUserAnswer.setRightAnswer(correctAnswer);
+//            examPageUserAnswer.setShape(shape);
+//            examPageUserAnswer.setScore(score);
+//            return pointSubmitUtil.get3DPointScore(examPageUserAnswer);
+        }else if (moduleId==3){//3	OCR标注
+            return check_answer_2D_xyq(userAnswer,correctAnswer);
+        }else if (moduleId==4){//4	语音标注
+            PanJuanParam panJuanParam = new PanJuanParam();
+            if (check_answer_voice(userAnswer,correctAnswer)){
+                panJuanParam.setIsCorrect(1);
+            }else {
+                panJuanParam.setIsCorrect(0);
+            }
+            return panJuanParam;
+        }else if (moduleId==5){//5	2D标注
+            return check_answer_2D_xyq(userAnswer,correctAnswer);
+        }else if (moduleId==6){//6	人脸关键点标注
+            return check_answer_2D_xyq(userAnswer,correctAnswer);
+        }
+        return null;
+    }
+
+    public static Map<String, List<AttrData>> parseJson(String jsonData) {
+        //判断两边是否有[]，有就去掉
+        if (jsonData.startsWith("[") && jsonData.endsWith("]")) {
+            jsonData = jsonData.substring(1, jsonData.length() - 1);
+        }
+        JSONObject jsonObject = JSONObject.parseObject(jsonData);
+        Map<String, List<AttrData>> result = new HashMap<>();
+
+        for (String key : jsonObject.keySet()) {
+            JSONArray dataArray = jsonObject.getJSONArray(key);
+            List<AttrData> attrDataList = new ArrayList<>();
+            for (int i = 0; i < dataArray.size(); i++) {
+                JSONObject dataObj = dataArray.getJSONObject(i);
+                attrDataList.add(new AttrData(dataObj));
+            }
+            result.put(key, attrDataList);
+        }
+        return result;
+    }
+
+    public static List<Segment> parseSegments(String jsonData) {
+        return JSON.parseArray(jsonData, Segment.class);
+    }
+
+    public PanJuanParam check_answer_2D_xyq(String userAnswer, String correctAnswer){
+        PanJuanParam panJuanParam = new PanJuanParam();
+        int zong = 0; //需要标注的个数
+        int biao = 0;  //标注个数
+        int cuo = 0;//应该标注未标注个数
+        int wu = 0;//错误标注个数
+        int shu = 0;//属性个数
+        int da = 0; //学生标注个数
+        int operationDuration = 0;
+        double accuracyRate = 0;
+        double coverageRate = 0;
+        //标准答案
+        Map<String, List<AttrData>> correctAnswerMap = parseJson(correctAnswer);
+        //学生作答
+        Map<String, List<AttrData>> userAnswerMap = parseJson(userAnswer);
+        //循环标准答案，先记录正确答案的总标记数量
+        for (Map.Entry<String, List<AttrData>> entry : correctAnswerMap.entrySet()) {
+            for (AttrData data : entry.getValue()) {
+                zong++;
+            }
+        }
+        panJuanParam.setZong(zong);
+        //循环学生答案，对应正确答案中是否存在
+        for (Map.Entry<String, List<AttrData>> entry : userAnswerMap.entrySet()) {
+            //获取标注类别，比如小轿车为9
+            String key_type_name = entry.getKey();
+            //判断值是否存在与正确答案中
+            //判断entry.getValue()是否是空
+            if (entry.getValue() != null ||  entry.getValue().size() > 0 ) {
+                for (AttrData data : entry.getValue()) {
+                    da++;
+                    if (correctAnswerMap.containsKey(key_type_name)) {
+                        AttrData closest_attrData = AttrDataUtils.findClosestWithSameAttr(data, correctAnswerMap.get(key_type_name));
+                        if (closest_attrData != null) {
+                            System.out.println("找到最接近且 attr 相同的对象: " + closest_attrData);
+                            //判断两个对象中数值的误差值小于5%，则认为该对象是正确的
+                            if (AttrDataUtils.isNumericalClose(data, closest_attrData)) {
+                                biao++;
+                            } else {
+                                wu++;
+                            }
+                        } else {
+                            wu ++;
+                        }
+                    }
+                    shu = shu+data.attr.size();
+                }
+            }
+        }
+        if(da==0){
+            panJuanParam.setIsCorrect(3);
+        }else {
+            if (biao>0&&biao==zong){
+                panJuanParam.setIsCorrect(1);
+            }else if (biao>0&&biao<zong){
+                panJuanParam.setIsCorrect(2);
+            }else {
+                panJuanParam.setIsCorrect(0);
+            }
+        }
+        cuo = zong - biao;
+        panJuanParam.setBiao(biao);
+        panJuanParam.setCuo(cuo);
+        panJuanParam.setWu(wu);
+        panJuanParam.setShu(shu);
+        panJuanParam.setZong(zong);
+        panJuanParam.setDa(da);
+
+        panJuanParam.setAccuracyRate(new BigDecimal(biao).divide(new BigDecimal(zong), 2, RoundingMode.HALF_UP));
+        panJuanParam.setCoverageRate(new BigDecimal(biao).divide(new BigDecimal(zong), 2, RoundingMode.HALF_UP));
+        panJuanParam.setOperationDuration(operationDuration);
+        return panJuanParam;
     }
 
     public boolean check_answer(String userAnswer, String correctAnswer){
@@ -329,6 +449,25 @@ public class MarkQuestionUtils {
 //        String userAnswer1 = "[{\"key\":\"wavesurfer_9ds7rp7qkj8\",\"id\":\"wavesurfer_9ds7rp7qkj8\",\"start\":9.299782779947916,\"end\":12.772280557725695,\"label\":\"未命名片段\",\"content\":\"无内容\",\"role\":\"AI\",\"text\":\"你好\"},{\"key\":\"wavesurfer_s0li512f2vo\",\"id\":\"wavesurfer_s0li512f2vo\",\"start\":30.94863611328125,\"end\":36.32015611328124,\"label\":\"未命名片段\",\"content\":\"无内容\",\"role\":\"真人\",\"text\":\"世界\"}]";
 //        String correctAnswer1 = "[{\"key\":\"wavesurfer_9ds7rp7qkj8\",\"id\":\"wavesurfer_9ds7rp7qkj8\",\"start\":8.299782779947916,\"end\":10.772280557725695,\"label\":\"未命名片段\",\"content\":\"无内容\",\"role\":\"AI\",\"text\":\"你好\"},{\"key\":\"wavesurfer_s0li512f2vo\",\"id\":\"wavesurfer_s0li512f2vo\",\"start\":30.94863611328125,\"end\":36.32015611328124,\"label\":\"未命名片段\",\"content\":\"无内容\",\"role\":\"真人\",\"text\":\"世界\"}]";
 //        System.out.println("userAnswer:"+check_answer_voice(userAnswer1,correctAnswer1));
+//        List<Segment> segments = parseSegments(userAnswer1);
 
+//        for (Segment seg : segments) {
+//            System.out.println(seg);
+ //       }
+//        String correctAnswer="[{\"9\":[{\"attr\":[[\"29\"],[\"24\"],[\"33\"]],\"position\":{\"x\":10.628055572509764,\"y\":-0.5402588844299301,\"z\":-6.902388572692874},\"size\":{\"x\":4,\"y\":2,\"z\":2}},{\"attr\":[[\"29\"],[\"24\"],[\"33\"]],\"position\":{\"x\":-2.4798088073730487,\"y\":-0.8183621764183027,\"z\":-8.16740608215332},\"size\":{\"x\":4,\"y\":2,\"z\":2}},{\"attr\":[[\"29\"],[\"24\"],[\"33\"]],\"position\":{\"x\":-12.322676658630373,\"y\":-1.0115683078765854,\"z\":-6.8607063293457005},\"size\":{\"x\":4,\"y\":2,\"z\":2}},{\"attr\":[[\"29\"],[\"24\"],[\"33\"]],\"position\":{\"x\":-22.161287307739258,\"y\":-2.062442302703856,\"z\":-6.672132492065425},\"size\":{\"x\":4,\"y\":2,\"z\":2}}],\"10\":[{\"attr\":[[\"51\"],[\"113\"],[\"186\"]],\"position\":{\"x\":-1.9578033685684182,\"y\":-0.6509382724761985,\"z\":10.004664421081543},\"size\":{\"x\":4,\"y\":2,\"z\":2}},{\"attr\":[[\"51\"],[\"113\"],[\"186\"]],\"position\":{\"x\":-16.72448348999023,\"y\":-0.5233587622642546,\"z\":13.190962791442875},\"size\":{\"x\":4,\"y\":2,\"z\":2}}]}]";
+//        String userAnswer= "[{\"9\":[{\"attr\":[[\"29\"],[\"24\"],[\"33\"]],\"position\":{\"x\":10.828406333923338,\"y\":-0.5509192347526535,\"z\":-6.863790988922122},\"size\":{\"x\":4,\"y\":2,\"z\":2}},{\"attr\":[[\"29\"],[\"24\"],[\"33\"]],\"position\":{\"x\":-3.3367917537689227,\"y\":-0.6951249241828901,\"z\":-8.078864097595215},\"size\":{\"x\":4,\"y\":2,\"z\":2}}],\"10\":[{\"attr\":[[\"51\"],[\"113\"],[\"186\"]],\"position\":{\"x\":-1.9578033685684182,\"y\":-0.6509382724761985,\"z\":10.004664421081543},\"size\":{\"x\":4,\"y\":2,\"z\":2}}]}]";
+//        PanJuanParam panJuanParam = MarkQuestionUtils. check_answer_2D_xyq(userAnswer,correctAnswer);
+//        //输出PanJuanParam各个值，名字换成注释
+//        System.out.println("isCorrect:"+panJuanParam.getIsCorrect());
+//        System.out.println("biao:"+panJuanParam.getBiao());
+//        System.out.println("cuo:"+panJuanParam.getCuo());
+//        System.out.println("wu:"+panJuanParam.getWu());
+//        System.out.println("shu:"+panJuanParam.getShu());
+//        System.out.println("zong:"+panJuanParam.getZong());
+//        System.out.println("da:"+panJuanParam.getDa());
+//        System.out.println("accuracyRate:"+panJuanParam.getAccuracyRate());
+//        System.out.println("coverageRate:"+panJuanParam.getCoverageRate());
+//        System.out.println("operationDuration:"+panJuanParam.getOperationDuration());
+//        System.out.println("isCorrect:"+panJuanParam.getIsCorrect());
     }
 }
