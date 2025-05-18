@@ -538,8 +538,12 @@ public class MarkQuestionUtils {
 //        for (Segment seg : segments) {
 //            System.out.println(seg);
  //       }
-        String correctAnswer="{\"258\":[{\"attr\":[\"264\"],\"position\":{\"x\":184.69998168945312,\"y\":192.1999969482422},\"size\":{\"width\":118,\"height\":192.1999969482422}}]}";
-        String userAnswer= "{\"258\":[{\"attr\":[\"264\"],\"position\":{\"x\":184.69998168945312,\"y\":192.1999969482422},\"size\":{\"width\":118,\"height\":192.1999969482422}}]}";
+        String correctAnswer="{\"258\":[{\"attr\":[\"264\",\"267\"],\"position\":{\"x\":76.5,\"y\":95},\"size\":{\"width\":57,\"height\":95}}]}";
+        String userAnswer= "{\"258\":[{\"attr\":[\"264\",\"267\"],\"position\":{\"x\":76.5,\"y\":95},\"size\":{\"width\":57,\"height\":95}}]}";
+
+//        String correctAnswer = "{\"258\":[{\"attr\":[\"\"],\"position\":{\"x\":42,\"y\":30},\"size\":{\"width\":33,\"height\":30}}]}";
+ //       String userAnswer = "{\"258\":[{\"attr\":[\"\"],\"position\":{\"x\":42,\"y\":30},\"size\":{\"width\":33,\"height\":30}}]}";
+
         PanJuanParam panJuanParam = MarkQuestionUtils. check_answer_2D_xyq_ceshi(userAnswer,correctAnswer);
         //输出PanJuanParam各个值，名字换成注释
         System.out.println("isCorrect:"+panJuanParam.getIsCorrect());
