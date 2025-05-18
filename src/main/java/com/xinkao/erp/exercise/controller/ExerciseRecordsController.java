@@ -339,6 +339,16 @@ public class ExerciseRecordsController {
             score = panJuanParam.getCoverageRate().multiply(new BigDecimal(score)).setScale(0, RoundingMode.HALF_UP).intValueExact();
         }else {
             score = markQuestionUtils.checkAnswer(userAnswer, answer, exerciseRecords.getShape(),5,exerciseRecords.getModuleId());
+            if (score == exerciseRecords.getScore()) {
+                //正确
+                instantFeedbacks.setIsCorrect(1);
+            }else if (score == 0) {
+                //错误
+                instantFeedbacks.setIsCorrect(0);
+            }else if (score > 0&& score < exerciseRecords.getScore()) {
+                //部分正确
+                instantFeedbacks.setIsCorrect(2);
+            }
         }
         instantFeedbacks.setUserAnswer(userAnswer);
         instantFeedbacks.setUserScore(score);
@@ -351,30 +361,13 @@ public class ExerciseRecordsController {
             //计算练习时长
             exerciseRecords.setDuration(java.time.Duration.between(exerciseRecords.getStartTime(), exerciseRecords.getEndTime()).toMinutes());
         }
-        HashMap<String, Object> map = new HashMap<String, Object>();
-        map.put("exerciseRecordsId", exerciseRecordsId);
-        map.put("questionId", feedbacks.getQuestionId());
-        map.put("score", score);
-        if (score == exerciseRecords.getScore()) {
-            //正确
-            instantFeedbacks.setIsCorrect(1);
-            map.put("isCorrect", "正确");
-        }else if (score == 0) {
-            //错误
-            instantFeedbacks.setIsCorrect(0);
-            map.put("isCorrect", "不正确");
-        }else if (score > 0&& score < exerciseRecords.getScore()) {
-            //部分正确
-            instantFeedbacks.setIsCorrect(2);
-            map.put("isCorrect", "部分正确");
-        }
         instantFeedbacks.setUpdateBy(loginUserAll.getUser().getRealName());
         instantFeedbacks.setUpdateTime(new Date());
         exerciseRecords.setUpdateTime(new Date());
         exerciseRecords.setUpdateBy(loginUserAll.getUser().getRealName());
         instantFeedbacksService.updateById(instantFeedbacks);
         exerciseRecordsService.updateById(exerciseRecords);
-        return BaseResponse.ok(map);
+        return BaseResponse.ok(instantFeedbacks);
     }
 
 //    @PostMapping("/start/{id}")
