@@ -83,7 +83,6 @@ public class ExamPageUserQuestionController {
             }
         }
         redisUtil.set(token, "0", 2, TimeUnit.HOURS);
-        examPageSet.setQuestionStatus(0);
         examPageSetService.updateById(examPageSet);
         //异步线程执行导入
         @Valid ExamPageSet finalExamPageSet = examPageSet;
