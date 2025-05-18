@@ -97,7 +97,9 @@ public class SummaryController {
             return BaseResponse.ok(exerciseRecordsList);
         }else if (summaryStuParam.getType() == 1){
             LambdaQueryWrapper<ExamPageUser> wrapper = Wrappers.lambdaQuery();
-            wrapper.in(ExamPageUser::getUserId,summaryStuParam.getStuId());
+            if (summaryStuParam.getStuId() != null&& summaryStuParam.getStuId().size()>0){
+                wrapper.in(ExamPageUser::getUserId,summaryStuParam.getStuId());
+            }
             wrapper.orderByAsc(ExamPageUser::getCreateTime);
             List<ExamPageUser> examPageUserList = examPageUserService.list(wrapper);
             List<ExamPageUserVo> voList = BeanUtil.copyToList(examPageUserList, ExamPageUserVo.class);
