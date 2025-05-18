@@ -39,6 +39,17 @@ public class PointSubmitUtil {
         if (rightAnswer.size() == 0 || userAnswer.size() == 0) {
             is_error = true;
         }
+        //计算学生标注数量，避免直接出错导致没有计算答题数
+        for (String s : userAnswer.keySet()) {
+            List<Map<String, List<Map<String, Object>>>> userFrame = userAnswer.get(s);
+            for (int i = 0; i < userFrame.size(); i++) {
+                Map<String, List<Map<String, Object>>> userFrameForOne = userFrame.get(i);
+                for (String key : userFrameForOne.keySet()) {
+                    List<Map<String, Object>> userAttrs = userFrameForOne.get(key);
+                    da += userAttrs.size();
+                }
+            }
+        }
         //按照每帧进行循环
         for (String s : rightAnswer.keySet()) {
             List<Map<String, List<Map<String, Object>>>> rightFrame = rightAnswer.get(s);
@@ -60,11 +71,14 @@ public class PointSubmitUtil {
                 for (String key : rightFrameForOne.keySet()) {
                     List<Map<String, Object>> rightAttrs = rightFrameForOne.get(key);
                     List<Map<String, Object>> userAttrs = userFrameForOne.get(key);
+                    if (userAttrs == null){
+                        zong += rightAttrs.size();
+                        continue;
+                    }
                     if (rightAttrs.size() != userAttrs.size()){
                         is_error = true;
                     }
                     zong += rightAttrs.size();
-                    da += userAttrs.size();
                     for (int j = 0; j < rightAttrs.size(); j++) {
                         //循环判断每一个userAttr中的标记、误差
                         JSONArray rightAttr = (JSONArray) rightAttrs.get(j).get("attr");
@@ -125,8 +139,8 @@ public class PointSubmitUtil {
         dto.setShu(shu);
         dto.setZong(zong);
         dto.setDa(da);
-        dto.setAccuracyRate(new BigDecimal(biao).divide(new BigDecimal(zong), 2, RoundingMode.HALF_UP));
-        dto.setCoverageRate(new BigDecimal(biao).divide(new BigDecimal(da), 2, RoundingMode.HALF_UP));
+        dto.setAccuracyRate(zong == 0 ? new BigDecimal(0) :new BigDecimal(biao).divide(new BigDecimal(zong), 2, RoundingMode.HALF_UP));
+        dto.setCoverageRate(da == 0 ? new BigDecimal(0) :new BigDecimal(biao).divide(new BigDecimal(da), 2, RoundingMode.HALF_UP));
         dto.setScore(Integer.parseInt(str));
         return dto;
     }
