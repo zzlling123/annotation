@@ -90,8 +90,12 @@ public class MarkQuestionUtils {
             PanJuanParam panJuanParam = new PanJuanParam();
             if (check_answer_voice(userAnswer,correctAnswer)){
                 panJuanParam.setIsCorrect(1);
+                panJuanParam.setCoverageRate(new BigDecimal(1));
+                panJuanParam.setAccuracyRate(new BigDecimal(1));
             }else {
                 panJuanParam.setIsCorrect(0);
+                panJuanParam.setCoverageRate(new BigDecimal(0));
+                panJuanParam.setAccuracyRate(new BigDecimal(0));
             }
             return panJuanParam;
         }else if (moduleId==5){//5	2D标注
@@ -538,8 +542,8 @@ public class MarkQuestionUtils {
 //        for (Segment seg : segments) {
 //            System.out.println(seg);
  //       }
-        String correctAnswer="{\"258\":[{\"attr\":[\"264\",\"267\"],\"position\":{\"x\":76.5,\"y\":95},\"size\":{\"width\":57,\"height\":95}}]}";
-        String userAnswer= "{\"258\":[{\"attr\":[\"264\",\"267\"],\"position\":{\"x\":76.5,\"y\":95},\"size\":{\"width\":57,\"height\":95}}]}";
+        String correctAnswer="{\"258\":[{\"attr\":[\"264\",\"265\"],\"position\":{\"x\":75.49127197265625,\"y\":169.37844848632812},\"size\":{\"width\":92,\"height\":169.37844848632812}},{\"attr\":[\"264\",\"266\"],\"position\":{\"x\":185.49127197265625,\"y\":167.37844848632812},\"size\":{\"width\":90,\"height\":167.37844848632812}}]}";
+        String userAnswer= "{\"258\":[{\"attr\":[\"264\",\"265\"],\"position\":{\"x\":75.49127197265625,\"y\":169.37844848632812},\"size\":{\"width\":92,\"height\":169.37844848632812}},{\"attr\":[\"264\",\"266\"],\"position\":{\"x\":185.49127197265625,\"y\":167.37844848632812},\"size\":{\"width\":90,\"height\":167.37844848632812}}]}";
 
 //        String correctAnswer = "{\"258\":[{\"attr\":[\"\"],\"position\":{\"x\":42,\"y\":30},\"size\":{\"width\":33,\"height\":30}}]}";
  //       String userAnswer = "{\"258\":[{\"attr\":[\"\"],\"position\":{\"x\":42,\"y\":30},\"size\":{\"width\":33,\"height\":30}}]}";
