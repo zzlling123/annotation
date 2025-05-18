@@ -95,6 +95,10 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
             ExamPageUserAnswer examPageUserAnswer = examPageUserAnswerMap.get(examPageUserQuestion.getId());
             examPageUserQuestion.setAnswer("");
             examPageUserQuestion.setUserAnswer(examPageUserAnswer == null ? "" : examPageUserAnswer.getUserAnswer());
+            //如果是填空题，则去掉数据中的options
+            if (examPageUserQuestion.getShape() == 300) {
+                examPageUserQuestion.setOptions("");
+            }
         }
         vo.setQuestionVoList(BeanUtil.copyToList(questionList, ExamPageUserQuestionVo.class));
         return BaseResponse.ok("成功",vo);

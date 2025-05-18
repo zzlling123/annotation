@@ -1,8 +1,10 @@
 package com.xinkao.erp.common.util;
 
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.xinkao.erp.exam.entity.Cuboid;
 import com.xinkao.erp.exam.entity.ExamPageUserAnswer;
 import org.springframework.stereotype.Component;
 
@@ -35,6 +37,30 @@ public class PointSubmitUtil {
             }
             // 将该帧内每个数组key进行比对
             for (int i = 0; i < rightFrame.size(); i++) {
+                //每一个的对象
+                //{
+                //                "attr": [
+                //                    [
+                //                        "24"
+                //                    ],
+                //                    [
+                //                        "29"
+                //                    ],
+                //                    [
+                //                        "33"
+                //                    ]
+                //                ],
+                //                "position": {
+                //                    "x": -1.7730334997177124,
+                //                    "y": 1.118543565273284,
+                //                    "z": 3.496040105819702
+                //                },
+                //                "size": {
+                //                    "x": 4,
+                //                    "y": 2,
+                //                    "z": 2
+                //                }
+                //            }
                 Map<String, List<Map<String, Object>>> rightFrameForOne = rightFrame.get(i);
                 Map<String, List<Map<String, Object>>> userFrameForOne = userFrame.get(i);
 
@@ -49,6 +75,7 @@ public class PointSubmitUtil {
                     List<Map<String, Object>> userAttrs = userFrameForOne.get(key);
 
                     for (int j = 0; j < rightAttrs.size(); j++) {
+                        //循环判断每一个userAttr中的标记、误差
                         JSONArray rightAttr = (JSONArray) rightAttrs.get(j).get("attr");
                         JSONArray userAttr = (JSONArray) userAttrs.get(j).get("attr");
                         //获取rightAttr的第三个数组
@@ -61,13 +88,16 @@ public class PointSubmitUtil {
 
                         // 计算position的误差
                         Map<String, BigDecimal> rightPosition = (Map<String, BigDecimal>) rightAttrs.get(j).get("position");
+                        Map<String, Integer> rightSize = (Map<String, Integer>) rightAttrs.get(j).get("size");
                         Map<String, BigDecimal> userPosition = (Map<String, BigDecimal>) userAttrs.get(j).get("position");
-                        //将两方的xyz进行误差计算，由于其中某个值可能为负数，所以需要判断是否为负数，如果是，则取绝对值
-                        double xDiff = calculatePosition(rightPosition.get("x").toString(),userPosition.get("x").toString());
-                        double yDiff = calculatePosition(rightPosition.get("y").toString(),userPosition.get("y").toString());
-                        double zDiff = calculatePosition(rightPosition.get("z").toString(),userPosition.get("z").toString());
+                        Map<String, Integer> userSize = (Map<String, Integer>) userAttrs.get(j).get("size");
+                        //组成Cuboid进行比对
+                        Cuboid cuboid1 = new Cuboid(get3DDouble(rightPosition.get("x")), get3DDouble(rightPosition.get("y")), get3DDouble(rightPosition.get("z")), rightSize.get("x"), rightSize.get("y"), rightSize.get("z"));
+                        Cuboid cuboid2 = new Cuboid(get3DDouble(userPosition.get("x")), get3DDouble(userPosition.get("y")), get3DDouble(userPosition.get("z")), userSize.get("x"), userSize.get("y"), userSize.get("z"));
 
-                        if (xDiff > 3 || yDiff > 3 || zDiff > 3) {
+                        double iou = calculateIoU(cuboid1, cuboid2);
+                        System.out.println("重叠率: " + iou); // 输出约为0.0667（6.67%）
+                        if (iou < 0.95 || iou > 1.05) {
                             return 0;
                         }
                     }
@@ -78,23 +108,12 @@ public class PointSubmitUtil {
         return examPageUserAnswer.getScore();
     }
 
-    //首先将两个值进行保留1位小数转换，计算两个坐标点的位置误差，如果同为正，则计算差值，如果同为负，则计算差值后取绝对值，如果一正一负，则直接相加
-    public double calculatePosition(String x1, String x2) {
-        double calculate = 0.0;
-        //将两个值进行保留1位小数,将第一个小数点后数据进行去除
-        x1 = x1.substring(0, x1.indexOf(".") + 2);
-        x2 = x2.substring(0, x2.indexOf(".") + 2);
-        //将两个值进行比较，如果相同，则计算差值，如果不同，则直接相加
-        Double x1Double = Double.parseDouble(x1);
-        Double x2Double = Double.parseDouble(x2);
-        if(x1Double > 0 && x2Double > 0){
-            calculate = Math.abs(x1Double - x2Double);
-        }else if(x1Double < 0 && x2Double < 0){
-            calculate = Math.abs(x1Double - x2Double);
-        }else{
-            calculate = Math.abs(x1Double) + Math.abs(x2Double);
+    public double get3DDouble(BigDecimal bigStr){
+        if (StrUtil.isBlank(bigStr.toString())){
+            return 0;
         }
-        return calculate;
+        String str = bigStr.toString();
+        return Double.parseDouble(str.substring(0, str.indexOf(".") + 2));
     }
 
     public Map<String,List<Map<String, List<Map<String, Object>>>>> getAnswerFor3dJson(String answer){
@@ -112,6 +131,7 @@ public class PointSubmitUtil {
                     Map<String, Object> map = new HashMap<>();
                     map.put("attr", jsonObject1.getJSONArray("attr"));
                     map.put("position", jsonObject1.getJSONObject("position"));
+                    map.put("size", jsonObject1.getJSONObject("size"));
                     list.add(map);
                 }
                 Map<String, List<Map<String, Object>>> map = new HashMap<>();
@@ -121,5 +141,41 @@ public class PointSubmitUtil {
             answerMap.put(String.valueOf(i+1), answerList);
         }
         return answerMap;
+    }
+
+    public static double calculateIoU(Cuboid cuboid1, Cuboid cuboid2) {
+        // 计算各轴投影是否有重叠
+        double overlapX = calculateAxisOverlap(
+                cuboid1.getMinX(), cuboid1.getMaxX(),
+                cuboid2.getMinX(), cuboid2.getMaxX()
+        );
+        double overlapY = calculateAxisOverlap(
+                cuboid1.getMinY(), cuboid1.getMaxY(),
+                cuboid2.getMinY(), cuboid2.getMaxY()
+        );
+        double overlapZ = calculateAxisOverlap(
+                cuboid1.getMinZ(), cuboid1.getMaxZ(),
+                cuboid2.getMinZ(), cuboid2.getMaxZ()
+        );
+
+        // 若任一轴无重叠，直接返回0
+        if (overlapX <= 0 || overlapY <= 0 || overlapZ <= 0) {
+            return 0.0;
+        }
+
+        // 计算重叠体积
+        double overlapVolume = overlapX * overlapY * overlapZ;
+
+        // 计算交并比
+        double volume1 = cuboid1.getVolume();
+        double volume2 = cuboid2.getVolume();
+        return overlapVolume / (volume1 + volume2 - overlapVolume);
+    }
+
+    // 单轴重叠长度计算
+    private static double calculateAxisOverlap(double min1, double max1, double min2, double max2) {
+        double start = Math.max(min1, min2);
+        double end = Math.min(max1, max2);
+        return end - start;
     }
 }

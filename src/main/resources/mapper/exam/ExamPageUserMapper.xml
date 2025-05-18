@@ -3,7 +3,7 @@
 <mapper namespace="com.xinkao.erp.exam.mapper.ExamPageUserMapper">
 
     <select id="page" resultType="com.xinkao.erp.exam.model.vo.ExamUserVo">
-        SELECT epu.*,e.exam_name
+        SELECT epu.*,e.exam_name,e.state
         FROM exam_page_user epu
         LEFT JOIN exam e ON epu.exam_id = e.id
         WHERE 1=1
@@ -13,7 +13,7 @@
         <if test="query.status != null and query.examName != ''">
             and e.state = #{query.status}
         </if>
-        and epu.user_id = #{userId} and e.is_del = 0
+        and epu.user_id = #{userId} and e.is_del = 0 ORDER BY e.create_time DESC
     </select>
 
     <select id="pageTeacher" resultType="com.xinkao.erp.exam.vo.ExamPageTeacherVo">
