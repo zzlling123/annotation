@@ -31,12 +31,15 @@ import com.xinkao.erp.exam.service.*;
 import com.xinkao.erp.exam.vo.ExamPageAnswerVo;
 import com.xinkao.erp.exam.vo.ExamPageTeacherVo;
 import com.xinkao.erp.exam.vo.ExamPageUserListVo;
+import com.xinkao.erp.exercise.param.PanJuanParam;
 import com.xinkao.erp.exercise.utils.MarkQuestionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -228,8 +231,17 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                         }
                     }else if (examPageUserAnswer.getType() == 2 || examPageUserAnswer.getType() == 7){
                         //3D点云标注或者2D+3D标注
-                        score = pointSubmitUtil.get3DPointScore(examPageUserAnswer);
-                        examPageUserAnswer.setUserScore(score);
+                        PanJuanParam dto = pointSubmitUtil.get3DPointScore(examPageUserAnswer);
+                        examPageUserAnswer.setUserScore(dto.getScore());
+                        //给examPageUserAnswer赋值该题的作答各维度数量
+                        examPageUserAnswer.setBiao(dto.getBiao());
+                        examPageUserAnswer.setCuo(dto.getCuo());
+                        examPageUserAnswer.setWu(dto.getWu());
+                        examPageUserAnswer.setShu(dto.getShu());
+                        examPageUserAnswer.setZong(dto.getZong());
+                        examPageUserAnswer.setDa(dto.getDa());
+                        examPageUserAnswer.setAccuracyRate(dto.getAccuracyRate());
+                        examPageUserAnswer.setCoverageRate(dto.getCoverageRate());
                         allScores += score;
                     }else if (examPageUserAnswer.getType() == 4){
                         //语音标注

@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.xinkao.erp.exam.entity.Cuboid;
 import com.xinkao.erp.exam.entity.ExamPageUserAnswer;
 import com.xinkao.erp.exam.service.ExamPageUserAnswerService;
+import com.xinkao.erp.exercise.param.PanJuanParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +23,7 @@ public class PointSubmitUtil {
 
     @Autowired
     private ExamPageUserAnswerService examPageUserAnswerService;
-    public Integer get3DPointScore(ExamPageUserAnswer examPageUserAnswer) {
+    public PanJuanParam get3DPointScore(ExamPageUserAnswer examPageUserAnswer) {
         // 解析标准答案和学生作答答案
         Map<String,List<Map<String, List<Map<String, Object>>>>> rightAnswer = getAnswerFor3dJson(examPageUserAnswer.getRightAnswer());
         Map<String,List<Map<String, List<Map<String, Object>>>>> userAnswer = getAnswerFor3dJson(examPageUserAnswer.getUserAnswer());
@@ -72,7 +73,7 @@ public class PointSubmitUtil {
                         JSONArray rightAttr = (JSONArray) rightAttrs.get(j).get("attr");
                         //获取rightAttr的第三个数组
                         List<String> rightThirdAttr = (List<String>) rightAttr.get(2);
-                        shu+=rightThirdAttr.size();
+                        shu++;
                         // 计算position的误差
                         Map<String, BigDecimal> rightPosition = (Map<String, BigDecimal>) rightAttrs.get(j).get("position");
                         Map<String, Integer> rightSize = (Map<String, Integer>) rightAttrs.get(j).get("size");
@@ -116,20 +117,21 @@ public class PointSubmitUtil {
                 }
             }
         }
-        //给examPageUserAnswer赋值该题的作答各维度数量
-        examPageUserAnswer.setBiao(biao);
-        examPageUserAnswer.setCuo(cuo);
-        examPageUserAnswer.setWu(wu);
-        examPageUserAnswer.setShu(shu);
-        examPageUserAnswer.setZong(zong);
-        examPageUserAnswer.setDa(da);
-        examPageUserAnswer.setAccuracyRate(new BigDecimal(biao).divide(new BigDecimal(zong), 2, RoundingMode.HALF_UP));
-        examPageUserAnswer.setCoverageRate(new BigDecimal(biao).divide(new BigDecimal(da), 2, RoundingMode.HALF_UP));
-        examPageUserAnswerService.updateById(examPageUserAnswer);
         double score = (biao  / (float)zong) * examPageUserAnswer.getScore();
         String str = String.valueOf(score);
         str = str.substring(0, str.indexOf("."));
-        return Integer.parseInt(str);
+        PanJuanParam dto = new PanJuanParam();
+        dto.setIsCorrect(is_error ? 0 : 1);
+        dto.setBiao(biao);
+        dto.setCuo(cuo);
+        dto.setWu(wu);
+        dto.setShu(shu);
+        dto.setZong(zong);
+        dto.setDa(da);
+        dto.setAccuracyRate(new BigDecimal(biao).divide(new BigDecimal(zong), 2, RoundingMode.HALF_UP));
+        dto.setCoverageRate(new BigDecimal(biao).divide(new BigDecimal(da), 2, RoundingMode.HALF_UP));
+        dto.setScore(Integer.parseInt(str));
+        return dto;
     }
 
     public double get3DDouble(BigDecimal bigStr){

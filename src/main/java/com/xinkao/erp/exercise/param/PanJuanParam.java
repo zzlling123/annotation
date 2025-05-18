@@ -39,4 +39,7 @@ public class PanJuanParam {
 
     @ApiModelProperty("题目操作时长（单位：秒）")
     private Integer operationDuration;
+
+    @ApiModelProperty("用户得分")
+    private Integer score;
 }
