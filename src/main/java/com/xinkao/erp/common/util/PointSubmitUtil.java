@@ -20,9 +20,6 @@ import java.util.Map;
 
 @Component
 public class PointSubmitUtil {
-
-    @Autowired
-    private ExamPageUserAnswerService examPageUserAnswerService;
     public PanJuanParam get3DPointScore(ExamPageUserAnswer examPageUserAnswer) {
         // 解析标准答案和学生作答答案
         Map<String,List<Map<String, List<Map<String, Object>>>>> rightAnswer = getAnswerFor3dJson(examPageUserAnswer.getRightAnswer());
