@@ -77,7 +77,7 @@ public class MarkQuestionUtils {
             return check_answer_2D_xyq(userAnswer,correctAnswer);
             //return panJuanParam.getCoverageRate()*score;
             //return panJuanParam.getCoverageRate().multiply(new BigDecimal(score)).setScale(0, RoundingMode.HALF_UP).intValueExact();
-        }else if (moduleId==2){//2	3D点云标注
+        }else if (moduleId==2||moduleId==7){//2	3D点云标注
             ExamPageUserAnswer examPageUserAnswer = new ExamPageUserAnswer();
             examPageUserAnswer.setUserAnswer(userAnswer);
             examPageUserAnswer.setRightAnswer(correctAnswer);

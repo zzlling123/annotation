@@ -25,8 +25,9 @@
         SELECT er.*,  u.real_name FROM exercise_records er left join
             user u on er.user_id = u.id
         WHERE 1 = 1
-        <if test="summaryStuParam.stuId != null and summaryStuParam.stuId!=0">
-            and er.user_id = #{summaryStuParam.stuId}
+        <if test="summaryStuParam.stuId != null and summaryStuParam.stuId.size() > 0">
+            and er.user_id in
+            <foreach collection="summaryStuParam.stuId" open="(" separator="," close=")">#{stuId}</foreach>
         </if>
         ORDER BY create_time DESC
     </select>
