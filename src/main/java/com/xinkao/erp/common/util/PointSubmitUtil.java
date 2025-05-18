@@ -6,9 +6,12 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xinkao.erp.exam.entity.Cuboid;
 import com.xinkao.erp.exam.entity.ExamPageUserAnswer;
+import com.xinkao.erp.exam.service.ExamPageUserAnswerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,96 +19,117 @@ import java.util.Map;
 
 @Component
 public class PointSubmitUtil {
+
+    @Autowired
+    private ExamPageUserAnswerService examPageUserAnswerService;
     public Integer get3DPointScore(ExamPageUserAnswer examPageUserAnswer) {
         // 解析标准答案和学生作答答案
         Map<String,List<Map<String, List<Map<String, Object>>>>> rightAnswer = getAnswerFor3dJson(examPageUserAnswer.getRightAnswer());
         Map<String,List<Map<String, List<Map<String, Object>>>>> userAnswer = getAnswerFor3dJson(examPageUserAnswer.getUserAnswer());
 
+        int biao = 0;//正确标注个数
+        int cuo = 0;//应该标注未标注个数
+        int wu = 0;//错误标注个数
+        int shu = 0;//属性个数
+        int zong = 0;//总共需要标注个数
+        int da = 0;//学生标注个数
+        boolean is_error  = false;
         // 比对帧的个数
         if (rightAnswer.size() != userAnswer.size()) {
-            return 0;
+            is_error = true;
         }
         if (rightAnswer.size() == 0 || userAnswer.size() == 0) {
-            return 0;
+            is_error = true;
         }
         //按照每帧进行循环
         for (String s : rightAnswer.keySet()) {
             List<Map<String, List<Map<String, Object>>>> rightFrame = rightAnswer.get(s);
             List<Map<String, List<Map<String, Object>>>> userFrame = userAnswer.get(s);
             if (rightFrame.size() != userFrame.size()) {
-                return 0;
+                is_error = true;
             }
             // 将该帧内每个数组key进行比对
             for (int i = 0; i < rightFrame.size(); i++) {
-                //每一个的对象
-                //{
-                //                "attr": [
-                //                    [
-                //                        "24"
-                //                    ],
-                //                    [
-                //                        "29"
-                //                    ],
-                //                    [
-                //                        "33"
-                //                    ]
-                //                ],
-                //                "position": {
-                //                    "x": -1.7730334997177124,
-                //                    "y": 1.118543565273284,
-                //                    "z": 3.496040105819702
-                //                },
-                //                "size": {
-                //                    "x": 4,
-                //                    "y": 2,
-                //                    "z": 2
-                //                }
-                //            }
                 Map<String, List<Map<String, Object>>> rightFrameForOne = rightFrame.get(i);
                 Map<String, List<Map<String, Object>>> userFrameForOne = userFrame.get(i);
 
                 // 比对每个数组的key
                 if (!rightFrameForOne.keySet().equals(userFrameForOne.keySet())) {
-                    return 0;
+                    is_error = true;
                 }
 
                 // 比对每个数组的attr的第三个数组
                 for (String key : rightFrameForOne.keySet()) {
                     List<Map<String, Object>> rightAttrs = rightFrameForOne.get(key);
                     List<Map<String, Object>> userAttrs = userFrameForOne.get(key);
-
+                    if (rightAttrs.size() != userAttrs.size()){
+                        is_error = true;
+                    }
+                    zong += rightAttrs.size();
+                    da += userAttrs.size();
                     for (int j = 0; j < rightAttrs.size(); j++) {
                         //循环判断每一个userAttr中的标记、误差
                         JSONArray rightAttr = (JSONArray) rightAttrs.get(j).get("attr");
-                        JSONArray userAttr = (JSONArray) userAttrs.get(j).get("attr");
                         //获取rightAttr的第三个数组
                         List<String> rightThirdAttr = (List<String>) rightAttr.get(2);
-                        List<String> userThirdAttr = (List<String>) userAttr.get(2);
-
-                        if (!rightThirdAttr.equals(userThirdAttr)) {
-                            return 0;
-                        }
-
+                        shu+=rightThirdAttr.size();
                         // 计算position的误差
                         Map<String, BigDecimal> rightPosition = (Map<String, BigDecimal>) rightAttrs.get(j).get("position");
                         Map<String, Integer> rightSize = (Map<String, Integer>) rightAttrs.get(j).get("size");
-                        Map<String, BigDecimal> userPosition = (Map<String, BigDecimal>) userAttrs.get(j).get("position");
-                        Map<String, Integer> userSize = (Map<String, Integer>) userAttrs.get(j).get("size");
-                        //组成Cuboid进行比对
-                        Cuboid cuboid1 = new Cuboid(get3DDouble(rightPosition.get("x")), get3DDouble(rightPosition.get("y")), get3DDouble(rightPosition.get("z")), rightSize.get("x"), rightSize.get("y"), rightSize.get("z"));
-                        Cuboid cuboid2 = new Cuboid(get3DDouble(userPosition.get("x")), get3DDouble(userPosition.get("y")), get3DDouble(userPosition.get("z")), userSize.get("x"), userSize.get("y"), userSize.get("z"));
+                        for (int k = 0; k < userAttrs.size(); k++){
+                            //循环遍历userAttrs，判断是否有attr一致且误差值小于0.95或不大于1.05，如果循环完毕没有符合的则返回0
+                            JSONArray userAttr = (JSONArray) userAttrs.get(k).get("attr");
+                            List<String> userThirdAttr = (List<String>) userAttr.get(2);
+                            if (!rightThirdAttr.equals(userThirdAttr)) {
+                                //跳过，继续验证下一条
+                                // 如果循环完毕没有符合的则返回0
+                                if (k == userAttrs.size() - 1) {
+                                    is_error = true;
+                                    cuo++;
+                                    wu++;
+                                }
+                                continue;
+                            }
+                            Map<String, BigDecimal> userPosition = (Map<String, BigDecimal>) userAttrs.get(k).get("position");
+                            Map<String, Integer> userSize = (Map<String, Integer>) userAttrs.get(k).get("size");
+                            //组成Cuboid进行比对
+                            Cuboid cuboid1 = new Cuboid(get3DDouble(rightPosition.get("x")), get3DDouble(rightPosition.get("y")), get3DDouble(rightPosition.get("z")), rightSize.get("x"), rightSize.get("y"), rightSize.get("z"));
+                            Cuboid cuboid2 = new Cuboid(get3DDouble(userPosition.get("x")), get3DDouble(userPosition.get("y")), get3DDouble(userPosition.get("z")), userSize.get("x"), userSize.get("y"), userSize.get("z"));
 
-                        double iou = calculateIoU(cuboid1, cuboid2);
-                        System.out.println("重叠率: " + iou); // 输出约为0.0667（6.67%）
-                        if (iou < 0.95 || iou > 1.05) {
-                            return 0;
+                            double iou = calculateIoU(cuboid1, cuboid2);
+                            System.out.println("重叠率: " + iou); // 输出约为0.0667（6.67%）
+                            if (iou < 0.95 || iou > 1.05) {
+                                //跳过，继续验证下一条
+                                // 如果循环完毕没有符合的则返回0
+                                if (k == userAttrs.size() - 1) {
+                                    is_error = true;
+                                }
+                            }else{
+                                biao++;
+                                //如果有符合的则删除该元素，终结该for循环，继续向下循环
+                                //删除userAttrs中的该元素
+                                userAttrs.remove(k);
+                                break;
+                            }
                         }
                     }
                 }
             }
         }
-        // 如果以上条件都满足，则返回满分
-        return examPageUserAnswer.getScore();
+        //给examPageUserAnswer赋值该题的作答各维度数量
+        examPageUserAnswer.setBiao(biao);
+        examPageUserAnswer.setCuo(cuo);
+        examPageUserAnswer.setWu(wu);
+        examPageUserAnswer.setShu(shu);
+        examPageUserAnswer.setZong(zong);
+        examPageUserAnswer.setDa(da);
+        examPageUserAnswer.setAccuracyRate(new BigDecimal(biao).divide(new BigDecimal(zong), 2, RoundingMode.HALF_UP));
+        examPageUserAnswer.setCoverageRate(new BigDecimal(biao).divide(new BigDecimal(da), 2, RoundingMode.HALF_UP));
+        examPageUserAnswerService.updateById(examPageUserAnswer);
+        double score = (biao  / (float)zong) * examPageUserAnswer.getScore();
+        String str = String.valueOf(score);
+        str = str.substring(0, str.indexOf("."));
+        return Integer.parseInt(str);
     }
 
     public double get3DDouble(BigDecimal bigStr){
