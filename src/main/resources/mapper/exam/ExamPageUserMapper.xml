@@ -24,7 +24,7 @@
                  LEFT JOIN exam e ON e.id = ec.exam_id
                  LEFT JOIN exam_page_user epu ON epu.exam_id = e.id and epu.class_id = #{query.classId}
         WHERE ec.class_id = #{query.classId} and e.is_del = 0
-        GROUP BY e.id
+        GROUP BY e.id ORDER BY e.create_time DESC
     </select>
 
     <select id="getExamUserListForExamId" resultType="com.xinkao.erp.exam.vo.ExamPageUserListVo">
