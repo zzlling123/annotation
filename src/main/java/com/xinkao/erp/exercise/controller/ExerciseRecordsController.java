@@ -325,7 +325,7 @@ public class ExerciseRecordsController {
         InstantFeedbacks instantFeedbacks = instantFeedbacksService.getById(feedbacksId);
         int score = 0;
         if(exerciseRecords.getShape() == 500){
-            PanJuanParam panJuanParam = markQuestionUtils.checkAnswerCaoZuo(userAnswer, answer, exerciseRecords.getShape(), score, exerciseRecords.getModuleId());
+            PanJuanParam panJuanParam = markQuestionUtils.checkAnswerCaoZuo(userAnswer, answer, exerciseRecords.getShape(), 5, exerciseRecords.getModuleId());
             instantFeedbacks.setIsCorrect(panJuanParam.getIsCorrect());
             instantFeedbacks.setBiao(panJuanParam.getBiao());
             instantFeedbacks.setCuo(panJuanParam.getCuo());
@@ -336,16 +336,16 @@ public class ExerciseRecordsController {
             instantFeedbacks.setAccuracyRate(panJuanParam.getAccuracyRate());
             instantFeedbacks.setCoverageRate(panJuanParam.getCoverageRate());
             instantFeedbacks.setOperationDuration(panJuanParam.getOperationDuration());
-            score = panJuanParam.getCoverageRate().multiply(new BigDecimal(score)).setScale(0, RoundingMode.HALF_UP).intValueExact();
+            score = panJuanParam.getCoverageRate().multiply(new BigDecimal(5)).setScale(0, RoundingMode.HALF_UP).intValueExact();
         }else {
             score = markQuestionUtils.checkAnswer(userAnswer, answer, exerciseRecords.getShape(),5,exerciseRecords.getModuleId());
-            if (score == exerciseRecords.getScore()) {
+            if (score == 5) {
                 //正确
                 instantFeedbacks.setIsCorrect(1);
             }else if (score == 0) {
                 //错误
                 instantFeedbacks.setIsCorrect(0);
-            }else if (score > 0&& score < exerciseRecords.getScore()) {
+            }else if (score > 0&& score < 5) {
                 //部分正确
                 instantFeedbacks.setIsCorrect(2);
             }
