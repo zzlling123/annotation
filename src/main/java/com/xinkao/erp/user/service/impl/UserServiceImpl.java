@@ -192,9 +192,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 			return BaseResponse.fail("两次密码不一致！");
 		}
 		//验证密码安全性
-		if (!PasswordCheckUtil.evalPassword(param.getNewPwd())) {
-			return BaseResponse.fail("新密码须6-18位，包含字母和数字，不能连续，且必须含有大写和小写字母");
-		}
+//		if (!PasswordCheckUtil.evalPassword(param.getNewPwd())) {
+//			return BaseResponse.fail("新密码须6-18位，包含字母和数字，不能连续，且必须含有大写和小写字母");
+//		}
 		String salt =  RandomUtil.randomString(6);
 		user.setSalt(salt);
 		user.setPassword(SecureUtil.md5(salt+param.getNewPwd()));

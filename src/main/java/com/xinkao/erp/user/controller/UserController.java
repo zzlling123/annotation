@@ -128,9 +128,9 @@ public class UserController extends BaseController {
 	@Log(content = "新增用户", operationType = OperationType.INSERT, isSaveRequestData = false)
 	public BaseResponse save(@Valid @RequestBody UserParam userParam) {
 		//校验密码格式
-		if (!PasswordCheckUtil.evalPassword(userParam.getPassword())) {
-			return BaseResponse.fail("新密码须6-18位，包含字母和数字，不能连续，且必须含有大写和小写字母");
-		}
+//		if (!PasswordCheckUtil.evalPassword(userParam.getPassword())) {
+//			return BaseResponse.fail("新密码须6-18位，包含字母和数字，不能连续，且必须含有大写和小写字母");
+//		}
 		return userService.save(userParam);
 	}
 
