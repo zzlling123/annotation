@@ -12,6 +12,7 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * <p>
@@ -25,6 +26,36 @@ import java.time.LocalDateTime;
 @Setter
 @ApiModel("练习记录表")
 public class ExerciseRecordsQuery  extends BasePageQuery implements Serializable {
+
+    /**
+     * 主键
+     */
+    private Integer id;
+
+    /**
+     * 创建者
+     */
+    private String createBy;
+
+    /**
+     * 创建时间
+     */
+    private Date createTime;
+
+    /**
+     * 更新者
+     */
+    private String updateBy;
+
+    /**
+     * 更新时间
+     */
+    private Date updateTime;
+
+    /**
+     * 备注
+     */
+    private String remark;
 
     /**
      * 关联到用户的ID
