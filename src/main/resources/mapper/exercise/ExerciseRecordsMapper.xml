@@ -27,7 +27,7 @@
         WHERE 1 = 1
         <if test="summaryStuParam.stuId != null and summaryStuParam.stuId.size() > 0">
             and er.user_id in
-            <foreach collection="summaryStuParam.stuId" open="(" separator="," close=")">#{stuId}</foreach>
+            <foreach collection="summaryStuParam.stuId" item="stId" open="(" separator="," close=")">#{stId}</foreach>
         </if>
         ORDER BY create_time DESC
     </select>
