@@ -42,4 +42,7 @@ public class QuestionPageVo extends BaseEntity {
 
     @ApiModelProperty("是否需要批改0否1是")
     private Integer needCorrect;
+
+    @ApiModelProperty("是否练习用题0否1是")
+    private Integer forExercise;
 }

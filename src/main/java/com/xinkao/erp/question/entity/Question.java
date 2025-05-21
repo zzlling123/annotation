@@ -104,6 +104,12 @@ public class Question extends DataEntity {
     private Integer needCorrect;
 
     /**
+     * 是否练习用题0否1是
+     */
+    @TableField("for_exercise")
+    private Integer forExercise;
+
+    /**
      * 状态:0-正常 1-删除
      */
     @TableField("is_del")

@@ -73,4 +73,7 @@ public class QuestionInfoVo extends BaseEntity implements OutputConverter<Questi
 
     @ApiModelProperty("自定义标签列表")
     private List<LabelVo> labelList;
+
+    @ApiModelProperty("是否练习用题0否1是")
+    private Integer forExercise;
 }
