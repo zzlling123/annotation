@@ -45,4 +45,7 @@ public class QuestionPageVo extends BaseEntity {
 
     @ApiModelProperty("是否练习用题0否1是")
     private Integer forExercise;
+
+    @ApiModelProperty("文档路径")
+    private String fileUrl;
 }

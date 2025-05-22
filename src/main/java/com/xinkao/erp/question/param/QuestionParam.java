@@ -54,6 +54,9 @@ public class QuestionParam implements InputConverter<Question> {
     @ApiModelProperty("解析")
     private String answerTip;
 
+    @ApiModelProperty("文档路径")
+    private String fileUrl;
+
     @ApiModelProperty("是否启用0否1是")
     private Integer state;
 

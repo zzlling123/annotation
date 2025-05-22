@@ -110,6 +110,12 @@ public class Question extends DataEntity {
     private Integer forExercise;
 
     /**
+     * 文档路径
+     */
+    @TableField("file_url")
+    private Integer fileUrl;
+
+    /**
      * 状态:0-正常 1-删除
      */
     @TableField("is_del")
