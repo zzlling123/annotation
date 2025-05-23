@@ -38,6 +38,12 @@ public class Question extends DataEntity {
     private Integer difficultyLevel;
 
     /**
+     * 操作题标头
+     */
+    @TableField("title")
+    private String title;
+
+    /**
      * 题干,json列表
      */
     @TableField("question")
@@ -96,6 +102,18 @@ public class Question extends DataEntity {
      */
     @TableField("need_correct")
     private Integer needCorrect;
+
+    /**
+     * 是否练习用题0否1是
+     */
+    @TableField("for_exercise")
+    private Integer forExercise;
+
+    /**
+     * 文档路径
+     */
+    @TableField("file_url")
+    private Integer fileUrl;
 
     /**
      * 状态:0-正常 1-删除

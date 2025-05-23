@@ -11,8 +11,8 @@
 		<if test="userQuery.realName != null and userQuery.realName != ''">
 			and u.real_name LIKE CONCAT('%', #{userQuery.realName}, '%')
 		</if>
-		<if test="userQuery.userName != null and userQuery.userName != ''">
-			and u.username = #{userQuery.userName}
+		<if test="userQuery.username != null and userQuery.username != ''">
+			and u.username LIKE CONCAT('%', #{userQuery.username}, '%')
 		</if>
 		<if test="userQuery.roleId != null and userQuery.roleId != ''">
 			and u.role_id = #{userQuery.roleId}
@@ -20,6 +20,10 @@
 		<if test="userQuery.state != null and userQuery.state != ''">
 			and u.state = #{userQuery.state}
 		</if>
+		<if test="userQuery.classId != null and userQuery.classId != ''">
+			and u.class_id = #{userQuery.classId}
+		</if>
+
 		GROUP BY u.id
 		ORDER BY u.id DESC
 	</select>

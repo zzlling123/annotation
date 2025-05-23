@@ -64,6 +64,10 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
         }
         ExamDetailVo detailVo = new ExamDetailVo();
         BeanUtil.copyProperties(exam, detailVo);
+        ExamPageSet examPageSet = examPageSetService.lambdaQuery().eq(ExamPageSet::getExamId, id).one();
+        detailVo.setScore(examPageSet.getScore());
+        detailVo.setScorePass(examPageSet.getScorePass());
+        detailVo.setPageMode(examPageSet.getPageMode());
         //补充班级管理
         List<Integer> classList = examClassService.lambdaQuery().eq(ExamClass::getExamId, id).list().stream().map(ExamClass::getClassId).collect(Collectors.toList());
         detailVo.setClassList(classList);

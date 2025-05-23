@@ -1,5 +1,6 @@
 package com.xinkao.erp.exam.model.vo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -57,6 +58,12 @@ public class ExamUserVo {
      */
     @ApiModelProperty("合格状态:0-不合格 1-合格")
     private Integer passStatus;
+
+    /**
+     * 考试状态: 0-待发布 10-未开始 20-考试进行中 21-考试已结束
+     */
+    @ApiModelProperty("考试状态: 0-待发布 10-未开始 20-考试进行中 21-考试已结束")
+    private Integer state;
 
     /**
      * 题目列表

@@ -15,10 +15,13 @@ import com.xinkao.erp.common.util.RedisUtil;
 import com.xinkao.erp.exercise.entity.ExerciseRecords;
 import com.xinkao.erp.exercise.entity.InstantFeedbacks;
 import com.xinkao.erp.exercise.param.CreateParam;
+import com.xinkao.erp.exercise.param.PanJuanParam;
+import com.xinkao.erp.exercise.param.SubmitAllParam;
 import com.xinkao.erp.exercise.param.SubmitParam;
 import com.xinkao.erp.exercise.query.ExerciseRecordsQuery;
 import com.xinkao.erp.exercise.service.ExerciseRecordsService;
 import com.xinkao.erp.exercise.service.InstantFeedbacksService;
+import com.xinkao.erp.exercise.utils.MarkQuestionUtils;
 import com.xinkao.erp.question.entity.Question;
 import com.xinkao.erp.question.service.QuestionService;
 import io.swagger.annotations.ApiOperation;
@@ -29,9 +32,11 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -52,6 +57,8 @@ public class ExerciseRecordsController {
     private RedisUtil redisUtil;
     @Autowired
     private InstantFeedbacksService instantFeedbacksService;
+    @Autowired
+    private MarkQuestionUtils markQuestionUtils;
 
 
     /**
@@ -74,38 +81,40 @@ public class ExerciseRecordsController {
         exerciseRecords.setCreateBy(loginUserAll.getUser().getRealName());
         exerciseRecords.setUpdateBy(loginUserAll.getUser().getRealName());
         exerciseRecords.setCompletionStatus(0);
-//        exerciseRecords.setUserId(1);
-//        exerciseRecords.setCreateBy("admin");
-//        exerciseRecords.setUpdateBy("admin");
+        exerciseRecords.setScore(0);
         exerciseRecords.setStartTime(java.time.LocalDateTime.now());
-
         //设置createby是当前用户
         exerciseRecords.setShape(shape);
-
         exerciseRecords.setModuleId(moduleId);
-
-        //随机出题20道题，20道题的id保存到redis中，并返回给前端
+        //随机出题20道题
         //根据类型首先查出所有符合类型的题的编号
         LambdaQueryWrapper<Question> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(Question::getType, moduleId).eq(Question::getShape, shape);
         List<Question> list_question = questionService.getBaseMapper().selectList(wrapper);
+        //判断list_question是否是空的
+        if (list_question==null ||list_question.size() == 0) {
+            return BaseResponse.fail("没有题目");
+        }
+
         String feedback = "" ;
         if (list_question.size() <= 20) {
             //把所有的题号存到redis中
             for (Question question : list_question) {
                 int q_id = question.getId();
                 feedback += q_id + ",";
+                //去掉最后一个逗号
             }
+            feedback = feedback.substring(0, feedback.length() - 1);
         }else if (list_question.size() > 20) {
-            //随机出20道题
-            for (int i = 0; i < 20; i++) {
-                int index = (int) (Math.random() * list_question.size());
-                Question question = list_question.get(index);
-                int q_id = question.getId();
-                feedback += q_id + ",";
+            List<Integer> selectedQuestionIds = new ArrayList<>();
+            //随机出20道题,不允许出现重复
+            Collections.shuffle(list_question); // 打乱顺序
+            int limit = Math.min(20, list_question.size());
+            for (int i = 0; i < limit; i++) {
+                selectedQuestionIds.add(list_question.get(i).getId());
             }
+            feedback = String.join(",", selectedQuestionIds.stream().map(String::valueOf).collect(Collectors.toList()));
         }
-        feedback = feedback.substring(0, feedback.length() - 1);
         exerciseRecords.setFeedback(feedback);
         exerciseRecordsService.save(exerciseRecords);
         return BaseResponse.ok();
@@ -176,9 +185,9 @@ public class ExerciseRecordsController {
 //    }
 
     //查看练习记录
-    @PostMapping("/detail/{exerciseRecordsId}")
+    @GetMapping("/detail/{exerciseRecordsId}")
     @ApiOperation("查看练习记录表,list_question是试题集合，instantFeedbacksList是学生的练习记录")
-    @PrimaryDataSource
+    //@PrimaryDataSource
     public BaseResponse<?> detail(@PathVariable Integer exerciseRecordsId) {
         //获取当前用户
         LoginUser loginUserAll = redisUtil.getInfoByToken();
@@ -201,6 +210,7 @@ public class ExerciseRecordsController {
         List<Question> list_question = questionService.list(new LambdaQueryWrapper<Question>().in(Question::getId, feedback_list));
         HashMap<String, Object> map = new HashMap<String, Object>();
         map.put("instantFeedbacksList", instantFeedbacksList);
+        map.put("exerciseRecords", exerciseRecords);
         map.put("list_question", list_question);
         return BaseResponse.ok(map);
     }
@@ -213,15 +223,29 @@ public class ExerciseRecordsController {
      * @return question 返回当前题的信息
      * @return exerciseRecordsId 练习记录编号，开始练习时候返回的练习记录编号
      * */
-    @PostMapping("/start/{id}")
+    @GetMapping("/start/{id}")
     @ApiOperation("开始练习并返回所有题的信息，feedbacks_list是练习详情记录，有userAnswer答案是做了，没有答案是没有完成的，list_question所有题的信息。")
     @PrimaryDataSource
     public BaseResponse<?> start(@PathVariable Integer id, HttpServletRequest request) {
         LoginUser loginUserAll = redisUtil.getInfoByToken();
         ExerciseRecords exerciseRecords = exerciseRecordsService.getById(id);
-        exerciseRecords.setStartTime(java.time.LocalDateTime.now());
+        if (exerciseRecords == null){
+            return BaseResponse.fail("练习记录不存在！");
+        }else if (exerciseRecords.getIsDel() == 1){
+            return BaseResponse.fail("练习记录不存在！");
+        }
+        if (!loginUserAll.getUser().getId().equals(exerciseRecords.getUserId())){
+            return BaseResponse.fail("您没有权限开始练习！");
+        }
+        if(exerciseRecords.getCompletionStatus()==2){
+
+        }else if (exerciseRecords.getCompletionStatus() == 1){
+            return BaseResponse.fail("您已经完成了练习！");
+        }else if (exerciseRecords.getCompletionStatus() == 0){
+            exerciseRecords.setStartTime(java.time.LocalDateTime.now());
+            exerciseRecords.setCompletionStatus(2);
+        }
         exerciseRecords.setUpdateBy(loginUserAll.getUser().getRealName());
-        exerciseRecords.setCompletionStatus(2);
         exerciseRecordsService.updateById(exerciseRecords);
 
         //根据feedback存储的题号返回第一道题的信息
@@ -231,42 +255,104 @@ public class ExerciseRecordsController {
             Question question = questionService.getById(feedback_arr[i]);
             list_question.add(question);
             //创建一个InstantFeedbacks对象并按着信息存储到instantfeedbacks表中
-            InstantFeedbacks instantFeedbacks = new InstantFeedbacks();
-            instantFeedbacks.setRecordId(exerciseRecords.getId());
-            instantFeedbacks.setQuestionId(question.getId());
-            instantFeedbacks.setShape(question.getShape());
-            instantFeedbacks.setCreateBy(loginUserAll.getUser().getRealName());
-            instantFeedbacks.setUpdateBy(loginUserAll.getUser().getRealName());
-            instantFeedbacks.setCorrectAnswer(question.getAnswer());
-            instantFeedbacksService.save(instantFeedbacks);
-
+//            InstantFeedbacks instantFeedbacks = new InstantFeedbacks();
+//            instantFeedbacks.setRecordId(exerciseRecords.getId());
+//            instantFeedbacks.setQuestionId(question.getId());
+//            instantFeedbacks.setShape(question.getShape());
+//            instantFeedbacks.setCreateBy(loginUserAll.getUser().getRealName());
+//            instantFeedbacks.setUpdateBy(loginUserAll.getUser().getRealName());
+//            instantFeedbacks.setCorrectAnswer(question.getAnswer());
+//            instantFeedbacksService.save(instantFeedbacks);
         }
         List<InstantFeedbacks> feedbacks_list = instantFeedbacksService.list(new QueryWrapper<InstantFeedbacks>().eq("record_id", exerciseRecords.getId()));
         HashMap<String, Object> map = new HashMap<String, Object>();
         map.put("list_question", list_question);
-        map.put("exerciseRecordsId", exerciseRecords.getId());
-        map.put("feedbacks_list", feedbacks_list);
+        map.put("exerciseRecords", exerciseRecords);
+        map.put("instantFeedbacksList", feedbacks_list);
         return BaseResponse.ok(map);
     }
 
+
+    @PostMapping("/submitAll")
+    @ApiOperation("提交总练习")
+    public BaseResponse<?> submitAll(@RequestBody SubmitAllParam submitAllParam) {
+        LoginUser loginUserAll = redisUtil.getInfoByToken();
+        ExerciseRecords exerciseRecords = exerciseRecordsService.getById(submitAllParam.getExerciseRecordsId());
+        if (exerciseRecords == null) {
+            return BaseResponse.fail("练习记录不存在！");
+        }else if (exerciseRecords.getIsDel() == 1) {
+            return BaseResponse.fail("练习记录不存在！");
+        }
+        //更新练习记录的完成状态和完成时间
+        exerciseRecords.setCompletionStatus(1);
+        exerciseRecords.setUpdateBy(loginUserAll.getUser().getRealName());
+        exerciseRecords.setEndTime(java.time.LocalDateTime.now());
+        exerciseRecords.setDuration(java.time.Duration.between(exerciseRecords.getStartTime(), exerciseRecords.getEndTime()).toMinutes());
+        exerciseRecordsService.updateById(exerciseRecords);
+        return BaseResponse.ok();
+    }
+
     @PostMapping("/submit")
-    @ApiOperation("提交答案并进行答案的判断，并返回正确答案和是否回答正确，并返回下一道题的信息,hasNext 返回下一道题的信息，如果有下一题则返回true，如果没有下一题则返回false,question 返回当前题的信息,exerciseRecordsId 练习记录编号，开始练习时候返回的练习记录编号")
+    @ApiOperation("提交单个题答案")
     @PrimaryDataSource
     public BaseResponse<?> submit(@RequestBody SubmitParam submitParam) {
         LoginUser loginUserAll = redisUtil.getInfoByToken();
         Integer exerciseRecordsId = submitParam.getExerciseRecordsId();
-        Integer feedbacksId = submitParam.getFeedbacksId();
+        Integer questionId = submitParam.getQuestionId();
         String userAnswer = submitParam.getUserAnswer();
 
         ExerciseRecords exerciseRecords = exerciseRecordsService.getById(exerciseRecordsId);
         //根据题号找到当前题并获取答案
-        InstantFeedbacks feedbacks = instantFeedbacksService.getById(feedbacksId);
+        Question question = questionService.getById(questionId);
+        //根据questionId和exerciseRecordsId找到InstantFeedbacks的记录，要是不存在就创建
+        InstantFeedbacks feedbacks = instantFeedbacksService.getOne(new QueryWrapper<InstantFeedbacks>().eq("record_id", exerciseRecordsId).eq("question_id", questionId));
+        int score_exercise = exerciseRecords.getScore();
+        if (feedbacks == null) {
+            feedbacks = new InstantFeedbacks();
+            feedbacks.setRecordId(exerciseRecordsId);
+            feedbacks.setQuestionId(questionId);
+            feedbacks.setShape(question.getShape());
+            feedbacks.setCreateBy(loginUserAll.getUser().getRealName());
+            feedbacks.setUpdateBy(loginUserAll.getUser().getRealName());
+            feedbacks.setCorrectAnswer(question.getAnswer());
+            instantFeedbacksService.save(feedbacks);
+        }else {
+            score_exercise = score_exercise - feedbacks.getUserScore();
+        }
+        feedbacks = instantFeedbacksService.getOne(new QueryWrapper<InstantFeedbacks>().eq("record_id", exerciseRecordsId).eq("question_id", questionId));
+        Integer feedbacksId = feedbacks.getId();
         String answer = feedbacks.getCorrectAnswer();
-        int score = checkAnswer(userAnswer, answer, exerciseRecords.getShape(),exerciseRecords.getScore());
         InstantFeedbacks instantFeedbacks = instantFeedbacksService.getById(feedbacksId);
+        int score = 0;
+        if(exerciseRecords.getShape() == 500){
+            PanJuanParam panJuanParam = markQuestionUtils.checkAnswerCaoZuo(userAnswer, answer, exerciseRecords.getShape(), 5, exerciseRecords.getModuleId());
+            instantFeedbacks.setIsCorrect(panJuanParam.getIsCorrect());
+            instantFeedbacks.setBiao(panJuanParam.getBiao());
+            instantFeedbacks.setCuo(panJuanParam.getCuo());
+            instantFeedbacks.setWu(panJuanParam.getWu());
+            instantFeedbacks.setShu(panJuanParam.getShu());
+            instantFeedbacks.setZong(panJuanParam.getZong());
+            instantFeedbacks.setDa(panJuanParam.getDa());
+            instantFeedbacks.setAccuracyRate(panJuanParam.getAccuracyRate());
+            instantFeedbacks.setCoverageRate(panJuanParam.getCoverageRate());
+            instantFeedbacks.setOperationDuration(panJuanParam.getOperationDuration());
+            score = panJuanParam.getCoverageRate().multiply(new BigDecimal(5)).setScale(0, RoundingMode.HALF_UP).intValueExact();
+        }else {
+            score = markQuestionUtils.checkAnswer(userAnswer, answer, exerciseRecords.getShape(),5,exerciseRecords.getModuleId());
+            if (score == 5) {
+                //正确
+                instantFeedbacks.setIsCorrect(1);
+            }else if (score == 0) {
+                //错误
+                instantFeedbacks.setIsCorrect(0);
+            }else if (score > 0&& score < 5) {
+                //部分正确
+                instantFeedbacks.setIsCorrect(2);
+            }
+        }
         instantFeedbacks.setUserAnswer(userAnswer);
         instantFeedbacks.setUserScore(score);
-        exerciseRecords.setScore(exerciseRecords.getScore() + score);
+        exerciseRecords.setScore(score_exercise + score);
         //如果是最后一道题就更新练习记录的完成状态和分数
         String[] feedback_arr = exerciseRecords.getFeedback().split(",");
         if (feedbacksId == Integer.parseInt(feedback_arr[feedback_arr.length-1])) {
@@ -275,30 +361,13 @@ public class ExerciseRecordsController {
             //计算练习时长
             exerciseRecords.setDuration(java.time.Duration.between(exerciseRecords.getStartTime(), exerciseRecords.getEndTime()).toMinutes());
         }
-        HashMap<String, Object> map = new HashMap<String, Object>();
-        map.put("exerciseRecordsId", exerciseRecordsId);
-        map.put("questionId", feedbacks.getQuestionId());
-        map.put("score", score);
-        if (score == exerciseRecords.getScore()) {
-            //正确
-            instantFeedbacks.setIsCorrect(1);
-            map.put("isCorrect", "正确");
-        }else if (score == 0) {
-            //错误
-            instantFeedbacks.setIsCorrect(0);
-            map.put("isCorrect", "不正确");
-        }else if (score > 0&& score < exerciseRecords.getScore()) {
-            //部分正确
-            instantFeedbacks.setIsCorrect(2);
-            map.put("isCorrect", "部分正确");
-        }
         instantFeedbacks.setUpdateBy(loginUserAll.getUser().getRealName());
         instantFeedbacks.setUpdateTime(new Date());
         exerciseRecords.setUpdateTime(new Date());
         exerciseRecords.setUpdateBy(loginUserAll.getUser().getRealName());
         instantFeedbacksService.updateById(instantFeedbacks);
         exerciseRecordsService.updateById(exerciseRecords);
-        return BaseResponse.ok(map);
+        return BaseResponse.ok(instantFeedbacks);
     }
 
 //    @PostMapping("/start/{id}")
@@ -473,58 +542,6 @@ public class ExerciseRecordsController {
         exerciseRecordsService.updateById(exerciseRecords);
         return BaseResponse.ok("完成测试，满分100分，得分"+exerciseRecords.getScore());
     }
-
-    /**
-     * 判断输入的答案是否正确，如果正确，则设置用户得分为题目的得分，否则设置为0
-     * */
-    public int checkAnswer(String userAnswer, String correctAnswer, int shape, Integer score) {
-        //shape题目类型:100-单选 200-多选 300-填空 400-主观题 500-操作题
-        if (shape == 100) {
-            if (userAnswer.equals(correctAnswer)) {
-                return score;
-            }
-        }else if (shape == 200) {
-            //选题少答的一半分数，错答得0分
-            String [] userAnswers = userAnswer.split("");
-            String [] correctAnswers = correctAnswer.split("");
-            if (userAnswer.length() == correctAnswer.length()) {
-                for (int i = 0; i < userAnswers.length; i++) {
-                    if (userAnswers[i].equals(correctAnswers[i])) {
-                        continue;
-                    }else {
-                        return 0;
-                    }
-                }
-                return score;
-            }else if (userAnswer.length() > correctAnswer.length()) {
-                for (int i = 0; i < userAnswers.length; i++) {
-                    if (userAnswers[i].equals(correctAnswers[i])) {
-                        continue;
-                    }else {
-                        return 0;
-                    }
-                }
-                return score/2;
-            }else if (userAnswer.length() < correctAnswer.length()) {
-                return 0;
-            }
-        }else if (shape == 300) {
-            if (userAnswer.equals(correctAnswer)) {
-                return score;
-            }
-        }else if (shape == 400) {
-            if (userAnswer.equals(correctAnswer)) {
-                return score;
-            }
-        }else if (shape == 500) {
-            if (userAnswer.equals(correctAnswer)) {
-                return score;
-            }
-        }
-        return 0;
-    }
-
-
 
     /**
      * 分页查询

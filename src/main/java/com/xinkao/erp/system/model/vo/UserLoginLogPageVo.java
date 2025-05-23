@@ -33,8 +33,8 @@ public class UserLoginLogPageVo implements OutputConverter<UserLoginLogPageVo, U
     @ApiModelProperty("登录时间")
     private String loginTime;
 
-    @ApiModelProperty("登陆地点")
-    private String loginLocation;
+//    @ApiModelProperty("登陆地点")
+//    private String loginLocation;
 
     @ApiModelProperty("登录系统")
     private String os;

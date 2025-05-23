@@ -16,8 +16,11 @@ public class QuestionQuery extends BasePageQuery implements Serializable {
     @ApiModelProperty("题目")
     private String question;
 
-    @ApiModelProperty("题型")
+    @ApiModelProperty("分类")
     private String type;
+
+    @ApiModelProperty("题型")
+    private String shape;
 
     @ApiModelProperty("难度")
     private String difficultyLevel;

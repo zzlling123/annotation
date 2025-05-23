@@ -5,10 +5,10 @@
         SELECT * FROM scene_pcd_img
         where 1=1
         <if test="query.isDel != null and query.isDel != ''">
-            and is_del LIKE CONCAT('%', #{query.isDel}, '%')
+            and is_del =  #{query.isDel}
         </if>
         <if test="query.pcdId != null and query.pcdId != ''">
-            and pcd_id LIKE CONCAT('%', #{query.pcdId}, '%')
+            and pcd_id =  #{query.pcdId}
         </if>
         <if test="query.imgPath != null and query.imgPath != ''">
             and img_path LIKE CONCAT('%', #{query.imgPath}, '%')

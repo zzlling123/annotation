@@ -6,6 +6,7 @@ import com.xinkao.erp.common.model.entity.DataSnowIdEntity;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -110,6 +111,60 @@ public class ExamPageUserAnswer extends DataSnowIdEntity {
      */
     @TableField("correct_time")
     private Date correctTime;
+
+    //`biao` INT DEFAULT 0 COMMENT '正确标注个数',
+    //`cuo` INT DEFAULT 0 COMMENT '应该标注未标注个数',
+    //`wu` INT DEFAULT 0 COMMENT '错误标注个数',
+    //`shu` INT DEFAULT 0 COMMENT '属性个数',
+    //`zong` INT DEFAULT 0 COMMENT '总共需要标注个数',
+    //`da` INT DEFAULT 0 COMMENT '学生标注个数',
+    //`accuracy_rate` DECIMAL(5,2) NULL COMMENT '标注准确率 = biao / da',
+    //`coverage_rate` DECIMAL(5,2) NULL COMMENT '标注准确覆盖率 = biao / zong',
+
+    /**
+     * 正确标注个数
+     */
+    @TableField("biao")
+    private Integer biao;
+
+    /**
+     * 应该标注未标注个数
+     */
+    @TableField("cuo")
+    private Integer cuo;
+
+    /**
+     * 错误标注个数
+     */
+    @TableField("wu")
+    private Integer wu;
+
+    /**
+     * 属性个数
+     */
+    @TableField("shu")
+    private Integer shu;
+
+    /**
+     * 总共需要标注个数
+     */
+    @TableField("zong")
+    private Integer zong;
+
+    /**
+     * 学生标注个数
+     */
+    @TableField("da")
+    private Integer da;
+
+    /**
+     * 标注准确率 = biao / da
+     */
+    @TableField("accuracy_rate")
+    private BigDecimal accuracyRate;
+
+    @TableField("coverage_rate")
+    private BigDecimal coverageRate;
 
     /**
      * 是否需要批改0否1是

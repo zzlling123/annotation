@@ -16,6 +16,9 @@ public class QuestionPageVo extends BaseEntity {
     @ApiModelProperty("题目Id")
     private String id;
 
+    @ApiModelProperty("操作题标头")
+    private String title;
+
     @ApiModelProperty("题目")
     private String question;
 
@@ -39,4 +42,10 @@ public class QuestionPageVo extends BaseEntity {
 
     @ApiModelProperty("是否需要批改0否1是")
     private Integer needCorrect;
+
+    @ApiModelProperty("是否练习用题0否1是")
+    private Integer forExercise;
+
+    @ApiModelProperty("文档路径")
+    private String fileUrl;
 }

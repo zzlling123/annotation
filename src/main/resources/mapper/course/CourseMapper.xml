@@ -10,6 +10,9 @@
         <if test="query.courseStatus != null">
             and course_status = #{query.courseStatus}
         </if>
+        <if test="query.totalChapters != null">
+            and total_chapters = #{query.totalChapters}
+        </if>
         ORDER BY create_time DESC
     </select>
 </mapper>

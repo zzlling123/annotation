@@ -8,10 +8,13 @@
         WHERE
             1 = 1 and q.is_del = 0
         <if test="query.question != null and query.question != ''">
-            AND q.question LIKE CONCAT('%', #{query.question}, '%')
+            AND q.title LIKE CONCAT('%', #{query.question}, '%')
         </if>
         <if test="query.type != null and query.type != ''">
             AND q.type = #{query.type}
+        </if>
+        <if test="query.shape != null and query.shape != ''">
+            AND q.shape = #{query.shape}
         </if>
         <if test="query.difficultyLevel != null and query.difficultyLevel != ''">
             AND q.difficulty_level = #{query.difficultyLevel}

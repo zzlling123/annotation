@@ -18,6 +18,9 @@ public class QuestionParam implements InputConverter<Question> {
     @ApiModelProperty("题库ID")
     private Integer id;
 
+    @ApiModelProperty("操作题标头")
+    private String title;
+
     @ApiModelProperty("题目")
     @NotBlank(message = "题目不能为空")
     @Size(min = 1, max = 255, message = "题目长度应在1到255个字符之间")
@@ -51,11 +54,17 @@ public class QuestionParam implements InputConverter<Question> {
     @ApiModelProperty("解析")
     private String answerTip;
 
+    @ApiModelProperty("文档路径")
+    private String fileUrl;
+
     @ApiModelProperty("是否启用0否1是")
     private Integer state;
 
     @ApiModelProperty("是否需要批改0否1是")
     private Integer needCorrect;
+
+    @ApiModelProperty("是否练习用题0否1是")
+    private Integer forExercise;
 
     @ApiModelProperty("自定义标签ID列表")
     private List<Integer> labels;

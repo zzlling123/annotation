@@ -51,6 +51,12 @@ public class Exam extends DataEntity {
     private Integer state;
 
     /**
+     * 组卷进度是否完成，0否1是
+     */
+    @TableField("roll_make_over")
+    private Integer rollMakeOver;
+
+    /**
      * 是否删除0否1是
      */
     @TableField("is_del")

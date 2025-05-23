@@ -1,10 +1,12 @@
 package com.xinkao.erp.question.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.common.annotation.Log;
 import com.xinkao.erp.common.annotation.PrimaryDataSource;
 import com.xinkao.erp.common.controller.BaseController;
 import com.xinkao.erp.common.enums.system.OperationType;
+import com.xinkao.erp.common.exception.BusinessException;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.param.DeleteParam;
 import com.xinkao.erp.common.model.support.Pageable;
@@ -13,6 +15,7 @@ import com.xinkao.erp.question.entity.Question;
 import com.xinkao.erp.question.entity.QuestionLabel;
 import com.xinkao.erp.question.entity.QuestionType;
 import com.xinkao.erp.question.param.QuestionParam;
+import com.xinkao.erp.question.param.QuestionTypeParam;
 import com.xinkao.erp.question.query.QuestionQuery;
 import com.xinkao.erp.question.service.LabelService;
 import com.xinkao.erp.question.service.QuestionLabelService;
@@ -21,11 +24,18 @@ import com.xinkao.erp.question.service.QuestionTypeService;
 import com.xinkao.erp.question.vo.QuestionInfoVo;
 import com.xinkao.erp.question.vo.QuestionPageVo;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * <p>
@@ -45,6 +55,10 @@ public class    QuestionController extends BaseController {
     private QuestionTypeService questionTypeService;
     @Resource
     private LabelService labelService;
+    @Value("${path.fileUrl}")
+    private String fileUrl;
+    @Value("${ipurl.url}")
+    private String ipurl;
 
 
     /**
@@ -54,6 +68,72 @@ public class    QuestionController extends BaseController {
     @PostMapping("/getQuestionType")
     @ApiOperation("获取题目分类下拉列表")
     public BaseResponse<List<QuestionType>> getQuestionType() {
+        return BaseResponse.ok("成功", questionTypeService.list());
+    }
+
+    /**
+     * 修改题目分类
+     */
+    @PrimaryDataSource
+    @PostMapping("/updateQuestionType")
+    @ApiOperation("修改题目分类")
+    public BaseResponse<?> updateQuestionType(@RequestBody @Valid QuestionTypeParam param) {
+        return questionTypeService.update(param);
+    }
+
+    @PrimaryDataSource
+    @PostMapping("/upload/file")
+    @ApiOperation("上传文件")
+    public BaseResponse<String> uploadRequest(@RequestParam(value="file") MultipartFile file,@RequestParam String id, HttpServletRequest request) {
+        try {
+            String saveFileName;
+            File file1 = new File(fileUrl);
+            if (!file1.exists()){
+                file1.mkdirs();
+            }
+            if (file.isEmpty()) {
+                throw new BusinessException("文件为空");
+            }
+            System.out.println("fileName:" + file.getOriginalFilename());
+            saveFileName = UUID.randomUUID().toString()+file.getOriginalFilename();
+            File fileNew = new File(fileUrl,saveFileName);
+            file.transferTo(fileNew);
+            String newFileUrl = ipurl+"/annotation/fileUrl/"+saveFileName;
+            return questionTypeService.lambdaUpdate().eq(QuestionType::getId,id).set(QuestionType::getFileUrl,newFileUrl).update()?BaseResponse.ok("上传成功"):BaseResponse.fail("上传失败");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new BusinessException("上传失败");
+        }
+
+    }
+
+    /**
+     * 获取题目分类说明文档
+     */
+    @PrimaryDataSource
+    @PostMapping("/getQuestionTypeFileUrl/{questionTypeId}")
+    @ApiOperation("获取题目分类说明文档")
+    public BaseResponse<String> updateQuestionType(@PathVariable String questionTypeId) {
+        QuestionType questionType = questionTypeService.getById(questionTypeId);
+        String fileUrl = "";
+        if (StrUtil.isNotBlank(questionType.getFileUrl())){
+            return BaseResponse.ok("成功","https://view.xdocin.com/view?src=${"+questionType.getFileUrl()+"}");
+        }
+        return BaseResponse.ok(fileUrl);
+    }
+
+    /**
+     * 获取题目分类下拉列表
+     */
+    @PrimaryDataSource
+    @PostMapping("/getQuestionType/{shape}")
+    @ApiOperation("获取题目分类下拉列表")
+    public BaseResponse<List<QuestionType>> getQuestionType(@PathVariable String shape) {
+        if ("500".equals(shape)){
+            //创建固定字符串集合：2,3,4,5
+            List<Integer> ids = Arrays.asList(2,4,5,6,7);
+            return BaseResponse.ok("成功", questionTypeService.lambdaQuery().in(QuestionType::getId, ids).list());
+        }
         return BaseResponse.ok("成功", questionTypeService.list());
     }
 

@@ -64,6 +64,9 @@ public class ExamPageUserQuestionController {
         if (exam.getState() > 10){
             return BaseResponse.fail("该考试当前状态不允许制卷！");
         }
+        if(examPageSet.getQuestionStatus() != 1){
+            return BaseResponse.fail("该尚未导入试题分布设置，不可组卷！");
+        }
         //获取考试相关班级，然后查询班级下有多少人
         List<Integer> classList = examClassService.lambdaQuery().eq(ExamClass::getExamId, examId).list().stream().map(ExamClass::getClassId).collect(Collectors.toList());
         List<User> userList = userService.lambdaQuery().in(User::getClassId, classList).eq(User::getIsDel, 0).list();
@@ -74,14 +77,12 @@ public class ExamPageUserQuestionController {
         String token = XinKaoConstant.ROLL_MAKING+examId;
         //验证该token是否有值，如果有则拦截
         if (redisUtil.get(token) != null){
-            System.out.println(redisUtil.get(token).toString());
             //如果value ！= 1则返回
             if (!"1".equals(redisUtil.get(token))){
                 return BaseResponse.fail("该考试正在制卷中，请勿重复操作！");
             }
         }
         redisUtil.set(token, "0", 2, TimeUnit.HOURS);
-        examPageSet.setQuestionStatus(0);
         examPageSetService.updateById(examPageSet);
         //异步线程执行导入
         @Valid ExamPageSet finalExamPageSet = examPageSet;

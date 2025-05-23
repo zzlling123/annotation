@@ -12,27 +12,34 @@ import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.LoginUser;
 import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.common.service.impl.BaseServiceImpl;
+import com.xinkao.erp.common.util.PointSubmitUtil;
 import com.xinkao.erp.common.util.RedisUtil;
 import com.xinkao.erp.exam.entity.*;
 import com.xinkao.erp.exam.mapper.ExamPageUserMapper;
 import com.xinkao.erp.exam.mapper.ExamPageUserQuestionMapper;
 import com.xinkao.erp.exam.model.vo.ExamPageUserQuestionVo;
+import com.xinkao.erp.exam.model.vo.ExamPageUserVo;
 import com.xinkao.erp.exam.model.vo.ExamUserVo;
 import com.xinkao.erp.exam.model.vo.ExamProgressVo;
 import com.xinkao.erp.exam.model.param.ExamUserQuery;
 import com.xinkao.erp.exam.model.param.ExamPageUserAnswerParam;
 import com.xinkao.erp.exam.model.param.SubmitParam;
 import com.xinkao.erp.exam.param.ExamCorrectParam;
+import com.xinkao.erp.exam.query.ExamQuery;
 import com.xinkao.erp.exam.query.ExamTeacherQuery;
 import com.xinkao.erp.exam.service.*;
 import com.xinkao.erp.exam.vo.ExamPageAnswerVo;
 import com.xinkao.erp.exam.vo.ExamPageTeacherVo;
 import com.xinkao.erp.exam.vo.ExamPageUserListVo;
+import com.xinkao.erp.exercise.param.PanJuanParam;
+import com.xinkao.erp.exercise.utils.MarkQuestionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -42,6 +49,8 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
 
     @Autowired
     private RedisUtil redisUtil;
+    @Autowired
+    private PointSubmitUtil pointSubmitUtil;
     @Autowired
     private ExamPageUserMapper examPageUserMapper;
     @Autowired
@@ -54,9 +63,11 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
     private ExamPageUserLogService examPageUserLogService;
     @Autowired
     private ExamPageSetService examPageSetService;
+    @Autowired
+    private MarkQuestionUtils markQuestionUtils;
 
     @Override
-    public Page<ExamUserVo> page(BasePageQuery query, Pageable pageable){
+    public Page<ExamUserVo> page(ExamQuery query, Pageable pageable){
         LoginUser loginUser = redisUtil.getInfoByToken();
         Page page = pageable.toPage();
         return examPageUserMapper.page(page, query, loginUser.getUser().getId());
@@ -87,8 +98,27 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
             ExamPageUserAnswer examPageUserAnswer = examPageUserAnswerMap.get(examPageUserQuestion.getId());
             examPageUserQuestion.setAnswer("");
             examPageUserQuestion.setUserAnswer(examPageUserAnswer == null ? "" : examPageUserAnswer.getUserAnswer());
+            //如果是填空题，则去掉数据中的options
+            if (examPageUserQuestion.getShape() == 300) {
+                examPageUserQuestion.setOptions("");
+            }
         }
         vo.setQuestionVoList(BeanUtil.copyToList(questionList, ExamPageUserQuestionVo.class));
+        return BaseResponse.ok("成功",vo);
+    }
+
+    @Override
+    public BaseResponse<ExamPageUserQuestionVo> getUserQuestionInfo(String id) {
+        //题目详情
+        ExamPageUserQuestion examPageUserQuestion = examPageUserQuestionMapper.selectById(id);
+        Map<String, ExamPageUserAnswer> examPageUserAnswerMap = examPageUserAnswerService.lambdaQuery()
+                .eq(ExamPageUserAnswer::getQuestionId,id)
+                .list().stream().collect(Collectors.toMap(ExamPageUserAnswer::getQuestionId, s->s));
+        //查询是否已作答
+        ExamPageUserAnswer examPageUserAnswer = examPageUserAnswerMap.get(examPageUserQuestion.getId());
+        examPageUserQuestion.setAnswer("");
+        examPageUserQuestion.setUserAnswer(examPageUserAnswer == null ? "" : examPageUserAnswer.getUserAnswer());
+        ExamPageUserQuestionVo vo = BeanUtil.copyProperties(examPageUserQuestion, ExamPageUserQuestionVo.class);
         return BaseResponse.ok("成功",vo);
     }
 
@@ -166,13 +196,12 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
             if (100 == examPageUserAnswer.getShape() || 300 == examPageUserAnswer.getShape()){
                 if (examPageUserAnswer.getUserAnswer().equals(examPageUserAnswer.getRightAnswer())){
                     examPageUserAnswer.setUserScore(examPageUserAnswer.getScore());
-
                     allScores += examPageUserAnswer.getScore();
                 }
             }else if (200 == examPageUserAnswer.getShape()){
                 //如果是多选题，判断是否全部正确或部分正确
-                List<String> teaAnswerList = Arrays.asList(examPageUserAnswer.getRightAnswer().split(""));
-                List<String> stuAnswerList = Arrays.asList(examPageUserAnswer.getUserAnswer().split(""));
+                List<String> teaAnswerList = Arrays.asList(examPageUserAnswer.getRightAnswer().split("&%&"));
+                List<String> stuAnswerList = Arrays.asList(examPageUserAnswer.getUserAnswer().split("&%&"));
                 if (teaAnswerList.containsAll(stuAnswerList)) {
                     if (teaAnswerList.size() == stuAnswerList.size()) {// 全选对
                         examPageUserAnswer.setUserScore(examPageUserAnswer.getScore());
@@ -185,15 +214,59 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
             }else if (400 == examPageUserAnswer.getShape()){
                 //问答题
                 if (examPageUserAnswer.getNeedCorrect() == 0){
-                    if (examPageUserAnswer.getUserAnswer().equals(examPageUserAnswer.getRightAnswer())){
+                    if (examPageUserAnswer.getRightAnswer().equals(examPageUserAnswer.getUserAnswer())){
                         examPageUserAnswer.setUserScore(examPageUserAnswer.getScore());
-                        allScores += examPageUserAnswer.getScore();
+                        allScores += examPageUserAnswer.getUserScore();
                     }
                 }
             }else if (500 == examPageUserAnswer.getShape()){
                 //操作题
+                Integer score = 0;
                 if (examPageUserAnswer.getNeedCorrect() == 0){
-                    //
+                    if (examPageUserAnswer.getType() == 1 || examPageUserAnswer.getType() == 3){
+                        //图像标注与OCR标注直接验证与答案完全一致则可以得分
+                        if (examPageUserAnswer.getUserAnswer().equals(examPageUserAnswer.getRightAnswer())){
+                            examPageUserAnswer.setUserScore(examPageUserAnswer.getScore());
+                            allScores += examPageUserAnswer.getUserScore();
+                        }
+                    }else if (examPageUserAnswer.getType() == 2 || examPageUserAnswer.getType() == 7){
+                        //3D点云标注或者2D+3D标注
+                        PanJuanParam dto = pointSubmitUtil.get3DPointScore(examPageUserAnswer);
+                        examPageUserAnswer.setUserScore(dto.getScore());
+                        //给examPageUserAnswer赋值该题的作答各维度数量
+                        examPageUserAnswer.setBiao(dto.getBiao());
+                        examPageUserAnswer.setCuo(dto.getCuo());
+                        examPageUserAnswer.setWu(dto.getWu());
+                        examPageUserAnswer.setShu(dto.getShu());
+                        examPageUserAnswer.setZong(dto.getZong());
+                        examPageUserAnswer.setDa(dto.getDa());
+                        examPageUserAnswer.setAccuracyRate(dto.getAccuracyRate());
+                        examPageUserAnswer.setCoverageRate(dto.getCoverageRate());
+                        allScores += score;
+                    }else if (examPageUserAnswer.getType() == 4){
+                        //语音标注
+                        if(markQuestionUtils.check_answer_voice(examPageUserAnswer.getUserAnswer(),examPageUserAnswer.getRightAnswer())){
+                            score = examPageUserAnswer.getScore();
+                        }else {
+                            score = 0;
+                        }
+                        examPageUserAnswer.setUserScore(score);
+                        allScores += score;
+                    }else if (examPageUserAnswer.getType() == 5 || examPageUserAnswer.getType() == 6){
+                        //2D标注、人脸关键点标注
+                        PanJuanParam dto = markQuestionUtils.check_answer_2D_xyq(examPageUserAnswer.getUserAnswer(),examPageUserAnswer.getRightAnswer());
+                        score = dto.getCoverageRate().multiply(new BigDecimal(score)).setScale(0, RoundingMode.HALF_UP).intValueExact();
+                        examPageUserAnswer.setUserScore(score);
+                        examPageUserAnswer.setBiao(dto.getBiao());
+                        examPageUserAnswer.setCuo(dto.getCuo());
+                        examPageUserAnswer.setWu(dto.getWu());
+                        examPageUserAnswer.setShu(dto.getShu());
+                        examPageUserAnswer.setZong(dto.getZong());
+                        examPageUserAnswer.setDa(dto.getDa());
+                        examPageUserAnswer.setAccuracyRate(dto.getAccuracyRate());
+                        examPageUserAnswer.setCoverageRate(dto.getCoverageRate());
+                        allScores += score;
+                    }
                 }
             }
         }
@@ -383,5 +456,10 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
             examPageUser.setPassStatus(passStatus);
         }
         updateById(examPageUser);
+    }
+
+    @Override
+    public List<ExamPageUserVo> getExamPageUserName(Integer classId) {
+        return examPageUserMapper.getExamPageUserName(classId);
     }
 }

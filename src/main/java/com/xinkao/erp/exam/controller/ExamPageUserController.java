@@ -10,8 +10,10 @@ import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.exam.model.param.ExamPageUserAnswerParam;
 import com.xinkao.erp.exam.model.param.ExamUserQuery;
 import com.xinkao.erp.exam.model.param.SubmitParam;
+import com.xinkao.erp.exam.model.vo.ExamPageUserQuestionVo;
 import com.xinkao.erp.exam.model.vo.ExamProgressVo;
 import com.xinkao.erp.exam.model.vo.ExamUserVo;
+import com.xinkao.erp.exam.query.ExamQuery;
 import com.xinkao.erp.exam.service.ExamPageUserService;
 import com.xinkao.erp.exam.vo.ExamPageVo;
 import io.swagger.annotations.ApiOperation;
@@ -41,7 +43,7 @@ public class ExamPageUserController {
     @PrimaryDataSource
     @PostMapping("/page")
     @ApiOperation("根据用户信息获取考试列表")
-    public BaseResponse<Page<ExamUserVo>> page(@RequestBody BasePageQuery query) {
+    public BaseResponse<Page<ExamUserVo>> page(@RequestBody ExamQuery query) {
         Pageable pageable = query.getPageInfo();
         Page<ExamUserVo> voPage = examPageUserService.page(query, pageable);
         return BaseResponse.ok(voPage);
@@ -56,6 +58,17 @@ public class ExamPageUserController {
     @ApiOperation("获取试卷信息")
     public BaseResponse<ExamUserVo> getExamUserInfo(@RequestBody @Valid ExamUserQuery examUserQuery) {
         return examPageUserService.getExamUserInfo(examUserQuery);
+    }
+
+    /**
+     *
+     * 获取题目信息
+     */
+    @PrimaryDataSource
+    @PostMapping("/getUserQuestionInfo/{id}")
+    @ApiOperation("获取题目信息")
+    public BaseResponse<ExamPageUserQuestionVo> getUserQuestionInfo(@PathVariable("id") String id) {
+        return examPageUserService.getUserQuestionInfo(id);
     }
 
 

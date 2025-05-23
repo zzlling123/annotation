@@ -10,8 +10,11 @@ import com.xinkao.erp.exercise.mapper.ExerciseRecordsMapper;
 import com.xinkao.erp.exercise.query.ExerciseRecordsQuery;
 import com.xinkao.erp.exercise.service.ExerciseRecordsService;
 import com.xinkao.erp.common.service.impl.BaseServiceImpl;
+import com.xinkao.erp.summary.param.SummaryStuParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -40,6 +43,11 @@ public class ExerciseRecordsServiceImpl extends BaseServiceImpl<ExerciseRecordsM
      */
     public ExerciseRecords detailById(ExerciseRecords exerciseRecords) {
         return getById(exerciseRecords.getId());
+    }
+
+    @Override
+    public List<ExerciseRecordsQuery> getListUserName(SummaryStuParam summaryStuParam) {
+        return exerciseRecordsMapper.getListUserName(summaryStuParam);
     }
 
     @Override
