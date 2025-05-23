@@ -47,7 +47,7 @@ public class LoginServiceImpl extends LoginCommonServiceImpl implements LoginSer
 		String userCode = redisUtil.get(loginParam.getUuid());
 		System.out.println("Redis缓存中的code：" + userCode);
 		if (!StrUtil.equalsIgnoreCase(loginParam.getCode(), userCode)){
-//			return BaseResponse.fail("验证码不正确！");
+			return BaseResponse.fail("验证码不正确！");
 		}
 		String username = loginParam.getUsername().trim();
 		String password = loginParam.getPassword().trim();
