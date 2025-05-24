@@ -6,6 +6,7 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xinkao.erp.common.annotation.DataScope;
 import com.xinkao.erp.common.annotation.Log;
 import com.xinkao.erp.common.annotation.PrimaryDataSource;
 import com.xinkao.erp.common.enums.system.OperationType;
@@ -75,6 +76,7 @@ public class ExamController {
      * @return 考试详情
      */
     @PrimaryDataSource
+    @DataScope(role = "1,2")
     @GetMapping("/detail/{id}")
     @ApiOperation("查看考试详情")
     public BaseResponse<ExamDetailVo> detail(@PathVariable Integer id) {
@@ -89,6 +91,7 @@ public class ExamController {
      * @return 操作结果
      */
     @PrimaryDataSource
+    @DataScope(role = "1,2")
     @PostMapping("/save")
     @ApiOperation("新增考试")
     @Log(content = "新增考试",operationType = OperationType.INSERT)
@@ -103,6 +106,7 @@ public class ExamController {
      * @return 操作结果
      */
     @PrimaryDataSource
+    @DataScope(role = "1,2")
     @PostMapping("/update")
     @ApiOperation("编辑考试")
     @Log(content = "编辑考试",operationType = OperationType.UPDATE)
@@ -115,6 +119,7 @@ public class ExamController {
      *
      */
     @PrimaryDataSource
+    @DataScope(role = "1,2")
     @ApiOperation(value = "试卷题目分布设置模板")
     @RequestMapping(value = "/examTypeSetTemplate", method = RequestMethod.POST, produces = "application/octet-stream")
     public void examTypeSetTemplate(HttpServletResponse response, @RequestParam String examId) {

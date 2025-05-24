@@ -25,7 +25,7 @@ public class UserParam implements InputConverter<User>{
      * 账号
      */
 	@NotBlank(message = "账号不能为空")
-	@Length(min = 6,max = 50,message = "账号长度最低为6位,最高为50位")
+	@Length(min = 3,max = 20,message = "账号长度最低为3位,最高为20位")
     private String username;
 
     /**

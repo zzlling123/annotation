@@ -2,6 +2,7 @@ package com.xinkao.erp.question.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xinkao.erp.common.annotation.DataScope;
 import com.xinkao.erp.common.annotation.Log;
 import com.xinkao.erp.common.annotation.PrimaryDataSource;
 import com.xinkao.erp.common.controller.BaseController;
@@ -75,6 +76,7 @@ public class    QuestionController extends BaseController {
      * 修改题目分类
      */
     @PrimaryDataSource
+    @DataScope(role = "1,2")
     @PostMapping("/updateQuestionType")
     @ApiOperation("修改题目分类")
     public BaseResponse<?> updateQuestionType(@RequestBody @Valid QuestionTypeParam param) {
@@ -82,6 +84,7 @@ public class    QuestionController extends BaseController {
     }
 
     @PrimaryDataSource
+    @DataScope(role = "1,2")
     @PostMapping("/upload/file")
     @ApiOperation("上传文件")
     public BaseResponse<String> uploadRequest(@RequestParam(value="file") MultipartFile file,@RequestParam String id, HttpServletRequest request) {
@@ -111,6 +114,7 @@ public class    QuestionController extends BaseController {
      * 获取题目分类说明文档
      */
     @PrimaryDataSource
+    @DataScope(role = "1,2")
     @PostMapping("/getQuestionTypeFileUrl/{questionTypeId}")
     @ApiOperation("获取题目分类说明文档")
     public BaseResponse<String> updateQuestionType(@PathVariable String questionTypeId) {
@@ -166,6 +170,7 @@ public class    QuestionController extends BaseController {
      * @return 分页结果
      */
     @PrimaryDataSource
+    @DataScope(role = "1,2")
     @PostMapping("/page")
     @ApiOperation("分页查询题库")
     public BaseResponse<Page<QuestionPageVo>> page(@RequestBody QuestionQuery query) {
@@ -181,6 +186,7 @@ public class    QuestionController extends BaseController {
      * @return 题目详情
      */
     @PrimaryDataSource
+    @DataScope(role = "1,2")
     @GetMapping("/detail/{id}")
     @ApiOperation("获取题目详情")
     public BaseResponse<QuestionInfoVo> getQuestionDetail(@PathVariable Integer id) {
@@ -199,6 +205,7 @@ public class    QuestionController extends BaseController {
      * @return 操作结果
      */
     @PrimaryDataSource
+    @DataScope(role = "1,2")
     @PostMapping("/save")
     @ApiOperation("新增题目")
     @Log(content = "新增题目",operationType = OperationType.INSERT)
@@ -213,6 +220,7 @@ public class    QuestionController extends BaseController {
      * @return 操作结果
      */
     @PrimaryDataSource
+    @DataScope(role = "1,2")
     @PostMapping("/update")
     @ApiOperation("编辑题目")
     @Log(content = "编辑题目",operationType = OperationType.UPDATE)
@@ -227,6 +235,7 @@ public class    QuestionController extends BaseController {
      * @return 操作结果
      */
     @PrimaryDataSource
+    @DataScope(role = "1,2")
     @PostMapping("/del")
     @ApiOperation("批量删除题目")
     @Log(content = "批量删除题目",operationType = OperationType.DELETE)
@@ -239,6 +248,7 @@ public class    QuestionController extends BaseController {
      * @return
      */
     @PrimaryDataSource
+    @DataScope(role = "1,2")
     @PostMapping("/selfSave")
     @ApiOperation("题库按照分类、题型插入题目")
     public void selfSave(){

@@ -11,11 +11,13 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xinkao.erp.common.annotation.DataScope;
 import com.xinkao.erp.common.annotation.Log;
 import com.xinkao.erp.common.annotation.PrimaryDataSource;
 import com.xinkao.erp.common.enums.CommonEnum;
 import com.xinkao.erp.common.enums.system.OperationType;
 import com.xinkao.erp.common.exception.BusinessException;
+import com.xinkao.erp.common.model.LoginUser;
 import com.xinkao.erp.common.model.param.UpdateStateParam;
 import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.common.param.ErrorImportTokenParam;
@@ -68,6 +70,7 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
+	@DataScope(role = "1")
 	@PostMapping("/page")
 	@ApiOperation("分页")
 	public BaseResponse<Page<UserPageVo>> page(@RequestBody UserQuery query) {
@@ -83,6 +86,7 @@ public class UserController extends BaseController {
 	 * @param query
 	 */
 	@PrimaryDataSource
+	@DataScope(role = "1")
 	@ApiOperation(value = "用户导出")
 	@RequestMapping(value = "/exportUser", method = RequestMethod.POST, produces = "application/octet-stream")
 	public void exportUser(HttpServletResponse response,@RequestBody UserQuery query) {
@@ -123,6 +127,7 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
+	@DataScope(role = "1")
 	@PostMapping("/save")
 	@ApiOperation("新增用户")
 	@Log(content = "新增用户", operationType = OperationType.INSERT, isSaveRequestData = false)
@@ -140,6 +145,7 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
+	@DataScope(role = "1")
 	@PostMapping("/update")
 	@ApiOperation("修改用户")
 	public BaseResponse update(@Valid @RequestBody UserUpdateParam userUpdateParam) {
@@ -152,6 +158,7 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
+	@DataScope(role = "1")
 	@PostMapping("/del")
 	@ApiOperation("删除用户")
 	public BaseResponse del(@RequestBody UpdateStateParam updateStateParam) {
@@ -167,6 +174,7 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
+	@DataScope(role = "1")
 	@PostMapping("/updateState")
 	@ApiOperation("修改状态")
 	public BaseResponse updateState(@Valid @RequestBody UpdateStateParam updateStateParam) {
@@ -179,6 +187,7 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
+	@DataScope(role = "1")
 	@PostMapping("/resetPassword")
 	@ApiOperation("重置密码")
 	public BaseResponse resetPassword(@RequestBody User user) {
@@ -194,6 +203,7 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
+	@DataScope(role = "1")
 	@ApiOperation(value = "导入用户")
 	@RequestMapping(value = "/importUpdateClass", method = RequestMethod.POST)
 	public BaseResponse importUpdateClass(HttpServletResponse response, @RequestParam(value="file") MultipartFile file) {
@@ -240,6 +250,7 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
+	@DataScope(role = "3")
 	@PostMapping("/getUserInfoBySelf")
 	@ApiOperation("获取用户信息")
 	public BaseResponse<UserInfoVo> getUserInfoBySelf() {
@@ -251,6 +262,7 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
+	@DataScope(role = "3")
 	@PostMapping("/updatePassword")
 	@ApiOperation("修改密码")
 	public BaseResponse<?> updatePassword(@RequestBody @Valid AccountUpdatePwdParam param) {
@@ -262,6 +274,7 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
+	@DataScope(role = "3")
 	@PostMapping("/getExamAndPracticeBar")
 	@ApiOperation("获取练习/考试柱状图，计算练习，考试下各个题型分类type下的得分率")
 	public BaseResponse<List<ExamAndPracticeBarVo>> getExamAndPracticeBar(@RequestBody ExamAndPracticeBarQuery query) {
@@ -273,6 +286,7 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
+	@DataScope(role = "3")
 	@PostMapping("/getExamAndPracticePie")
 	@ApiOperation("获取练习/考试饼状图，计算练习，考试下所有题在各题型中的占比")
 	public BaseResponse<List<ExamAndPracticePieAllVo>> getExamAndPracticePie(@RequestBody ExamAndPracticeBarQuery query) {

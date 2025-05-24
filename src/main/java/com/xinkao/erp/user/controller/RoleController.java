@@ -2,6 +2,7 @@ package com.xinkao.erp.user.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.common.annotation.DataAuth;
+import com.xinkao.erp.common.annotation.DataScope;
 import com.xinkao.erp.common.annotation.Log;
 import com.xinkao.erp.common.annotation.PrimaryDataSource;
 import com.xinkao.erp.common.controller.BaseController;
@@ -57,6 +58,7 @@ public class RoleController extends BaseController {
 	 */
 	@PrimaryDataSource
 	@PostMapping("/page")
+	@DataScope(role = "1")
 	@ApiOperation("分页")
 	public BaseResponse<Page<RolePageVo>> page(@RequestBody RoleQuery query) {
 		//获取用户信息
@@ -84,6 +86,7 @@ public class RoleController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
+	@DataScope(role = "1")
 	@PostMapping("/save")
 	@ApiOperation("新增角色")
 	public BaseResponse save(@Valid @RequestBody RoleParam roleParam) {
@@ -96,6 +99,7 @@ public class RoleController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
+	@DataScope(role = "1")
 	@PostMapping("/update")
 	@ApiOperation("修改角色")
 	public BaseResponse update(@Valid @RequestBody RoleParam roleParam) {
@@ -108,6 +112,7 @@ public class RoleController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
+	@DataScope(role = "1")
 	@PostMapping("/del")
 	@ApiOperation("删除角色")
 	public BaseResponse del(@RequestBody Role role) {

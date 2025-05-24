@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 
 import cn.hutool.core.util.StrUtil;
+import com.xinkao.erp.common.annotation.DataScope;
 import com.xinkao.erp.common.annotation.Log;
 import com.xinkao.erp.common.annotation.PrimaryDataSource;
 import com.xinkao.erp.common.enums.system.OperationType;
@@ -69,6 +70,7 @@ public class MenuController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
+	@DataScope(role = "1")
 	@PostMapping("/save")
 	@ApiOperation("新增菜单")
 	@Log(content = "新增菜单",operationType = OperationType.INSERT)
@@ -82,6 +84,7 @@ public class MenuController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
+	@DataScope(role = "1")
 	@PostMapping("/update")
 	@ApiOperation("修改菜单")
 	@Log(content = "修改菜单",operationType = OperationType.UPDATE)
@@ -96,6 +99,7 @@ public class MenuController extends BaseController {
 	 */
 	@PrimaryDataSource
 	@PostMapping("/del")
+	@DataScope(role = "1")
 	@ApiOperation("删除菜单")
 	@Log(content = "删除菜单",operationType = OperationType.UPDATE)
 	public BaseResponse del(@RequestBody UpdateStateParam updateStateParam) {

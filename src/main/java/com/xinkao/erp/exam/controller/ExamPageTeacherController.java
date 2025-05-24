@@ -1,6 +1,7 @@
 package com.xinkao.erp.exam.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xinkao.erp.common.annotation.DataScope;
 import com.xinkao.erp.common.annotation.Log;
 import com.xinkao.erp.common.annotation.PrimaryDataSource;
 import com.xinkao.erp.common.enums.system.OperationType;
@@ -39,6 +40,7 @@ public class ExamPageTeacherController {
     private ExamPageUserService examPageUserService;
 
     @PrimaryDataSource
+    @DataScope(role = "2")
     @PostMapping("/page")
     @ApiOperation("根据当前登录教师获取考试列表(已批阅/应批阅)(固定筛选一个班级)")
     public BaseResponse<Page<ExamPageTeacherVo>> page(@RequestBody @Valid ExamTeacherQuery query) {
@@ -48,6 +50,7 @@ public class ExamPageTeacherController {
     }
 
     @PrimaryDataSource
+    @DataScope(role = "2")
     @PostMapping("/getExamUserListForExamId")
     @ApiOperation("根据试卷id、班级ID获取学生列表")
     public BaseResponse<Page<ExamPageUserListVo>> getExamUserListForExamId(@RequestBody @Valid ExamUserQuery query) {
@@ -57,6 +60,7 @@ public class ExamPageTeacherController {
     }
 
     @PrimaryDataSource
+    @DataScope(role = "2")
     @PostMapping("/getExamUserInfo/{examPageUserId}")
     @ApiOperation("点击学生，获取该学生此次试卷答题信息")
     public BaseResponse<ExamPageAnswerVo> getExamUserAnswerInfo(@PathVariable String examPageUserId) {
@@ -64,6 +68,7 @@ public class ExamPageTeacherController {
     }
 
     @PrimaryDataSource
+    @DataScope(role = "2")
     @PostMapping("/correct")
     @ApiOperation("批改，提交分数(如果是该学生该试卷最后一道问答题则会进行计算总分)")
     @Log(content = "批改",operationType = OperationType.INSERT)
