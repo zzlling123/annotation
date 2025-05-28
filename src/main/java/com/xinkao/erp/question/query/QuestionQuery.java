@@ -27,4 +27,10 @@ public class QuestionQuery extends BasePageQuery implements Serializable {
 
     @ApiModelProperty("是否启用0否1是")
     private String state;
+
+    @ApiModelProperty("是否为练习题0否1是")
+    private Integer forExercise;
+
+    @ApiModelProperty("班级id")
+    private Integer classId;
 }

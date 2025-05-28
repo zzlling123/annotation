@@ -3,12 +3,28 @@
 <mapper namespace="com.xinkao.erp.exercise.mapper.InstantFeedbacksMapper">
 
     <select id="page" resultType="com.xinkao.erp.exercise.entity.InstantFeedbacks">
-        SELECT * FROM instant_feedbacks
-        where 1=1 and is_del = 0 and record_id=#{query.recordId}
-        <if test="query.isCorrect != null and query.isCorrect != ''">
-            and is_correct = #{query.isCorrect}
+        SELECT
+        ife.*,
+        u.real_name
+        FROM
+        instant_feedbacks ife
+        LEFT JOIN
+        user u ON ife.user_id = u.id
+        WHERE
+        1=1
+        AND ife.is_del = 0
+        <if test="query.recordId != null and query.recordId != ''">
+            AND ife.record_id = #{query.recordId}
         </if>
-        ORDER BY create_time DESC
+        <if test="query.isCorrect != null and query.isCorrect != ''">
+            AND ife.is_correct = #{query.isCorrect}
+        </if>
+        <if test="query.userId != null and query.userId != ''">
+            AND ife.user_id = #{query.userId}
+        </if>
+        ORDER BY
+        ife.create_time DESC
     </select>
+
 
 </mapper>

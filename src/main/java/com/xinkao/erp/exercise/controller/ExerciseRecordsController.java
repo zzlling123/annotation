@@ -310,6 +310,7 @@ public class ExerciseRecordsController {
         if (feedbacks == null) {
             feedbacks = new InstantFeedbacks();
             feedbacks.setRecordId(exerciseRecordsId);
+            feedbacks.setUserId(loginUserAll.getUser().getId());
             feedbacks.setQuestionId(questionId);
             feedbacks.setShape(question.getShape());
             feedbacks.setCreateBy(loginUserAll.getUser().getRealName());

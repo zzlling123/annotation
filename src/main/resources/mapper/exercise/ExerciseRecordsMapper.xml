@@ -13,6 +13,9 @@
         <if test="query.shape != null and query.shape != ''">
             and shape =  #{query.shape}
         </if>
+        <if test="query.shape == null or query.shape == ''">
+            and shape != 500
+        </if>
         <if test="query.questionScore != null and query.questionScore != ''">
             and question_score =  #{query.questionScore}
         </if>

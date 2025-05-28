@@ -20,7 +20,7 @@ OBS:
   endPoint: 111
 
 server:
-  port: 10201
+  port: 10202
   undertow:
     buffer-size: 1024
     direct-buffers: true
@@ -125,7 +125,7 @@ monitor:
   APPSCERET: 111
   APPURL: 111
 ipurl:
-  url: http://127.0.0.1:10201
+  url: http://127.0.0.1:10202
 path:
   fileUrl: E:/tmpfile/fileUrl/
 #  cres:  E:/tmpfile/

@@ -8,6 +8,7 @@ import com.xinkao.erp.question.entity.Question;
 import com.xinkao.erp.common.service.BaseService;
 import com.xinkao.erp.question.param.QuestionParam;
 import com.xinkao.erp.question.query.QuestionQuery;
+import com.xinkao.erp.question.vo.QuestionExercisePageVo;
 import com.xinkao.erp.question.vo.QuestionInfoVo;
 import com.xinkao.erp.question.vo.QuestionPageVo;
 
@@ -31,6 +32,9 @@ public interface QuestionService extends BaseService<Question> {
      * @return 分页结果
      */
     Page<QuestionPageVo> page(QuestionQuery query, Pageable pageable);
+
+
+    Page<QuestionExercisePageVo> page1(QuestionQuery query, Pageable pageable);
 
     /**
      * 获取题目详情

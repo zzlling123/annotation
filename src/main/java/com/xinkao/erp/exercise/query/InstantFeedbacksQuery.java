@@ -77,5 +77,17 @@ public class InstantFeedbacksQuery  extends BasePageQuery implements Serializabl
     private Integer isDel;
 
 
+    @ApiModelProperty("用户ID")
+    @TableField("user_id")
+    private Integer userId;
+
+    @ApiModelProperty("用户姓名")
+    @TableField(exist = false)
+    private String realName;
+
+
+    @ApiModelProperty("完成状态:1-进行中 2-已完成")
+    @TableField("finished_state")
+    private Integer finishedState;
 
 }

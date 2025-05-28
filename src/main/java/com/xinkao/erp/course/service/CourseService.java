@@ -9,6 +9,7 @@ import com.xinkao.erp.common.service.BaseService;
 import com.xinkao.erp.course.entity.CourseChapter;
 import com.xinkao.erp.course.query.CourseChapterQuery;
 import com.xinkao.erp.course.query.CourseQuery;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * <p>
@@ -20,8 +21,8 @@ import com.xinkao.erp.course.query.CourseQuery;
  */
 public interface CourseService extends BaseService<Course> {
     Page<Course> page(CourseQuery query, Pageable pageable);
-    BaseResponse<?> save1(Course course);
-    BaseResponse<?> update(Course course);
+    BaseResponse<?> save1(Course course, MultipartFile coverImage);
+    BaseResponse<?> update(Course course, MultipartFile coverImage);
     BaseResponse<?> delete(Integer id);
     BaseResponse<?> updateState(UpdateStateParam param);
 }

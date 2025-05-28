@@ -36,7 +36,7 @@ import java.util.*;
 @RequestMapping("/course-resource")
 public class CourseResourceController {
 
-    @Value("${file.save.root}")
+    @Value("${path.cres}")
     private String savaLaction ;
 
     @Autowired
@@ -115,6 +115,10 @@ public class CourseResourceController {
                     return dealResultMap(false, "上传失败");
                 }
                 System.out.println("fileName:" + multipartFile.getOriginalFilename());
+                File destDir = new File(savaLaction); // 确保 savaLaction 已经配置正确
+                if (!destDir.exists()) {
+                    destDir.mkdirs(); // 自动创建目录
+                }
                 saveFileName = UUID.randomUUID().toString()+multipartFile.getOriginalFilename();
                 File file = new File(savaLaction,saveFileName);
                 multipartFile.transferTo(file);

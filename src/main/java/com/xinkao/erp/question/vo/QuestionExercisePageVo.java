@@ -11,7 +11,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class QuestionPageVo extends BaseEntity {
+public class QuestionExercisePageVo extends BaseEntity {
 
     @ApiModelProperty("题目Id")
     private String id;
@@ -52,7 +52,6 @@ public class QuestionPageVo extends BaseEntity {
     @ApiModelProperty("题目的预计用时(分钟)")
     private Integer estimatedTime;
 
-    @ApiModelProperty("练习题班级ID列表")
-    private String exerciseClassIds;
-
+    @ApiModelProperty("练习状态:0未开始，1进行中，2已完成")
+    private Integer exerciseState;
 }

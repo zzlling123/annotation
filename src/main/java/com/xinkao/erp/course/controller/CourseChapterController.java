@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 课程章节表 前端控制器
@@ -27,6 +28,18 @@ public class CourseChapterController {
 
     @Autowired
     private CourseChapterService courseChapterService;
+
+    /**
+     * 根据课程id获取章节信息作为下拉列表
+     */
+    @GetMapping("/getList/{id}")
+    @ApiOperation("根据课程id获取章节信息作为下拉列表")
+    public BaseResponse<List<CourseChapter>> getList(@PathVariable Integer id) {
+        return BaseResponse.ok(courseChapterService.lambdaQuery()
+                .eq(CourseChapter::getIsDel, 0)
+                .eq(CourseChapter::getCourseId, id)
+                .list());
+    }
 
     /**
      * 分页查询

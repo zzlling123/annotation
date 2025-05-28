@@ -127,5 +127,10 @@ public class Question extends DataEntity {
     @TableField(exist = false)
     private String scorePart;
 
+    @TableField("estimated_time")
+    private Integer estimatedTime;
+
+    @TableField("exercise_class_ids")
+    private String exerciseClassIds;
 
 }

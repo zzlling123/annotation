@@ -22,6 +22,39 @@
         <if test="query.state != null and query.state != ''">
             AND q.state = #{query.state}
         </if>
+        <if test="query.forExercise != null and query.forExercise != ''">
+            AND q.for_exercise = #{query.forExercise}
+        </if>
+        order by q.create_time desc
+    </select>
+
+    <select id="page1" resultType="com.xinkao.erp.question.vo.QuestionExercisePageVo">
+        SELECT q.*
+        FROM q_question q
+        WHERE
+        1 = 1 and q.is_del = 0
+        <if test="query.question != null and query.question != ''">
+            AND q.title LIKE CONCAT('%', #{query.question}, '%')
+        </if>
+        <if test="query.type != null and query.type != ''">
+            AND q.type = #{query.type}
+        </if>
+        <if test="query.shape != null and query.shape != ''">
+            AND q.shape = #{query.shape}
+        </if>
+        <if test="query.difficultyLevel != null and query.difficultyLevel != ''">
+            AND q.difficulty_level = #{query.difficultyLevel}
+        </if>
+        <if test="query.state != null and query.state != ''">
+            AND q.state = #{query.state}
+        </if>
+        <if test="query.forExercise != null and query.forExercise != ''">
+            AND q.for_exercise = #{query.forExercise}
+        </if>
+        <!-- 新增的 classId 匹配条件 -->
+        <if test="query.classId != null and query.classId != ''">
+            AND FIND_IN_SET(#{query.classId}, exercise_class_ids)
+        </if>
         order by q.create_time desc
     </select>
 

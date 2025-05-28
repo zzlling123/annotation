@@ -51,5 +51,26 @@ public class Course extends DataEntity {
     @TableField("is_del")
     private Integer isDel;
 
+    @ApiModelProperty("班级id")
+    @TableField("class_id")
+    private Integer classId;
+
+    @ApiModelProperty("班级名字")
+    @TableField(exist = false)
+    private String className;
+
+    @ApiModelProperty("教师id")
+    @TableField("teacher_id")
+    private Integer teacherId;
+
+    //该属性不是表中属性
+    @ApiModelProperty("教师名字")
+    @TableField(exist = false)
+    private String teacherName;
+
+    @ApiModelProperty("封面图片")
+    @TableField("cover_image")
+    private String coverImage;
+
 
 }

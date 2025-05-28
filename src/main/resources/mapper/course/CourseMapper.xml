@@ -2,17 +2,24 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xinkao.erp.course.mapper.CourseMapper">
     <select id="page" resultType="com.xinkao.erp.course.entity.Course">
-        SELECT * FROM course
-        where 1=1 and is_del = 0
+        SELECT
+        c.*,
+        ci.class_name,  -- 假设 class_info 表中包含班级名称字段
+        u.real_name as teacher_name    -- 假设 user 表中包含用户名字段
+        FROM course c
+        LEFT JOIN class_info ci ON c.class_id = ci.id
+        LEFT JOIN user u ON c.teacher_id = u.id
+        WHERE c.is_del = 0
+        <!-- 动态查询条件 -->
         <if test="query.courseName != null and query.courseName != ''">
-            and course_name LIKE CONCAT('%', #{query.courseName}, '%')
+            AND c.course_name LIKE CONCAT('%', #{query.courseName}, '%')
         </if>
         <if test="query.courseStatus != null">
-            and course_status = #{query.courseStatus}
+            AND c.course_status = #{query.courseStatus}
         </if>
         <if test="query.totalChapters != null">
-            and total_chapters = #{query.totalChapters}
+            AND c.total_chapters = #{query.totalChapters}
         </if>
-        ORDER BY create_time DESC
+        ORDER BY c.create_time DESC
     </select>
 </mapper>

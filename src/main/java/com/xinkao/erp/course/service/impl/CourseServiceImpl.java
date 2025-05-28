@@ -14,9 +14,15 @@ import com.xinkao.erp.course.service.CourseService;
 import com.xinkao.erp.common.service.impl.BaseServiceImpl;
 import com.xinkao.erp.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * <p>
@@ -32,6 +38,9 @@ public class CourseServiceImpl extends BaseServiceImpl<CourseMapper, Course> imp
     @Autowired
     private CourseMapper courseMapper;
 
+    @Value("${path.cres}")
+    private String cres;
+
     @Override
     public Page<Course> page(CourseQuery query, Pageable pageable) {
         Page page = pageable.toPage();
@@ -39,17 +48,55 @@ public class CourseServiceImpl extends BaseServiceImpl<CourseMapper, Course> imp
     }
 
     @Override
-    public BaseResponse<?> save1(Course course) {
+    public BaseResponse<?> save1(Course course, MultipartFile coverImage) {
         if (lambdaQuery().eq(Course::getCourseName, course.getCourseName()).eq(Course::getCourseStatus, CommonEnum.IS_DEL.NO.getCode()).count() > 0) {
             return BaseResponse.fail("课程名称已存在！");
         }
+        // 1. 图片上传逻辑
+        if (coverImage != null && !coverImage.isEmpty()) {
+            String coverImagePath = uploadCoverImage(coverImage); // 实现图片上传方法
+            course.setCoverImage(coverImagePath); // 设置封面图路径
+        }
+
         return save(course) ? BaseResponse.ok("新增成功！") : BaseResponse.fail("新增失败！");
+    }
+    private String uploadCoverImage(MultipartFile file) {
+        // 获取文件原始名称
+        String originalFilename = file.getOriginalFilename();
+
+        // 获取文件后缀（如 .jpg, .png）
+        String fileExtension = "";
+        if (originalFilename != null && originalFilename.contains(".")) {
+            fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            originalFilename = originalFilename.substring(0, originalFilename.lastIndexOf("."));
+        }
+        // 使用时间戳 + UUID 防止重名，例如：20250405120000-UUID.jpg
+        String uniqueFileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + "-" + UUID.randomUUID() + fileExtension;
+        // 指定保存路径
+        File dest = new File(cres + uniqueFileName);
+
+        // 创建父目录（如果不存在）
+        if (!dest.getParentFile().exists()) {
+            dest.getParentFile().mkdirs();
+        }
+        try {
+            // 保存文件
+            file.transferTo(dest);
+        } catch (Exception e) {
+            throw new RuntimeException("文件上传失败", e);
+        }
+        return cres + uniqueFileName; // 示例返回路径
     }
 
     @Override
-    public BaseResponse<?> update(Course course) {
+    public BaseResponse<?> update(Course course, MultipartFile coverImage) {
         if (lambdaQuery().eq(Course::getCourseName, course.getCourseName()).ne(Course::getId, course.getId()).eq(Course::getCourseStatus, CommonEnum.IS_DEL.NO.getCode()).count() > 0) {
             return BaseResponse.fail("课程名称已存在！");
+        }
+        // 如果上传了新的封面图，则更新路径
+        if (coverImage != null && !coverImage.isEmpty()) {
+            String newImagePath = uploadCoverImage(coverImage); // 文件上传逻辑
+            course.setCoverImage(newImagePath);
         }
         return updateById(course) ? BaseResponse.ok("更新成功！") : BaseResponse.fail("更新失败！");
     }

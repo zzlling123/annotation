@@ -1,6 +1,5 @@
 package com.xinkao.erp.summary.controller;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.xinkao.erp.common.annotation.PrimaryDataSource;

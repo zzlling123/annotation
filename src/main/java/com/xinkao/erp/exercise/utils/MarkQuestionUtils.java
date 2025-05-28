@@ -138,7 +138,7 @@ public class MarkQuestionUtils {
         int wu = 0;//错误标注个数
         int shu = 0;//属性个数
         int da = 0; //学生标注个数
-        int operationDuration = 0;
+        long operationDuration = 0;
         double accuracyRate = 0;
         double coverageRate = 0;
         //标准答案
@@ -217,7 +217,7 @@ public class MarkQuestionUtils {
         int wu = 0;//错误标注个数
         int shu = 0;//属性个数
         int da = 0; //学生标注个数
-        int operationDuration = 0;
+        long operationDuration = 0;
         double accuracyRate = 0;
         double coverageRate = 0;
         //标准答案

@@ -1,5 +1,6 @@
 package com.xinkao.erp.question.param;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.xinkao.erp.common.model.support.InputConverter;
 import com.xinkao.erp.manage.entity.Mark;
 import com.xinkao.erp.question.entity.Question;
@@ -71,4 +72,10 @@ public class QuestionParam implements InputConverter<Question> {
 
     @ApiModelProperty("markId列表")
     private List<Integer> markIds;
+
+    @ApiModelProperty("题目的预计用时(分钟)")
+    private Integer estimatedTime;
+
+    @ApiModelProperty("练习题班级ID列表")
+    private String exerciseClassIds;
 }

@@ -109,6 +109,19 @@ public class InstantFeedbacks extends DataEntity {
 
     @ApiModelProperty("题目操作时长（单位：秒）")
     @TableField("operation_duration")
-    private Integer operationDuration;
+    private Long operationDuration;
+
+    @ApiModelProperty("用户ID")
+    @TableField("user_id")
+    private Integer userId;
+
+    @ApiModelProperty("用户姓名")
+    @TableField(exist = false)
+    private String realName;
+
+    @ApiModelProperty("完成状态:1-进行中 2-已完成")
+    @TableField("finished_state")
+    private Integer finishedState;
+
 
 }

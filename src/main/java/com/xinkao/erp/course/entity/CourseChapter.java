@@ -62,4 +62,8 @@ public class CourseChapter extends DataEntity implements Serializable {
     @TableField("is_del")
     private Integer isDel;
 
+    @ApiModelProperty("封面图片")
+    @TableField("cover_image")
+    private String coverImage;
+
 }

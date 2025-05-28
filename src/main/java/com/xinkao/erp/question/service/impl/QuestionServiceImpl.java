@@ -15,6 +15,7 @@ import com.xinkao.erp.common.service.impl.BaseServiceImpl;
 import com.xinkao.erp.question.param.QuestionParam;
 import com.xinkao.erp.question.query.QuestionQuery;
 import com.xinkao.erp.question.vo.LabelVo;
+import com.xinkao.erp.question.vo.QuestionExercisePageVo;
 import com.xinkao.erp.question.vo.QuestionInfoVo;
 import com.xinkao.erp.question.vo.QuestionPageVo;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -46,6 +47,11 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
     public Page<QuestionPageVo> page(QuestionQuery query, Pageable pageable) {
         Page page = pageable.toPage();
         return questionMapper.page(page, query);
+    }
+
+    public Page<QuestionExercisePageVo> page1(QuestionQuery query, Pageable pageable) {
+        Page page = pageable.toPage();
+        return questionMapper.page1(page, query);
     }
 
     @Override
