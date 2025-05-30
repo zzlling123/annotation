@@ -115,6 +115,21 @@ public class ExamController {
     }
 
     /**
+     * 删除考试
+     *
+     * @param id 考试信息
+     * @return 操作结果
+     */
+    @PrimaryDataSource
+    @DataScope(role = "1,2")
+    @PostMapping("/del/{id}")
+    @ApiOperation("删除考试")
+    @Log(content = "删除考试",operationType = OperationType.DELETE)
+    public BaseResponse<?> del(@PathVariable Integer id) {
+        return examService.del(id);
+    }
+
+    /**
      * 导入试卷题目分布设置模板下载
      *
      */

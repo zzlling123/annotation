@@ -56,6 +56,14 @@ public interface ExamService extends BaseService<Exam> {
     BaseResponse<?> update(ExamParam examParam);
 
     /**
+     * 删除考试
+     *
+     * @param id 考试ID
+     * @return 操作结果
+     */
+    BaseResponse<?> del(Integer id);
+
+    /**
      * 根据题目类型和试卷形状获取试卷填充题库数量
      *
      */

@@ -35,6 +35,7 @@ public class EveryMinuteEventTask {
         List<Exam> examList = examService.lambdaQuery()
                 .lt(Exam::getState, 20)
                 .le(Exam::getStartTime, LocalDateTime.now())
+                .eq(Exam::getIsDel, 0)
                 .list();
         if (examList.size() > 0) {
             for (Exam exam : examList) {
@@ -45,6 +46,7 @@ public class EveryMinuteEventTask {
         List<Exam> examList2 = examService.lambdaQuery()
                 .eq(Exam::getState, 20)
                 .le(Exam::getEndTime, LocalDateTime.now())
+                .eq(Exam::getIsDel, 0)
                 .list();
         if (examList2.size() > 0) {
             for (Exam exam : examList2) {

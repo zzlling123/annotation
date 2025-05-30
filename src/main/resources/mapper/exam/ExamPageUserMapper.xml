@@ -6,7 +6,7 @@
         SELECT epu.*,e.exam_name,e.state
         FROM exam_page_user epu
         LEFT JOIN exam e ON epu.exam_id = e.id
-        WHERE 1=1
+        WHERE 1=1 and e.is_del = 0
         <if test="query.examName != null and query.examName != ''">
             and e.exam_name LIKE CONCAT('%', #{query.examName}, '%')
         </if>
