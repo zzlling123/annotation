@@ -22,6 +22,12 @@
         <if test="query.userId != null and query.userId != ''">
             AND ife.user_id = #{query.userId}
         </if>
+        <if test="query.startTime != null and query.startTime != ''">
+            AND ife.update_time >= #{query.startTime}
+        </if>
+        <if test="query.endTime != null and query.endTime != ''">
+            AND ife.update_time <![CDATA[<=]]> #{query.endTime}
+        </if>
         ORDER BY
         ife.create_time DESC
     </select>
