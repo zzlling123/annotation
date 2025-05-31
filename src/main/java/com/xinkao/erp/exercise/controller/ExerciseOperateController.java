@@ -93,6 +93,7 @@ public class ExerciseOperateController {
         }
         HashMap<String, Object> map = new HashMap<String, Object>();
         map.put("question", question);
+        map.put("feedbacks", feedbacks);
         return BaseResponse.ok(map);
     }
 

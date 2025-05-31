@@ -100,6 +100,10 @@ public class    QuestionController extends BaseController {
             System.out.println("fileName:" + file.getOriginalFilename());
             saveFileName = UUID.randomUUID().toString()+file.getOriginalFilename();
             File fileNew = new File(fileUrl,saveFileName);
+            // 创建父目录（如果不存在）
+            if (!fileNew.getParentFile().exists()) {
+                fileNew.getParentFile().mkdirs();
+            }
             file.transferTo(fileNew);
             String newFileUrl = ipurl+"/annotation/fileUrl/"+saveFileName;
             return questionTypeService.lambdaUpdate().eq(QuestionType::getId,id).set(QuestionType::getFileUrl,newFileUrl).update()?BaseResponse.ok("上传成功"):BaseResponse.fail("上传失败");
