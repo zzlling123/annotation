@@ -113,7 +113,7 @@ public class Question extends DataEntity {
      * 文档路径
      */
     @TableField("file_url")
-    private Integer fileUrl;
+    private String fileUrl;
 
     /**
      * 状态:0-正常 1-删除
