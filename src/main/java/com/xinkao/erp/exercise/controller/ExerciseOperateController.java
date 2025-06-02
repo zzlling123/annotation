@@ -82,6 +82,7 @@ public class ExerciseOperateController {
             feedbacks = new InstantFeedbacks();
             feedbacks.setRecordId(0);
             feedbacks.setQuestionId(question.getId());
+            feedbacks.setType(question.getType());
             feedbacks.setShape(question.getShape());
             feedbacks.setCreateBy(loginUserAll.getUser().getRealName());
             feedbacks.setUpdateBy(loginUserAll.getUser().getRealName());
@@ -114,6 +115,7 @@ public class ExerciseOperateController {
             feedbacks = new InstantFeedbacks();
             feedbacks.setRecordId(0);
             feedbacks.setQuestionId(question.getId());
+            feedbacks.setType(question.getType());
             feedbacks.setShape(question.getShape());
             feedbacks.setCreateBy(loginUserAll.getUser().getRealName());
             feedbacks.setUpdateBy(loginUserAll.getUser().getRealName());
@@ -180,6 +182,7 @@ public class ExerciseOperateController {
             feedbacks = new InstantFeedbacks();
             feedbacks.setRecordId(0);
             feedbacks.setQuestionId(question.getId());
+            feedbacks.setType(question.getType());
             feedbacks.setShape(question.getShape());
             feedbacks.setCreateBy(loginUserAll.getUser().getRealName());
             feedbacks.setUpdateBy(loginUserAll.getUser().getRealName());
