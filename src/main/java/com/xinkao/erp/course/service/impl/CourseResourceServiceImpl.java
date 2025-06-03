@@ -51,7 +51,7 @@ public class CourseResourceServiceImpl extends BaseServiceImpl<CourseResourceMap
     @Override
     public List<CourseResource> getListByChapterId(Long chapterId) {
         if (chapterId != null) {
-            return lambdaQuery().eq(CourseResource::getChapterId, chapterId).list();
+            return lambdaQuery().eq(CourseResource::getChapterId, chapterId).eq(CourseResource::getIsDel, 0).list();
         }
         return null;
     }

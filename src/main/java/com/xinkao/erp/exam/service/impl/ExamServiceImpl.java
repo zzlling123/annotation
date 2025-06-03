@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.common.exception.BusinessException;
 import com.xinkao.erp.common.model.BaseResponse;
+import com.xinkao.erp.common.model.LoginUser;
 import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.common.service.impl.BaseServiceImpl;
 import com.xinkao.erp.exam.dto.QuestionTypeListDto;
@@ -152,6 +153,26 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
         }
         examClassService.saveBatch(examClassList);
         return updateById(exam) ? BaseResponse.ok("更新成功") : BaseResponse.fail("更新失败");
+    }
+
+    @Override
+    @Transactional
+    public BaseResponse del(Integer id) {
+        //验证是否管理员，如果不是的话，只能删除自己创建的考试
+        LoginUser loginUser = redisUtil.getInfoByToken();
+        Exam exam = examMapper.selectById(id);
+        if (loginUser.getUser().getRoleId() != 1) {
+            if (!exam.getCreateBy().equals(loginUser.getUser().getId().toString())) {
+                return BaseResponse.fail("您只能删除自己创建的考试");
+            }
+        }
+        //验证考试是否已开始，只能删除未开始的考试
+        if (exam.getState() > 10) {
+            return BaseResponse.fail("考试已开始，不可删除");
+        }
+        exam.setIsDel(1);
+        return examMapper.updateById(exam) > 0 ? BaseResponse.ok("删除成功") : BaseResponse.fail("删除失败");
+
     }
 
 

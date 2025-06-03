@@ -1,14 +1,16 @@
 package com.xinkao.erp.exercise.query;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.xinkao.erp.common.model.BasePageQuery;
-import com.xinkao.erp.common.model.entity.DataEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -36,6 +38,10 @@ public class InstantFeedbacksQuery  extends BasePageQuery implements Serializabl
     @ApiModelProperty("关联到题目的ID")
     @TableField("question_id")
     private Integer questionId;
+
+    @ApiModelProperty("标注类型")
+    @TableField("type")
+    private Integer type;
 
     /**
      * 题目的标注类型
@@ -85,9 +91,14 @@ public class InstantFeedbacksQuery  extends BasePageQuery implements Serializabl
     @TableField(exist = false)
     private String realName;
 
-
     @ApiModelProperty("完成状态:1-进行中 2-已完成")
     @TableField("finished_state")
     private Integer finishedState;
+
+    @ApiModelProperty("查询开始时间")
+    private String startTime;
+
+    @ApiModelProperty("查询结束时间")
+    private String endTime;
 
 }

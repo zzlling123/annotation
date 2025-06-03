@@ -21,11 +21,16 @@ import com.xinkao.erp.exercise.service.ExerciseRecordsService;
 import com.xinkao.erp.exercise.service.InstantFeedbacksService;
 import com.xinkao.erp.manage.entity.ClassInfo;
 import com.xinkao.erp.manage.service.ClassInfoService;
+import com.xinkao.erp.question.entity.QuestionType;
+import com.xinkao.erp.question.service.QuestionTypeService;
+import com.xinkao.erp.summary.entity.Shape;
 import com.xinkao.erp.summary.param.ClassSummaryParam;
 import com.xinkao.erp.summary.param.SummaryParam;
 import com.xinkao.erp.summary.param.SummaryStuParam;
+import com.xinkao.erp.summary.service.ShapeService;
 import com.xinkao.erp.user.entity.User;
 import com.xinkao.erp.user.service.UserService;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +43,7 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,6 +64,10 @@ public class SummaryController {
     private InstantFeedbacksService instantFeedbacksService;
     @Autowired
     private ExamPageUserAnswerService examPageUserAnswerService;
+    @Autowired
+    private QuestionTypeService questionTypeService;
+    @Autowired
+    private ShapeService shapeService;
 
 //    统计
 //    学生成绩统计	详细记录每个学生的练习和考试成绩，生成个人成绩单和进步曲线图，帮助学生了解自己的学习效果。
@@ -429,7 +439,7 @@ public class SummaryController {
                 Integer maxScore = examPageUserList1.stream().mapToInt(ExamPageUserVo::getScore).max().orElse(0);
                 Integer minScore = examPageUserList1.stream().mapToInt(ExamPageUserVo::getScore).min().orElse(0);
                 Integer avgScore = examPageUserList1.stream().mapToInt(ExamPageUserVo::getScore).sum()/examPageUserList1.size();
-                classSummaryParam.setExamId(examId+"");
+                //classSummaryParam.setExamId(examId+"");
                 classSummaryParam.setAvgScore(avgScore+"");
                 classSummaryParam.setMaxScore(maxScore+"");
                 classSummaryParam.setMinScore(minScore+"");
@@ -440,4 +450,200 @@ public class SummaryController {
             return BaseResponse.fail("参数错误");
         }
     }
+
+    /**
+     * 各题型分数情况（type为类型（考试或者练习,0:练习,1:考试），练习则通过班级选择显示各个类型的操作题的数据，考试前端页面管理员可以通过班级搜索+考试搜索显示数据，教师通过班级选择显示）
+     * @param summaryParam
+     * @return
+     */
+    @RequestMapping("/getClassScoreByQuestionType")
+   // @PrimaryDataSource
+    @ApiOperation("各题型分数情况（type为类型（考试或者练习,0:练习,1:考试），练习则通过班级选择显示各个类型的操作题的数据(默认显示第一个班级，第一个操作题)，考试前端页面管理员可以通过班级搜索+考试搜索显示数据，教师通过班级选择显示（默认显示第一个班级第一个考试））")
+    public BaseResponse<?> getClassScoreByQuestionType(SummaryParam summaryParam) {
+        List<ClassSummaryParam> classSummaryParamList = new ArrayList<>();
+        List<ClassSummaryParam> classSummaryExamOperateParamList = new ArrayList<>();
+        HashMap<String,Object> map = new HashMap<>();
+        //获取当前登录用户信息
+        LoginUser loginUserAll = redisUtil.getInfoByToken();
+        int roleId = loginUserAll.getUser().getRoleId();
+        Integer classId = 0;
+        Integer examId = 0;
+        if(summaryParam.getType()==0){
+            if (summaryParam.getClassId()!=null){
+                classId = summaryParam.getClassId();
+            }else{
+                if (roleId == 1){//管理员
+                    classId  = classInfoService.list().get(0).getId();
+                }else if (roleId == 2){//教师
+                    classId = classInfoService.list().stream().filter(classInfo -> classInfo.getId().equals(loginUserAll.getUser().getClassId())).findFirst().get().getId();
+                }else {
+                    return BaseResponse.fail("无权限显示");
+                }
+            }
+            List<Integer> userIds = null;
+            LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery();
+            wrapper.eq(User::getRoleId,3);
+            wrapper.in(User::getClassId,classId);
+            List<User> userList = userService.list(wrapper);
+            userIds = userList.stream().map(User::getId).collect(Collectors.toList());
+            List<InstantFeedbacks> instantFeedbacksList =
+                    instantFeedbacksService.lambdaQuery().in(InstantFeedbacks::getUserId,userIds)
+                            .eq(InstantFeedbacks::getIsDel,0)
+                            .eq(InstantFeedbacks::getFinishedState,2)
+                            .eq(InstantFeedbacks::getShape,500)
+                            //.gt(InstantFeedbacks::getCreateTime, summaryParam.getStartTime()) // 添加时间过滤条件
+                            //.lt(InstantFeedbacks::getUpdateTime, summaryParam.getEndTime())
+                            .list();
+            if(instantFeedbacksList==null){
+                return BaseResponse.fail("无操作题数据");
+            }else if (instantFeedbacksList.size()==0){
+                return BaseResponse.fail("无操作题数据");
+            }else {
+                ClassSummaryParam classSummaryParam = new ClassSummaryParam();
+                classSummaryParam.setExamId(null);
+                //按着type的类型拆分数据
+                questionTypeService.list().forEach(questionType -> {
+                    List<InstantFeedbacks> instantFeedbacks_type =
+                            instantFeedbacksList.stream().filter(instantFeedbacks -> instantFeedbacks.getType().equals(questionType.getId())).collect(Collectors.toList());
+                    Integer maxScore = instantFeedbacks_type.stream().mapToInt(InstantFeedbacks::getUserScore).max().orElse(0);
+                    Integer minScore = instantFeedbacks_type.stream().mapToInt(InstantFeedbacks::getUserScore).min().orElse(0);
+                    Integer avgScore = 0;
+                    if (instantFeedbacks_type.isEmpty()||instantFeedbacks_type.size()==0){
+                    }else{
+                        avgScore = instantFeedbacks_type.stream().mapToInt(InstantFeedbacks::getUserScore).sum()/instantFeedbacks_type.size();
+                        double sumAccuracy = instantFeedbacks_type.stream()
+                                .mapToDouble(feedback -> feedback.getAccuracyRate() != null ? feedback.getAccuracyRate().doubleValue() : 0)
+                                .sum();
+                        Double avgAccuracy = instantFeedbacks_type.isEmpty() ? 0.0 : sumAccuracy / instantFeedbacks_type.size();
+                        double sumCoverage = instantFeedbacks_type.stream()
+                                .mapToDouble(feedback -> feedback.getCoverageRate() != null ? feedback.getCoverageRate().doubleValue() : 0)
+                                .sum();
+                        Double avgCoverage = instantFeedbacks_type.isEmpty() ? 0.0 : sumCoverage / instantFeedbacks_type.size();
+                        double avgDuration = instantFeedbacks_type.stream().mapToDouble(InstantFeedbacks::getOperationDuration).sum()/instantFeedbacks_type.size();
+                        Integer avgBiao = instantFeedbacks_type.stream().mapToInt(InstantFeedbacks::getBiao).sum()/instantFeedbacks_type.size();
+                        Integer avgCuo = instantFeedbacks_type.stream().mapToInt(InstantFeedbacks::getCuo).sum()/instantFeedbacks_type.size();
+                        Integer avgWu = instantFeedbacks_type.stream().mapToInt(InstantFeedbacks::getWu).sum()/instantFeedbacks_type.size();
+                        Integer avgShu = instantFeedbacks_type.stream().mapToInt(InstantFeedbacks::getShu).sum()/instantFeedbacks_type.size();
+                        Integer avgZong = instantFeedbacks_type.stream().mapToInt(InstantFeedbacks::getZong).sum()/instantFeedbacks_type.size();
+                        Integer avgDa = instantFeedbacks_type.stream().mapToInt(InstantFeedbacks::getDa).sum()/instantFeedbacks_type.size();
+                        classSummaryParam.setAvgBiao(avgBiao);
+                        classSummaryParam.setAvgCuo(avgCuo);
+                        classSummaryParam.setAvgWu(avgWu);
+                        classSummaryParam.setAvgShu(avgShu);
+                        classSummaryParam.setAvgZong(avgZong);
+                        classSummaryParam.setAvgDa(avgDa);
+                        classSummaryParam.setType(questionType.getId());
+                        classSummaryParam.setAvgAccuracy(avgAccuracy);
+                        classSummaryParam.setAvgCoverage(avgCoverage);
+                        classSummaryParam.setAvgDuration(avgDuration);
+                        classSummaryParam.setMaxScore(maxScore+"");
+                        classSummaryParam.setMinScore(minScore+"");
+                        classSummaryParam.setAvgScore(avgScore+"");
+                        classSummaryParam.setInstantFeedbacksVoList(instantFeedbacks_type);
+                        classSummaryParam.setExamPageUserVoList(null);
+                        classSummaryParamList.add(classSummaryParam);
+                    }
+                });
+            }
+            return BaseResponse.ok(classSummaryParamList);
+        }else if(summaryParam.getType()==1){
+            if (summaryParam.getClassId()!=null){
+                classId = summaryParam.getClassId();
+            }else{
+                if (roleId == 1){//管理员
+                    classId  = classInfoService.list().get(0).getId();
+                }else if (roleId == 2){//教师
+                    classId = classInfoService.list().stream().filter(classInfo -> classInfo.getId().equals(loginUserAll.getUser().getClassId())).findFirst().get().getId();
+                }else {
+                    return BaseResponse.fail("无权限显示");
+                }
+            }
+            List<Integer> userIds = null;
+            LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery();
+            wrapper.eq(User::getRoleId,3);
+            wrapper.in(User::getClassId,classId);
+            List<User> userList = userService.list(wrapper);
+            userIds = userList.stream().map(User::getId).collect(Collectors.toList());
+            if (summaryParam.getExamId()!=null){
+                examId = summaryParam.getExamId();
+            }else{
+                examId = examPageUserService.list(new LambdaQueryWrapper<ExamPageUser>().eq(ExamPageUser::getClassId,classId)).get(0).getExamId();
+            }
+            List<ExamPageUserAnswer> examPageUserAnswerList = examPageUserAnswerService.list(
+                    new LambdaQueryWrapper<ExamPageUserAnswer>()
+                            .eq(ExamPageUserAnswer::getExamId,examId)
+                            .in(ExamPageUserAnswer::getUserId,userIds)
+                            );
+            //查询所有的shape
+            List<Shape> shapeList = shapeService.list();
+            for (Shape shape : shapeList){
+                ClassSummaryParam classSummaryParam = new ClassSummaryParam();
+                List<ExamPageUserAnswer> examPageUserAnswer_shape = examPageUserAnswerList.stream().filter(examPageUserAnswer -> examPageUserAnswer.getShape()==Integer.parseInt(shape.getShapeCode())).collect(Collectors.toList());
+                Integer maxScore = examPageUserAnswer_shape.stream().mapToInt(ExamPageUserAnswer::getUserScore).max().orElse(0);
+                Integer minScore = examPageUserAnswer_shape.stream().mapToInt(ExamPageUserAnswer::getUserScore).min().orElse(0);
+                Integer avgScore = 0;
+                if (examPageUserAnswer_shape.isEmpty()||examPageUserAnswer_shape.size()==0){
+                }else {
+                    avgScore = examPageUserAnswer_shape.stream().mapToInt(ExamPageUserAnswer::getUserScore).sum()/examPageUserAnswer_shape.size();
+                    classSummaryParam.setExamId(examPageUserAnswer_shape.get(0).getExamId());
+                    classSummaryParam.setShape(shape.getShapeCode());
+                    classSummaryParam.setMaxScore(maxScore+"");
+                    classSummaryParam.setMinScore(minScore+"");
+                    classSummaryParam.setAvgScore(avgScore+"");
+                    classSummaryParam.setExamPageUserAnswerList(examPageUserAnswer_shape);
+                    classSummaryParam.setExamPageUserVoList(null);
+                    classSummaryParamList.add(classSummaryParam);
+                }
+            }
+            questionTypeService.list().forEach(questionType -> {
+                ClassSummaryParam classSummaryParam = new ClassSummaryParam();
+                //筛选出来操作题
+                List<ExamPageUserAnswer> examPageUserAnswer_type =
+                        examPageUserAnswerList.stream().filter(examPageUserAnswer -> examPageUserAnswer.getType().equals(questionType.getId())&&examPageUserAnswer.getShape()==500).collect(Collectors.toList());
+                Integer maxScore = examPageUserAnswer_type.stream().mapToInt(ExamPageUserAnswer::getUserScore).max().orElse(0);
+                Integer minScore = examPageUserAnswer_type.stream().mapToInt(ExamPageUserAnswer::getUserScore).min().orElse(0);
+                Integer avgScore = 0;
+                if (examPageUserAnswer_type.isEmpty()||examPageUserAnswer_type.size()==0){
+                }else {
+                    avgScore = examPageUserAnswer_type.stream().mapToInt(ExamPageUserAnswer::getUserScore).sum()/examPageUserAnswer_type.size();
+                    double sumAccuracy = examPageUserAnswer_type.stream()
+                            .mapToDouble(feedback -> feedback.getAccuracyRate() != null ? feedback.getAccuracyRate().doubleValue() : 0)
+                            .sum();
+                    Double avgAccuracy = examPageUserAnswer_type.isEmpty() ? 0.0 : sumAccuracy / examPageUserAnswer_type.size();
+                    double sumCoverage = examPageUserAnswer_type.stream()
+                            .mapToDouble(feedback -> feedback.getCoverageRate() != null ? feedback.getCoverageRate().doubleValue() : 0)
+                            .sum();
+                    Double avgCoverage = examPageUserAnswer_type.isEmpty() ? 0.0 : sumCoverage / examPageUserAnswer_type.size();
+                    Integer avgBiao = examPageUserAnswer_type.stream().mapToInt(ExamPageUserAnswer::getBiao).sum()/examPageUserAnswer_type.size();
+                    Integer avgCuo = examPageUserAnswer_type.stream().mapToInt(ExamPageUserAnswer::getCuo).sum()/examPageUserAnswer_type.size();
+                    Integer avgWu = examPageUserAnswer_type.stream().mapToInt(ExamPageUserAnswer::getWu).sum()/examPageUserAnswer_type.size();
+                    Integer avgShu = examPageUserAnswer_type.stream().mapToInt(ExamPageUserAnswer::getShu).sum()/examPageUserAnswer_type.size();
+                    Integer avgZong = examPageUserAnswer_type.stream().mapToInt(ExamPageUserAnswer::getZong).sum()/examPageUserAnswer_type.size();
+                    Integer avgDa = examPageUserAnswer_type.stream().mapToInt(ExamPageUserAnswer::getDa).sum()/examPageUserAnswer_type.size();
+                    classSummaryParam.setExamId(examPageUserAnswer_type.get(0).getExamId());
+                    classSummaryParam.setAvgAccuracy(avgAccuracy);
+                    classSummaryParam.setAvgCoverage(avgCoverage);
+                    classSummaryParam.setAvgBiao(avgBiao);
+                    classSummaryParam.setAvgCuo(avgCuo);
+                    classSummaryParam.setAvgWu(avgWu);
+                    classSummaryParam.setAvgShu(avgShu);
+                    classSummaryParam.setAvgZong(avgZong);
+                    classSummaryParam.setAvgDa(avgDa);
+                    classSummaryParam.setType(questionType.getId());
+                    classSummaryParam.setMaxScore(maxScore+"");
+                    classSummaryParam.setMinScore(minScore+"");
+                    classSummaryParam.setAvgScore(avgScore+"");
+                    classSummaryParam.setExamPageUserAnswerList(examPageUserAnswer_type);
+                    classSummaryParam.setExamPageUserVoList(null);
+                    classSummaryExamOperateParamList.add(classSummaryParam);
+                }
+            });
+            map.put("classSummaryParamList",classSummaryParamList);
+            map.put("classSummaryExamOperateParamList",classSummaryExamOperateParamList);
+            return BaseResponse.ok(map);
+        }else {
+            return BaseResponse.fail("参数错误");
+        }
+    }
+
 }

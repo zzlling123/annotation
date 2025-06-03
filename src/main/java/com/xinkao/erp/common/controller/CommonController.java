@@ -86,7 +86,12 @@ public class CommonController {
             }
             System.out.println("fileName:" + file.getOriginalFilename());
             saveFileName = UUID.randomUUID().toString()+file.getOriginalFilename();
+
             File fileNew = new File(fileUrl,saveFileName);
+            // 创建父目录（如果不存在）
+            if (!fileNew.getParentFile().exists()) {
+                fileNew.getParentFile().mkdirs();
+            }
             file.transferTo(fileNew);
             return BaseResponse.ok(ipurl+"/annotation/fileUrl/"+saveFileName);
         } catch (IOException e) {

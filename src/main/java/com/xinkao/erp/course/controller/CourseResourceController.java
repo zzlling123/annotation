@@ -46,6 +46,7 @@ public class CourseResourceController {
     @PostMapping("/list/chapterId")
     @ApiOperation("查询课程章节资源信息通过章节信息ID")
     public List<CourseResource> getResourceList(Long chapterId) {
+
         return courseResourceService.getListByChapterId(chapterId);
     }
 

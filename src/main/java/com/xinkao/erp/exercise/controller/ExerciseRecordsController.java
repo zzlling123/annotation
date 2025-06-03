@@ -312,6 +312,7 @@ public class ExerciseRecordsController {
             feedbacks.setRecordId(exerciseRecordsId);
             feedbacks.setUserId(loginUserAll.getUser().getId());
             feedbacks.setQuestionId(questionId);
+            feedbacks.setType(question.getType());
             feedbacks.setShape(question.getShape());
             feedbacks.setCreateBy(loginUserAll.getUser().getRealName());
             feedbacks.setUpdateBy(loginUserAll.getUser().getRealName());

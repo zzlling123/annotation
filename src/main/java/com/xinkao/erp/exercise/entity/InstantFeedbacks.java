@@ -36,6 +36,10 @@ public class InstantFeedbacks extends DataEntity {
     @TableField("question_id")
     private Integer questionId;
 
+    @ApiModelProperty("标注类型")
+    @TableField("type")
+    private Integer type;
+
     /**
      * 题目的标注类型
      */
