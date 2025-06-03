@@ -70,7 +70,7 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
-	@DataScope(role = "1")
+	@DataScope(role = "1,2")
 	@PostMapping("/page")
 	@ApiOperation("分页")
 	public BaseResponse<Page<UserPageVo>> page(@RequestBody UserQuery query) {
