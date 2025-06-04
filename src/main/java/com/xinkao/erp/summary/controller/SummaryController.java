@@ -11,6 +11,7 @@ import com.xinkao.erp.exam.entity.ExamPageUser;
 import com.xinkao.erp.exam.entity.ExamPageUserAnswer;
 import com.xinkao.erp.exam.model.vo.ExamPageUserVo;
 import com.xinkao.erp.exam.param.ExamPageUserParam;
+import com.xinkao.erp.exam.service.ExamClassService;
 import com.xinkao.erp.exam.service.ExamPageUserAnswerService;
 import com.xinkao.erp.exam.service.ExamPageUserService;
 import com.xinkao.erp.exercise.entity.ExerciseRecords;
@@ -29,6 +30,7 @@ import com.xinkao.erp.summary.param.SummaryParam;
 import com.xinkao.erp.summary.param.SummaryStuIDParam;
 import com.xinkao.erp.summary.param.SummaryStuParam;
 import com.xinkao.erp.summary.service.ShapeService;
+import com.xinkao.erp.summary.vo.ExamClVo;
 import com.xinkao.erp.user.entity.User;
 import com.xinkao.erp.user.service.UserService;
 import io.swagger.annotations.ApiModelProperty;
@@ -69,6 +71,8 @@ public class SummaryController {
     private QuestionTypeService questionTypeService;
     @Autowired
     private ShapeService shapeService;
+    @Autowired
+    private ExamClassService examClassService;
 
 //    统计
 //    学生成绩统计	详细记录每个学生的练习和考试成绩，生成个人成绩单和进步曲线图，帮助学生了解自己的学习效果。
@@ -486,6 +490,9 @@ public class SummaryController {
             wrapper.eq(User::getRoleId,3);
             wrapper.in(User::getClassId,classId);
             List<User> userList = userService.list(wrapper);
+            if (userList==null || userList.size()==0){
+                return BaseResponse.fail("该班级没有学生");
+            }
             userIds = userList.stream().map(User::getId).collect(Collectors.toList());
             List<InstantFeedbacks> instantFeedbacksList =
                     instantFeedbacksService.lambdaQuery().in(InstantFeedbacks::getUserId,userIds)
@@ -564,6 +571,9 @@ public class SummaryController {
             wrapper.eq(User::getRoleId,3);
             wrapper.in(User::getClassId,classId);
             List<User> userList = userService.list(wrapper);
+            if (userList==null || userList.size()==0){
+                return BaseResponse.fail("该班级没有学生");
+            }
             userIds = userList.stream().map(User::getId).collect(Collectors.toList());
             if (summaryParam.getExamId()!=null){
                 examId = summaryParam.getExamId();
@@ -662,6 +672,7 @@ public class SummaryController {
         //获取当前登录用户信息
         LoginUser loginUserAll = redisUtil.getInfoByToken();
         int roleId = loginUserAll.getUser().getRoleId();
+       // int roleId = 1;
         Integer classId = 0;
         Integer examId = 0;
         if(summaryStuIDParam.getType()==0){
@@ -672,6 +683,7 @@ public class SummaryController {
                     classId  = classInfoService.list().get(0).getId();
                 }else if (roleId == 2){//教师
                     classId = classInfoService.list().stream().filter(classInfo -> classInfo.getId().equals(loginUserAll.getUser().getClassId())).findFirst().get().getId();
+                    //classId = 3;
                 }else {
                     return BaseResponse.fail("无权限显示");
                 }
@@ -681,6 +693,9 @@ public class SummaryController {
             wrapper.eq(User::getRoleId,3);
             wrapper.in(User::getClassId,classId);
             List<User> userList = userService.list(wrapper);
+            if (userList==null || userList.size()==0){
+                return BaseResponse.fail("该班级没有学生");
+            }
             userIds = userList.stream().map(User::getId).collect(Collectors.toList());
             List<InstantFeedbacks> instantFeedbacksList =
                     instantFeedbacksService.lambdaQuery().in(InstantFeedbacks::getUserId,userIds)
@@ -755,6 +770,7 @@ public class SummaryController {
                     classId  = classInfoService.list().get(0).getId();
                 }else if (roleId == 2){//教师
                     classId = classInfoService.list().stream().filter(classInfo -> classInfo.getId().equals(loginUserAll.getUser().getClassId())).findFirst().get().getId();
+                    //classId = 3;
                 }else {
                     return BaseResponse.fail("无权限显示");
                 }
@@ -764,6 +780,9 @@ public class SummaryController {
             wrapper.eq(User::getRoleId,3);
             wrapper.in(User::getClassId,classId);
             List<User> userList = userService.list(wrapper);
+            if (userList==null || userList.size()==0){
+                return BaseResponse.fail("该班级没有学生");
+            }
             userIds = userList.stream().map(User::getId).collect(Collectors.toList());
             if (summaryStuIDParam.getExamId()!=null){
                 examId = summaryStuIDParam.getExamId();
@@ -850,5 +869,16 @@ public class SummaryController {
         }else {
             return BaseResponse.fail("参数错误");
         }
+    }
+
+    /**
+     * 根据班级获取考试列表
+     */
+    @RequestMapping("/getExamListByClass/{classId}")
+    @ApiOperation("根据班级获取考试列表")
+    //@PrimaryDataSource
+    public BaseResponse<?> getExamListByClass(@PathVariable Integer classId) {
+        List<ExamClVo> examClassList = examClassService.listByClassId(classId);
+        return BaseResponse.ok(examClassList);
     }
 }
