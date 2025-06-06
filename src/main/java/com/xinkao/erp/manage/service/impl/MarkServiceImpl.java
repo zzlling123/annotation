@@ -133,6 +133,28 @@ public class MarkServiceImpl extends BaseServiceImpl<MarkMapper, Mark> implement
         mark.setParent(parent);
         mark.setParentRoute(parentRoute);
         save(mark);
+        //获取所有的首级部门
+//        List<Mark> markList = lambdaQuery().eq(Mark::getPid, 0).eq(Mark::getIsDel, 0).list();
+//        for (Mark mark1 : markList) {//1级
+//            //获取所有子集
+//            List<Mark> childMarkList = lambdaQuery().eq(Mark::getPid, mark1.getId()).eq(Mark::getIsDel, 0).list();
+//            for (Mark mark2 : childMarkList) {//2级
+//                String parent2 = mark1.getParent() + "," + mark1.getId();
+//                String parentRoute2 = mark1.getParentRoute() + "-" + mark1.getMarkName();
+//                mark2.setParent(parent2);
+//                mark2.setParentRoute(parentRoute2);
+//                updateById(mark2);
+//                //获取所有3级
+//                List<Mark> childMarkList2 = lambdaQuery().eq(Mark::getPid, mark2.getId()).eq(Mark::getIsDel, 0).list();
+//                for (Mark mark3 : childMarkList2) {
+//                    String parent3 = mark2.getParent() + "," + mark2.getId();
+//                    String parentRoute3 = mark2.getParentRoute() + "-" + mark2.getMarkName();
+//                    mark3.setParent(parent3);
+//                    mark3.setParentRoute(parentRoute3);
+//                    updateById(mark3);
+//                }
+//            }
+//        }
         return BaseResponse.ok("成功！");
     }
 

@@ -4,12 +4,17 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
+import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
+import cn.hutool.crypto.symmetric.SymmetricCrypto;
 import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
 import com.xinkao.erp.common.enums.CommonEnum;
+import com.xinkao.erp.common.exception.AuthenticationException;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.util.ip.IpRegionUtils;
 import com.xinkao.erp.common.util.ip.IpUtils;
@@ -27,6 +32,7 @@ import com.xinkao.erp.login.vo.UserLoginResultVo;
 import com.xinkao.erp.system.service.AsyncService;
 import com.xinkao.erp.user.entity.User;
 
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -45,7 +51,6 @@ public class LoginServiceImpl extends LoginCommonServiceImpl implements LoginSer
 	@Override
 	public BaseResponse<LoginUserVo> login(ApLoginParam loginParam, HttpServletRequest request) {
 		String userCode = redisUtil.get(loginParam.getUuid());
-		System.out.println("Redis缓存中的code：" + userCode);
 		if (!StrUtil.equalsIgnoreCase(loginParam.getCode(), userCode)){
 			return BaseResponse.fail("验证码不正确！");
 		}
@@ -57,14 +62,23 @@ public class LoginServiceImpl extends LoginCommonServiceImpl implements LoginSer
 		if (user == null) {
 			return BaseResponse.fail("用户名不存在！");
 		}
-		// 密码错误
-		System.out.println(SecureUtil.md5(user.getSalt()+password));
 		if (!SecureUtil.md5(user.getSalt()+password).equals(user.getPassword())) {
 			return BaseResponse.fail("密码错误！");
 		}
 		if (user.getState() == 0) {
 			return BaseResponse.fail("该用户已被禁用！");
 		}
+//		//字符串转为byte
+//		byte[] key = new byte[]{119, -75, -15, -122, -112, 119, 116, 111, -20, 47, -11, -93, 55, -66, -83, -94};
+//		//构建
+//		SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, key);
+//		String encryptHex = "5aa6323b6c4e165e183641cb69d97a70";
+//		//解密为字符串
+//		String decryptStr = aes.decryptStr(encryptHex, CharsetUtil.CHARSET_UTF_8);
+//		Date expireDate = DateUtil.parse(decryptStr);
+//		if (expireDate.before(DateUtil.date())) {
+//			throw new AuthenticationException("请重新登录！");
+//		}
 		// 生成登录信息
 		LoginUser loginUser = new LoginUser();
 		String token = RandomUtil.randomString(20); // 随机生成唯一token
