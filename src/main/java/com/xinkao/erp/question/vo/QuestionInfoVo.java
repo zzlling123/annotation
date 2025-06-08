@@ -76,4 +76,13 @@ public class QuestionInfoVo extends BaseEntity implements OutputConverter<Questi
 
     @ApiModelProperty("是否练习用题0否1是")
     private Integer forExercise;
+
+    @ApiModelProperty("文档路径")
+    private String fileUrl;
+
+    @ApiModelProperty("题目的预计用时(分钟)")
+    private Integer estimatedTime;
+
+    @ApiModelProperty("练习题班级ID列表")
+    private String exerciseClassIds;
 }
