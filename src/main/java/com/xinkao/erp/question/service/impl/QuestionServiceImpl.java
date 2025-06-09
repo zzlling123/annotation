@@ -7,6 +7,8 @@ import com.alibaba.fastjson.JSON;
 import com.xinkao.erp.common.enums.CommonEnum;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.param.DeleteParam;
+import com.xinkao.erp.manage.entity.Mark;
+import com.xinkao.erp.manage.service.MarkService;
 import com.xinkao.erp.question.entity.*;
 import com.xinkao.erp.question.mapper.LabelMapper;
 import com.xinkao.erp.question.mapper.QuestionMapper;
@@ -42,6 +44,8 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
     private QuestionMarkService questionMarkService;
     @Autowired
     private QuestionTypeService questionTypeService;
+    @Autowired
+    private MarkService markService;
 
     @Override
     public Page<QuestionPageVo> page(QuestionQuery query, Pageable pageable) {
@@ -183,6 +187,9 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         //查询并赋值该题目关联的自定义标签
         List<LabelVo> labelList = labelMapper.getLabelListByQid(id);
         questionInfoVo.setLabelList(labelList);
+        //插入标注
+        List<Mark> markList = markService.getListByQuestionId(id);
+        questionInfoVo.setMarkList(markList);
         return questionInfoVo;
     }
 

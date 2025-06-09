@@ -195,7 +195,7 @@ public class MarkServiceImpl extends BaseServiceImpl<MarkMapper, Mark> implement
     }
 
     @Override
-    public BaseResponse<List<Mark>> getListByQuestionId(Integer id) {
+    public List<Mark> getListByQuestionId(Integer id) {
         LambdaQueryWrapper<QuestionMark> questionMarkLambdaQueryWrapper = new LambdaQueryWrapper<>();
         questionMarkLambdaQueryWrapper.eq(QuestionMark::getQid, id);
         List<QuestionMark> questionMarkList = questionMarkMapper.selectList(questionMarkLambdaQueryWrapper);
@@ -207,8 +207,7 @@ public class MarkServiceImpl extends BaseServiceImpl<MarkMapper, Mark> implement
             markList = lambdaQuery().eq(Mark::getIsDel, 0).apply(true,"FIND_IN_SET ('"+mid+"',parent)").list();
             markListAll.addAll(markList);
         }
-        List<Mark> markReportList = formatMarkList(0,markListAll);
-        return BaseResponse.ok("成功！",markReportList);
+        return formatMarkList(0,markListAll);
     }
 
 

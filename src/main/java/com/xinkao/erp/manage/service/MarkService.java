@@ -35,5 +35,5 @@ public interface MarkService extends BaseService<Mark> {
     BaseResponse del(String ids);
 
     //根据题目ID获取标记树状图
-    BaseResponse<List<Mark>> getListByQuestionId(Integer qid);
+    List<Mark> getListByQuestionId(Integer qid);
 }

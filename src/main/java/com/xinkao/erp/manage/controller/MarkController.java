@@ -107,6 +107,6 @@ public class MarkController extends BaseController {
     @PostMapping("/getListByQuestionId/{qid}")
     @ApiOperation("根据题目ID获取标记树状图")
     public BaseResponse<List<Mark>> getListByQuestionId(@PathVariable Integer qid){
-        return markService.getListByQuestionId(qid);
+        return BaseResponse.ok(markService.getListByQuestionId(qid));
     }
 }

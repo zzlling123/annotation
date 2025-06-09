@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.xinkao.erp.common.model.entity.BaseEntity;
 import com.xinkao.erp.common.model.support.OutputConverter;
+import com.xinkao.erp.manage.entity.Mark;
 import com.xinkao.erp.question.entity.Label;
 import com.xinkao.erp.question.entity.Question;
 import io.swagger.annotations.ApiModelProperty;
@@ -85,4 +86,7 @@ public class QuestionInfoVo extends BaseEntity implements OutputConverter<Questi
 
     @ApiModelProperty("练习题班级ID列表")
     private String exerciseClassIds;
+
+    @ApiModelProperty("标注类型列表")
+    private List<Mark> markList;
 }
