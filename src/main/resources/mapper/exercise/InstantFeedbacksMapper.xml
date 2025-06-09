@@ -13,6 +13,9 @@
         WHERE
         1=1
         AND ife.is_del = 0
+        <if test="query.shape != null and query.shape != ''">
+            AND ife.shape = #{query.shape}
+        </if>
         <if test="query.recordId != null and query.recordId != ''">
             AND ife.record_id = #{query.recordId}
         </if>
@@ -23,10 +26,10 @@
             AND ife.user_id = #{query.userId}
         </if>
         <if test="query.startTime != null and query.startTime != ''">
-            AND ife.update_time >= #{query.startTime}
+            AND ife.update_time >= concat(#{query.startTime}, ' 00:00:00')
         </if>
         <if test="query.endTime != null and query.endTime != ''">
-            AND ife.update_time <![CDATA[<=]]> #{query.endTime}
+            AND ife.update_time <![CDATA[<=]]> concat(#{query.endTime}, ' 23:59:59')
         </if>
         ORDER BY
         ife.create_time DESC
