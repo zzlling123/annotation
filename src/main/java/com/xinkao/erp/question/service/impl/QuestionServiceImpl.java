@@ -187,9 +187,11 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         //查询并赋值该题目关联的自定义标签
         List<LabelVo> labelList = labelMapper.getLabelListByQid(id);
         questionInfoVo.setLabelList(labelList);
-        //插入标注
-        List<Mark> markList = markService.getListByQuestionId(id);
-        questionInfoVo.setMarkList(markList);
+        //如果为操作题则插入标注
+        if ("500".equals(question.getShape().toString())){
+            List<Mark> markList = markService.getListByQuestionId(id);
+            questionInfoVo.setMarkList(markList);
+        }
         return questionInfoVo;
     }
 
