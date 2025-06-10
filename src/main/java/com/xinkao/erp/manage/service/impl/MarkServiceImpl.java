@@ -201,7 +201,11 @@ public class MarkServiceImpl extends BaseServiceImpl<MarkMapper, Mark> implement
         List<QuestionMark> questionMarkList = questionMarkMapper.selectList(questionMarkLambdaQueryWrapper);
         List<Integer> questionMarkIdList = questionMarkList.stream().map(QuestionMark::getMid).collect(Collectors.toList());
         //查询所有父级中包含此id的标记
-        List<Mark> markListAll = lambdaQuery().eq(Mark::getIsDel, 0).in(Mark::getId, questionMarkIdList).list();
+        List<Mark> markListAll = new ArrayList<>();
+        if  (questionMarkIdList.isEmpty()) {
+            return markListAll;
+        }
+        markListAll = lambdaQuery().eq(Mark::getIsDel, 0).in(Mark::getId, questionMarkIdList).list();
         List<Mark> markList;
         for (Integer mid : questionMarkIdList) {
             markList = lambdaQuery().eq(Mark::getIsDel, 0).apply(true,"FIND_IN_SET ('"+mid+"',parent)").list();
