@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -128,8 +129,8 @@ public class SceneController {
      */
     @PrimaryDataSource
     @ApiOperation("自动扫描磁盘路径下的场景pcd文件，并自动加入到数据库中")
-    @PostMapping("/scan")
-    public BaseResponse<?> scan() {
+    @PostMapping("/scan1")
+    public BaseResponse<?> scan1() {
         LoginUser loginUserAll = redisUtil.getInfoByToken();
         String loginUserId = loginUserAll.getUser().getUsername();
         //String loginUserId = "1";
@@ -232,6 +233,216 @@ public class SceneController {
         return BaseResponse.ok("扫描成功");
     }
 
+    @PrimaryDataSource
+    @ApiOperation("自动扫描磁盘路径下的场景pcd文件，并自动加入到数据库中")
+    @PostMapping("/scan2")
+    public BaseResponse<?> scan2() {
+        LoginUser loginUserAll = redisUtil.getInfoByToken();
+        String loginUserId = loginUserAll.getUser().getUsername();
+        //String loginUserId = "1";
+        // 扫描磁盘路径下的场景E://mark_view文件夹下pcd文件，并读取所有pcd文件
+        System.out.println("正在扫描磁盘"+scanPath);
+        // 判断磁盘路径是否存在
+        if (!new File(scanPath).exists()) {
+            return BaseResponse.fail("磁盘路径不存在");
+        }
+        //读取文件夹下的txt的文档
+        System.out.println("正在读取文件夹下的txt的文档");
+        File[] files = new File(scanPath+"/txt").listFiles();
+        //判断此路径下有几个文件夹并获取它的文件夹名
+        for (File file : files) {
+            if (file.isDirectory()) {
+                System.out.println("文件夹名：" + file.getName());
+                Scene scene = sceneService.getOne(Wrappers.lambdaQuery(Scene.class).eq(Scene::getSceneName, file.getName()));
+                if (scene == null) {
+                    scene = new Scene();
+                    scene.setSceneName(file.getName());
+                    scene.setScenePath(file.getAbsolutePath());
+                    scene.setScenePic("");
+                    scene.setSceneDescription(file.getName());
+                    scene.setSceneFrameNum(0);
+                    scene.setSceneFrameNumPics("");
+                    scene.setCreateBy(loginUserId);
+                    scene.setUpdateBy(loginUserId);
+                    //保存到数据库中并返回主键id
+                    System.out.println("正在保存到数据库中");
+                    sceneService.save1(scene);
+                }
+                System.out.println("正在获取主键id");
+                Scene scene1 = sceneService.getOne(Wrappers.lambdaQuery(Scene.class).eq(Scene::getSceneName, file.getName()));
+                Integer sceneId = scene1.getId();
+                //获取当前文件夹下的所有txt文件
+                System.out.println("正在获取当前文件夹下的所有txt文件");
+                File[] txtFiles = file.listFiles();
+                for (File file_txt : txtFiles) {
+                    if (file_txt.getName().endsWith(".txt")) {
+                        try {
+                            Path path = Paths.get(file_txt.getPath());
+                            String content = new String(Files.readAllBytes(path));
+                            System.out.println("正在读取txt文件"+content);
+                            //根据操作系统 判断换行符
+                            String[] split_txt = content.split("\\n");
+                            if (split_txt.length<=scene1.getSceneFrameNum()){
+                                continue;
+                            }
+                            System.out.println("正在读取txt文件,文件数组个数"+split_txt.length);
+                            //从split字符串数组中随机取10个下标连续的字符串
+                            int startNum = scene1.getSceneFrameNum();
+                            int endNum = split_txt.length-1;
+                            for (int i = startNum; i <= endNum; i++) {
+                                String img_pcd = split_txt[i];
+                                String[] img_pcds = img_pcd.split(" ");
+                                ScenePcd scenePcd = new ScenePcd();
+                                scenePcd.setSceneId(sceneId);
+                                scenePcd.setPcdPath(pcdPath+scene.getSceneName()+"/"+file_txt.getName().split("\\.txt")[0] + "/"+ img_pcds[1]+".pcd");
+                                scenePcd.setCreateBy(loginUserId);
+                                scenePcd.setUpdateBy(loginUserId);
+                                scenePcdService.save(scenePcd);
+                                ScenePcd scenePcd1 = scenePcdService.getOne(Wrappers.lambdaQuery(ScenePcd.class)
+                                        .eq(ScenePcd::getPcdPath, pcdPath+scene.getSceneName()+"/"+file_txt.getName().split("\\.txt")[0] + "/"+ img_pcds[1]+".pcd")
+                                        .eq(ScenePcd::getSceneId, scene1.getId()));
+                                Integer scenePcdId = scenePcd1.getId();
+                                for (File file_txt_img : txtFiles) {
+                                    if (file_txt_img.getName().endsWith(".txt")){
+                                        Path path_txt_img = Paths.get(file_txt_img.getPath());
+                                        String content_txt_img = new String(Files.readAllBytes(path_txt_img));
+                                        String[] split_txt_img = content_txt_img.split("\\n");
+                                        for (String s : split_txt_img) {
+                                            if (s.contains(img_pcds[1])){
+                                                ScenePcdImg scenePcdImg = new ScenePcdImg();
+                                                scenePcdImg.setPcdId(scenePcdId);
+                                                scenePcdImg.setImgPath(imgPath+scene.getSceneName()+"/"+file_txt.getName().split("\\.txt")[0] + "/"+s.split(" ")[0]);
+                                                scenePcdImg.setImgDirection("");
+                                                scenePcdImg.setCreateBy(loginUserId);
+                                                scenePcdImg.setUpdateBy(loginUserId);
+                                                scenePcdImgService.save(scenePcdImg);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            scene.setSceneFrameNum(scene.getSceneFrameNum()+split_txt.length);
+                            sceneService.updateById(scene);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
+        }
+        return BaseResponse.ok("扫描成功");
+    }
+
+    @PrimaryDataSource
+    @ApiOperation("自动扫描磁盘路径下的场景pcd文件，并自动加入到数据库中")
+    @PostMapping("/scan")
+    public synchronized BaseResponse<?> scan() {
+        LoginUser loginUserAll = redisUtil.getInfoByToken();
+        String loginUserId = loginUserAll.getUser().getUsername();
+        // 扫描磁盘路径下的场景E://mark_view文件夹下pcd文件，并读取所有pcd文件
+        System.out.println("正在扫描磁盘"+scanPath);
+        // 判断磁盘路径是否存在
+        if (!new File(scanPath).exists()) {
+            return BaseResponse.fail("磁盘路径不存在");
+        }
+        //读取文件夹下的txt的文档
+        System.out.println("正在读取文件夹下的txt的文档");
+        File[] files = new File(scanPath+"/txt").listFiles();
+        //判断此路径下有几个文件夹并获取它的文件夹名
+        for (File file : files) {
+            if (file.isDirectory()) {
+                System.out.println("文件夹名：" + file.getName());
+                Scene scene = sceneService.getOne(Wrappers.lambdaQuery(Scene.class).eq(Scene::getSceneName, file.getName()));
+                if (scene == null) {
+                    scene = new Scene();
+                    scene.setSceneName(file.getName());
+                    scene.setScenePath(file.getAbsolutePath());
+                    scene.setScenePic("");
+                    scene.setSceneDescription(file.getName());
+                    scene.setSceneFrameNum(0);
+                    scene.setSceneFrameNumPics("");
+                    scene.setCreateBy(loginUserId);
+                    scene.setUpdateBy(loginUserId);
+                    //保存到数据库中并返回主键id
+                    System.out.println("正在保存到数据库中");
+                    sceneService.save1(scene);
+                    scene = sceneService.getOne(Wrappers.lambdaQuery(Scene.class).eq(Scene::getSceneName, file.getName()));
+                }
+                Integer sceneId = scene.getId();
+                //获取当前文件夹下的所有txt文件
+                System.out.println("正在获取当前文件夹下的所有txt文件");
+                File[] txtFiles = file.listFiles();
+                for (File file_txt : txtFiles) {
+                    if (file_txt.getName().endsWith(".txt")) {
+                        List<ScenePcd> scenePcdList = new ArrayList<>();
+                        List<ScenePcdImg> scenePcdImgList = new ArrayList<>();
+                        try {
+                            Path path = Paths.get(file_txt.getPath());
+                            String content = new String(Files.readAllBytes(path));
+                            //System.out.println("正在读取txt文件"+content);
+                            //根据操作系统 判断换行符
+                            String[] split_txt = content.split("\\n");
+                            if (split_txt.length<=scene.getSceneFrameNum()){
+                                continue;
+                            }
+                            System.out.println("正在读取txt文件,文件数组个数"+split_txt.length);
+                            //从split字符串数组中随机取10个下标连续的字符串
+                            int startNum = scene.getSceneFrameNum();
+                            int endNum = split_txt.length-1;
+                            //获取ScenePcd表中的最大id
+                            Integer maxId = 0;
+                            if (scenePcdService.list().size()>0){
+                                maxId = scenePcdService.list().stream().mapToInt(ScenePcd::getId).max().orElse(0);
+                            }
+                            for (int i = startNum; i <= endNum; i++) {
+                                String img_pcd = split_txt[i];
+                                String[] img_pcds = img_pcd.split(" ");
+                                ScenePcd scenePcd = new ScenePcd();
+                                scenePcd.setId(maxId+1);
+                                scenePcd.setSceneId(sceneId);
+                                scenePcd.setPcdPath(pcdPath+scene.getSceneName()+"/"+file_txt.getName().split("\\.txt")[0] + "/"+ img_pcds[1]+".pcd");
+                                scenePcd.setCreateBy(loginUserId);
+                                scenePcd.setUpdateBy(loginUserId);
+                                scenePcd.setIsDel(0);
+                                scenePcdList.add(scenePcd);
+                                Integer scenePcdId = maxId+1;
+                                maxId++;
+                                for (File file_txt_img : txtFiles) {
+                                    if (file_txt_img.getName().endsWith(".txt")){
+                                        Path path_txt_img = Paths.get(file_txt_img.getPath());
+                                        String content_txt_img = new String(Files.readAllBytes(path_txt_img));
+                                        String[] split_txt_img = content_txt_img.split("\\n");
+                                        for (String s : split_txt_img) {
+                                            if (s.contains(img_pcds[1])){
+                                                ScenePcdImg scenePcdImg = new ScenePcdImg();
+                                                scenePcdImg.setPcdId(scenePcdId);
+                                                scenePcdImg.setImgPath(imgPath+scene.getSceneName()+"/"+file_txt.getName().split("\\.txt")[0] + "/"+s.split(" ")[0]);
+                                                scenePcdImg.setImgDirection("");
+                                                scenePcdImg.setCreateBy(loginUserId);
+                                                scenePcdImg.setUpdateBy(loginUserId);
+                                                scenePcdImgList.add(scenePcdImg);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            scene.setSceneFrameNum(split_txt.length);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        sceneService.updateById(scene);
+                        scenePcdService.saveBatch(scenePcdList);
+                        scenePcdList.clear();
+                        scenePcdImgService.saveBatch(scenePcdImgList);
+                        scenePcdImgList.clear();
+                        break;
+                    }
+                }
+            }
+        }
+        return BaseResponse.ok("扫描成功");
+    }
+
     /**
      * 分页查询
      *
@@ -244,19 +455,19 @@ public class SceneController {
     public BaseResponse<Page<Scene>> page(@Valid @RequestBody SceneQuery query) {
         Pageable pageable = query.getPageInfo();
         Page<Scene> voPage = sceneService.page(query, pageable);
-        voPage.getRecords().forEach(scene -> {
-            List<ScenePcd> scenePcds = scenePcdService.lambdaQuery()
-                    .eq(ScenePcd::getSceneId, scene.getId())
-                    .list();
-            scene.setScenePcdFileList(scenePcds);
-            //通过pcdid查询场景pcd图片
-            for (ScenePcd scenePcd : scenePcds) {
-                List<ScenePcdImg> scenePcdImgs = scenePcdImgService.lambdaQuery()
-                        .eq(ScenePcdImg::getPcdId, scenePcd.getId())
-                        .list();
-                scenePcd.setScenePcdImgList(scenePcdImgs);
-            }
-        });
+//        voPage.getRecords().forEach(scene -> {
+//            List<ScenePcd> scenePcds = scenePcdService.lambdaQuery()
+//                    .eq(ScenePcd::getSceneId, scene.getId())
+//                    .list();
+//            scene.setScenePcdFileList(scenePcds);
+//            //通过pcdid查询场景pcd图片
+//            for (ScenePcd scenePcd : scenePcds) {
+//                List<ScenePcdImg> scenePcdImgs = scenePcdImgService.lambdaQuery()
+//                        .eq(ScenePcdImg::getPcdId, scenePcd.getId())
+//                        .list();
+//                scenePcd.setScenePcdImgList(scenePcdImgs);
+//            }
+//        });
         return BaseResponse.ok(voPage);
     }
 

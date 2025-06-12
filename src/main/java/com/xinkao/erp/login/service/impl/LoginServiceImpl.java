@@ -68,17 +68,17 @@ public class LoginServiceImpl extends LoginCommonServiceImpl implements LoginSer
 		if (user.getState() == 0) {
 			return BaseResponse.fail("该用户已被禁用！");
 		}
-//		//字符串转为byte
-//		byte[] key = new byte[]{119, -75, -15, -122, -112, 119, 116, 111, -20, 47, -11, -93, 55, -66, -83, -94};
-//		//构建
-//		SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, key);
-//		String encryptHex = "5aa6323b6c4e165e183641cb69d97a70";
-//		//解密为字符串
-//		String decryptStr = aes.decryptStr(encryptHex, CharsetUtil.CHARSET_UTF_8);
-//		Date expireDate = DateUtil.parse(decryptStr);
-//		if (expireDate.before(DateUtil.date())) {
-//			throw new AuthenticationException("请重新登录！");
-//		}
+		//字符串转为byte
+		byte[] key = new byte[]{119, -75, -15, -122, -112, 119, 116, 111, -20, 47, -11, -93, 55, -66, -83, -94};
+		//构建
+		SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, key);
+		String encryptHex = "5aa6323b6c4e165e183641cb69d97a70";
+		//解密为字符串
+		String decryptStr = aes.decryptStr(encryptHex, CharsetUtil.CHARSET_UTF_8);
+		Date expireDate = DateUtil.parse(decryptStr);
+		if (expireDate.before(DateUtil.date())) {
+			throw new AuthenticationException("请重新登录！");
+		}
 		// 生成登录信息
 		LoginUser loginUser = new LoginUser();
 		String token = RandomUtil.randomString(20); // 随机生成唯一token
