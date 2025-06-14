@@ -1,8 +1,11 @@
 package com.xinkao.erp.scene.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.xinkao.erp.common.model.entity.DataEntity;
+import com.xinkao.erp.common.model.entity.DataNoIdEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +21,13 @@ import lombok.Setter;
 @Getter
 @Setter
 @TableName("scene_pcd_img")
-public class ScenePcdImg extends DataEntity {
+public class ScenePcdImg extends DataNoIdEntity {
+
+    /**
+     * 主键
+     */
+    @TableId(type = IdType.INPUT)
+    private Integer id;
 
     /**
      * pcd主键

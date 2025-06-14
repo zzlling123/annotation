@@ -48,7 +48,7 @@ public class DataEntity extends BaseEntity {
     /**
      * 主键
      */
-    @TableId(type = IdType.INPUT)
+    @TableId(type = IdType.AUTO)
     private Integer id;
 
     /**

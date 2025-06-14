@@ -35,6 +35,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *  场景管理 前端控制器
@@ -455,19 +456,18 @@ public class SceneController {
     public BaseResponse<Page<Scene>> page(@Valid @RequestBody SceneQuery query) {
         Pageable pageable = query.getPageInfo();
         Page<Scene> voPage = sceneService.page(query, pageable);
-//        voPage.getRecords().forEach(scene -> {
-//            List<ScenePcd> scenePcds = scenePcdService.lambdaQuery()
-//                    .eq(ScenePcd::getSceneId, scene.getId())
-//                    .list();
-//            scene.setScenePcdFileList(scenePcds);
-//            //通过pcdid查询场景pcd图片
-//            for (ScenePcd scenePcd : scenePcds) {
-//                List<ScenePcdImg> scenePcdImgs = scenePcdImgService.lambdaQuery()
-//                        .eq(ScenePcdImg::getPcdId, scenePcd.getId())
-//                        .list();
-//                scenePcd.setScenePcdImgList(scenePcdImgs);
-//            }
-//        });
+        List<ScenePcd> scenePcdList = scenePcdService.list();
+        List<ScenePcdImg> scenePcdImgList  = scenePcdImgService.list();
+
+        voPage.getRecords().forEach(scene -> {
+            List<ScenePcd> scenePcdList1 = scenePcdList.stream().filter(scenePcd -> scenePcd.getSceneId().equals(scene.getId())).collect(Collectors.toList());
+            scene.setScenePcdFileList(scenePcdList1);
+            //通过pcdid查询场景pcd图片
+            for (ScenePcd scenePcd : scenePcdList1) {
+                List<ScenePcdImg> scenePcdImgs = scenePcdImgList.stream().filter(scenePcdImg -> scenePcdImg.getPcdId().equals(scenePcd.getId())).collect(Collectors.toList());
+                scenePcd.setScenePcdImgList(scenePcdImgs);
+            }
+        });
         return BaseResponse.ok(voPage);
     }
 
