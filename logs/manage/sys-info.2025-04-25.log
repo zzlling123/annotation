@@ -1,0 +1,284 @@
+00:40:28.708 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 18708 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+00:40:28.769 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+00:40:29.097 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+00:40:34.925 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+00:40:34.950 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+00:40:34.952 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+00:40:34.953 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+00:40:34.953 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+00:40:35.947 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+00:40:36.746 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+00:40:37.007 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@2a9414dd]
+00:40:37.030 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+00:40:37.198 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+00:40:38.382 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+00:40:42.395 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+00:40:42.406 [restartedMain] INFO  org.xnio - [<clinit>,95] - XNIO version 3.8.7.Final
+00:40:42.412 [restartedMain] INFO  org.xnio.nio - [<clinit>,58] - XNIO NIO Implementation Version 3.8.7.Final
+00:40:42.435 [restartedMain] INFO  org.jboss.threads - [<clinit>,52] - JBoss Threads version 3.1.0.Final
+00:40:42.479 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 14.626 seconds (JVM running for 20.46)
+00:41:09.215 [XNIO-1 task-1] INFO  io.undertow.servlet - [log,389] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+00:42:22.490 [SpringApplicationShutdownHook] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+00:42:22.505 [SpringApplicationShutdownHook] INFO  io.undertow.servlet - [log,389] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+00:42:22.631 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+00:42:22.708 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed
+00:42:39.995 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 29236 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+00:42:40.016 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+00:42:40.040 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+00:42:45.031 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+00:42:45.049 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+00:42:45.053 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+00:42:45.054 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+00:42:45.054 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+00:42:46.097 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+00:42:46.952 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+00:42:47.369 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@5fdbc208]
+00:42:47.377 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+00:42:47.715 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+00:42:48.978 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+00:42:54.002 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+00:42:54.014 [restartedMain] INFO  org.xnio - [<clinit>,95] - XNIO version 3.8.7.Final
+00:42:54.025 [restartedMain] INFO  org.xnio.nio - [<clinit>,58] - XNIO NIO Implementation Version 3.8.7.Final
+00:42:54.048 [restartedMain] INFO  org.jboss.threads - [<clinit>,52] - JBoss Threads version 3.1.0.Final
+00:42:54.107 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 14.877 seconds (JVM running for 20.429)
+00:42:54.385 [XNIO-1 task-1] INFO  io.undertow.servlet - [log,389] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+00:49:09.733 [SpringApplicationShutdownHook] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+00:49:09.802 [SpringApplicationShutdownHook] INFO  io.undertow.servlet - [log,389] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+00:49:09.847 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+00:49:09.922 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed
+00:49:30.469 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 2892 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+00:49:30.501 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+00:49:30.513 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+00:49:35.115 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+00:49:35.134 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+00:49:35.139 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+00:49:35.140 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+00:49:35.141 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+00:49:36.220 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+00:49:37.113 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+00:49:37.348 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@2c1cdacd]
+00:49:37.354 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+00:49:37.547 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+00:49:38.970 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+00:49:43.873 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+00:49:43.885 [restartedMain] INFO  org.xnio - [<clinit>,95] - XNIO version 3.8.7.Final
+00:49:43.892 [restartedMain] INFO  org.xnio.nio - [<clinit>,58] - XNIO NIO Implementation Version 3.8.7.Final
+00:49:43.914 [restartedMain] INFO  org.jboss.threads - [<clinit>,52] - JBoss Threads version 3.1.0.Final
+00:49:43.958 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 14.507 seconds (JVM running for 19.59)
+00:49:52.995 [XNIO-1 task-1] INFO  io.undertow.servlet - [log,389] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+08:56:41.919 [lettuce-nioEventLoop-4-1] INFO  i.l.c.p.CommandHandler - [log,217] - null Unexpected exception during request: java.net.SocketException: Connection reset
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.SocketChannelImpl.throwConnectionReset(SocketChannelImpl.java:394)
+	at java.base/sun.nio.ch.SocketChannelImpl.read(SocketChannelImpl.java:426)
+	at io.netty.buffer.PooledByteBuf.setBytes(PooledByteBuf.java:254)
+	at io.netty.buffer.AbstractByteBuf.writeBytes(AbstractByteBuf.java:1132)
+	at io.netty.channel.socket.nio.NioSocketChannel.doReadBytes(NioSocketChannel.java:357)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:151)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+08:56:42.204 [lettuce-eventExecutorLoop-1-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /139.9.129.215:6379
+08:56:51.273 [lettuce-eventExecutorLoop-1-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+08:56:59.475 [lettuce-eventExecutorLoop-1-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+08:57:18.972 [lettuce-eventExecutorLoop-1-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+08:57:52.178 [lettuce-eventExecutorLoop-1-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+08:58:22.276 [lettuce-eventExecutorLoop-1-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+08:58:52.371 [lettuce-eventExecutorLoop-1-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+08:59:22.470 [lettuce-eventExecutorLoop-1-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+08:59:52.576 [lettuce-eventExecutorLoop-1-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:00:25.778 [lettuce-eventExecutorLoop-1-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:00:55.873 [lettuce-eventExecutorLoop-1-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:01:25.972 [lettuce-eventExecutorLoop-1-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:01:56.080 [lettuce-eventExecutorLoop-1-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:02:26.480 [lettuce-eventExecutorLoop-1-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:02:56.573 [lettuce-eventExecutorLoop-1-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:03:26.670 [lettuce-eventExecutorLoop-1-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:03:56.771 [lettuce-eventExecutorLoop-1-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:04:26.874 [lettuce-eventExecutorLoop-1-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:04:56.976 [lettuce-eventExecutorLoop-1-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:05:27.080 [lettuce-eventExecutorLoop-1-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:05:57.171 [lettuce-eventExecutorLoop-1-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:06:27.271 [lettuce-eventExecutorLoop-1-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:06:57.371 [lettuce-eventExecutorLoop-1-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:07:27.471 [lettuce-eventExecutorLoop-1-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:07:57.571 [lettuce-eventExecutorLoop-1-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:08:27.678 [lettuce-eventExecutorLoop-1-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:08:57.780 [lettuce-eventExecutorLoop-1-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:09:27.874 [lettuce-eventExecutorLoop-1-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:09:57.971 [lettuce-eventExecutorLoop-1-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:10:28.074 [lettuce-eventExecutorLoop-1-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:10:58.175 [lettuce-eventExecutorLoop-1-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:11:28.273 [lettuce-eventExecutorLoop-1-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:11:58.372 [lettuce-eventExecutorLoop-1-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:12:28.471 [lettuce-eventExecutorLoop-1-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:12:58.575 [lettuce-eventExecutorLoop-1-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:13:28.672 [lettuce-eventExecutorLoop-1-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:13:58.771 [lettuce-eventExecutorLoop-1-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:14:28.875 [lettuce-eventExecutorLoop-1-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:14:58.972 [lettuce-eventExecutorLoop-1-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:15:29.072 [lettuce-eventExecutorLoop-1-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:15:59.174 [lettuce-eventExecutorLoop-1-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:16:29.275 [lettuce-eventExecutorLoop-1-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:16:59.374 [lettuce-eventExecutorLoop-1-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:17:29.472 [lettuce-eventExecutorLoop-1-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:17:59.589 [lettuce-eventExecutorLoop-1-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+09:18:00.001 [lettuce-nioEventLoop-4-1] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 139.9.129.215/<unresolved>:6379
+09:58:33.640 [SpringApplicationShutdownHook] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+09:58:33.709 [SpringApplicationShutdownHook] INFO  io.undertow.servlet - [log,389] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+09:58:33.760 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+09:58:33.793 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed
+09:58:54.355 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 19492 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+09:58:54.366 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+09:58:54.400 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+09:58:59.622 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+09:58:59.649 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+09:58:59.652 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+09:58:59.653 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+09:58:59.654 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+09:59:00.642 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+09:59:01.435 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+09:59:01.685 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@55de8e1]
+09:59:01.691 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+09:59:01.877 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+09:59:03.791 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+09:59:08.433 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+09:59:08.449 [restartedMain] INFO  org.xnio - [<clinit>,95] - XNIO version 3.8.7.Final
+09:59:08.457 [restartedMain] INFO  org.xnio.nio - [<clinit>,58] - XNIO NIO Implementation Version 3.8.7.Final
+09:59:08.507 [restartedMain] INFO  org.jboss.threads - [<clinit>,52] - JBoss Threads version 3.1.0.Final
+09:59:08.555 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 15.035 seconds (JVM running for 20.173)
+10:00:39.107 [XNIO-1 task-1] INFO  io.undertow.servlet - [log,389] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+10:01:54.927 [SpringApplicationShutdownHook] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+10:01:54.936 [SpringApplicationShutdownHook] INFO  io.undertow.servlet - [log,389] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+10:01:54.969 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+10:01:55.014 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed
+10:02:06.709 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 25192 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+10:02:06.727 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+10:02:06.745 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+10:02:11.145 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+10:02:11.154 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+10:02:11.155 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+10:02:11.156 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+10:02:11.156 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+10:02:12.078 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+10:02:12.614 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+10:02:12.844 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@1a6cc287]
+10:02:12.850 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+10:02:12.968 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+10:02:14.748 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+10:02:19.509 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+10:02:19.535 [restartedMain] INFO  org.xnio - [<clinit>,95] - XNIO version 3.8.7.Final
+10:02:19.542 [restartedMain] INFO  org.xnio.nio - [<clinit>,58] - XNIO NIO Implementation Version 3.8.7.Final
+10:02:19.561 [restartedMain] INFO  org.jboss.threads - [<clinit>,52] - JBoss Threads version 3.1.0.Final
+10:02:19.624 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 13.587 seconds (JVM running for 16.718)
+10:02:50.623 [XNIO-1 task-1] INFO  io.undertow.servlet - [log,389] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+10:23:13.553 [lettuce-nioEventLoop-4-1] INFO  i.l.c.p.CommandHandler - [log,217] - null Unexpected exception during request: java.net.SocketException: Connection reset
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.SocketChannelImpl.throwConnectionReset(SocketChannelImpl.java:394)
+	at java.base/sun.nio.ch.SocketChannelImpl.read(SocketChannelImpl.java:426)
+	at io.netty.buffer.PooledByteBuf.setBytes(PooledByteBuf.java:254)
+	at io.netty.buffer.AbstractByteBuf.writeBytes(AbstractByteBuf.java:1132)
+	at io.netty.channel.socket.nio.NioSocketChannel.doReadBytes(NioSocketChannel.java:357)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:151)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+10:23:13.824 [lettuce-eventExecutorLoop-1-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /139.9.129.215:6379
+10:23:18.802 [lettuce-eventExecutorLoop-1-6] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+10:23:31.302 [lettuce-eventExecutorLoop-1-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+10:23:47.707 [lettuce-eventExecutorLoop-1-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+10:24:17.800 [lettuce-eventExecutorLoop-1-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was 139.9.129.215/<unresolved>:6379
+10:24:17.927 [lettuce-nioEventLoop-4-1] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 139.9.129.215/<unresolved>:6379
+11:46:45.389 [SpringApplicationShutdownHook] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+11:46:45.451 [SpringApplicationShutdownHook] INFO  io.undertow.servlet - [log,389] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+11:46:45.526 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+11:46:45.569 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed
+11:47:17.923 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 20632 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+11:47:17.940 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+11:47:18.064 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+11:47:23.764 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+11:47:23.782 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+11:47:23.791 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+11:47:23.792 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+11:47:23.793 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+11:47:25.114 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+11:47:26.287 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+11:47:26.553 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@5500bf42]
+11:47:26.560 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+11:47:26.786 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+11:47:28.401 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+11:47:33.400 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+11:47:33.410 [restartedMain] INFO  org.xnio - [<clinit>,95] - XNIO version 3.8.7.Final
+11:47:33.418 [restartedMain] INFO  org.xnio.nio - [<clinit>,58] - XNIO NIO Implementation Version 3.8.7.Final
+11:47:33.462 [restartedMain] INFO  org.jboss.threads - [<clinit>,52] - JBoss Threads version 3.1.0.Final
+11:47:33.513 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 16.318 seconds (JVM running for 21.822)
+11:48:54.668 [XNIO-1 task-1] INFO  io.undertow.servlet - [log,389] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+12:20:04.640 [Thread-5] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+12:20:04.762 [Thread-5] INFO  io.undertow.servlet - [log,389] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+12:20:04.962 [Thread-5] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+12:20:05.009 [Thread-5] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed
+12:26:52.017 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 20632 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+12:26:52.041 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+12:26:55.033 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+12:26:55.171 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+12:26:56.494 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-2} inited
+12:26:56.573 [restartedMain] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-2} closing ...
+12:26:56.597 [restartedMain] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-2} closed
+12:27:09.085 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 20632 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+12:27:09.085 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+12:27:09.601 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+12:27:09.819 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+13:18:30.240 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 3736 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+13:18:30.275 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+13:18:30.419 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+13:18:33.614 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+13:18:33.623 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+13:18:33.626 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+13:18:33.627 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+13:18:33.628 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+13:18:34.576 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+13:25:34.788 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 13216 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+13:25:34.796 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+13:25:34.806 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+13:25:40.883 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+13:25:40.913 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+13:25:40.916 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+13:25:40.918 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+13:25:40.919 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+13:25:41.850 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+13:25:42.465 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+13:25:42.640 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@70eb5698]
+13:25:42.649 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+13:25:42.839 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+13:25:44.502 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+13:25:48.359 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+13:25:48.367 [restartedMain] INFO  org.xnio - [<clinit>,95] - XNIO version 3.8.7.Final
+13:25:48.372 [restartedMain] INFO  org.xnio.nio - [<clinit>,58] - XNIO NIO Implementation Version 3.8.7.Final
+13:25:48.391 [restartedMain] INFO  org.jboss.threads - [<clinit>,52] - JBoss Threads version 3.1.0.Final
+13:25:48.431 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 14.346 seconds (JVM running for 19.142)
+13:26:47.636 [Thread-5] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+13:26:47.661 [Thread-5] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+13:26:47.717 [Thread-5] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed
+13:26:47.975 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 13216 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+13:26:47.975 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+13:26:48.328 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+13:26:48.424 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+13:26:48.484 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+13:26:49.220 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@2f9929b9]
+13:26:49.223 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+13:26:49.257 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+13:26:50.364 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-2} inited
+13:26:52.939 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+13:26:52.948 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 5.02 seconds (JVM running for 83.659)
+13:42:46.705 [SpringApplicationShutdownHook] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+13:42:46.710 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-2} closing ...
+13:42:46.711 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-2} closed
