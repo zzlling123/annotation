@@ -49,9 +49,6 @@ public class PointSubmitUtil {
         if (rightAnswer.size() != userAnswer.size()) {
             is_error = true;
         }
-        if (rightAnswer.size() == 0 || userAnswer.size() == 0) {
-            is_error = true;
-        }
         //计算学生标注数量，避免直接出错导致没有计算答题数
         for (String s : userAnswer.keySet()) {
             List<Map<String, List<Map<String, Object>>>> userFrame = userAnswer.get(s);
@@ -65,15 +62,35 @@ public class PointSubmitUtil {
         }
         //按照每帧进行循环
         for (String s : rightAnswer.keySet()) {
-            List<Map<String, List<Map<String, Object>>>> rightFrame = rightAnswer.get(s);
-            List<Map<String, List<Map<String, Object>>>> userFrame = userAnswer.get(s);
+            List<Map<String, List<Map<String, Object>>>> rightFrame = new ArrayList<>();
+            List<Map<String, List<Map<String, Object>>>> userFrame = new ArrayList<>();
+            try{
+                rightFrame = rightAnswer.get(s);
+                userFrame = userAnswer.get(s);
+            }catch (Exception e){
+                //跳过
+                is_error = true;
+                continue;
+            }
+            if (userFrame == null || userFrame.isEmpty()){
+                is_error = true;
+                continue;
+            }
             if (rightFrame.size() != userFrame.size()) {
                 is_error = true;
             }
             // 将该帧内每个数组key进行比对
             for (int i = 0; i < rightFrame.size(); i++) {
-                Map<String, List<Map<String, Object>>> rightFrameForOne = rightFrame.get(i);
-                Map<String, List<Map<String, Object>>> userFrameForOne = userFrame.get(i);
+                Map<String, List<Map<String, Object>>> rightFrameForOne = new HashMap<>();
+                Map<String, List<Map<String, Object>>> userFrameForOne = new HashMap<>();
+                try{
+                    rightFrameForOne = rightFrame.get(i);
+                    userFrameForOne = userFrame.get(i);
+                }catch (Exception e){
+                    //跳过
+                    is_error = true;
+                    continue;
+                }
 
                 // 比对每个数组的key
                 if (!rightFrameForOne.keySet().equals(userFrameForOne.keySet())) {
