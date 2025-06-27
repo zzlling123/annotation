@@ -22,6 +22,8 @@ import com.xinkao.erp.exam.service.ExamPageSetTypeService;
 import com.xinkao.erp.exam.service.ExamService;
 import com.xinkao.erp.exam.vo.ExamDetailVo;
 import com.xinkao.erp.exam.vo.ExamPageVo;
+import com.xinkao.erp.manage.entity.ClassInfo;
+import com.xinkao.erp.manage.service.ClassInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +49,8 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
     @Autowired
     private ExamClassService examClassService;
     @Autowired
+    private ClassInfoService classInfoService;
+    @Autowired
     private ExamPageSetTypeService examPageSetTypeService;
     @Autowired
     private ExamPageSetService examPageSetService;
@@ -54,7 +58,13 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
     @Override
     public Page<ExamPageVo> page(ExamQuery query, Pageable pageable) {
         Page page = pageable.toPage();
-        return examMapper.page(page, query);
+        LoginUser loginUser = redisUtil.getInfoByToken();
+        //如果是教师角色，则只显示分配给自己名下班级的考试
+        List<Integer> classIds = new ArrayList<>();
+        if (loginUser.getUser().getRoleId() == 2) {
+            classIds = classInfoService.lambdaQuery().eq(ClassInfo::getDirectorId, loginUser.getUser().getId()).eq(ClassInfo::getIsDel,0).list().stream().map(ClassInfo::getId).collect(Collectors.toList());
+        }
+        return examMapper.page(page, query,classIds);
     }
 
     @Override

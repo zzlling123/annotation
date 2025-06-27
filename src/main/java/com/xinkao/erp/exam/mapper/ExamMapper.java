@@ -22,7 +22,7 @@ import java.util.List;
 @Mapper
 public interface ExamMapper extends BaseMapper<Exam> {
 
-    Page<ExamPageVo> page(Page page, ExamQuery query);
+    Page<ExamPageVo> page(Page page, ExamQuery query,List<Integer> classIds);
 
     List<QuestionTypeListDto> getExamPageSetByTypeAndShape();
 }
