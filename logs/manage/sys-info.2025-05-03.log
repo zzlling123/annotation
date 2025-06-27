@@ -1,0 +1,22 @@
+17:33:28.652 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 22084 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+17:33:28.660 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+17:33:28.688 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+17:33:42.689 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+17:33:42.722 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+17:33:42.800 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+17:33:42.802 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+17:33:42.802 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+17:33:46.431 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+17:33:47.821 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+17:33:48.806 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@360bf02b]
+17:33:48.812 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+17:33:49.956 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+17:33:50.435 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+17:34:04.173 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+17:34:04.263 [restartedMain] INFO  org.xnio - [<clinit>,95] - XNIO version 3.8.7.Final
+17:34:04.289 [restartedMain] INFO  org.xnio.nio - [<clinit>,58] - XNIO NIO Implementation Version 3.8.7.Final
+17:34:04.330 [restartedMain] INFO  org.jboss.threads - [<clinit>,52] - JBoss Threads version 3.1.0.Final
+17:34:04.383 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 36.365 seconds (JVM running for 38.79)
+17:54:51.116 [Thread-5] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+17:54:51.292 [Thread-5] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+17:54:51.460 [Thread-5] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed

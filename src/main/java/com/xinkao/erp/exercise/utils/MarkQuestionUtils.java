@@ -202,9 +202,16 @@ public class MarkQuestionUtils {
         panJuanParam.setShu(shu);
         panJuanParam.setZong(zong);
         panJuanParam.setDa(da);
-
-        panJuanParam.setAccuracyRate(new BigDecimal(biao).divide(new BigDecimal(zong), 2, RoundingMode.HALF_UP));
-        panJuanParam.setCoverageRate(new BigDecimal(biao).divide(new BigDecimal(zong), 2, RoundingMode.HALF_UP));
+        if (zong!=0){
+            panJuanParam.setCoverageRate(new BigDecimal(biao).divide(new BigDecimal(zong), 2, RoundingMode.HALF_UP));
+        }else {
+            panJuanParam.setCoverageRate(new BigDecimal(0));
+        }
+        if (da!=0){
+            panJuanParam.setAccuracyRate(new BigDecimal(biao).divide(new BigDecimal(da), 2, RoundingMode.HALF_UP));
+        }else {
+            panJuanParam.setAccuracyRate(new BigDecimal(0));
+        }
         panJuanParam.setOperationDuration(operationDuration);
         return panJuanParam;
     }
@@ -545,10 +552,12 @@ public class MarkQuestionUtils {
         String correctAnswer="{\"258\":[{\"attr\":[\"264\",\"265\"],\"position\":{\"x\":75.49127197265625,\"y\":169.37844848632812},\"size\":{\"width\":92,\"height\":169.37844848632812}},{\"attr\":[\"264\",\"266\"],\"position\":{\"x\":185.49127197265625,\"y\":167.37844848632812},\"size\":{\"width\":90,\"height\":167.37844848632812}}]}";
         String userAnswer= "{\"258\":[{\"attr\":[\"264\",\"265\"],\"position\":{\"x\":75.49127197265625,\"y\":169.37844848632812},\"size\":{\"width\":92,\"height\":169.37844848632812}},{\"attr\":[\"264\",\"266\"],\"position\":{\"x\":185.49127197265625,\"y\":167.37844848632812},\"size\":{\"width\":90,\"height\":167.37844848632812}}]}";
 
-//        String correctAnswer = "{\"258\":[{\"attr\":[\"\"],\"position\":{\"x\":42,\"y\":30},\"size\":{\"width\":33,\"height\":30}}]}";
+        String str1 = "{\"306\":[{\"attr\":[\"359\"],\"position\":{\"x\":456.19999980926514,\"y\":87.19999694824219},\"size\":{\"width\":177,\"height\":87}}]}";
+        String str2 = "{\"321\":[{\"attr\":[\"341\"],\"position\":{\"x\":475.8000030517578,\"y\":183.1999969482422},\"size\":{\"width\":197,\"height\":183}}]}";
+        //        String correctAnswer = "{\"258\":[{\"attr\":[\"\"],\"position\":{\"x\":42,\"y\":30},\"size\":{\"width\":33,\"height\":30}}]}";
  //       String userAnswer = "{\"258\":[{\"attr\":[\"\"],\"position\":{\"x\":42,\"y\":30},\"size\":{\"width\":33,\"height\":30}}]}";
 
-        PanJuanParam panJuanParam = MarkQuestionUtils. check_answer_2D_xyq_ceshi(userAnswer,correctAnswer);
+        PanJuanParam panJuanParam = MarkQuestionUtils. check_answer_2D_xyq_ceshi(str2,str2);
         //输出PanJuanParam各个值，名字换成注释
         System.out.println("isCorrect:"+panJuanParam.getIsCorrect());
         System.out.println("biao:"+panJuanParam.getBiao());

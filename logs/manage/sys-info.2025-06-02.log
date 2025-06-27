@@ -1,0 +1,615 @@
+01:41:00.213 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 3676 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+01:41:00.222 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+01:41:00.245 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+01:41:08.803 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+01:41:08.825 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+01:41:08.830 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+01:41:08.830 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+01:41:08.831 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+01:41:09.931 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+01:41:10.610 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+01:41:10.862 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@78f870de]
+01:41:10.869 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+01:41:11.082 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+01:41:11.294 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+01:41:17.050 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+01:41:17.060 [restartedMain] INFO  org.xnio - [<clinit>,95] - XNIO version 3.8.7.Final
+01:41:17.067 [restartedMain] INFO  org.xnio.nio - [<clinit>,58] - XNIO NIO Implementation Version 3.8.7.Final
+01:41:17.086 [restartedMain] INFO  org.jboss.threads - [<clinit>,52] - JBoss Threads version 3.1.0.Final
+01:41:17.149 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 17.578 seconds (JVM running for 19.033)
+01:42:00.013 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+01:42:00.184 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+01:42:42.281 [XNIO-1 task-1] INFO  io.undertow.servlet - [log,389] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+01:43:00.014 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+01:43:00.156 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+01:44:00.001 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+01:44:00.271 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+01:45:00.012 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+01:45:00.154 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+01:46:00.008 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+01:46:00.087 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+01:47:00.023 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+01:47:00.168 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+01:47:11.591 [SpringApplicationShutdownHook] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+01:47:11.593 [SpringApplicationShutdownHook] INFO  io.undertow.servlet - [log,389] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+01:47:11.601 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+01:47:11.609 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed
+22:32:03.937 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 3320 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+22:32:03.940 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+22:32:03.959 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+22:32:20.608 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+22:32:20.629 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+22:32:20.634 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+22:32:20.635 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+22:32:20.636 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+22:32:21.923 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+22:32:22.557 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+22:32:23.721 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@b87e590]
+22:32:23.728 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+22:32:24.389 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+22:32:25.276 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+22:32:33.049 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+22:32:33.096 [restartedMain] INFO  org.xnio - [<clinit>,95] - XNIO version 3.8.7.Final
+22:32:33.102 [restartedMain] INFO  org.xnio.nio - [<clinit>,58] - XNIO NIO Implementation Version 3.8.7.Final
+22:32:33.149 [restartedMain] INFO  org.jboss.threads - [<clinit>,52] - JBoss Threads version 3.1.0.Final
+22:32:33.241 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 29.844 seconds (JVM running for 31.363)
+22:33:00.015 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+22:33:00.095 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+22:33:27.952 [SpringApplicationShutdownHook] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+22:33:27.970 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+22:33:27.979 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed
+22:33:34.154 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 7356 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+22:33:34.157 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+22:33:34.160 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+22:33:35.056 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+22:33:35.063 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+22:33:35.065 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+22:33:35.065 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+22:33:35.066 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+22:33:35.557 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+22:33:35.874 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+22:33:35.900 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@58ae5cd9]
+22:33:35.906 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+22:33:35.996 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+22:33:36.063 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+22:33:39.715 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+22:33:39.721 [restartedMain] INFO  org.xnio - [<clinit>,95] - XNIO version 3.8.7.Final
+22:33:39.726 [restartedMain] INFO  org.xnio.nio - [<clinit>,58] - XNIO NIO Implementation Version 3.8.7.Final
+22:33:39.742 [restartedMain] INFO  org.jboss.threads - [<clinit>,52] - JBoss Threads version 3.1.0.Final
+22:33:39.780 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 5.956 seconds (JVM running for 6.664)
+22:34:00.003 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+22:34:00.140 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+22:34:20.654 [XNIO-1 task-1] INFO  io.undertow.servlet - [log,389] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+22:35:00.011 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+22:35:00.143 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+22:36:00.013 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+22:36:00.148 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+22:37:00.003 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+22:37:00.054 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+22:37:21.638 [SpringApplicationShutdownHook] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+22:37:21.639 [SpringApplicationShutdownHook] INFO  io.undertow.servlet - [log,389] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+22:37:21.645 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+22:37:21.652 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed
+22:37:25.918 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 9608 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+22:37:25.921 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+22:37:25.923 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+22:37:26.768 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+22:37:26.775 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+22:37:26.777 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+22:37:26.778 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+22:37:26.778 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+22:37:27.274 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+22:37:27.594 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+22:37:27.619 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@4fffcf06]
+22:37:27.624 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+22:37:27.706 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+22:37:27.772 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+22:37:31.547 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+22:37:31.552 [restartedMain] INFO  org.xnio - [<clinit>,95] - XNIO version 3.8.7.Final
+22:37:31.558 [restartedMain] INFO  org.xnio.nio - [<clinit>,58] - XNIO NIO Implementation Version 3.8.7.Final
+22:37:31.573 [restartedMain] INFO  org.jboss.threads - [<clinit>,52] - JBoss Threads version 3.1.0.Final
+22:37:31.609 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 6.024 seconds (JVM running for 6.739)
+22:38:00.006 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+22:38:00.134 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+22:38:00.874 [XNIO-1 task-1] INFO  io.undertow.servlet - [log,389] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+22:39:00.011 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+22:39:00.125 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+22:40:00.002 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+22:40:00.124 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+22:41:00.000 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+22:41:00.118 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+22:42:00.004 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+22:42:00.118 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+22:42:48.641 [SpringApplicationShutdownHook] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+22:42:48.643 [SpringApplicationShutdownHook] INFO  io.undertow.servlet - [log,389] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+22:42:48.649 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+22:42:48.656 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed
+22:42:54.764 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 11648 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+22:42:54.767 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+22:42:54.771 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+22:42:55.633 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+22:42:55.641 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+22:42:55.642 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+22:42:55.643 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+22:42:55.643 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+22:42:56.153 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+22:42:56.465 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+22:42:56.492 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@35bf00e2]
+22:42:56.496 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+22:42:56.579 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+22:42:56.658 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+22:43:00.502 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+22:43:00.507 [restartedMain] INFO  org.xnio - [<clinit>,95] - XNIO version 3.8.7.Final
+22:43:00.512 [restartedMain] INFO  org.xnio.nio - [<clinit>,58] - XNIO NIO Implementation Version 3.8.7.Final
+22:43:00.527 [restartedMain] INFO  org.jboss.threads - [<clinit>,52] - JBoss Threads version 3.1.0.Final
+22:43:00.570 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 6.135 seconds (JVM running for 6.802)
+22:43:08.316 [XNIO-1 task-1] INFO  io.undertow.servlet - [log,389] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+22:44:00.016 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+22:44:00.147 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+22:45:00.009 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+22:45:00.133 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+22:46:00.008 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+22:46:00.127 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+22:47:00.007 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+22:47:00.123 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+22:48:00.006 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+22:48:00.061 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+22:49:00.009 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+22:49:00.063 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+22:50:00.015 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+22:50:00.105 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+22:51:00.004 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+22:51:00.118 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+22:51:40.345 [SpringApplicationShutdownHook] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+22:51:40.348 [SpringApplicationShutdownHook] INFO  io.undertow.servlet - [log,389] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+22:51:40.355 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+22:51:40.362 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed
+22:52:32.037 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 9768 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+22:52:32.041 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+22:52:32.042 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+22:52:32.919 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+22:52:32.926 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+22:52:32.928 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+22:52:32.928 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+22:52:32.929 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+22:52:33.428 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+22:52:33.757 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+22:52:33.782 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@35bf00e2]
+22:52:33.788 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+22:52:33.875 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+22:52:33.940 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+22:52:37.689 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+22:52:37.695 [restartedMain] INFO  org.xnio - [<clinit>,95] - XNIO version 3.8.7.Final
+22:52:37.699 [restartedMain] INFO  org.xnio.nio - [<clinit>,58] - XNIO NIO Implementation Version 3.8.7.Final
+22:52:37.715 [restartedMain] INFO  org.jboss.threads - [<clinit>,52] - JBoss Threads version 3.1.0.Final
+22:52:37.754 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 6.055 seconds (JVM running for 6.724)
+22:52:44.456 [XNIO-1 task-1] INFO  io.undertow.servlet - [log,389] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+22:53:00.001 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+22:53:00.060 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+22:54:00.011 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+22:54:00.074 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+22:54:03.315 [SpringApplicationShutdownHook] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+22:54:03.317 [SpringApplicationShutdownHook] INFO  io.undertow.servlet - [log,389] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+22:54:03.322 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+22:54:03.328 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed
+22:54:09.078 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 9448 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+22:54:09.081 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+22:54:09.082 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+22:54:09.972 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+22:54:09.980 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+22:54:09.982 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+22:54:09.982 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+22:54:09.983 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+22:54:10.489 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+22:54:10.807 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+22:54:10.833 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@63f93c52]
+22:54:10.838 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+22:54:10.925 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+22:54:11.003 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+22:54:14.685 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+22:54:14.694 [restartedMain] INFO  org.xnio - [<clinit>,95] - XNIO version 3.8.7.Final
+22:54:14.699 [restartedMain] INFO  org.xnio.nio - [<clinit>,58] - XNIO NIO Implementation Version 3.8.7.Final
+22:54:14.714 [restartedMain] INFO  org.jboss.threads - [<clinit>,52] - JBoss Threads version 3.1.0.Final
+22:54:14.752 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 6.006 seconds (JVM running for 6.69)
+22:54:17.616 [XNIO-1 task-1] INFO  io.undertow.servlet - [log,389] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+22:55:00.015 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+22:55:00.139 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+22:55:02.946 [SpringApplicationShutdownHook] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+22:55:02.948 [SpringApplicationShutdownHook] INFO  io.undertow.servlet - [log,389] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+22:55:02.956 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+22:55:02.964 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed
+22:55:09.334 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 320 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+22:55:09.338 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+22:55:09.339 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+22:55:10.214 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+22:55:10.221 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+22:55:10.222 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+22:55:10.223 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+22:55:10.224 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+22:55:10.716 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+22:55:11.052 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+22:55:11.077 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@93c468a]
+22:55:11.082 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+22:55:11.166 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+22:55:11.231 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+22:55:14.989 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+22:55:14.996 [restartedMain] INFO  org.xnio - [<clinit>,95] - XNIO version 3.8.7.Final
+22:55:15.002 [restartedMain] INFO  org.xnio.nio - [<clinit>,58] - XNIO NIO Implementation Version 3.8.7.Final
+22:55:15.018 [restartedMain] INFO  org.jboss.threads - [<clinit>,52] - JBoss Threads version 3.1.0.Final
+22:55:15.056 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 6.057 seconds (JVM running for 6.735)
+22:55:17.055 [XNIO-1 task-1] INFO  io.undertow.servlet - [log,389] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+22:55:40.655 [SpringApplicationShutdownHook] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+22:55:40.657 [SpringApplicationShutdownHook] INFO  io.undertow.servlet - [log,389] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+22:55:40.665 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+22:55:40.672 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed
+22:55:45.591 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 6316 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+22:55:45.594 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+22:55:45.597 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+22:55:46.687 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+22:55:46.695 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+22:55:46.696 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+22:55:46.697 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+22:55:46.697 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+22:55:47.305 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+22:55:47.695 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+22:55:47.722 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@75dffada]
+22:55:47.726 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+22:55:47.829 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+22:55:47.918 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+22:55:51.909 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+22:55:51.915 [restartedMain] INFO  org.xnio - [<clinit>,95] - XNIO version 3.8.7.Final
+22:55:51.921 [restartedMain] INFO  org.xnio.nio - [<clinit>,58] - XNIO NIO Implementation Version 3.8.7.Final
+22:55:51.938 [restartedMain] INFO  org.jboss.threads - [<clinit>,52] - JBoss Threads version 3.1.0.Final
+22:55:51.979 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 6.759 seconds (JVM running for 8.116)
+22:55:57.727 [XNIO-1 task-1] INFO  io.undertow.servlet - [log,389] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+22:56:11.948 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+22:56:17.729 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+22:57:34.171 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+22:57:35.601 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+22:58:05.923 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+22:59:35.146 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:00:00.005 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:00:00.118 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:01:00.015 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:01:00.078 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:01:01.004 [SpringApplicationShutdownHook] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+23:01:01.006 [SpringApplicationShutdownHook] INFO  io.undertow.servlet - [log,389] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+23:01:01.012 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+23:01:01.019 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed
+23:01:07.786 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 15588 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+23:01:07.789 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+23:01:07.792 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+23:01:08.846 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+23:01:08.854 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+23:01:08.856 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+23:01:08.856 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+23:01:08.857 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+23:01:09.420 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+23:01:09.778 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+23:01:09.804 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@682f836]
+23:01:09.811 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+23:01:09.909 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+23:01:09.995 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+23:01:14.065 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+23:01:14.071 [restartedMain] INFO  org.xnio - [<clinit>,95] - XNIO version 3.8.7.Final
+23:01:14.077 [restartedMain] INFO  org.xnio.nio - [<clinit>,58] - XNIO NIO Implementation Version 3.8.7.Final
+23:01:14.103 [restartedMain] INFO  org.jboss.threads - [<clinit>,52] - JBoss Threads version 3.1.0.Final
+23:01:14.143 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 6.713 seconds (JVM running for 7.601)
+23:01:16.677 [XNIO-1 task-1] INFO  io.undertow.servlet - [log,389] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+23:02:00.472 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:02:41.290 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:05:58.597 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:05:58.752 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:06:00.004 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:06:00.172 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:06:06.117 [SpringApplicationShutdownHook] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+23:06:06.120 [SpringApplicationShutdownHook] INFO  io.undertow.servlet - [log,389] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+23:06:06.129 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+23:06:06.135 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed
+23:06:12.735 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 5184 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+23:06:12.738 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+23:06:12.742 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+23:06:13.786 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+23:06:13.794 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+23:06:13.796 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+23:06:13.797 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+23:06:13.797 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+23:06:14.341 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+23:06:14.707 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+23:06:14.735 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@1e939eb2]
+23:06:14.742 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+23:06:14.845 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+23:06:14.930 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+23:06:18.995 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+23:06:19.001 [restartedMain] INFO  org.xnio - [<clinit>,95] - XNIO version 3.8.7.Final
+23:06:19.007 [restartedMain] INFO  org.xnio.nio - [<clinit>,58] - XNIO NIO Implementation Version 3.8.7.Final
+23:06:19.024 [restartedMain] INFO  org.jboss.threads - [<clinit>,52] - JBoss Threads version 3.1.0.Final
+23:06:19.066 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 6.737 seconds (JVM running for 7.609)
+23:06:58.180 [XNIO-1 task-1] INFO  io.undertow.servlet - [log,389] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+23:07:00.015 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:07:00.103 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:07:44.422 [SpringApplicationShutdownHook] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+23:07:44.424 [SpringApplicationShutdownHook] INFO  io.undertow.servlet - [log,389] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+23:07:44.432 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+23:07:44.438 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed
+23:07:51.490 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 15936 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+23:07:51.493 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+23:07:51.494 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+23:07:52.438 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+23:07:52.446 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+23:07:52.447 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+23:07:52.448 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+23:07:52.448 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+23:07:52.995 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+23:07:53.348 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+23:07:53.374 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@24ba799c]
+23:07:53.380 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+23:07:53.477 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+23:07:53.557 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+23:07:57.463 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+23:07:57.469 [restartedMain] INFO  org.xnio - [<clinit>,95] - XNIO version 3.8.7.Final
+23:07:57.475 [restartedMain] INFO  org.xnio.nio - [<clinit>,58] - XNIO NIO Implementation Version 3.8.7.Final
+23:07:57.492 [restartedMain] INFO  org.jboss.threads - [<clinit>,52] - JBoss Threads version 3.1.0.Final
+23:07:57.533 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 6.399 seconds (JVM running for 7.3)
+23:08:00.002 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:08:00.076 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:08:18.707 [XNIO-1 task-1] INFO  io.undertow.servlet - [log,389] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+23:09:00.015 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:09:00.152 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:10:00.007 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:10:00.064 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:11:00.009 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:11:00.132 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:12:00.007 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:12:00.123 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:13:00.004 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:13:00.058 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:14:00.000 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:14:00.050 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:15:00.005 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:15:00.058 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:16:00.007 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:16:00.135 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:17:00.000 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:17:00.123 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:17:43.082 [SpringApplicationShutdownHook] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+23:17:43.085 [SpringApplicationShutdownHook] INFO  io.undertow.servlet - [log,389] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+23:17:43.096 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+23:17:43.102 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed
+23:17:52.070 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 7580 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+23:17:52.075 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+23:17:52.077 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+23:17:53.445 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+23:17:53.453 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+23:17:53.455 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+23:17:53.456 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+23:17:53.456 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+23:17:54.051 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+23:17:54.412 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+23:17:54.444 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@3fd08e6a]
+23:17:54.451 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+23:17:54.548 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+23:17:54.628 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+23:17:58.755 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+23:17:58.761 [restartedMain] INFO  org.xnio - [<clinit>,95] - XNIO version 3.8.7.Final
+23:17:58.768 [restartedMain] INFO  org.xnio.nio - [<clinit>,58] - XNIO NIO Implementation Version 3.8.7.Final
+23:17:58.784 [restartedMain] INFO  org.jboss.threads - [<clinit>,52] - JBoss Threads version 3.1.0.Final
+23:17:58.824 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 7.312 seconds (JVM running for 8.611)
+23:18:00.011 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:18:00.138 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:18:05.569 [XNIO-1 task-1] INFO  io.undertow.servlet - [log,389] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+23:19:00.007 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:19:00.133 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:20:00.017 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:20:00.079 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:21:00.001 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:21:00.112 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:22:00.014 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:22:00.124 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:23:00.016 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:23:00.127 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:24:00.006 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:24:00.141 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:25:00.015 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:25:00.130 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:26:00.011 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:26:00.125 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:27:00.003 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:27:00.061 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:28:00.009 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:28:00.128 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:30:35.540 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:30:52.073 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:31:03.717 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:31:31.677 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:32:05.982 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:32:06.092 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:33:00.011 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:33:00.123 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:34:00.015 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:34:00.098 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:35:00.001 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:35:00.056 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:35:56.754 [SpringApplicationShutdownHook] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+23:35:56.756 [SpringApplicationShutdownHook] INFO  io.undertow.servlet - [log,389] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+23:35:56.766 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+23:35:56.772 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed
+23:36:03.428 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 15512 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+23:36:03.430 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+23:36:03.431 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+23:36:04.404 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+23:36:04.412 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+23:36:04.414 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+23:36:04.414 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+23:36:04.414 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+23:36:04.963 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+23:36:05.420 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+23:36:05.454 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@25ba7710]
+23:36:05.461 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+23:36:05.585 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+23:36:05.693 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+23:36:09.924 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+23:36:09.931 [restartedMain] INFO  org.xnio - [<clinit>,95] - XNIO version 3.8.7.Final
+23:36:09.936 [restartedMain] INFO  org.xnio.nio - [<clinit>,58] - XNIO NIO Implementation Version 3.8.7.Final
+23:36:09.953 [restartedMain] INFO  org.jboss.threads - [<clinit>,52] - JBoss Threads version 3.1.0.Final
+23:36:09.993 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 6.959 seconds (JVM running for 7.778)
+23:36:50.057 [XNIO-1 task-1] INFO  io.undertow.servlet - [log,389] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+23:37:06.044 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:39:53.907 [SpringApplicationShutdownHook] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+23:39:53.912 [SpringApplicationShutdownHook] INFO  io.undertow.servlet - [log,389] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+23:39:53.912 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:39:53.920 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+23:39:53.924 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed
+23:40:01.209 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+23:40:01.209 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 6508 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+23:40:01.212 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+23:40:02.213 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+23:40:02.221 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+23:40:02.223 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+23:40:02.223 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+23:40:02.224 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+23:40:02.779 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+23:40:03.140 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+23:40:03.173 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@5a98ec75]
+23:40:03.178 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+23:40:03.281 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+23:40:03.366 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+23:40:07.396 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+23:40:07.402 [restartedMain] INFO  org.xnio - [<clinit>,95] - XNIO version 3.8.7.Final
+23:40:07.408 [restartedMain] INFO  org.xnio.nio - [<clinit>,58] - XNIO NIO Implementation Version 3.8.7.Final
+23:40:07.425 [restartedMain] INFO  org.jboss.threads - [<clinit>,52] - JBoss Threads version 3.1.0.Final
+23:40:07.464 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 6.609 seconds (JVM running for 7.532)
+23:40:12.412 [XNIO-1 task-1] INFO  io.undertow.servlet - [log,389] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+23:42:32.659 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:42:32.724 [SpringApplicationShutdownHook] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+23:42:32.727 [SpringApplicationShutdownHook] INFO  io.undertow.servlet - [log,389] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+23:42:32.736 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+23:42:32.738 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed
+23:42:40.275 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 10432 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+23:42:40.277 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+23:42:40.282 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+23:42:41.273 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+23:42:41.281 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+23:42:41.284 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+23:42:41.284 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+23:42:41.285 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+23:42:41.831 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+23:42:42.187 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+23:42:42.213 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@3e644cf]
+23:42:42.220 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+23:42:42.318 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+23:42:42.407 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+23:42:46.438 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+23:42:46.443 [restartedMain] INFO  org.xnio - [<clinit>,95] - XNIO version 3.8.7.Final
+23:42:46.450 [restartedMain] INFO  org.xnio.nio - [<clinit>,58] - XNIO NIO Implementation Version 3.8.7.Final
+23:42:46.466 [restartedMain] INFO  org.jboss.threads - [<clinit>,52] - JBoss Threads version 3.1.0.Final
+23:42:46.506 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 6.626 seconds (JVM running for 7.5)
+23:42:52.796 [XNIO-1 task-1] INFO  io.undertow.servlet - [log,389] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+23:43:00.007 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:43:00.158 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:44:00.013 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:44:00.082 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:44:43.054 [lettuce-nioEventLoop-4-1] INFO  i.l.c.p.CommandHandler - [log,217] - null Unexpected exception during request: java.net.SocketException: Connection reset
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.SocketChannelImpl.throwConnectionReset(SocketChannelImpl.java:394)
+	at java.base/sun.nio.ch.SocketChannelImpl.read(SocketChannelImpl.java:426)
+	at io.netty.buffer.PooledByteBuf.setBytes(PooledByteBuf.java:254)
+	at io.netty.buffer.AbstractByteBuf.writeBytes(AbstractByteBuf.java:1132)
+	at io.netty.channel.socket.nio.NioSocketChannel.doReadBytes(NioSocketChannel.java:357)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:151)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+23:44:43.081 [lettuce-eventExecutorLoop-1-4] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /139.9.129.215:6379
+23:44:43.922 [lettuce-nioEventLoop-4-1] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 139.9.129.215/<unresolved>:6379
+23:45:00.001 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:46:00.002 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:46:00.036 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:47:00.009 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:47:00.045 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:47:44.410 [lettuce-nioEventLoop-4-1] INFO  i.l.c.p.CommandHandler - [log,217] - null Unexpected exception during request: java.net.SocketException: Connection reset
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.SocketChannelImpl.throwConnectionReset(SocketChannelImpl.java:394)
+	at java.base/sun.nio.ch.SocketChannelImpl.read(SocketChannelImpl.java:426)
+	at io.netty.buffer.PooledByteBuf.setBytes(PooledByteBuf.java:254)
+	at io.netty.buffer.AbstractByteBuf.writeBytes(AbstractByteBuf.java:1132)
+	at io.netty.channel.socket.nio.NioSocketChannel.doReadBytes(NioSocketChannel.java:357)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:151)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+23:47:44.477 [lettuce-eventExecutorLoop-1-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /139.9.129.215:6379
+23:47:44.746 [lettuce-nioEventLoop-4-4] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 139.9.129.215/<unresolved>:6379
+23:48:00.014 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:49:00.012 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:49:00.134 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:50:00.010 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:50:00.068 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:51:00.006 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:51:00.057 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:52:00.005 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:52:00.123 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:53:00.011 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:53:00.118 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:54:00.011 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:54:00.128 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:55:00.014 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:55:00.133 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:55:04.408 [SpringApplicationShutdownHook] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+23:55:04.411 [SpringApplicationShutdownHook] INFO  io.undertow.servlet - [log,389] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+23:55:04.421 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+23:55:04.424 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed
+23:55:18.078 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 7844 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+23:55:18.081 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+23:55:18.082 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+23:55:19.211 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+23:55:19.219 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+23:55:19.221 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+23:55:19.222 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+23:55:19.222 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+23:55:19.781 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+23:55:20.143 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+23:55:20.184 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@2336cf9d]
+23:55:20.189 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+23:55:20.289 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+23:55:20.375 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+23:55:24.470 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+23:55:24.476 [restartedMain] INFO  org.xnio - [<clinit>,95] - XNIO version 3.8.7.Final
+23:55:24.482 [restartedMain] INFO  org.xnio.nio - [<clinit>,58] - XNIO NIO Implementation Version 3.8.7.Final
+23:55:24.500 [restartedMain] INFO  org.jboss.threads - [<clinit>,52] - JBoss Threads version 3.1.0.Final
+23:55:24.540 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 6.785 seconds (JVM running for 8.254)
+23:56:00.010 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:56:00.120 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:57:00.014 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:57:00.085 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:58:00.014 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
+23:58:00.142 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,57] - 更新考试项目,考试状态的状态...结束
+23:58:22.736 [lettuce-nioEventLoop-4-1] INFO  i.l.c.p.CommandHandler - [log,217] - null Unexpected exception during request: java.net.SocketException: Connection reset
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.SocketChannelImpl.throwConnectionReset(SocketChannelImpl.java:394)
+	at java.base/sun.nio.ch.SocketChannelImpl.read(SocketChannelImpl.java:426)
+	at io.netty.buffer.PooledByteBuf.setBytes(PooledByteBuf.java:254)
+	at io.netty.buffer.AbstractByteBuf.writeBytes(AbstractByteBuf.java:1132)
+	at io.netty.channel.socket.nio.NioSocketChannel.doReadBytes(NioSocketChannel.java:357)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:151)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+23:58:22.835 [lettuce-eventExecutorLoop-1-4] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /139.9.129.215:6379
+23:58:23.059 [lettuce-nioEventLoop-4-3] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 139.9.129.215/<unresolved>:6379
+23:59:00.004 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,33] - 更新考试项目,考试状态的状态...开始
