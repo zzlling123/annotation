@@ -38,6 +38,7 @@ public class AttrData {
                 for (int i = 0; i < attrArray.size(); i++) {
                     innerList.add(attrArray.getString(i));
                 }
+                this.attr.add(innerList);
             }
         }
         JSONObject positionObj = obj.getJSONObject("position");

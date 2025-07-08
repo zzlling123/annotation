@@ -557,7 +557,7 @@ public class MarkQuestionUtils {
         //        String correctAnswer = "{\"258\":[{\"attr\":[\"\"],\"position\":{\"x\":42,\"y\":30},\"size\":{\"width\":33,\"height\":30}}]}";
  //       String userAnswer = "{\"258\":[{\"attr\":[\"\"],\"position\":{\"x\":42,\"y\":30},\"size\":{\"width\":33,\"height\":30}}]}";
 
-        PanJuanParam panJuanParam = MarkQuestionUtils. check_answer_2D_xyq_ceshi(str2,str2);
+        PanJuanParam panJuanParam = MarkQuestionUtils. check_answer_2D_xyq_ceshi(userAnswer,correctAnswer);
         //输出PanJuanParam各个值，名字换成注释
         System.out.println("isCorrect:"+panJuanParam.getIsCorrect());
         System.out.println("biao:"+panJuanParam.getBiao());
