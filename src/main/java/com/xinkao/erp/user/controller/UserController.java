@@ -262,7 +262,6 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
-	@DataScope(role = "3")
 	@PostMapping("/updatePassword")
 	@ApiOperation("修改密码")
 	public BaseResponse<?> updatePassword(@RequestBody @Valid AccountUpdatePwdParam param) {

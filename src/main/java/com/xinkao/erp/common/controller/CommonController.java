@@ -98,7 +98,6 @@ public class CommonController {
             e.printStackTrace();
             throw new BusinessException("上传失败");
         }
-
     }
 
 }
