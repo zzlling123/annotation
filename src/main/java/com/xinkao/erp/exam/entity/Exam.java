@@ -51,6 +51,18 @@ public class Exam extends DataEntity {
     private Integer state;
 
     /**
+     * 难易程度：0-容易 1-中等 2-较难
+     */
+    @TableField("difficulty_level")
+    private Integer difficultyLevel;
+
+    /**
+     * 标记
+     */
+    @TableField("symbol")
+    private String symbol;
+
+    /**
      * 组卷进度是否完成，0否1是
      */
     @TableField("roll_make_over")

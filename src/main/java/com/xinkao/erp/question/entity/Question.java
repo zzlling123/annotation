@@ -38,6 +38,12 @@ public class Question extends DataEntity {
     private Integer difficultyLevel;
 
     /**
+     * 标记
+     */
+    @TableField("symbol")
+    private String symbol;
+
+    /**
      * 操作题标头
      */
     @TableField("title")

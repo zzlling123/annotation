@@ -28,6 +28,12 @@ public class ExamPageVo extends BaseEntity implements OutputConverter<ExamPageVo
     @ApiModelProperty("组卷进度是否完成，0否1是")
     private Integer rollMakeOver;
 
+    @ApiModelProperty("难度")
+    private String difficultyLevel;
+
+    @ApiModelProperty("题目所属标记")
+    private String symbol;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     @ApiModelProperty("开始时间")
     private Date startTime;

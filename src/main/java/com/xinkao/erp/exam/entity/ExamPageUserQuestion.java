@@ -117,6 +117,18 @@ public class ExamPageUserQuestion extends DataSnowIdEntity {
     private Integer needCorrect;
 
     /**
+     * 难易程度：0-容易 1-中等 2-较难
+     */
+    @TableField("difficulty_level")
+    private Integer difficultyLevel;
+
+    /**
+     * 标记
+     */
+    @TableField("symbol")
+    private String symbol;
+
+    /**
      * 用户答案
      */
     @TableField(exist = false)

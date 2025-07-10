@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 import java.util.List;
 
@@ -62,6 +63,9 @@ public class QuestionInfoVo extends BaseEntity implements OutputConverter<Questi
 
     @ApiModelProperty("难度")
     private String difficultyLevel;
+
+    @ApiModelProperty("题目所属标记")
+    private String symbol;
 
     @ApiModelProperty("是否启用0否1是")
     private Integer state;

@@ -30,6 +30,12 @@ public class ExamDetailVo extends BaseEntity {
     @ApiModelProperty("考试及格分")
     private Integer scorePass;
 
+    @ApiModelProperty("难度")
+    private String difficultyLevel;
+
+    @ApiModelProperty("题目所属标记")
+    private String symbol;
+
     @ApiModelProperty("生成方式:0-同题同序 1-同题不同序 2-不同题不同序")
     private Integer pageMode;
 

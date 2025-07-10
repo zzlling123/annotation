@@ -29,6 +29,14 @@ public class ExamParam {
     @NotBlank(message = "结束时间不能为空")
     private String endTime;
 
+    @ApiModelProperty("难度")
+    @NotBlank(message = "难度不能为空")
+    private String difficultyLevel;
+
+    @ApiModelProperty("题目所属标记")
+    @NotBlank(message = "题目所属标记不能为空")
+    private String symbol;
+
     @ApiModelProperty("总分")
     @NotBlank(message = "总分不能为空")
     private String score;
