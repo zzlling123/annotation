@@ -59,4 +59,7 @@ public interface UserService extends BaseService<User> {
 	BaseResponse<List<ExamAndPracticeBarVo>> getExamAndPracticeBar(ExamAndPracticeBarQuery query);
 
 	BaseResponse<List<ExamAndPracticePieAllVo>> getExamAndPracticePie(ExamAndPracticeBarQuery query);
+
+	//生成自定义账号ID
+	String generateCustomAccountId(String idCard);
 }

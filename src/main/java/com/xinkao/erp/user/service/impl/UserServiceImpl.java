@@ -1,6 +1,7 @@
 package com.xinkao.erp.user.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
@@ -37,10 +38,7 @@ import com.xinkao.erp.user.service.UserService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -73,20 +71,29 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 		return userMapper.page(page, query);
 	}
 
-	//新增
+	//修改新增方法
 	@Override
 	public BaseResponse save(UserParam userParam){
-		if (lambdaQuery().eq(User::getUsername,userParam.getUsername()).count()>0) {
-			return BaseResponse.fail("账号已存在！");
+		// 生成自定义账号ID
+		String customId = generateCustomAccountId(userParam.getIdCard());
+
+		// 检查账号是否已存在
+		if (lambdaQuery().eq(User::getUsername, customId).count() > 0) {
+			return BaseResponse.fail("生成的账号已存在，请重试！");
 		}
+
 		User user = new User();
 		BeanUtil.copyProperties(userParam, user);
-		//生成密码字段,6位随机盐加passWord
+		user.setId(Integer.valueOf(customId)); // 设置自定义ID
+		user.setUsername(customId); // 账号与ID一致
+
+		// 生成密码
 		String salt = RandomUtil.randomString(20);
-		String PassWord = SecureUtil.md5(salt+userParam.getPassword());
+		String password = SecureUtil.md5(salt + userParam.getPassword());
 		user.setSalt(salt);
-		user.setPassword(PassWord);
-		return save(user)?BaseResponse.ok("新增成功！"): BaseResponse.fail("新增失败！");
+		user.setPassword(password);
+
+		return save(user) ? BaseResponse.ok("新增成功！账号为：" + customId) : BaseResponse.fail("新增失败！");
 	}
 
 	//修改
@@ -247,5 +254,33 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 			allVoList.add(vo);
 			return BaseResponse.ok(allVoList);
 		}
+	}
+
+
+	@Override
+	public String generateCustomAccountId(String idCard) {
+		// 方案：1位固定前缀 + 6位时间戳 + 2位身份证特征 + 1位随机数
+
+		String prefix = "1"; // 用户标识
+
+		// 6位时间戳：年月日时分（yMMddHHmm取前6位）
+		String timestamp = DateUtil.format(new Date(), "yMMddHHmm").substring(0, 6);
+
+		// 2位身份证特征：倒数第2位和最后1位（校验位）
+		String idCardFeature = idCard.substring(idCard.length() - 2);
+
+		// 1位随机数
+		String random = String.valueOf(RandomUtil.randomInt(0, 10));
+
+		String customId = prefix + timestamp + idCardFeature + random;
+
+		// 确保唯一性
+		while (Long.parseLong(customId) > Integer.MAX_VALUE ||
+				lambdaQuery().eq(User::getUsername, customId).count() > 0) {
+			random = String.valueOf(RandomUtil.randomInt(0, 10));
+			customId = prefix + timestamp + idCardFeature + random;
+		}
+
+		return customId;
 	}
 }
