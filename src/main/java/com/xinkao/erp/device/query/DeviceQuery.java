@@ -32,4 +32,10 @@ public class DeviceQuery {
      * 每页大小
      */
     private Integer pageSize = 10;
+
+    /**
+     * 用户名称
+     */
+    private String userName;
+
 } 

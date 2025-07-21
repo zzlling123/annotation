@@ -20,6 +20,11 @@ public class DeviceVO {
      * 设备名称
      */
     private String deviceName;
+
+    /**
+     * 用户名称
+     */
+    private String userName;
     
     /**
      * 设备描述

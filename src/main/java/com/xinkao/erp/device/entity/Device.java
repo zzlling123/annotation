@@ -90,4 +90,9 @@ public class Device {
      * 更新人
      */
     private String updateBy;
+
+    /**
+     * 用户名称
+     */
+    private String userName;
 } 
