@@ -12,8 +12,11 @@ import com.xinkao.erp.device.query.DeviceQuery;
 import com.xinkao.erp.device.service.DeviceService;
 import com.xinkao.erp.device.utils.DeviceUtils;
 import com.xinkao.erp.device.vo.DeviceVO;
+import com.xinkao.erp.system.service.SysConfigService;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -29,7 +32,59 @@ public class DeviceController extends BaseController {
     
     @Resource
     private DeviceService deviceService;
-    
+
+    @Resource
+    private SysConfigService sysConfigService;
+
+    @Resource
+    private RestTemplate restTemplate;
+
+
+    /**
+     * 查询设备是否被授权(远程)
+     * @param macAddress 设备MAC地址
+     * @return true=已授权，false=未授权
+     */
+    @GetMapping("/checkAuth")
+    public ResponseEntity<Boolean> checkDeviceAuth(@RequestParam("macAddress") String macAddress) {
+        boolean isAuthorized = deviceService.getDeviceByMacAddress(macAddress) != null;
+        return ResponseEntity.ok(isAuthorized);
+    }
+
+    /**
+     * 远程请求主服务器校验设备 授权
+     * @param param 请求参数
+     * @return true=成功发起授权，false=发起授权失败
+     */
+    @PostMapping("/remoteAddAuth")
+    public ResponseEntity<Boolean> remoteCheckDeviceAuth(@RequestBody DeviceParam param) {
+        // 1. 获取主服务器地址
+        String mainServerUrl = sysConfigService.getConfigByKey("device.authentication.server");
+        if (mainServerUrl == null || mainServerUrl.isEmpty()) {
+            return ResponseEntity.status(500).body(false);
+        }
+        // 2. 拼接主服务器接口
+        String url = mainServerUrl + "/device/addAuth";
+        try {
+            // 用POST方式，参数为DeviceParam对象
+            Boolean isAuthorized = restTemplate.postForObject(url, param, Boolean.class);
+            return ResponseEntity.ok(isAuthorized != null && isAuthorized);
+        } catch (Exception e) {
+            // 主服务器不可用时的处理
+            return ResponseEntity.status(500).body(false);
+        }
+    }
+
+    /**
+     * 设备发起授权申请（主服务器端自动调用的）
+     * @param param 设备参数
+     * @return true=申请成功，false=已存在或失败
+     */
+    @PostMapping("/addAuth")
+    public ResponseEntity<Boolean> addDeviceAuth(@RequestBody DeviceParam param) {
+        boolean success = deviceService.addDeviceAuthRequest(param);
+        return ResponseEntity.ok(success);
+    }
     /**
      * 分页查询设备列表
      */

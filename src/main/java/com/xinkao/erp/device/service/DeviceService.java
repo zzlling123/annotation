@@ -56,7 +56,12 @@ public interface DeviceService {
      * 检查设备密钥是否有效
      */
     boolean isDeviceKeyValid(String macAddress, String deviceKey);
-    
+
+    /**
+     * 添加设备授权请求
+     */
+    public boolean addDeviceAuthRequest(DeviceParam param);
+
     /**
      * 激活设备
      */

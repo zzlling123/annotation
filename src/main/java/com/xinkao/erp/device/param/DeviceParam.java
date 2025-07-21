@@ -21,6 +21,12 @@ public class DeviceParam {
      */
     @NotBlank(message = "设备名称不能为空")
     private String deviceName;
+
+    /**
+     * 设备名称
+     */
+    @NotBlank(message = "用户名称不能为空")
+    private String userName;
     
     /**
      * 设备描述

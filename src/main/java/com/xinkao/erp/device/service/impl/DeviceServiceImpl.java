@@ -75,11 +75,39 @@ public class DeviceServiceImpl implements DeviceService {
         Device device = deviceMapper.selectById(id);
         return device != null ? convertToVO(device) : null;
     }
+
+    @Override
+    public boolean addDeviceAuthRequest(DeviceParam param){
+        //获取登录用户
+        LoginUser loginUser = redisUtil.getInfoByToken();
+        Device device = new Device();
+        BeanUtils.copyProperties(param, device);
+
+        // 生成设备密钥
+        device.setDeviceName(param.getDeviceName());
+        device.setDescription(param.getDescription());
+        device.setMacAddress(param.getMacAddress());
+        device.setKeyValidHours(param.getKeyValidHours());
+        device.setDeviceKey(DeviceUtils.generateDeviceKey());
+        device.setKeyGenerateTime(LocalDateTime.now());
+        device.setKeyExpireTime(LocalDateTime.now().plusHours(param.getKeyValidHours()));
+
+        if (!DeviceUtils.isValidMacAddress(device.getMacAddress())){
+            return false;
+        }
+        device.setStatus(0);
+        device.setUpdateTime(LocalDateTime.now());
+        device.setUpdateBy(loginUser.getUser().getRealName());
+        // 设置创建时间
+        device.setCreateTime(LocalDateTime.now());
+        device.setUpdateTime(LocalDateTime.now());
+        return deviceMapper.insert(device) > 0;
+    }
     
     @Override
     public boolean addDevice(DeviceParam param) {
         //获取登录用户
-        //LoginUser loginUser = redisUtil.getInfoByToken();
+        LoginUser loginUser = redisUtil.getInfoByToken();
         Device device = new Device();
         BeanUtils.copyProperties(param, device);
         
@@ -97,14 +125,14 @@ public class DeviceServiceImpl implements DeviceService {
         }
         //判断参数param有没有status的值没有，则设置程默认值1
         if (param.getStatus() == null){
-            device.setStatus(1);
+            device.setStatus(0);
         }else if (param.getStatus() == 1){
             device.setStatus(1);
         }else {
             device.setStatus(0);
         }
         device.setUpdateTime(LocalDateTime.now());
-        //device.setUpdateBy(loginUser.getUser().getRealName());
+        device.setUpdateBy(loginUser.getUser().getRealName());
         // 设置创建时间
         device.setCreateTime(LocalDateTime.now());
         device.setUpdateTime(LocalDateTime.now());
@@ -114,12 +142,14 @@ public class DeviceServiceImpl implements DeviceService {
     
     @Override
     public boolean updateDevice(DeviceParam param) {
+        LoginUser loginUser = redisUtil.getInfoByToken();
         Device device = deviceMapper.selectById(param.getId());
         if (device == null) {
             return false;
         }
         BeanUtils.copyProperties(param, device);
         device.setUpdateTime(LocalDateTime.now());
+        device.setUpdateBy(loginUser.getUser().getRealName());
         return deviceMapper.updateById(device) > 0;
     }
     

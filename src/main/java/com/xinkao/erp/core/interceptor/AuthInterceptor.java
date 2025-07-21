@@ -2,11 +2,14 @@ package com.xinkao.erp.core.interceptor;
 
 import com.xinkao.erp.common.model.LoginUser;
 import com.xinkao.erp.device.service.DeviceService;
+import com.xinkao.erp.system.entity.SysConfig;
+import com.xinkao.erp.system.service.SysConfigService;
 import com.xinkao.erp.user.entity.Role;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.annotation.Resource;
@@ -25,6 +28,12 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Resource
     public RedisTemplate redisTemplate;
+
+    @Resource
+    private RestTemplate restTemplate;
+
+    @Resource
+    private SysConfigService sysConfigService;
     
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -32,6 +41,13 @@ public class AuthInterceptor implements HandlerInterceptor {
         if (token == null || token.isEmpty()) {
             response.setStatus(401);
             response.getWriter().write("未提供认证信息");
+            return false;
+        }
+
+        String mainServerUrl = sysConfigService.getConfigByKey("device.authentication.server");
+        if (mainServerUrl == null || mainServerUrl.isEmpty()) {
+            response.setStatus(500);
+            response.getWriter().write("未配置认证服务器地址");
             return false;
         }
         ValueOperations<String, Object> operation = redisTemplate.opsForValue();
@@ -54,7 +70,9 @@ public class AuthInterceptor implements HandlerInterceptor {
         String macAddress = getMacAddress();
         System.out.println("当前MAC地址: " + macAddress);
         // 查询当前系统中是否存在该MAC地址的设备
-        boolean hasDevice = deviceService.getDeviceByMacAddress(macAddress) != null;
+        //boolean hasDevice = deviceService.getDeviceByMacAddress(macAddress) != null;
+        //改成服务器远程访问
+        boolean hasDevice = restTemplate.getForObject(mainServerUrl + "/device/checkAuth?macAddress=" + macAddress, Boolean.class);
         if (!hasDevice) {
             // 没有找到该MAC地址的设备，返回错误
             response.setStatus(403);
