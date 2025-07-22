@@ -36,4 +36,7 @@ public class UserQuery extends BasePageQuery implements Serializable {
 
     @ApiModelProperty("是否启用0否1是")
     private String state;
+
+    @ApiModelProperty("当前用户角色ID（用于权限控制）")
+    private Integer currentUserRoleId;
 }

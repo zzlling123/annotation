@@ -3,6 +3,7 @@ package com.xinkao.erp.user.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xinkao.erp.common.enums.CommonEnum;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.LoginUser;
@@ -31,6 +32,7 @@ import com.xinkao.erp.user.service.RoleService;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -165,4 +167,30 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implement
         return updateById(role)?BaseResponse.ok("删除成功！"): BaseResponse.fail("删除失败！");
     }
 
+    @Override
+    public List<Role> getRoleList() {
+        LoginUser loginUser = redisUtil.getInfoByToken();
+        Integer currentUserRoleId = loginUser.getUser().getRoleId();
+
+        // 如果是角色18，只返回角色2和3的信息
+        if (currentUserRoleId == 18) {
+            return lambdaQuery()
+                    .eq(Role::getIsDel, CommonEnum.IS_DEL.NO.getCode())
+                    .in(Role::getId, Arrays.asList(2, 3))
+                    .list();
+        }
+
+        // 如果是角色19，只返回角色20和21的信息
+        if (currentUserRoleId == 19) {
+            return lambdaQuery()
+                    .eq(Role::getIsDel, CommonEnum.IS_DEL.NO.getCode())
+                    .in(Role::getId, Arrays.asList(20, 21))
+                    .list();
+        }
+
+        // 其他角色返回所有角色列表
+        return lambdaQuery()
+                .eq(Role::getIsDel, CommonEnum.IS_DEL.NO.getCode())
+                .list();
+    }
 }

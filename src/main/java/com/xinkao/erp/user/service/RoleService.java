@@ -39,4 +39,6 @@ public interface RoleService extends BaseService<Role> {
 
     //删除角色
     BaseResponse del(Integer id);
+
+    List<Role> getRoleList();
 }

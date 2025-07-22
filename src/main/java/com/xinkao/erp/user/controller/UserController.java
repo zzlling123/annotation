@@ -70,7 +70,7 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
-	@DataScope(role = "1,2")
+	@DataScope(role = "1,2,18,19")
 	@PostMapping("/page")
 	@ApiOperation("分页")
 	public BaseResponse<Page<UserPageVo>> page(@RequestBody UserQuery query) {
@@ -127,7 +127,7 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
-	@DataScope(role = "1")
+	@DataScope(role = "1,18,19")
 	@PostMapping("/save")
 	@ApiOperation("新增用户")
 	@Log(content = "新增用户", operationType = OperationType.INSERT, isSaveRequestData = false)
@@ -145,7 +145,7 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
-	@DataScope(role = "1")
+	@DataScope(role = "1,18,19")
 	@PostMapping("/update")
 	@ApiOperation("修改用户")
 	public BaseResponse update(@Valid @RequestBody UserUpdateParam userUpdateParam) {
@@ -158,7 +158,7 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
-	@DataScope(role = "1")
+	@DataScope(role = "1,18,19")
 	@PostMapping("/del")
 	@ApiOperation("删除用户")
 	public BaseResponse del(@RequestBody UpdateStateParam updateStateParam) {
@@ -174,7 +174,7 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
-	@DataScope(role = "1")
+	@DataScope(role = "1,18,19")
 	@PostMapping("/updateState")
 	@ApiOperation("修改状态")
 	public BaseResponse updateState(@Valid @RequestBody UpdateStateParam updateStateParam) {
@@ -250,7 +250,7 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
-	@DataScope(role = "3")
+	@DataScope(role = "1,3,18,19")
 	@PostMapping("/getUserInfoBySelf")
 	@ApiOperation("获取用户信息")
 	public BaseResponse<UserInfoVo> getUserInfoBySelf() {

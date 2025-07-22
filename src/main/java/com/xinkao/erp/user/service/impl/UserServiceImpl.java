@@ -67,6 +67,10 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	//分页
 	@Override
 	public Page<UserPageVo> page(UserQuery query, Pageable pageable) {
+		// 获取当前登录用户角色，用于权限控制
+		LoginUser loginUser = redisUtil.getInfoByToken();
+		query.setCurrentUserRoleId(loginUser.getUser().getRoleId());
+
 		Page page = pageable.toPage();
 		return userMapper.page(page, query);
 	}
@@ -259,7 +263,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 
 	@Override
 	public String generateCustomAccountId(String idCard) {
-		// 方案：1位固定前缀 + 6位时间戳 + 2位身份证特征 + 1位随机数
+		// 1位固定前缀 + 6位时间戳 + 2位身份证特征 + 1位随机数
 
 		String prefix = "1"; // 用户标识
 

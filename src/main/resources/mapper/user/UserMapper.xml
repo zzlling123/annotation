@@ -23,6 +23,12 @@
 		<if test="userQuery.classId != null and userQuery.classId != ''">
 			and u.class_id = #{userQuery.classId}
 		</if>
+		<if test="userQuery.currentUserRoleId != null and userQuery.currentUserRoleId == 18">
+			and u.role_id IN (2, 3)
+		</if>
+		<if test="userQuery.currentUserRoleId != null and userQuery.currentUserRoleId == 19">
+			and u.role_id IN (20, 21)
+		</if>
 
 		GROUP BY u.id
 		ORDER BY u.id DESC
