@@ -46,9 +46,9 @@ public class DeviceController extends BaseController {
      * @return true=已授权，false=未授权
      */
     @GetMapping("/checkAuth")
-    public ResponseEntity<Boolean> checkDeviceAuth(@RequestParam("macAddress") String macAddress) {
-        boolean isAuthorized = deviceService.getDeviceByMacAddress(macAddress) != null;
-        return ResponseEntity.ok(isAuthorized);
+    public BaseResponse<Boolean> checkDeviceAuth(@RequestParam("macAddress") String macAddress) {
+        boolean hasDevice = deviceService.getDeviceByMacAddress(macAddress) != null;
+        return BaseResponse.ok(hasDevice);
     }
 
     /**

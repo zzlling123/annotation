@@ -79,7 +79,6 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public boolean addDeviceAuthRequest(DeviceParam param){
         //获取登录用户
-        LoginUser loginUser = redisUtil.getInfoByToken();
         Device device = new Device();
         BeanUtils.copyProperties(param, device);
 
@@ -97,7 +96,6 @@ public class DeviceServiceImpl implements DeviceService {
         }
         device.setStatus(0);
         device.setUpdateTime(LocalDateTime.now());
-        device.setUpdateBy(loginUser.getUser().getRealName());
         // 设置创建时间
         device.setCreateTime(LocalDateTime.now());
         device.setUpdateTime(LocalDateTime.now());

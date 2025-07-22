@@ -19,6 +19,7 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
 import java.util.List;
+import com.xinkao.erp.common.model.BaseResponse;
 
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
@@ -70,9 +71,10 @@ public class AuthInterceptor implements HandlerInterceptor {
         String macAddress = getMacAddress();
         System.out.println("当前MAC地址: " + macAddress);
         // 查询当前系统中是否存在该MAC地址的设备
-        //boolean hasDevice = deviceService.getDeviceByMacAddress(macAddress) != null;
         //改成服务器远程访问
-        boolean hasDevice = restTemplate.getForObject(mainServerUrl + "/device/checkAuth?macAddress=" + macAddress, Boolean.class);
+        BaseResponse responseBody = restTemplate.getForObject(mainServerUrl + "/device/checkAuth?macAddress=" + macAddress, BaseResponse.class);
+        boolean hasDevice = responseBody != null && responseBody.getData() instanceof Boolean && (Boolean) responseBody.getData();
+
         if (!hasDevice) {
             // 没有找到该MAC地址的设备，返回错误
             response.setStatus(403);
