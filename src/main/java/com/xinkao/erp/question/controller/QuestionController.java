@@ -174,7 +174,7 @@ public class    QuestionController extends BaseController {
      * @return 分页结果
      */
     @PrimaryDataSource
-    @DataScope(role = "1,2")
+    @DataScope(role = "1,2,18,19")
     @PostMapping("/page")
     @ApiOperation("分页查询题库")
     public BaseResponse<Page<QuestionPageVo>> page(@RequestBody QuestionQuery query) {
@@ -190,7 +190,7 @@ public class    QuestionController extends BaseController {
      * @return 题目详情
      */
     @PrimaryDataSource
-    @DataScope(role = "1,2")
+    @DataScope(role = "1,2,18,19")
     @GetMapping("/detail/{id}")
     @ApiOperation("获取题目详情")
     public BaseResponse<QuestionInfoVo> getQuestionDetail(@PathVariable Integer id) {
@@ -229,6 +229,7 @@ public class    QuestionController extends BaseController {
     @ApiOperation("编辑题目")
     @Log(content = "编辑题目",operationType = OperationType.UPDATE)
     public BaseResponse<?> update(@Valid @RequestBody QuestionParam questionParam) {
+        System.out.println("测试");
         return questionService.update(questionParam);
     }
 

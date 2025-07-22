@@ -145,7 +145,7 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
-	@DataScope(role = "1,18,19")
+	@DataScope(role = "1")
 	@PostMapping("/update")
 	@ApiOperation("修改用户")
 	public BaseResponse update(@Valid @RequestBody UserUpdateParam userUpdateParam) {
@@ -158,7 +158,7 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
-	@DataScope(role = "1,18,19")
+	@DataScope(role = "1")
 	@PostMapping("/del")
 	@ApiOperation("删除用户")
 	public BaseResponse del(@RequestBody UpdateStateParam updateStateParam) {
@@ -174,7 +174,7 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
-	@DataScope(role = "1,18,19")
+	@DataScope(role = "1")
 	@PostMapping("/updateState")
 	@ApiOperation("修改状态")
 	public BaseResponse updateState(@Valid @RequestBody UpdateStateParam updateStateParam) {
