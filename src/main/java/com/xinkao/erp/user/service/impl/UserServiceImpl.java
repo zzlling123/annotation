@@ -79,7 +79,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	@Override
 	public BaseResponse save(UserParam userParam){
 		// 生成自定义账号ID
-		String customId = generateCustomAccountId(userParam.getIdCard());
+		String customId = generateCustomAccountId(userParam);
 
 		// 检查账号是否已存在
 		if (lambdaQuery().eq(User::getUsername, customId).count() > 0) {
@@ -88,7 +88,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 
 		User user = new User();
 		BeanUtil.copyProperties(userParam, user);
-		user.setId(Integer.valueOf(customId)); // 设置自定义ID
 		user.setUsername(customId); // 账号与ID一致
 
 		// 生成密码
@@ -262,28 +261,42 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 
 
 	@Override
-	public String generateCustomAccountId(String idCard) {
-		// 1位固定前缀 + 6位时间戳 + 2位身份证特征 + 1位随机数
+	public String generateCustomAccountId(UserParam userParam) {
+		// 返回的账号格式：学校管理员用XX,社保局管理员用GL，教师JS，学生XS，评审专家ZJ，社会考生SH，后面加手机
+		// 学校管理员的角色id为18,社保局管理员Id为19，教师角色Id为2，学生角色id为3，评审专家角色id为20，社会考生的角色id为21
+		String customId = null;
 
-		String prefix = "1"; // 用户标识
+		String roleId = userParam.getRoleId();
+		String mobile = userParam.getMobile();
 
-		// 6位时间戳：年月日时分（yMMddHHmm取前6位）
-		String timestamp = DateUtil.format(new Date(), "yMMddHHmm").substring(0, 6);
-
-		// 2位身份证特征：倒数第2位和最后1位（校验位）
-		String idCardFeature = idCard.substring(idCard.length() - 2);
-
-		// 1位随机数
-		String random = String.valueOf(RandomUtil.randomInt(0, 10));
-
-		String customId = prefix + timestamp + idCardFeature + random;
-
-		// 确保唯一性
-		while (Long.parseLong(customId) > Integer.MAX_VALUE ||
-				lambdaQuery().eq(User::getUsername, customId).count() > 0) {
-			random = String.valueOf(RandomUtil.randomInt(0, 10));
-			customId = prefix + timestamp + idCardFeature + random;
+		// 根据角色ID生成前缀
+		String prefix = "";
+		switch (roleId) {
+			case "18":
+				prefix = "XX"; // 学校管理员
+				break;
+			case "19":
+				prefix = "GL"; // 社保局管理员
+				break;
+			case "2":
+				prefix = "JS"; // 教师
+				break;
+			case "3":
+				prefix = "XS"; // 学生
+				break;
+			case "20":
+				prefix = "ZJ"; // 评审专家
+				break;
+			case "21":
+				prefix = "SH"; // 社会考生
+				break;
+			default:
+				prefix = "YH"; // 默认用户
+				break;
 		}
+
+		// 组合前缀和手机号生成账号
+		customId = prefix + mobile;
 
 		return customId;
 	}
