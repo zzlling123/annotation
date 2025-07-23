@@ -2,10 +2,8 @@ package com.xinkao.erp.core.interceptor;
 
 import com.xinkao.erp.common.model.LoginUser;
 import com.xinkao.erp.device.service.DeviceService;
-import com.xinkao.erp.system.entity.SysConfig;
 import com.xinkao.erp.system.service.SysConfigService;
 import com.xinkao.erp.user.entity.Role;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
