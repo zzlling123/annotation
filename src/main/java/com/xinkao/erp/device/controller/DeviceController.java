@@ -6,6 +6,7 @@ import com.xinkao.erp.common.annotation.PrimaryDataSource;
 import com.xinkao.erp.common.controller.BaseController;
 import com.xinkao.erp.common.enums.system.OperationType;
 import com.xinkao.erp.common.model.BaseResponse;
+import com.xinkao.erp.device.entity.Device;
 import com.xinkao.erp.device.param.DeviceParam;
 import com.xinkao.erp.device.param.KeyValidationParam;
 import com.xinkao.erp.device.query.DeviceQuery;
@@ -14,12 +15,14 @@ import com.xinkao.erp.device.utils.DeviceUtils;
 import com.xinkao.erp.device.vo.DeviceVO;
 import com.xinkao.erp.system.service.SysConfigService;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,6 +41,62 @@ public class DeviceController extends BaseController {
 
     @Resource
     private RestTemplate restTemplate;
+
+    /**
+     * 设备重启修改标记(设备重启后远程发起请求)
+     * @param macAddress 设备MAC地址
+     * @return true=修改成功，false=修改失败
+     */
+    @GetMapping("/restartStatus")
+    public BaseResponse<Boolean> restartStatus(@RequestParam("macAddress") String macAddress) {
+        Device device = deviceService.getDeviceByMacAddress(macAddress);
+        if (device == null){
+            return BaseResponse.fail("设备不存在");
+        }
+        device.setRestartStatus(1);
+        device.setUpdateTime(LocalDateTime.now());
+        DeviceParam deviceParam = new DeviceParam();
+        BeanUtils.copyProperties(device,deviceParam);
+        boolean success = deviceService.updateDevice(deviceParam);
+        return success ? BaseResponse.ok("设备重启修改标记成功") : BaseResponse.fail("设备重启修改标记失败");
+    }
+
+    /**
+     * 查询设备的重启状态（远程）自动访问
+     * @param macAddress 设备MAC地址
+     * @return true=设备新重启，false=设备未重启
+     */
+    @PostMapping("/checkRestartStatus")
+    public ResponseEntity<Boolean> checkRestartStatus(@RequestParam("macAddress") String macAddress) {
+        Device device = deviceService.getDeviceByMacAddress(macAddress);
+        return ResponseEntity.ok(device.getRestartStatus() == 1);
+    }
+
+
+    /**
+     * 查询设备的重启状态（本地）
+     * @param macAddress 设备MAC地址
+     * @return true=设备新重启，false=设备未重启
+     */
+    @PostMapping("/checkRestartStatusLocal")
+    public ResponseEntity<Boolean> checkRestartStatusLocal(@RequestParam("macAddress") String macAddress) {
+        // 1. 获取主服务器地址
+        String mainServerUrl = sysConfigService.getConfigByKey("device.authentication.server");
+        if (mainServerUrl == null || mainServerUrl.isEmpty()) {
+            return ResponseEntity.status(500).body(false);
+        }
+        // 2. 拼接主服务器接口
+        String url = mainServerUrl + "/device/checkRestartStatus";
+        try {
+            // 用POST方式，参数为DeviceParam对象
+            Boolean isAuthorized = restTemplate.postForObject(url, macAddress, Boolean.class);
+            return ResponseEntity.ok(isAuthorized != null && isAuthorized);
+        } catch (Exception e) {
+            // 主服务器不可用时的处理
+            return ResponseEntity.status(500).body(false);
+        }
+    }
+
 
 
     /**

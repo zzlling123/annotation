@@ -49,4 +49,9 @@ public class DeviceParam {
      * 设备状态：0-未激活，1-已激活，2-已禁用
      */
     private Integer status = 0; // 默认未激活
+
+    /**
+     * 重启状态：0-未重启，1-已重启
+     */
+    private int restartStatus;
 } 

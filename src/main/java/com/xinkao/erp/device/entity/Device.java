@@ -95,4 +95,9 @@ public class Device {
      * 用户名称
      */
     private String userName;
+
+    /**
+     * 重启状态：0-未重启，1-已重启
+     */
+    private int restartStatus;
 } 
