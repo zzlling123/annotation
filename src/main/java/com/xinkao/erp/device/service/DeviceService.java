@@ -31,6 +31,11 @@ public interface DeviceService {
      * 更新设备
      */
     boolean updateDevice(DeviceParam param);
+
+    /**
+     * 更新设备1
+     */
+    boolean updateDevice1(DeviceParam param);
     
     /**
      * 删除设备

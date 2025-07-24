@@ -154,7 +154,17 @@ public class DeviceServiceImpl implements DeviceService {
         }
         return deviceMapper.updateById(device) > 0;
     }
-    
+
+    public boolean updateDevice1(DeviceParam param) {
+        Device device = deviceMapper.selectById(param.getId());
+        if (device == null) {
+            return false;
+        }
+        BeanUtils.copyProperties(param, device);
+        device.setUpdateTime(LocalDateTime.now());
+        return deviceMapper.updateById(device) > 0;
+    }
+
     @Override
     public boolean deleteDevice(Long id) {
         return deviceMapper.deleteById(id) > 0;

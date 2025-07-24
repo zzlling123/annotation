@@ -57,7 +57,7 @@ public class DeviceController extends BaseController {
         device.setUpdateTime(LocalDateTime.now());
         DeviceParam deviceParam = new DeviceParam();
         BeanUtils.copyProperties(device,deviceParam);
-        boolean success = deviceService.updateDevice(deviceParam);
+        boolean success = deviceService.updateDevice1(deviceParam);
         return success ? BaseResponse.ok("设备重启修改标记成功") : BaseResponse.fail("设备重启修改标记失败");
     }
 
