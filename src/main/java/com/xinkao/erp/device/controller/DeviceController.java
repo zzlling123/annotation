@@ -259,10 +259,10 @@ public class DeviceController extends BaseController {
     }
     
     /**
-     * 系统启动密钥验证
+     * 重启后通过密钥验证系统启动
      */
     @PostMapping("/system-startup/validate")
-    @ApiOperation("系统启动密钥验证")
+    @ApiOperation("重启后通过密钥验证系统启动")
     public BaseResponse<?> validateSystemStartup(@Valid @RequestBody KeyValidationParam param) {
         boolean valid = deviceService.isDeviceKeyValid(param.getMacAddress(), param.getDeviceKey());
         if (valid) {
