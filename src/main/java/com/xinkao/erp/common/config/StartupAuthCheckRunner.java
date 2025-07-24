@@ -1,5 +1,6 @@
 package com.xinkao.erp.common.config;
 
+import com.xinkao.erp.device.utils.DeviceUtils;
 import com.xinkao.erp.system.service.SysConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -17,14 +18,16 @@ public class StartupAuthCheckRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         String mainServerUrl = sysConfigService.getConfigByKey("device.authentication.server");
-        String url = "http://114.67.238.43:10202/device/restartStatus";
         //获取设备的mac地址
-        String macAddress = sysConfigService.getConfigByKey("device.macAddress");
+        String macAddress = DeviceUtils.getMacAddress();
+        System.out.println("macAddress:"+macAddress);
+        String url = "http://114.67.238.43:10202/device/restartStatus?macAddress="+macAddress;
         if (mainServerUrl == null || mainServerUrl.isEmpty()) {
         }else{
             // 2. 拼接主服务器接口
-            url = mainServerUrl + "/device/checkRestartStatus";
+            url = mainServerUrl + "/device/restartStatus?macAddress="+macAddress;
         }
+        System.out.println("url:"+url);
         try {
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.getForObject(url, String.class);

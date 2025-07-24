@@ -130,7 +130,9 @@ public class DeviceServiceImpl implements DeviceService {
             device.setStatus(0);
         }
         device.setUpdateTime(LocalDateTime.now());
-        device.setUpdateBy(loginUser.getUser().getRealName());
+        if (loginUser!=null){
+            device.setUpdateBy(loginUser.getUser().getRealName());
+        }
         // 设置创建时间
         device.setCreateTime(LocalDateTime.now());
         device.setUpdateTime(LocalDateTime.now());
@@ -147,7 +149,9 @@ public class DeviceServiceImpl implements DeviceService {
         }
         BeanUtils.copyProperties(param, device);
         device.setUpdateTime(LocalDateTime.now());
-        device.setUpdateBy(loginUser.getUser().getRealName());
+        if (loginUser!=null){
+            device.setUpdateBy(loginUser.getUser().getRealName());
+        }
         return deviceMapper.updateById(device) > 0;
     }
     
