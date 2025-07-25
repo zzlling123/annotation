@@ -12,6 +12,8 @@ import com.xinkao.erp.manage.service.MarkService;
 import com.xinkao.erp.question.entity.*;
 import com.xinkao.erp.question.mapper.LabelMapper;
 import com.xinkao.erp.question.mapper.QuestionMapper;
+import com.xinkao.erp.question.param.QuestionChildParam;
+import com.xinkao.erp.question.param.QuestionFormTitleParam;
 import com.xinkao.erp.question.service.*;
 import com.xinkao.erp.common.service.impl.BaseServiceImpl;
 import com.xinkao.erp.question.param.QuestionParam;
@@ -42,6 +44,10 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
     private QuestionLabelService questionLabelService;
     @Autowired
     private QuestionMarkService questionMarkService;
+    @Autowired
+    private QuestionFormTitleService questionFormTitleService;
+    @Autowired
+    private QuestionChildService questionChildService;
     @Autowired
     private QuestionTypeService questionTypeService;
     @Autowired
@@ -92,6 +98,30 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
             questionMarkService.saveBatch(questionMarkList);
         }
         return BaseResponse.ok("新增成功！");
+    }
+
+    @Override
+    public BaseResponse<?> saveQuestionFormTitle(QuestionFormTitleParam param) {
+        QuestionFormTitle questionFormTitle = BeanUtil.copyProperties(param, QuestionFormTitle.class);
+        return questionFormTitleService.save(questionFormTitle) ? BaseResponse.ok("新增成功！") : BaseResponse.fail("新增失败！");
+    }
+
+    @Override
+    public BaseResponse<?> updateQuestionFormTitle(QuestionFormTitleParam param) {
+        QuestionFormTitle questionFormTitle = BeanUtil.copyProperties(param, QuestionFormTitle.class);
+        return questionFormTitleService.updateById(questionFormTitle) ? BaseResponse.ok("修改成功！") : BaseResponse.fail("修改失败！");
+    }
+
+    @Override
+    public BaseResponse<?> saveQuestionChild(QuestionChildParam param) {
+        QuestionChild questionChild = BeanUtil.copyProperties(param, QuestionChild.class);
+        return questionChildService.save(questionChild) ? BaseResponse.ok("新增成功！") : BaseResponse.fail("新增失败！");
+    }
+
+    @Override
+    public BaseResponse<?> updateQuestionChild(QuestionChildParam param) {
+        QuestionChild questionChild = BeanUtil.copyProperties(param, QuestionChild.class);
+        return questionChildService.updateById(questionChild) ? BaseResponse.ok("修改成功！") : BaseResponse.fail("修改失败！");
     }
 
     @Override

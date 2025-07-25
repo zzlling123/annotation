@@ -10,6 +10,7 @@ import com.xinkao.erp.exam.entity.Exam;
 import com.xinkao.erp.exam.entity.ExamPageSet;
 import com.xinkao.erp.exam.entity.ExamPageSetType;
 import com.xinkao.erp.exam.excel.ExamPageSetImportErrorModel;
+import com.xinkao.erp.exam.excel.ExamPageSetImportModel;
 import com.xinkao.erp.exam.mapper.ExamPageSetMapper;
 import com.xinkao.erp.exam.service.ExamPageSetService;
 import com.xinkao.erp.common.service.impl.BaseServiceImpl;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -120,5 +122,39 @@ public class ExamPageSetServiceImpl extends BaseServiceImpl<ExamPageSetMapper, E
         }else{
             redisUtils.set(token, JSONObject.toJSONString(BaseResponse.ok("成功导入")), 2, TimeUnit.HOURS);
         }
+    }
+
+    @Transactional
+    @Override
+    public BaseResponse<?> saveExamPageSetPoint(String examId, List<ExamPageSetType> list) {
+        //设置总分
+        int allScore = 0;
+        //判断所有分数加起来是否等于总分，如果不等于则报错
+        //计算规则：题数乘以每题分数后的总和
+        //计算试卷题目总数
+        ExamPageSet examPageSet = lambdaQuery().eq(ExamPageSet::getExamId,examId).one();
+        for (ExamPageSetType examPageSetType : list) {
+            //增加总分
+            allScore += examPageSetType.getQuestionNum() * examPageSetType.getScore();
+        }
+        if (allScore != examPageSet.getScore()){
+            return BaseResponse.fail("试题计算总分与设置总分不相等");
+        }
+        //删除原题目分类数据
+        examPageSetTypeService.lambdaUpdate()
+                .eq(ExamPageSetType::getExamId,examPageSet.getExamId())
+                .remove();
+        int questionCount = 0;
+        for (ExamPageSetType examPageSetType : list) {
+            questionCount += examPageSetType.getQuestionNum();
+
+        }
+        examPageSet.setQuestionCount(questionCount);
+        examPageSet.setQuestionStatus(1);
+        //新增题目分类数据
+        examPageSetTypeService.saveBatch(list);
+        //修改设置
+        updateById(examPageSet);
+        return BaseResponse.ok("成功");
     }
 }

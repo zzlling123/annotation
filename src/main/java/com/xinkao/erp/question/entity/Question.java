@@ -115,6 +115,10 @@ public class Question extends DataEntity {
     @TableField("for_exercise")
     private Integer forExercise;
 
+    //是否题目单，0否1是
+    @TableField("is_form")
+    private Integer isForm;
+
     /**
      * 文档路径
      */

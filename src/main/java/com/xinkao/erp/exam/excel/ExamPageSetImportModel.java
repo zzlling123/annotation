@@ -9,8 +9,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 调班导入模板
- * @ClassName StuUpdateClassImportModel
+ * 试卷题目分布设置模板
+ * @ClassName ExamPageSetImportModel
  * @Description
  * @Author Ldy
  * @Date 2022/06/25 15:38
