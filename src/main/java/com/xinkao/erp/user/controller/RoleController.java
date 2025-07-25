@@ -47,8 +47,7 @@ public class RoleController extends BaseController {
 	@PostMapping("/getList")
 	@ApiOperation("获取角色列表")
 	public BaseResponse<List<Role>> getList() {
-		return BaseResponse.ok(roleService.lambdaQuery()
-				.eq(Role::getIsDel, CommonEnum.IS_DEL.NO.getCode()).list());
+		return BaseResponse.ok(roleService.getRoleList());
 	}
 
 	/**

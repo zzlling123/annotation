@@ -1,6 +1,7 @@
 package com.xinkao.erp.user.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
@@ -37,10 +38,7 @@ import com.xinkao.erp.user.service.UserService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -69,24 +67,36 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	//分页
 	@Override
 	public Page<UserPageVo> page(UserQuery query, Pageable pageable) {
+		// 获取当前登录用户角色，用于权限控制
+		LoginUser loginUser = redisUtil.getInfoByToken();
+		query.setCurrentUserRoleId(loginUser.getUser().getRoleId());
+
 		Page page = pageable.toPage();
 		return userMapper.page(page, query);
 	}
 
-	//新增
+	//修改新增方法
 	@Override
 	public BaseResponse save(UserParam userParam){
-		if (lambdaQuery().eq(User::getUsername,userParam.getUsername()).count()>0) {
-			return BaseResponse.fail("账号已存在！");
+		// 生成自定义账号ID
+		String customId = generateCustomAccountId(userParam);
+
+		// 检查账号是否已存在
+		if (lambdaQuery().eq(User::getUsername, customId).count() > 0) {
+			return BaseResponse.fail("生成的账号已存在，请重试！");
 		}
+
 		User user = new User();
 		BeanUtil.copyProperties(userParam, user);
-		//生成密码字段,6位随机盐加passWord
+		user.setUsername(customId); // 账号与ID一致
+
+		// 生成密码
 		String salt = RandomUtil.randomString(20);
-		String PassWord = SecureUtil.md5(salt+userParam.getPassword());
+		String password = SecureUtil.md5(salt + userParam.getPassword());
 		user.setSalt(salt);
-		user.setPassword(PassWord);
-		return save(user)?BaseResponse.ok("新增成功！"): BaseResponse.fail("新增失败！");
+		user.setPassword(password);
+
+		return save(user) ? BaseResponse.ok("新增成功！账号为：" + customId) : BaseResponse.fail("新增失败！");
 	}
 
 	//修改
@@ -247,5 +257,47 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 			allVoList.add(vo);
 			return BaseResponse.ok(allVoList);
 		}
+	}
+
+
+	@Override
+	public String generateCustomAccountId(UserParam userParam) {
+		// 返回的账号格式：学校管理员用XX,社保局管理员用GL，教师JS，学生XS，评审专家ZJ，社会考生SH，后面加手机
+		// 学校管理员的角色id为18,社保局管理员Id为19，教师角色Id为2，学生角色id为3，评审专家角色id为20，社会考生的角色id为21
+		String customId = null;
+
+		String roleId = userParam.getRoleId();
+		String mobile = userParam.getMobile();
+
+		// 根据角色ID生成前缀
+		String prefix = "";
+		switch (roleId) {
+			case "18":
+				prefix = "XX"; // 学校管理员
+				break;
+			case "19":
+				prefix = "GL"; // 社保局管理员
+				break;
+			case "2":
+				prefix = "JS"; // 教师
+				break;
+			case "3":
+				prefix = "XS"; // 学生
+				break;
+			case "20":
+				prefix = "ZJ"; // 评审专家
+				break;
+			case "21":
+				prefix = "SH"; // 社会考生
+				break;
+			default:
+				prefix = "YH"; // 默认用户
+				break;
+		}
+
+		// 组合前缀和手机号生成账号
+		customId = prefix + mobile;
+
+		return customId;
 	}
 }
