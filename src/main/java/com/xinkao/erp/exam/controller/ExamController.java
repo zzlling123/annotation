@@ -135,12 +135,12 @@ public class ExamController {
     }
 
     /**
-     * 导入试卷题目分布设置模板下载
+     * 获取试卷题目分布
      *
      */
     @PrimaryDataSource
     @DataScope(role = "1,2")
-    @ApiOperation(value = "试卷题目分布设置模板")
+    @ApiOperation(value = "获取试卷题目分布")
     @PostMapping("/getExamTypeSet")
     public BaseResponse<List<ExamPageSetImportModel>> getExamTypeSet(@RequestParam String examId) {
         return BaseResponse.ok(examService.getExamPageSetByTypeAndShape(examId));

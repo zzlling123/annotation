@@ -192,7 +192,8 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
      */
     @Override
     public List<ExamPageSetImportModel> getExamPageSetByTypeAndShape(String examId) {
-        List<QuestionTypeListDto> questionTypeListDtos = examMapper.getExamPageSetByTypeAndShape();
+        Exam exam = getById(examId);
+        List<QuestionTypeListDto> questionTypeListDtos = examMapper.getExamPageSetByTypeAndShape(exam.getDifficultyLevel(),exam.getSymbol());
         Map<Integer,List<QuestionTypeListDto>> map = questionTypeListDtos
                 .stream().collect(Collectors.groupingBy(QuestionTypeListDto::getId));
         List<ExamPageSetImportModel> list = new ArrayList<>();

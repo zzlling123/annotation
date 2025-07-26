@@ -31,6 +31,12 @@
                     FROM q_question_type qt
                              LEFT JOIN q_question q ON q.type = qt.id and q.is_del = 0
                     WHERe 1=1
+                    <if test="difficultyLevel != null and difficultyLevel != ''">
+                        and q.difficulty_level = #{difficultyLevel}
+                    </if>
+                    <if test="symbol != null and symbol != ''">
+                        and q.symbol = #{symbol}
+                    </if>
                     GROUP BY qt.id,q.id,q.shape)
                     t GROUP BY t.id,t.shape ORDER BY t.id,t.shape
     </select>

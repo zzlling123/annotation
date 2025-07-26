@@ -27,5 +27,5 @@ public interface QuestionMapper extends BaseMapper<Question> {
 
     Page<QuestionExercisePageVo> page1(Page pg , @Param("query") QuestionQuery questionQuery);
 
-    List<Question> getRandQuestion(@Param("examPageSetType") ExamPageSetType examPageSetType, @Param("difficultyLevel") Integer difficultyLevel,@Param("symbol") String symbol);
+    List<Question> getRandQuestion(@Param("examPageSetType") ExamPageSetType examPageSetType, @Param("difficultyLevel") Integer difficultyLevel,@Param("symbol") Integer symbol);
 }
