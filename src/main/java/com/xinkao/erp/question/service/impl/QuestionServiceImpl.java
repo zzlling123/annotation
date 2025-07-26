@@ -18,10 +18,7 @@ import com.xinkao.erp.question.service.*;
 import com.xinkao.erp.common.service.impl.BaseServiceImpl;
 import com.xinkao.erp.question.param.QuestionParam;
 import com.xinkao.erp.question.query.QuestionQuery;
-import com.xinkao.erp.question.vo.LabelVo;
-import com.xinkao.erp.question.vo.QuestionExercisePageVo;
-import com.xinkao.erp.question.vo.QuestionInfoVo;
-import com.xinkao.erp.question.vo.QuestionPageVo;
+import com.xinkao.erp.question.vo.*;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.common.model.support.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +28,7 @@ import org.springframework.beans.BeanUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -281,5 +279,30 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
             return answer.toString();
         }
         return "";
+    }
+
+    @Override
+    public BaseResponse<List<QuestionFormVo>> getQuestionFormInfo(Integer questionId){
+        List<QuestionFormTitle> questionFormTitleList = questionFormTitleService.lambdaQuery()
+                .eq(QuestionFormTitle::getPid, questionId)
+                .orderByAsc(QuestionFormTitle::getSort)
+                .list();
+        Map<Integer,List<QuestionChild>> questionChildList = questionChildService.lambdaQuery()
+                .eq(QuestionChild::getQuestionId, questionId)
+                .orderByAsc(QuestionChild::getSort)
+                .list()
+                .stream()
+                .collect(Collectors.groupingBy(QuestionChild::getPid));
+        List<QuestionFormVo> voList = new ArrayList<>();
+        // 遍历题干插入
+        for (QuestionFormTitle questionFormTitle : questionFormTitleList) {
+            QuestionFormVo questionFormVo = new QuestionFormVo();
+            questionFormVo.setId(questionFormTitle.getId());
+            questionFormVo.setQuestion(questionFormTitle.getQuestion());
+            questionFormVo.setSort(questionFormTitle.getSort());
+            questionFormVo.setQuestionChildList(BeanUtil.copyToList(questionChildList.get(questionFormTitle.getId()), QuestionChildVo.class));
+            voList.add(questionFormVo);
+        }
+        return BaseResponse.ok(voList);
     }
 }
