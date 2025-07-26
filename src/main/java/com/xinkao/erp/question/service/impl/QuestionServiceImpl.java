@@ -95,7 +95,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
             }).collect(Collectors.toList());
             questionMarkService.saveBatch(questionMarkList);
         }
-        return BaseResponse.ok("新增成功！");
+        return BaseResponse.ok("新增成功！",question.getId());
     }
 
     @Override
