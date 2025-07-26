@@ -12,7 +12,7 @@ import com.xinkao.erp.exam.entity.Exam;
 import com.xinkao.erp.exam.entity.ExamClass;
 import com.xinkao.erp.exam.entity.ExamPageSet;
 import com.xinkao.erp.exam.entity.ExamPageSetType;
-import com.xinkao.erp.exam.excel.ExamPageSetImportModel;
+import com.xinkao.erp.exam.excel.ExamPageSetVo;
 import com.xinkao.erp.exam.mapper.ExamMapper;
 import com.xinkao.erp.exam.param.ExamParam;
 import com.xinkao.erp.exam.query.ExamQuery;
@@ -191,19 +191,20 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
      *
      */
     @Override
-    public List<ExamPageSetImportModel> getExamPageSetByTypeAndShape(String examId) {
+    public List<ExamPageSetVo> getExamPageSetByTypeAndShape(String examId) {
         Exam exam = getById(examId);
         List<QuestionTypeListDto> questionTypeListDtos = examMapper.getExamPageSetByTypeAndShape(exam.getDifficultyLevel(),exam.getSymbol());
         Map<Integer,List<QuestionTypeListDto>> map = questionTypeListDtos
                 .stream().collect(Collectors.groupingBy(QuestionTypeListDto::getId));
-        List<ExamPageSetImportModel> list = new ArrayList<>();
+        List<ExamPageSetVo> list = new ArrayList<>();
         //按照分类，题型进行循环插入
         for (Integer typeId : map.keySet()) {
             //增加内容
             List<QuestionTypeListDto> voList = map.get(typeId);
-            ExamPageSetImportModel examPageSetImportModel = new ExamPageSetImportModel();
+            ExamPageSetVo examPageSetImportModel = new ExamPageSetVo();
             for (QuestionTypeListDto vo : voList) {
-                examPageSetImportModel.setType(vo.getTypeName());
+                examPageSetImportModel.setType(vo.getId());
+                examPageSetImportModel.setTypeStr(vo.getTypeName());
                 if ("100".equals(vo.getShape())){
                     examPageSetImportModel.setChoiceSingleCount(vo.getQuestionOnNum());
                 }else if ("200".equals(vo.getShape())){
@@ -214,6 +215,8 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
                     examPageSetImportModel.setChoiceAnswerCount(vo.getQuestionOnNum());
                 }else if ("500".equals(vo.getShape())){
                     examPageSetImportModel.setChoicePracticeCount(vo.getQuestionOnNum());
+                }else if ("600".equals(vo.getShape())){
+                    examPageSetImportModel.setChoiceFormCount(vo.getQuestionOnNum());
                 }
             }
             list.add(examPageSetImportModel);

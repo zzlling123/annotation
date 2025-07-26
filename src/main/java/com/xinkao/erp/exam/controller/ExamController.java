@@ -1,24 +1,16 @@
 package com.xinkao.erp.exam.controller;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.util.RandomUtil;
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.common.annotation.DataScope;
 import com.xinkao.erp.common.annotation.Log;
 import com.xinkao.erp.common.annotation.PrimaryDataSource;
 import com.xinkao.erp.common.enums.system.OperationType;
-import com.xinkao.erp.common.exception.BusinessException;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.support.Pageable;
-import com.xinkao.erp.common.util.ExcelUtils;
 import com.xinkao.erp.common.util.RedisUtil;
 import com.xinkao.erp.exam.entity.ExamPageSetType;
-import com.xinkao.erp.exam.excel.ExamPageSetImportErrorModel;
-import com.xinkao.erp.exam.excel.ExamPageSetImportModel;
-import com.xinkao.erp.exam.excel.ExamPageSetTypeModelListener;
+import com.xinkao.erp.exam.excel.ExamPageSetVo;
+import com.xinkao.erp.exam.param.ExamPageSetParam;
 import com.xinkao.erp.exam.param.ExamParam;
 import com.xinkao.erp.exam.query.ExamQuery;
 import com.xinkao.erp.exam.service.ExamPageSetService;
@@ -142,7 +134,7 @@ public class ExamController {
     @DataScope(role = "1,2")
     @ApiOperation(value = "获取试卷题目分布")
     @PostMapping("/getExamTypeSet")
-    public BaseResponse<List<ExamPageSetImportModel>> getExamTypeSet(@RequestParam String examId) {
+    public BaseResponse<List<ExamPageSetVo>> getExamTypeSet(@RequestParam String examId) {
         return BaseResponse.ok(examService.getExamPageSetByTypeAndShape(examId));
     }
 
@@ -151,7 +143,7 @@ public class ExamController {
     @ApiOperation(value = "编辑试卷设置")
     @PostMapping("/saveExamPageSetPoint/{examId}")
     @Log(content = "编辑试卷设置",isSaveResponseData = false,operationType = OperationType.INSERT)
-    public BaseResponse<?> saveExamPageSetPoint(@PathVariable String examId,@RequestBody List<ExamPageSetType> list) {
+    public BaseResponse<?> saveExamPageSetPoint(@PathVariable String examId,@RequestBody List<ExamPageSetParam> list) {
         return examPageSetService.saveExamPageSetPoint(examId,list);
     }
 }

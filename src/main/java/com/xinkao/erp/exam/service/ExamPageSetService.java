@@ -6,7 +6,7 @@ import com.xinkao.erp.exam.entity.ExamPageSet;
 import com.xinkao.erp.common.service.BaseService;
 import com.xinkao.erp.exam.entity.ExamPageSetType;
 import com.xinkao.erp.exam.excel.ExamPageSetImportErrorModel;
-import com.xinkao.erp.exam.excel.ExamPageSetImportModel;
+import com.xinkao.erp.exam.param.ExamPageSetParam;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -24,5 +24,5 @@ public interface ExamPageSetService extends BaseService<ExamPageSet> {
 
     void importExamPageSetType(HttpServletResponse response, Map<Integer, List<ExamPageSetType>> addExamPageSetPointMap, HandleResult handleResult, List<ExamPageSetImportErrorModel> examPageSetImportErrorModelList, String token);
 
-    BaseResponse<?> saveExamPageSetPoint(String examId, List<ExamPageSetType> list);
+    BaseResponse<?> saveExamPageSetPoint(String examId, List<ExamPageSetParam> list);
 }
