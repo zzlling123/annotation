@@ -6,9 +6,12 @@ import com.xinkao.erp.common.model.param.DeleteParam;
 import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.question.entity.Question;
 import com.xinkao.erp.common.service.BaseService;
+import com.xinkao.erp.question.param.QuestionChildParam;
+import com.xinkao.erp.question.param.QuestionFormTitleParam;
 import com.xinkao.erp.question.param.QuestionParam;
 import com.xinkao.erp.question.query.QuestionQuery;
 import com.xinkao.erp.question.vo.QuestionExercisePageVo;
+import com.xinkao.erp.question.vo.QuestionFormVo;
 import com.xinkao.erp.question.vo.QuestionInfoVo;
 import com.xinkao.erp.question.vo.QuestionPageVo;
 
@@ -53,6 +56,38 @@ public interface QuestionService extends BaseService<Question> {
     BaseResponse<?> save(QuestionParam questionParam);
 
     /**
+     * 新增题目单二级标题
+     *
+     * @param questionFormTitleParam 题目参数
+     * @return 操作结果
+     */
+    BaseResponse<?> saveQuestionFormTitle(QuestionFormTitleParam questionFormTitleParam);
+
+    /**
+     * 编辑题目单二级标题
+     *
+     * @param questionFormTitleParam 题目参数
+     * @return 操作结果
+     */
+    BaseResponse<?> updateQuestionFormTitle(QuestionFormTitleParam questionFormTitleParam);
+
+    /**
+     * 新增题目单子题
+     *
+     * @param questionChildParam 题目子题参数
+     * @return 操作结果
+     */
+    BaseResponse<?> saveQuestionChild(QuestionChildParam questionChildParam);
+
+    /**
+     * 编辑题目单子题
+     *
+     * @param questionChildParam 题目子题参数
+     * @return 操作结果
+     */
+    BaseResponse<?> updateQuestionChild(QuestionChildParam questionChildParam);
+
+    /**
      * 编辑题库
      *
      * @param questionParam 题库参数
@@ -70,4 +105,6 @@ public interface QuestionService extends BaseService<Question> {
 
 
     void selfSave();
+
+    BaseResponse<List<QuestionFormVo>> getQuestionFormInfo(Integer questionId);
 }

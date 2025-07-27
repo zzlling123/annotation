@@ -62,6 +62,12 @@
         SELECT *, #{examPageSetType.score} as score,#{examPageSetType.scorePart} as scorePart FROM `q_question`
         WHERE type = #{examPageSetType.typeId} and shape = #{examPageSetType.shape}
           AND state = 1 AND is_del = 0
+        <if test="difficultyLevel != null and difficultyLevel != ''">
+            AND difficulty_level = #{difficultyLevel}
+        </if>
+        <if test="symbol != null and symbol != ''">
+            AND symbol = #{symbol}
+        </if>
         ORDER BY RAND() limit #{examPageSetType.questionNum}
     </select>
 </mapper>

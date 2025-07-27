@@ -15,6 +15,8 @@ import com.xinkao.erp.question.entity.Label;
 import com.xinkao.erp.question.entity.Question;
 import com.xinkao.erp.question.entity.QuestionLabel;
 import com.xinkao.erp.question.entity.QuestionType;
+import com.xinkao.erp.question.param.QuestionChildParam;
+import com.xinkao.erp.question.param.QuestionFormTitleParam;
 import com.xinkao.erp.question.param.QuestionParam;
 import com.xinkao.erp.question.param.QuestionTypeParam;
 import com.xinkao.erp.question.query.QuestionQuery;
@@ -22,6 +24,7 @@ import com.xinkao.erp.question.service.LabelService;
 import com.xinkao.erp.question.service.QuestionLabelService;
 import com.xinkao.erp.question.service.QuestionService;
 import com.xinkao.erp.question.service.QuestionTypeService;
+import com.xinkao.erp.question.vo.QuestionFormVo;
 import com.xinkao.erp.question.vo.QuestionInfoVo;
 import com.xinkao.erp.question.vo.QuestionPageVo;
 import io.swagger.annotations.ApiOperation;
@@ -218,6 +221,58 @@ public class    QuestionController extends BaseController {
     }
 
     /**
+     * 新增题目单二级标题
+     *
+     * @param questionFormTitleParam 题目参数
+     * @return 操作结果
+     */
+    @PrimaryDataSource
+    @PostMapping("/saveQuestionFormTitle")
+    @ApiOperation("新增题目单二级标题")
+    public BaseResponse<?> saveQuestionFormTitle(@Valid @RequestBody QuestionFormTitleParam questionFormTitleParam) {
+        return questionService.saveQuestionFormTitle(questionFormTitleParam);
+    }
+
+    /**
+     * 编辑题目单二级标题
+     *
+     * @param questionFormTitleParam 题目参数
+     * @return 操作结果
+     */
+    @PrimaryDataSource
+    @PostMapping("/updateQuestionFormTitle")
+    @ApiOperation("编辑题目单二级标题")
+    public BaseResponse<?> updateQuestionFormTitle(@Valid @RequestBody QuestionFormTitleParam questionFormTitleParam) {
+        return questionService.updateQuestionFormTitle(questionFormTitleParam);
+    }
+
+    /**
+     * 新增题目单子题
+     *
+     * @param questionChildParam 题目子题参数
+     * @return 操作结果
+     */
+    @PrimaryDataSource
+    @PostMapping("/saveQuestionChild")
+    @ApiOperation("新增题目单子题")
+    public BaseResponse<?> saveQuestionChild(@Valid @RequestBody QuestionChildParam questionChildParam) {
+        return questionService.saveQuestionChild(questionChildParam);
+    }
+
+    /**
+     * 编辑题目单子题
+     *
+     * @param questionChildParam 题目子题参数
+     * @return 操作结果
+     */
+    @PrimaryDataSource
+    @PostMapping("/updateQuestionChild")
+    @ApiOperation("编辑题目单子题")
+    public BaseResponse<?> updateQuestionChild(@Valid @RequestBody QuestionChildParam questionChildParam) {
+        return questionService.updateQuestionChild(questionChildParam);
+    }
+
+    /**
      * 编辑题目
      *
      * @param questionParam 题目参数
@@ -258,5 +313,17 @@ public class    QuestionController extends BaseController {
     @ApiOperation("题库按照分类、题型插入题目")
     public void selfSave(){
         questionService.selfSave();
+    }
+
+    /**
+     * 获根据题目ID取题目单详情
+     * @return
+     */
+    @PrimaryDataSource
+    @DataScope(role = "1,2")
+    @PostMapping("/getQuestionFormInfo/{id}")
+    @ApiOperation("获根据题目ID取题目单详情")
+    public BaseResponse<List<QuestionFormVo>> getQuestionFormInfo(@PathVariable Integer id){
+        return questionService.getQuestionFormInfo(id);
     }
 }

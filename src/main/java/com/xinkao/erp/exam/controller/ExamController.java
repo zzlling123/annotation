@@ -1,25 +1,19 @@
 package com.xinkao.erp.exam.controller;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.util.RandomUtil;
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.common.annotation.DataScope;
 import com.xinkao.erp.common.annotation.Log;
 import com.xinkao.erp.common.annotation.PrimaryDataSource;
 import com.xinkao.erp.common.enums.system.OperationType;
-import com.xinkao.erp.common.exception.BusinessException;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.support.Pageable;
-import com.xinkao.erp.common.util.ExcelUtils;
 import com.xinkao.erp.common.util.RedisUtil;
-import com.xinkao.erp.exam.excel.ExamPageSetImportErrorModel;
-import com.xinkao.erp.exam.excel.ExamPageSetImportModel;
-import com.xinkao.erp.exam.excel.ExamPageSetTypeModelListener;
+import com.xinkao.erp.exam.entity.ExamPageSetType;
+import com.xinkao.erp.exam.excel.ExamPageSetVo;
+import com.xinkao.erp.exam.param.ExamPageSetParam;
 import com.xinkao.erp.exam.param.ExamParam;
 import com.xinkao.erp.exam.query.ExamQuery;
+import com.xinkao.erp.exam.service.ExamPageSetService;
 import com.xinkao.erp.exam.service.ExamService;
 import com.xinkao.erp.exam.vo.ExamDetailVo;
 import com.xinkao.erp.exam.vo.ExamPageVo;
@@ -53,6 +47,9 @@ public class ExamController {
 
     @Autowired
     private QuestionTypeService questionTypeService;
+
+    @Resource
+    private ExamPageSetService examPageSetService;
 
     /**
      * 分页查询考试信息
@@ -130,60 +127,23 @@ public class ExamController {
     }
 
     /**
-     * 导入试卷题目分布设置模板下载
+     * 获取试卷题目分布
      *
      */
     @PrimaryDataSource
     @DataScope(role = "1,2")
-    @ApiOperation(value = "试卷题目分布设置模板")
-    @RequestMapping(value = "/examTypeSetTemplate", method = RequestMethod.POST, produces = "application/octet-stream")
-    public void examTypeSetTemplate(HttpServletResponse response, @RequestParam String examId) {
-        // 从题库中按照 type 和 shape 获取各自题库数量
-        List<ExamPageSetImportModel> list = examService.getExamPageSetByTypeAndShape(examId);
-        try {
-            ExcelUtils.writeExcel(response, list, "试卷题目分布设置模板", "试卷题目分布设置模板",
-                    ExamPageSetImportModel.class);
-        } catch (IOException e) {
-            throw new BusinessException("导出试卷题目分布设置模板失败");
-        }
+    @ApiOperation(value = "获取试卷题目分布")
+    @PostMapping("/getExamTypeSet")
+    public BaseResponse<List<ExamPageSetVo>> getExamTypeSet(@RequestParam String examId) {
+        return BaseResponse.ok(examService.getExamPageSetByTypeAndShape(examId));
     }
 
-    // 导入试卷设置
-    @PostMapping("/importExamPageSetPoint")
-    @ApiOperation(value = "导入试卷设置")
-    @Log(content = "导入试卷设置",isSaveResponseData = false,operationType = OperationType.IMPORT)
-    public BaseResponse importExamPageSetPoint(HttpServletResponse response, @RequestParam(value="file") MultipartFile file, @RequestParam String examId) {
-        String token = RandomUtil.randomString(20);
-        redisUtil.set(token, "", 1, TimeUnit.HOURS);
-        ExamPageSetTypeModelListener examPageSetPointModelListener =  new ExamPageSetTypeModelListener(response,token,examId);
-        try {
-            EasyExcel.read(file.getInputStream(), ExamPageSetImportModel.class, examPageSetPointModelListener).sheet().headRowNumber(1).doRead();
-        } catch (IOException e) {
-            throw new BusinessException("导入试卷设置失败");
-        }
-        BaseResponse baseResponse = BeanUtil.copyProperties(JSON.parseObject(redisUtil.get(token)),BaseResponse.class);
-        if ("ok".equals(baseResponse.getState())){
-            return BaseResponse.ok(baseResponse.getMsg());
-        }else{
-            return BaseResponse.other(token);
-        }
-    }
-
-    /**
-     * 下载错误文件
-     * @return
-     */
-    @PostMapping("/getErrorExamPageSetPoint")
-    @ApiOperation(value = "下载错误文件")
-    public void getErrorClassSubjectImportExcel(HttpServletResponse response,@RequestParam String token) {
-        JSONArray json = JSON.parseObject(redisUtil.get(token)).getJSONArray("data");
-        List<ExamPageSetImportErrorModel> examPageSetImportErrorModelList = BeanUtil.copyToList(json, ExamPageSetImportErrorModel.class);
-        //下载文件
-        try {
-            ExcelUtils.writeExcel(response, examPageSetImportErrorModelList, "错误试卷设置文件", "错误试卷设置文件",
-                    ExamPageSetImportErrorModel.class);
-        } catch (IOException e) {
-            throw new BusinessException("导出错误试卷设置文件失败");
-        }
+    // 编辑试卷设置
+    @PrimaryDataSource
+    @ApiOperation(value = "编辑试卷设置")
+    @PostMapping("/saveExamPageSetPoint/{examId}")
+    @Log(content = "编辑试卷设置",isSaveResponseData = false,operationType = OperationType.INSERT)
+    public BaseResponse<?> saveExamPageSetPoint(@PathVariable String examId,@RequestBody List<ExamPageSetParam> list) {
+        return examPageSetService.saveExamPageSetPoint(examId,list);
     }
 }

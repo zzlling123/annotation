@@ -12,14 +12,13 @@ import com.xinkao.erp.manage.service.MarkService;
 import com.xinkao.erp.question.entity.*;
 import com.xinkao.erp.question.mapper.LabelMapper;
 import com.xinkao.erp.question.mapper.QuestionMapper;
+import com.xinkao.erp.question.param.QuestionChildParam;
+import com.xinkao.erp.question.param.QuestionFormTitleParam;
 import com.xinkao.erp.question.service.*;
 import com.xinkao.erp.common.service.impl.BaseServiceImpl;
 import com.xinkao.erp.question.param.QuestionParam;
 import com.xinkao.erp.question.query.QuestionQuery;
-import com.xinkao.erp.question.vo.LabelVo;
-import com.xinkao.erp.question.vo.QuestionExercisePageVo;
-import com.xinkao.erp.question.vo.QuestionInfoVo;
-import com.xinkao.erp.question.vo.QuestionPageVo;
+import com.xinkao.erp.question.vo.*;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.common.model.support.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +28,7 @@ import org.springframework.beans.BeanUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,6 +42,10 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
     private QuestionLabelService questionLabelService;
     @Autowired
     private QuestionMarkService questionMarkService;
+    @Autowired
+    private QuestionFormTitleService questionFormTitleService;
+    @Autowired
+    private QuestionChildService questionChildService;
     @Autowired
     private QuestionTypeService questionTypeService;
     @Autowired
@@ -91,7 +95,31 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
             }).collect(Collectors.toList());
             questionMarkService.saveBatch(questionMarkList);
         }
-        return BaseResponse.ok("新增成功！");
+        return BaseResponse.ok("新增成功！",question.getId());
+    }
+
+    @Override
+    public BaseResponse<?> saveQuestionFormTitle(QuestionFormTitleParam param) {
+        QuestionFormTitle questionFormTitle = BeanUtil.copyProperties(param, QuestionFormTitle.class);
+        return questionFormTitleService.save(questionFormTitle) ? BaseResponse.ok("新增成功！") : BaseResponse.fail("新增失败！");
+    }
+
+    @Override
+    public BaseResponse<?> updateQuestionFormTitle(QuestionFormTitleParam param) {
+        QuestionFormTitle questionFormTitle = BeanUtil.copyProperties(param, QuestionFormTitle.class);
+        return questionFormTitleService.updateById(questionFormTitle) ? BaseResponse.ok("修改成功！") : BaseResponse.fail("修改失败！");
+    }
+
+    @Override
+    public BaseResponse<?> saveQuestionChild(QuestionChildParam param) {
+        QuestionChild questionChild = BeanUtil.copyProperties(param, QuestionChild.class);
+        return questionChildService.save(questionChild) ? BaseResponse.ok("新增成功！") : BaseResponse.fail("新增失败！");
+    }
+
+    @Override
+    public BaseResponse<?> updateQuestionChild(QuestionChildParam param) {
+        QuestionChild questionChild = BeanUtil.copyProperties(param, QuestionChild.class);
+        return questionChildService.updateById(questionChild) ? BaseResponse.ok("修改成功！") : BaseResponse.fail("修改失败！");
     }
 
     @Override
@@ -251,5 +279,30 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
             return answer.toString();
         }
         return "";
+    }
+
+    @Override
+    public BaseResponse<List<QuestionFormVo>> getQuestionFormInfo(Integer questionId){
+        List<QuestionFormTitle> questionFormTitleList = questionFormTitleService.lambdaQuery()
+                .eq(QuestionFormTitle::getPid, questionId)
+                .orderByAsc(QuestionFormTitle::getSort)
+                .list();
+        Map<Integer,List<QuestionChild>> questionChildList = questionChildService.lambdaQuery()
+                .eq(QuestionChild::getQuestionId, questionId)
+                .orderByAsc(QuestionChild::getSort)
+                .list()
+                .stream()
+                .collect(Collectors.groupingBy(QuestionChild::getPid));
+        List<QuestionFormVo> voList = new ArrayList<>();
+        // 遍历题干插入
+        for (QuestionFormTitle questionFormTitle : questionFormTitleList) {
+            QuestionFormVo questionFormVo = new QuestionFormVo();
+            questionFormVo.setId(questionFormTitle.getId());
+            questionFormVo.setQuestion(questionFormTitle.getQuestion());
+            questionFormVo.setSort(questionFormTitle.getSort());
+            questionFormVo.setQuestionChildList(BeanUtil.copyToList(questionChildList.get(questionFormTitle.getId()), QuestionChildVo.class));
+            voList.add(questionFormVo);
+        }
+        return BaseResponse.ok(voList);
     }
 }
