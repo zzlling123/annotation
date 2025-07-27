@@ -3,6 +3,7 @@ package com.xinkao.erp.exam.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.xinkao.erp.common.model.entity.DataEntity;
+import com.xinkao.erp.common.model.entity.DataSnowIdEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +18,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @TableName("exam_page_user_question_form_title")
-public class ExamPageUserQuestionFormTitle extends DataEntity {
+public class ExamPageUserQuestionFormTitle extends DataSnowIdEntity {
 
     /**
      * 试卷主键

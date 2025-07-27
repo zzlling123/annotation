@@ -79,7 +79,7 @@ public class ExamPageUserQuestionController {
         if (redisUtil.get(token) != null){
             //如果value ！= 1则返回
             if (!"1".equals(redisUtil.get(token))){
-                return BaseResponse.fail("该考试正在制卷中，请勿重复操作！");
+//                return BaseResponse.fail("该考试正在制卷中，请勿重复操作！");
             }
         }
         redisUtil.set(token, "0", 2, TimeUnit.HOURS);

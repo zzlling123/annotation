@@ -137,6 +137,7 @@ public class ExamPageSetServiceImpl extends BaseServiceImpl<ExamPageSetMapper, E
             //增加总分
             allScore += examPageSetParam.getQuestionNum() * examPageSetParam.getScore();
             ExamPageSetType examPageSetType = BeanUtil.copyProperties(examPageSetParam, ExamPageSetType.class);
+            examPageSetType.setExamId(examId);
             examPageSetTypeList.add(examPageSetType);
             questionCount += examPageSetType.getQuestionNum();
         }
