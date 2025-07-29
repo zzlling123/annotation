@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 题目返回实体
@@ -141,4 +142,17 @@ public class ExamPageUserQuestionVo {
 	 */
 	@ApiModelProperty("是否需要批改0否1是")
 	private Integer needCorrect;
+
+	//是否题目单，0否1是
+	@ApiModelProperty("是否题目单，0否1是")
+	private Integer isForm;
+
+	/**
+	 * 文档路径
+	 */
+	@TableField("文档路径")
+	private String fileUrl;
+
+	@ApiModelProperty("题目单所属标题及子题")
+	private List<ExamPageUserQuestionFormTitleVo> examPageUserQuestionFormTitleVoList;
 }

@@ -8,6 +8,7 @@ import com.xinkao.erp.common.model.BasePageQuery;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.exam.model.param.ExamPageUserAnswerParam;
+import com.xinkao.erp.exam.model.param.ExamPageUserChildAnswerParam;
 import com.xinkao.erp.exam.model.param.ExamUserQuery;
 import com.xinkao.erp.exam.model.param.SubmitParam;
 import com.xinkao.erp.exam.model.vo.ExamPageUserQuestionVo;
@@ -96,6 +97,18 @@ public class ExamPageUserController {
     @Log(content = "提交答案",operationType = OperationType.INSERT)
     public BaseResponse<?> submitAnswer(@Valid @RequestBody ExamPageUserAnswerParam examPageUserAnswerParam) {
         return examPageUserService.submitAnswer(examPageUserAnswerParam);
+    }
+
+    /**
+     *
+     * 子题提交答案
+     */
+    @PrimaryDataSource
+    @RequestMapping("/submitChildAnswer")
+    @ApiOperation("子题提交答案")
+    @Log(content = "子题提交答案",operationType = OperationType.INSERT)
+    public BaseResponse<?> submitChildAnswer(@Valid @RequestBody ExamPageUserChildAnswerParam param) {
+        return examPageUserService.submitChildAnswer(param);
     }
 
 

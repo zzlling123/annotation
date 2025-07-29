@@ -6,6 +6,7 @@ import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.common.service.BaseService;
 import com.xinkao.erp.exam.entity.ExamPageUser;
+import com.xinkao.erp.exam.model.param.ExamPageUserChildAnswerParam;
 import com.xinkao.erp.exam.model.vo.ExamPageUserQuestionVo;
 import com.xinkao.erp.exam.model.vo.ExamPageUserVo;
 import com.xinkao.erp.exam.model.vo.ExamUserVo;
@@ -33,6 +34,8 @@ public interface ExamPageUserService extends BaseService<ExamPageUser> {
 
     BaseResponse<?> submitAnswer(ExamPageUserAnswerParam examPageUserAnswerParam);
 
+    BaseResponse<?> submitChildAnswer(ExamPageUserChildAnswerParam param);
+
     BaseResponse<Map<String,Integer>> submitExam(SubmitParam submitParam);
 
     BaseResponse<?> heartBeat(ExamUserQuery examUserQuery);
@@ -48,7 +51,7 @@ public interface ExamPageUserService extends BaseService<ExamPageUser> {
 
     void sumScore(Integer userId,Integer examId);
 
-    public BaseResponse<ExamPageUserQuestionVo> getUserQuestionInfo(String id);
+    BaseResponse<ExamPageUserQuestionVo> getUserQuestionInfo(String id);
 
     List<ExamPageUserVo> getExamPageUserName(Integer classId);
 }

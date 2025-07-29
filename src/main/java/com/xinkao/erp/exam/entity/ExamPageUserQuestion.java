@@ -134,5 +134,15 @@ public class ExamPageUserQuestion extends DataSnowIdEntity {
     @TableField(exist = false)
     private String userAnswer;
 
+    //是否题目单，0否1是
+    @TableField("is_form")
+    private Integer isForm;
+
+    /**
+     * 文档路径
+     */
+    @TableField("file_url")
+    private String fileUrl;
+
 
 }

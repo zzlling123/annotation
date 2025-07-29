@@ -17,10 +17,8 @@ import com.xinkao.erp.common.util.RedisUtil;
 import com.xinkao.erp.exam.entity.*;
 import com.xinkao.erp.exam.mapper.ExamPageUserMapper;
 import com.xinkao.erp.exam.mapper.ExamPageUserQuestionMapper;
-import com.xinkao.erp.exam.model.vo.ExamPageUserQuestionVo;
-import com.xinkao.erp.exam.model.vo.ExamPageUserVo;
-import com.xinkao.erp.exam.model.vo.ExamUserVo;
-import com.xinkao.erp.exam.model.vo.ExamProgressVo;
+import com.xinkao.erp.exam.model.param.ExamPageUserChildAnswerParam;
+import com.xinkao.erp.exam.model.vo.*;
 import com.xinkao.erp.exam.model.param.ExamUserQuery;
 import com.xinkao.erp.exam.model.param.ExamPageUserAnswerParam;
 import com.xinkao.erp.exam.model.param.SubmitParam;
@@ -59,6 +57,12 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
     private ExamPageUserQuestionMapper examPageUserQuestionMapper;
     @Autowired
     private ExamPageUserAnswerService examPageUserAnswerService;
+    @Autowired
+    private ExamPageUserQuestionFormTitleService examPageUserQuestionFormTitleService;
+    @Autowired
+    private ExamPageUserChildAnswerService examPageUserChildAnswerService;
+    @Autowired
+    private ExamPageUserQuestionChildService examPageUserQuestionChildService;
     @Autowired
     private ExamPageUserLogService examPageUserLogService;
     @Autowired
@@ -119,6 +123,27 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
         examPageUserQuestion.setAnswer("");
         examPageUserQuestion.setUserAnswer(examPageUserAnswer == null ? "" : examPageUserAnswer.getUserAnswer());
         ExamPageUserQuestionVo vo = BeanUtil.copyProperties(examPageUserQuestion, ExamPageUserQuestionVo.class);
+        //如果为题目单，则查询获取详情进行插入
+        if (vo.getIsForm() == 1){
+            List<ExamPageUserQuestionFormTitleVo> examPageUserQuestionFormTitleVoList = new ArrayList<>();
+            List<ExamPageUserQuestionFormTitle> examPageUserQuestionFormTitleList = examPageUserQuestionFormTitleService.lambdaQuery()
+                    .eq(ExamPageUserQuestionFormTitle::getPid,id)
+                    .orderByAsc(ExamPageUserQuestionFormTitle::getSort)
+                    .list();
+            Map<String, List<ExamPageUserQuestionChild>> examPageUserQuestionChildMap = examPageUserQuestionChildService.lambdaQuery()
+                    .eq(ExamPageUserQuestionChild::getQuestionId,id)
+                    .orderByAsc(ExamPageUserQuestionChild::getSort)
+                    .list()
+                    .stream()
+                    .collect(Collectors.groupingBy(ExamPageUserQuestionChild::getPid));
+            for (ExamPageUserQuestionFormTitle examPageUserQuestionFormTitle : examPageUserQuestionFormTitleList) {
+                ExamPageUserQuestionFormTitleVo examPageUserQuestionFormTitleVo = BeanUtil.copyProperties(examPageUserQuestionFormTitle, ExamPageUserQuestionFormTitleVo.class);
+                List<ExamPageUserQuestionChildVo> examPageUserQuestionChildVoList = BeanUtil.copyToList(examPageUserQuestionChildMap.get(examPageUserQuestionFormTitle.getId()), ExamPageUserQuestionChildVo.class);
+                examPageUserQuestionFormTitleVo.setExamPageUserQuestionChildVoList(examPageUserQuestionChildVoList);
+                examPageUserQuestionFormTitleVoList.add(examPageUserQuestionFormTitleVo);
+            }
+            vo.setExamPageUserQuestionFormTitleVoList(examPageUserQuestionFormTitleVoList);
+        }
         return BaseResponse.ok("成功",vo);
     }
 
@@ -175,6 +200,56 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
         }
         if (update){
             updateById(examPageUser);
+        }
+        return BaseResponse.ok();
+    }
+
+    @Override
+    public BaseResponse<?> submitChildAnswer(ExamPageUserChildAnswerParam param) {
+        LoginUser loginUser = redisUtil.getInfoByToken();
+        Integer userId = loginUser.getUser().getId();
+        //更新答案
+        ExamPageUserChildAnswer examPageUserChildAnswer = examPageUserChildAnswerService.getById(param.getChildId());
+        if (examPageUserChildAnswer == null){
+            return BaseResponse.fail("题目模板不存在");
+        }
+        examPageUserChildAnswer.setUserAnswer(param.getAnswer());
+        examPageUserChildAnswer.setAnswerStatus(1);
+        examPageUserChildAnswerService.updateById(examPageUserChildAnswer);
+        //如果全部子题已经都提交，则修改该题目为已作答
+        Long noChildSubmitNum = examPageUserChildAnswerService.lambdaQuery()
+                .eq(ExamPageUserChildAnswer::getQuestionId,examPageUserChildAnswer.getQuestionId())
+                .eq(ExamPageUserChildAnswer::getUserId,userId)
+                .eq(ExamPageUserChildAnswer::getAnswerStatus,0)
+                .count();
+        if (noChildSubmitNum==0){
+            examPageUserAnswerService.lambdaUpdate()
+                    .eq(ExamPageUserAnswer::getQuestionId,examPageUserChildAnswer.getQuestionId())
+                    .eq(ExamPageUserAnswer::getUserId,userId)
+                    .set(ExamPageUserAnswer::getAnswerStatus,1)
+                    .update();
+            //如果该题目单做完之后，验证该套试卷是否还有未作答
+            boolean update = false;
+            ExamPageUser examPageUser = lambdaQuery()
+                    .eq(ExamPageUser::getExamId,examPageUserChildAnswer.getExamId())
+                    .eq(ExamPageUser::getUserId,userId)
+                    .one();
+            if (StrUtil.isBlank(examPageUser.getStartTs())){
+                examPageUser.setStartTs(DateUtil.now());
+                update = true;
+            }
+            Long noSubmitNum = examPageUserAnswerService.lambdaQuery()
+                    .eq(ExamPageUserAnswer::getExamId,examPageUserChildAnswer.getExamId())
+                    .eq(ExamPageUserAnswer::getUserId,userId)
+                    .eq(ExamPageUserAnswer::getAnswerStatus,0)
+                    .count();
+            if (noSubmitNum==0){
+                examPageUser.setEndTs(DateUtil.now());
+                update = true;
+            }
+            if (update){
+                updateById(examPageUser);
+            }
         }
         return BaseResponse.ok();
     }
