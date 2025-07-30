@@ -22,6 +22,7 @@ public class ExamScoreExportController {
 
     // 老师导出班级单次考试成绩
     @GetMapping("/class-exam")
+    @ApiOperation("导出班级单次考试成绩")
     public void exportClassExamScores(@RequestParam Integer classId, @RequestParam Integer examId, HttpServletResponse response) throws IOException {
         List<StudentExamScoreDTO> data = examScoreService.getClassExamScores(classId, examId);
         ExcelExportUtil.writeExcel(data, StudentExamScoreDTO.class, response, "班级考试成绩");
@@ -29,6 +30,7 @@ public class ExamScoreExportController {
 
     // 学生导出自己多次考试成绩
     @GetMapping("/student-exams")
+    @ApiOperation("导出自己多次考试成绩")
     public void exportStudentExamScores(@RequestParam Integer userId, HttpServletResponse response) throws IOException {
         List<ExamScoreDTO> data = examScoreService.getStudentExamScores(userId);
         ExcelExportUtil.writeExcel(data, ExamScoreDTO.class, response, "我的考试成绩");
