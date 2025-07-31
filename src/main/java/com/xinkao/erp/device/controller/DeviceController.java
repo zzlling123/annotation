@@ -72,7 +72,6 @@ public class DeviceController extends BaseController {
         return ResponseEntity.ok(device.getRestartStatus() == 1);
     }
 
-
     /**
      * 查询设备的重启状态（本地）
      * @param macAddress 设备MAC地址
@@ -98,7 +97,6 @@ public class DeviceController extends BaseController {
     }
 
 
-
     /**
      * 查询设备是否被授权(远程)
      * @param macAddress 设备MAC地址
@@ -109,9 +107,32 @@ public class DeviceController extends BaseController {
         boolean hasDevice = deviceService.getDeviceByMacAddress(macAddress) != null;
         return BaseResponse.ok(hasDevice);
     }
+    /**
+     * 本地请求验证设备授权状态
+     * @param macAddress 设备MAC地址
+     * @return true=已授权，false=未授权
+     */
+    @PostMapping("/checkAuthLocal")
+    public ResponseEntity<Boolean> checkAuthLocal(@RequestParam("macAddress") String macAddress) {
+        // 1. 获取主服务器地址
+        String mainServerUrl = sysConfigService.getConfigByKey("device.authentication.server");
+        if (mainServerUrl == null || mainServerUrl.isEmpty()) {
+            return ResponseEntity.status(500).body(false);
+        }
+        // 2. 拼接主服务器接口
+        String url = mainServerUrl + "/device/checkAuth";
+        try {
+            BaseResponse responseBody = restTemplate.getForObject(mainServerUrl + "/device/checkAuth?macAddress=" + macAddress, BaseResponse.class);
+            boolean isAuthorized = responseBody != null && responseBody.getData() instanceof Boolean && (Boolean) responseBody.getData();
+            return ResponseEntity.ok(isAuthorized);
+        } catch (Exception e) {
+            // 主服务器不可用时的处理
+            return ResponseEntity.status(500).body(false);
+        }
+    }
 
     /**
-     * 远程请求主服务器校验设备 授权
+     * 远程请求主服务器校验设备 授权(本地)
      * @param param 请求参数
      * @return true=成功发起授权，false=发起授权失败
      */

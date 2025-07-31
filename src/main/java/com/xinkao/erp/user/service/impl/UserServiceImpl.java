@@ -262,7 +262,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 
 	@Override
 	public String generateCustomAccountId(UserParam userParam) {
-		// 返回的账号格式：学校管理员用XX,社保局管理员用GL，教师JS，学生XS，评审专家ZJ，社会考生SH，后面加手机
+		// 返回的账号格式：学校管理员用XX,社保局管理员用BJ，教师JS，学生XS，评审专家ZJ，社会考生SH，后面加手机
 		// 学校管理员的角色id为18,社保局管理员Id为19，教师角色Id为2，学生角色id为3，评审专家角色id为20，社会考生的角色id为21
 		String customId = null;
 
@@ -276,7 +276,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 				prefix = "XX"; // 学校管理员
 				break;
 			case "19":
-				prefix = "GL"; // 社保局管理员
+				prefix = "BJ"; // 社保局管理员
 				break;
 			case "2":
 				prefix = "JS"; // 教师
