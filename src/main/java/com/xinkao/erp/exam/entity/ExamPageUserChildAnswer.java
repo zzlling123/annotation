@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.xinkao.erp.common.model.entity.DataEntity;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import com.xinkao.erp.common.model.entity.DataSnowIdEntity;
 import lombok.Getter;
@@ -116,7 +117,7 @@ public class ExamPageUserChildAnswer extends DataSnowIdEntity {
      * 批改时间
      */
     @TableField("correct_time")
-    private LocalDateTime correctTime;
+    private Date correctTime;
 
 
 }

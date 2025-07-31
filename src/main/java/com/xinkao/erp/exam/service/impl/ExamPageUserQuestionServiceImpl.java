@@ -19,6 +19,7 @@ import com.xinkao.erp.question.service.QuestionChildService;
 import com.xinkao.erp.question.service.QuestionFormTitleService;
 import com.xinkao.erp.user.entity.User;
 import com.xinkao.erp.user.service.UserService;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -169,7 +170,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                                 //如果题目为题目单，则添加相关表
                                 if (question.getIsForm() == 1){
                                     examPageUserQuestionFormTitleList.addAll(getQuestionFormTitle(question.getId(),examPageUser.getUserId(),examPageUser.getExamId()));
-                                    examPageUserQuestionChildList.addAll(getQuestionChild(question.getId(),examPageUser.getUserId(),examPageUser.getExamId()));
+                                    examPageUserQuestionChildList.addAll(getQuestionChild(question,examPageUser.getUserId(),examPageUser.getExamId()));
                                 }
                                 num++;
                                 if(question.getNeedCorrect() == 1){
@@ -237,7 +238,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                                 //如果题目为题目单，则添加相关表
                                 if (question.getIsForm() == 1){
                                     examPageUserQuestionFormTitleList.addAll(getQuestionFormTitle(question.getId(),examPageUser.getUserId(),examPageUser.getExamId()));
-                                    examPageUserQuestionChildList.addAll(getQuestionChild(question.getId(),examPageUser.getUserId(),examPageUser.getExamId()));
+                                    examPageUserQuestionChildList.addAll(getQuestionChild(question,examPageUser.getUserId(),examPageUser.getExamId()));
                                 }
                                 if(question.getNeedCorrect() == 1){
                                     needCorrect = true;
@@ -299,7 +300,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                             //如果题目为题目单，则添加相关表
                             if (question.getIsForm() == 1){
                                 examPageUserQuestionFormTitleList.addAll(getQuestionFormTitle(question.getId(),examPageUser.getUserId(),examPageUser.getExamId()));
-                                examPageUserQuestionChildList.addAll(getQuestionChild(question.getId(),examPageUser.getUserId(),examPageUser.getExamId()));
+                                examPageUserQuestionChildList.addAll(getQuestionChild(question,examPageUser.getUserId(),examPageUser.getExamId()));
                             }
                             num++;
                             if(question.getNeedCorrect() == 1){
@@ -341,14 +342,16 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
         }).collect(Collectors.toList());
     }
 
-    public List<ExamPageUserQuestionChild> getQuestionChild(Integer questionId,Integer userId,Integer examId) {
-        List<QuestionChild> questionChildList = questionChildService.lambdaQuery().eq(QuestionChild::getQuestionId, questionId).list();
+    public List<ExamPageUserQuestionChild> getQuestionChild(Question question,Integer userId,Integer examId) {
+        List<QuestionChild> questionChildList = questionChildService.lambdaQuery().eq(QuestionChild::getQuestionId, question.getId()).list();
+        Integer scoreChild = Integer.parseInt(question.getScore())/questionChildList.size();
         return questionChildList.stream().map(questionChild -> {
             ExamPageUserQuestionChild examPageUserQuestionChild = new ExamPageUserQuestionChild();
             BeanUtil.copyProperties(questionChild, examPageUserQuestionChild);
             examPageUserQuestionChild.setId(IdUtil.getSnowflakeNextIdStr());
             examPageUserQuestionChild.setUserId(userId);
             examPageUserQuestionChild.setExamId(examId);
+            examPageUserQuestionChild.setScore(scoreChild);
             return examPageUserQuestionChild;
         }).collect(Collectors.toList());
     }

@@ -22,6 +22,7 @@ import com.xinkao.erp.exam.model.vo.*;
 import com.xinkao.erp.exam.model.param.ExamUserQuery;
 import com.xinkao.erp.exam.model.param.ExamPageUserAnswerParam;
 import com.xinkao.erp.exam.model.param.SubmitParam;
+import com.xinkao.erp.exam.param.ExamCorrectChildParam;
 import com.xinkao.erp.exam.param.ExamCorrectParam;
 import com.xinkao.erp.exam.query.ExamQuery;
 import com.xinkao.erp.exam.query.ExamTeacherQuery;
@@ -464,6 +465,27 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
             examPageUserQuestionVo.setNeedCorrect(examPageUserAnswer.getNeedCorrect());
             examPageUserQuestionVo.setCorrectId(examPageUserAnswer.getCorrectId().toString());
             examPageUserQuestionVo.setCorrectTime(examPageUserAnswer.getCorrectTime());
+            //如果为题目单，则查询获取详情进行插入
+            if (examPageUserQuestionVo.getIsForm() == 1){
+                List<ExamPageUserQuestionFormTitleVo> examPageUserQuestionFormTitleVoList = new ArrayList<>();
+                List<ExamPageUserQuestionFormTitle> examPageUserQuestionFormTitleList = examPageUserQuestionFormTitleService.lambdaQuery()
+                        .eq(ExamPageUserQuestionFormTitle::getPid,examPageUserQuestionVo.getId())
+                        .orderByAsc(ExamPageUserQuestionFormTitle::getSort)
+                        .list();
+                Map<String, List<ExamPageUserQuestionChild>> examPageUserQuestionChildMap = examPageUserQuestionChildService.lambdaQuery()
+                        .eq(ExamPageUserQuestionChild::getQuestionId,examPageUserQuestionVo.getId())
+                        .orderByAsc(ExamPageUserQuestionChild::getSort)
+                        .list()
+                        .stream()
+                        .collect(Collectors.groupingBy(ExamPageUserQuestionChild::getPid));
+                for (ExamPageUserQuestionFormTitle examPageUserQuestionFormTitle : examPageUserQuestionFormTitleList) {
+                    ExamPageUserQuestionFormTitleVo examPageUserQuestionFormTitleVo = BeanUtil.copyProperties(examPageUserQuestionFormTitle, ExamPageUserQuestionFormTitleVo.class);
+                    List<ExamPageUserQuestionChildVo> examPageUserQuestionChildVoList = BeanUtil.copyToList(examPageUserQuestionChildMap.get(examPageUserQuestionFormTitle.getId()), ExamPageUserQuestionChildVo.class);
+                    examPageUserQuestionFormTitleVo.setExamPageUserQuestionChildVoList(examPageUserQuestionChildVoList);
+                    examPageUserQuestionFormTitleVoList.add(examPageUserQuestionFormTitleVo);
+                }
+                examPageUserQuestionVo.setExamPageUserQuestionFormTitleVoList(examPageUserQuestionFormTitleVoList);
+            }
         }
         vo.setExamPageUserQuestionVoList(voList);
         return BaseResponse.ok("成功",vo);
@@ -490,6 +512,62 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
             sumScore(examPageUserAnswer.getUserId(),examPageUserAnswer.getExamId());
         });
         return BaseResponse.ok("批改成功");
+    }
+
+    @Override
+    public BaseResponse<?> correctChild(ExamCorrectChildParam param){
+        LoginUser loginUser = redisUtil.getInfoByToken();
+        ExamPageUserChildAnswer examPageUserChildAnswer = examPageUserChildAnswerService.lambdaQuery()
+                .eq(ExamPageUserChildAnswer::getQuestionChildId, param.getChildQuestionId())
+                .last("limit 1")
+                .one();
+        //判断分数是否超过该题总分
+        if (examPageUserChildAnswer.getScore() < Integer.parseInt(param.getScore())){
+            return BaseResponse.fail("分数不能超过该题总分");
+        }
+        examPageUserChildAnswer.setCorrectId(loginUser.getUser().getId());
+        examPageUserChildAnswer.setCorrectTime(DateUtil.date());
+        examPageUserChildAnswer.setUserScore(Integer.parseInt(param.getScore()));
+        //修改
+        examPageUserChildAnswerService.updateById(examPageUserChildAnswer);
+        //异步执行计算总分
+        ThreadUtil.execAsync(()->{
+            //计算总分
+            sumQuestionFormScore(examPageUserChildAnswer.getQuestionId());
+        });
+        return BaseResponse.ok("批改成功");
+    }
+
+    public void sumQuestionFormScore(String questionFormId){
+        //查询表中是否还有待批改的题目
+        if (examPageUserChildAnswerService.lambdaQuery()
+                .eq(ExamPageUserChildAnswer::getQuestionId,questionFormId)
+                .eq(ExamPageUserChildAnswer::getNeedCorrect,1)
+                .isNull(ExamPageUserChildAnswer::getCorrectId)
+                .count() > 0){
+            return;
+        }
+        LoginUser loginUser = redisUtil.getInfoByToken();
+        Integer allScore = 0;
+        //如果没有，则计算总分进行修改和状态更新
+        List<ExamPageUserChildAnswer> examPageUserChildAnswerList = examPageUserChildAnswerService.lambdaQuery()
+                .eq(ExamPageUserChildAnswer::getQuestionId,questionFormId)
+                .list();
+        for (ExamPageUserChildAnswer examPageUserChildAnswer : examPageUserChildAnswerList) {
+            allScore += examPageUserChildAnswer.getUserScore();
+        }
+        ExamPageUserAnswer examPageUserAnswer = examPageUserAnswerService.lambdaQuery()
+                .eq(ExamPageUserAnswer::getQuestionId,questionFormId)
+                .last("limit 1")
+                .one();
+        examPageUserAnswer.setUserScore(allScore);
+        examPageUserAnswer.setCorrectId(loginUser.getUser().getId());
+        examPageUserAnswerService.updateById(examPageUserAnswer);
+        //再看是否为最后的题目单的最后一题，如果是则异步执行计算总分
+        ThreadUtil.execAsync(()->{
+            //计算总分
+            sumScore(examPageUserAnswer.getUserId(),examPageUserAnswer.getExamId());
+        });
     }
 
     @Override

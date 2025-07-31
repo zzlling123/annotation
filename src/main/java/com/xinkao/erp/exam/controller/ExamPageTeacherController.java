@@ -13,6 +13,7 @@ import com.xinkao.erp.exam.model.param.ExamUserQuery;
 import com.xinkao.erp.exam.model.param.SubmitParam;
 import com.xinkao.erp.exam.model.vo.ExamProgressVo;
 import com.xinkao.erp.exam.model.vo.ExamUserVo;
+import com.xinkao.erp.exam.param.ExamCorrectChildParam;
 import com.xinkao.erp.exam.param.ExamCorrectParam;
 import com.xinkao.erp.exam.query.ExamTeacherQuery;
 import com.xinkao.erp.exam.service.ExamPageUserService;
@@ -74,6 +75,15 @@ public class ExamPageTeacherController {
     @Log(content = "批改",operationType = OperationType.INSERT)
     public BaseResponse<?> correct(@RequestBody @Valid ExamCorrectParam param) {
         return examPageUserService.correct(param);
+    }
+
+    @PrimaryDataSource
+    @DataScope(role = "2")
+    @PostMapping("/correctChild")
+    @ApiOperation("子题批改，提交分数(如果是该学生该题目单最后一道题则会进行计算该题总分)")
+    @Log(content = "子题批改",operationType = OperationType.INSERT)
+    public BaseResponse<?> correctChild(@RequestBody @Valid ExamCorrectChildParam param) {
+        return examPageUserService.correctChild(param);
     }
 
 

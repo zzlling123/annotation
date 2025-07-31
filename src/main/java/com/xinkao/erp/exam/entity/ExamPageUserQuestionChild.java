@@ -110,5 +110,8 @@ public class ExamPageUserQuestionChild extends DataSnowIdEntity {
     @TableField("is_del")
     private Integer isDel;
 
+    @TableField(exist = false)
+    private Integer score;
+
 
 }
