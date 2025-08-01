@@ -107,22 +107,22 @@ public class AttrDataUtils {
         }
 
         // 判断 position.x 是否在 10% 范围内
-        if (!isWithinRelativeError(a.position.x, b.position.x, 0.1)) {
+        if (!isWithinRelativeError(a.position.x, b.position.x, 0.2)) {
             return false;
         }
 
         // 判断 position.y 是否在 10% 范围内
-        if (!isWithinRelativeError(a.position.y, b.position.y, 0.1)) {
+        if (!isWithinRelativeError(a.position.y, b.position.y, 0.2)) {
             return false;
         }
 
         // 判断 size.width 是否在 10% 范围内
-        if (!isWithinRelativeError(a.size.width, b.size.width, 0.1)) {
+        if (!isWithinRelativeError(a.size.width, b.size.width, 0.2)) {
             return false;
         }
 
         // 判断 size.height 是否在 10% 范围内
-        return isWithinRelativeError(a.size.height, b.size.height, 0.1);
+        return isWithinRelativeError(a.size.height, b.size.height, 0.2);
     }
 
     /**

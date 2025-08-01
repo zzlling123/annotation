@@ -69,6 +69,9 @@ public class DeviceController extends BaseController {
     @PostMapping("/checkRestartStatus")
     public ResponseEntity<Boolean> checkRestartStatus(@RequestParam("macAddress") String macAddress) {
         Device device = deviceService.getDeviceByMacAddress(macAddress);
+        if (device == null){
+            return ResponseEntity.ok(false);
+        }
         return ResponseEntity.ok(device.getRestartStatus() == 1);
     }
 
