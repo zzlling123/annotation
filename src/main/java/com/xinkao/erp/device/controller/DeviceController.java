@@ -67,12 +67,12 @@ public class DeviceController extends BaseController {
      * @return true=设备新重启，false=设备未重启
      */
     @PostMapping("/checkRestartStatus")
-    public ResponseEntity<Boolean> checkRestartStatus(@RequestParam("macAddress") String macAddress) {
+    public BaseResponse<Boolean> checkRestartStatus(@RequestParam("macAddress") String macAddress) {
         Device device = deviceService.getDeviceByMacAddress(macAddress);
         if (device == null){
-            return ResponseEntity.ok(false);
+            return BaseResponse.ok(false);
         }
-        return ResponseEntity.ok(device.getRestartStatus() == 1);
+        return BaseResponse.ok(device.getRestartStatus() == 1);
     }
 
     /**
@@ -87,12 +87,14 @@ public class DeviceController extends BaseController {
         if (mainServerUrl == null || mainServerUrl.isEmpty()) {
             return ResponseEntity.status(500).body(false);
         }
+        //mainServerUrl = "http://127.0.0.1:10202/annotation";
         // 2. 拼接主服务器接口
         String url = mainServerUrl + "/device/checkRestartStatus";
         try {
             // 用POST方式，参数为DeviceParam对象
-            Boolean isAuthorized = restTemplate.postForObject(url, macAddress, Boolean.class);
-            return ResponseEntity.ok(isAuthorized != null && isAuthorized);
+            BaseResponse responseBody = restTemplate.postForObject(url, macAddress, BaseResponse.class);
+            boolean isAuthorized = responseBody != null && responseBody.getData() instanceof Boolean && (Boolean) responseBody.getData()!=null?(Boolean) responseBody.getData():false;
+            return ResponseEntity.ok(isAuthorized);
         } catch (Exception e) {
             // 主服务器不可用时的处理
             return ResponseEntity.status(500).body(false);
