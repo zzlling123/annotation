@@ -86,9 +86,9 @@ public class ExamPageUserQuestionController {
         examPageSetService.updateById(examPageSet);
         //异步线程执行导入
         @Valid ExamPageSet finalExamPageSet = examPageSet;
-//        ThreadUtil.execAsync(() -> {
-            examPageStuQuestionService.rollMaking(examPageSet,userList,token);
-//        });
+        ThreadUtil.execAsync(() -> {
+            examPageStuQuestionService.rollMaking(finalExamPageSet,userList,token);
+        });
         return BaseResponse.ok("该考试下考生共"+userList.size()+"人,开始制卷......",token);
     }
 
