@@ -210,7 +210,9 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
         LoginUser loginUser = redisUtil.getInfoByToken();
         Integer userId = loginUser.getUser().getId();
         //更新答案
-        ExamPageUserChildAnswer examPageUserChildAnswer = examPageUserChildAnswerService.getById(param.getChildId());
+        ExamPageUserChildAnswer examPageUserChildAnswer = examPageUserChildAnswerService.lambdaQuery()
+                .eq(ExamPageUserChildAnswer::getQuestionChildId,param.getChildId())
+                .last("limit 1").one();
         if (examPageUserChildAnswer == null){
             return BaseResponse.fail("题目模板不存在");
         }

@@ -36,7 +36,13 @@ public class ExamPageUserQuestionFormTitle extends DataSnowIdEntity {
      * 所属题目单ID
      */
     @TableField("pid")
-    private Integer pid;
+    private String pid;
+
+    /**
+     * 二级来源主键
+     */
+    @TableField("old_question_title")
+    private Integer oldQuestionTitle;
 
     /**
      * 题干,json列表

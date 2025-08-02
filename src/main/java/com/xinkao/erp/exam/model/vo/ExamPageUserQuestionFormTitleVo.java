@@ -24,7 +24,7 @@ public class ExamPageUserQuestionFormTitleVo {
 	private Integer examId;
 
 	@ApiModelProperty("所属题目单ID")
-	private Integer pid;
+	private String pid;
 
 	@ApiModelProperty("题干,json列表")
 	private String question;

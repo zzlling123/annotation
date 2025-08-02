@@ -123,10 +123,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                 .list();
         //按照之前shape的排列顺序分组成map格式
         Map<Integer,List<ExamPageSetType>> examPageSetTypeMap = examPageSetTypeList.stream().collect(Collectors.groupingBy(ExamPageSetType::getShape));
-        List<ExamPageUserQuestion> examPageUserQuestionList = new ArrayList<>();
-        List<ExamPageUserQuestionFormTitle> examPageUserQuestionFormTitleList = new ArrayList<>();
-        List<ExamPageUserQuestionChild> examPageUserQuestionChildList = new ArrayList<>();
-        List<ExamPageUserAnswer> examPageUserAnswerList = new ArrayList<>();
+
         //如果是0-同题同序 1-同题不同序则先获取一套试题
         if (0 == examPageSet.getPageMode()|| 1 == examPageSet.getPageMode()) {
             //根据知识点获取随机题目
@@ -134,6 +131,10 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
             //如果为0则进行循环插入
             if (examPageSet.getPageMode() == 0) {
                 for (ExamPageUser examPageUser : examPageUserList) {
+                    List<ExamPageUserQuestion> examPageUserQuestionList = new ArrayList<>();
+                    List<ExamPageUserQuestionFormTitle> examPageUserQuestionFormTitleList = new ArrayList<>();
+                    List<ExamPageUserQuestionChild> examPageUserQuestionChildList = new ArrayList<>();
+                    List<ExamPageUserAnswer> examPageUserAnswerList = new ArrayList<>();
                     //查询题型分布设置中是否包含主观题，如果包含，则ExamPageUser中needCorrect为1，否则为0
                     boolean needCorrect = false;
                     //修改该考生生成试卷状态为生成中
@@ -169,8 +170,8 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
 
                                 //如果题目为题目单，则添加相关表
                                 if (question.getIsForm() == 1){
-                                    examPageUserQuestionFormTitleList.addAll(getQuestionFormTitle(question.getId(),examPageUser.getUserId(),examPageUser.getExamId()));
-                                    examPageUserQuestionChildList.addAll(getQuestionChild(question,examPageUser.getUserId(),examPageUser.getExamId()));
+                                    examPageUserQuestionFormTitleList.addAll(getQuestionFormTitle(question.getId(),examPageUser.getUserId(),examPageUser.getExamId(),examPageUserQuestion.getId()));
+                                    examPageUserQuestionChildList.addAll(getQuestionChild(question,examPageUser.getUserId(),examPageUser.getExamId(),examPageUserQuestion.getId(),examPageUserQuestionFormTitleList));
                                 }
                                 num++;
                                 if(question.getNeedCorrect() == 1){
@@ -199,6 +200,10 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
             }else {
                 //如果为1则生成题目列表后进行随机排列题号后进行插入
                 for (ExamPageUser examPageUser : examPageUserList) {
+                    List<ExamPageUserQuestion> examPageUserQuestionList = new ArrayList<>();
+                    List<ExamPageUserQuestionFormTitle> examPageUserQuestionFormTitleList = new ArrayList<>();
+                    List<ExamPageUserQuestionChild> examPageUserQuestionChildList = new ArrayList<>();
+                    List<ExamPageUserAnswer> examPageUserAnswerList = new ArrayList<>();
                     //查询题型分布设置中是否包含主观题，如果包含，则ExamPageUser中needCorrect为1，否则为0
                     boolean needCorrect = false;
                     try{
@@ -237,8 +242,8 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
 
                                 //如果题目为题目单，则添加相关表
                                 if (question.getIsForm() == 1){
-                                    examPageUserQuestionFormTitleList.addAll(getQuestionFormTitle(question.getId(),examPageUser.getUserId(),examPageUser.getExamId()));
-                                    examPageUserQuestionChildList.addAll(getQuestionChild(question,examPageUser.getUserId(),examPageUser.getExamId()));
+                                    examPageUserQuestionFormTitleList.addAll(getQuestionFormTitle(question.getId(),examPageUser.getUserId(),examPageUser.getExamId(),examPageUserQuestion.getId()));
+                                    examPageUserQuestionChildList.addAll(getQuestionChild(question,examPageUser.getUserId(),examPageUser.getExamId(),examPageUserQuestion.getId(),examPageUserQuestionFormTitleList));
                                 }
                                 if(question.getNeedCorrect() == 1){
                                     needCorrect = true;
@@ -267,6 +272,10 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
         }else{
             //如果为2则每个个学生都是单独生成一套试卷
             for (ExamPageUser examPageUser : examPageUserList) {
+                List<ExamPageUserQuestion> examPageUserQuestionList = new ArrayList<>();
+                List<ExamPageUserQuestionFormTitle> examPageUserQuestionFormTitleList = new ArrayList<>();
+                List<ExamPageUserQuestionChild> examPageUserQuestionChildList = new ArrayList<>();
+                List<ExamPageUserAnswer> examPageUserAnswerList = new ArrayList<>();
                 try{
                     //根据知识点获取随即题目
                     Map<Integer,List<Question>> questionMap = getQuestionMap(exam,examPageSetTypeMap);
@@ -299,8 +308,8 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                             examPageUserAnswerList.add(examPageUserAnswer);
                             //如果题目为题目单，则添加相关表
                             if (question.getIsForm() == 1){
-                                examPageUserQuestionFormTitleList.addAll(getQuestionFormTitle(question.getId(),examPageUser.getUserId(),examPageUser.getExamId()));
-                                examPageUserQuestionChildList.addAll(getQuestionChild(question,examPageUser.getUserId(),examPageUser.getExamId()));
+                                examPageUserQuestionFormTitleList.addAll(getQuestionFormTitle(question.getId(),examPageUser.getUserId(),examPageUser.getExamId(),examPageUserQuestion.getId()));
+                                examPageUserQuestionChildList.addAll(getQuestionChild(question,examPageUser.getUserId(),examPageUser.getExamId(),examPageUserQuestion.getId(),examPageUserQuestionFormTitleList));
                             }
                             num++;
                             if(question.getNeedCorrect() == 1){
@@ -330,7 +339,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
         redisUtil.set(token, "1", 2, TimeUnit.HOURS);
     }
 
-    public List<ExamPageUserQuestionFormTitle> getQuestionFormTitle(Integer questionId,Integer userId,Integer examId) {
+    public List<ExamPageUserQuestionFormTitle> getQuestionFormTitle(Integer questionId,Integer userId,Integer examId,String pid) {
         List<QuestionFormTitle> questionFormTitles = questionFormTitleService.lambdaQuery().eq(QuestionFormTitle::getPid, questionId).list();
         return questionFormTitles.stream().map(questionFormTitle -> {
             ExamPageUserQuestionFormTitle examPageUserQuestionFormTitle = new ExamPageUserQuestionFormTitle();
@@ -338,22 +347,34 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
             examPageUserQuestionFormTitle.setId(IdUtil.getSnowflakeNextIdStr());
             examPageUserQuestionFormTitle.setUserId(userId);
             examPageUserQuestionFormTitle.setExamId(examId);
+            examPageUserQuestionFormTitle.setPid(pid);
+            examPageUserQuestionFormTitle.setOldQuestionTitle(questionFormTitle.getId());
             return examPageUserQuestionFormTitle;
         }).collect(Collectors.toList());
     }
 
-    public List<ExamPageUserQuestionChild> getQuestionChild(Question question,Integer userId,Integer examId) {
+    public List<ExamPageUserQuestionChild> getQuestionChild(Question question,Integer userId,Integer examId,String examQuestionId,List<ExamPageUserQuestionFormTitle> examPageUserQuestionFormTitleList) {
         List<QuestionChild> questionChildList = questionChildService.lambdaQuery().eq(QuestionChild::getQuestionId, question.getId()).list();
+        Map<Integer,List<QuestionChild>> questionChildMap = questionChildList
+                .stream()
+                .collect(Collectors.groupingBy(QuestionChild::getPid));
+        List<ExamPageUserQuestionChild> examPageUserQuestionChildList = new ArrayList<>();
         Integer scoreChild = Integer.parseInt(question.getScore())/questionChildList.size();
-        return questionChildList.stream().map(questionChild -> {
+        for (ExamPageUserQuestionFormTitle examPageUserQuestionFormTitle : examPageUserQuestionFormTitleList) {
             ExamPageUserQuestionChild examPageUserQuestionChild = new ExamPageUserQuestionChild();
-            BeanUtil.copyProperties(questionChild, examPageUserQuestionChild);
-            examPageUserQuestionChild.setId(IdUtil.getSnowflakeNextIdStr());
-            examPageUserQuestionChild.setUserId(userId);
-            examPageUserQuestionChild.setExamId(examId);
-            examPageUserQuestionChild.setScore(scoreChild);
-            return examPageUserQuestionChild;
-        }).collect(Collectors.toList());
+            List<QuestionChild> questionChildThisTitlePidList = questionChildMap.get(examPageUserQuestionFormTitle.getOldQuestionTitle());
+            for (QuestionChild questionChild : questionChildThisTitlePidList) {
+                BeanUtil.copyProperties(questionChild, examPageUserQuestionChild);
+                examPageUserQuestionChild.setId(IdUtil.getSnowflakeNextIdStr());
+                examPageUserQuestionChild.setUserId(userId);
+                examPageUserQuestionChild.setExamId(examId);
+                examPageUserQuestionChild.setScore(scoreChild);
+                examPageUserQuestionChild.setPid(examPageUserQuestionFormTitle.getId());
+                examPageUserQuestionChild.setQuestionId(examQuestionId);
+                examPageUserQuestionChildList.add(examPageUserQuestionChild);
+            }
+        }
+        return examPageUserQuestionChildList;
     }
 
     public List<ExamPageUserChildAnswer> getQuestionChildAnswer(List<ExamPageUserQuestionChild> examPageUserQuestionChildList){
