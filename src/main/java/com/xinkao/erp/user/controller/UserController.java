@@ -122,6 +122,20 @@ public class UserController extends BaseController {
 	}
 
 	/**
+	 * 获取专家列表信息
+	 *
+	 */
+	@PrimaryDataSource
+	@PostMapping("/getExpertList")
+	@ApiOperation("获取专家列表信息")
+	public BaseResponse<List<UserPageVo>> getExpertList() {
+		//查询所有专家角色用户
+		List<User> userList = userService.lambdaQuery().eq(User::getIsDel, CommonEnum.IS_DEL.NO.getCode()).eq(User::getRoleId, 20).list();
+		List<UserPageVo> userPageVoList = BeanUtil.copyToList(userList, UserPageVo.class);
+		return BaseResponse.ok("成功",userPageVoList);
+	}
+
+	/**
 	 * 新增用户
 	 *
 	 * @return
