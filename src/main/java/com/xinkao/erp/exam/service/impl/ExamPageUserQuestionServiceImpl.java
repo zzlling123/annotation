@@ -368,7 +368,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                 if (questionChildThisTitlePidList != null && questionChildThisTitlePidList.size() > 0){
                     for (QuestionChild questionChild : questionChildThisTitlePidList) {
                         examPageUserQuestionChild = BeanUtil.copyProperties(questionChild, ExamPageUserQuestionChild.class);
-                        examPageUserQuestionChild.setId(null);
+                        examPageUserQuestionChild.setId(IdUtil.getSnowflakeNextIdStr());
                         examPageUserQuestionChild.setUserId(userId);
                         examPageUserQuestionChild.setExamId(examId);
                         examPageUserQuestionChild.setScore(scoreChild);
