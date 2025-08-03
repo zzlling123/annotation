@@ -359,19 +359,24 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                 .stream()
                 .collect(Collectors.groupingBy(QuestionChild::getPid));
         List<ExamPageUserQuestionChild> examPageUserQuestionChildList = new ArrayList<>();
-        Integer scoreChild = Integer.parseInt(question.getScore())/questionChildList.size();
-        for (ExamPageUserQuestionFormTitle examPageUserQuestionFormTitle : examPageUserQuestionFormTitleList) {
-            ExamPageUserQuestionChild examPageUserQuestionChild = new ExamPageUserQuestionChild();
-            List<QuestionChild> questionChildThisTitlePidList = questionChildMap.get(examPageUserQuestionFormTitle.getOldQuestionTitle());
-            for (QuestionChild questionChild : questionChildThisTitlePidList) {
-                BeanUtil.copyProperties(questionChild, examPageUserQuestionChild);
-                examPageUserQuestionChild.setId(IdUtil.getSnowflakeNextIdStr());
-                examPageUserQuestionChild.setUserId(userId);
-                examPageUserQuestionChild.setExamId(examId);
-                examPageUserQuestionChild.setScore(scoreChild);
-                examPageUserQuestionChild.setPid(examPageUserQuestionFormTitle.getId());
-                examPageUserQuestionChild.setQuestionId(examQuestionId);
-                examPageUserQuestionChildList.add(examPageUserQuestionChild);
+        if (examPageUserQuestionFormTitleList.size() > 0){
+            Integer scoreChild = questionChildList.size() == 0?0:Integer.parseInt(question.getScore())/questionChildList.size();
+            for (ExamPageUserQuestionFormTitle examPageUserQuestionFormTitle : examPageUserQuestionFormTitleList) {
+                ExamPageUserQuestionChild examPageUserQuestionChild = new ExamPageUserQuestionChild();
+                List<QuestionChild> questionChildThisTitlePidList = new ArrayList<>();
+                questionChildThisTitlePidList = questionChildMap.get(examPageUserQuestionFormTitle.getOldQuestionTitle());
+                if (questionChildThisTitlePidList != null && questionChildThisTitlePidList.size() > 0){
+                    for (QuestionChild questionChild : questionChildThisTitlePidList) {
+                        examPageUserQuestionChild = BeanUtil.copyProperties(questionChild, ExamPageUserQuestionChild.class);
+                        examPageUserQuestionChild.setId(null);
+                        examPageUserQuestionChild.setUserId(userId);
+                        examPageUserQuestionChild.setExamId(examId);
+                        examPageUserQuestionChild.setScore(scoreChild);
+                        examPageUserQuestionChild.setPid(examPageUserQuestionFormTitle.getId());
+                        examPageUserQuestionChild.setQuestionId(examQuestionId);
+                        examPageUserQuestionChildList.add(examPageUserQuestionChild);
+                    }
+                }
             }
         }
         return examPageUserQuestionChildList;
