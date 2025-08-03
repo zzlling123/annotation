@@ -81,4 +81,7 @@ public class QuestionParam implements InputConverter<Question> {
 
     @ApiModelProperty("练习题班级ID列表")
     private String exerciseClassIds;
+
+    @ApiModelProperty("是否题目单0否1是")
+    private Integer isForm;
 }
