@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.xinkao.erp.common.model.entity.DataEntity;
 import java.time.LocalDateTime;
+import java.util.Date;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,13 +32,13 @@ public class Exam extends DataEntity {
      * 考试开始时间
      */
     @TableField("start_time")
-    private LocalDateTime startTime;
+    private Date startTime;
 
     /**
      * 考试结束时间
      */
     @TableField("end_time")
-    private LocalDateTime endTime;
+    private Date endTime;
 
     /**
      * 考试时长（分钟）
