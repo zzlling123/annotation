@@ -37,4 +37,7 @@ public class LoginUserVo implements OutputConverter<LoginUserVo, User>{
 
     @ApiModelProperty("是否启用0否1是")
     private Integer state;
+
+    @ApiModelProperty("身份证号")
+    private String idCard;
 }
