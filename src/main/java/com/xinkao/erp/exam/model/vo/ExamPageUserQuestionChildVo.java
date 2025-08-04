@@ -90,4 +90,7 @@ public class ExamPageUserQuestionChildVo {
 	@ApiModelProperty("用户答案")
 	private String userAnswer;
 
+	@ApiModelProperty("正确答案")
+	private String rightAnswer;
+
 }

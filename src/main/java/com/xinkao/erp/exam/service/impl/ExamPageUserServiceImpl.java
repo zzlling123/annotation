@@ -491,9 +491,18 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                         .list()
                         .stream()
                         .collect(Collectors.groupingBy(ExamPageUserQuestionChild::getPid));
+                Map<String, ExamPageUserChildAnswer> examPageUserChildAnswerMap = examPageUserChildAnswerService.lambdaQuery()
+                        .eq(ExamPageUserChildAnswer::getQuestionId,examPageUserQuestionVo.getId())
+                        .list()
+                        .stream()
+                        .collect(Collectors.toMap(ExamPageUserChildAnswer::getQuestionChildId, s->s));
                 for (ExamPageUserQuestionFormTitle examPageUserQuestionFormTitle : examPageUserQuestionFormTitleList) {
                     ExamPageUserQuestionFormTitleVo examPageUserQuestionFormTitleVo = BeanUtil.copyProperties(examPageUserQuestionFormTitle, ExamPageUserQuestionFormTitleVo.class);
                     List<ExamPageUserQuestionChildVo> examPageUserQuestionChildVoList = BeanUtil.copyToList(examPageUserQuestionChildMap.get(examPageUserQuestionFormTitle.getId()), ExamPageUserQuestionChildVo.class);
+                    for (ExamPageUserQuestionChildVo examPageUserQuestionChildVo : examPageUserQuestionChildVoList) {
+                        examPageUserQuestionChildVo.setUserAnswer(examPageUserChildAnswerMap.get(examPageUserQuestionChildVo.getId()) == null ? "" : examPageUserChildAnswerMap.get(examPageUserQuestionChildVo.getId()).getUserAnswer());
+                        examPageUserQuestionChildVo.setRightAnswer(examPageUserChildAnswerMap.get(examPageUserQuestionChildVo.getId()) == null ? "" : examPageUserChildAnswerMap.get(examPageUserQuestionChildVo.getId()).getRightAnswer());
+                    }
                     examPageUserQuestionFormTitleVo.setExamPageUserQuestionChildVoList(examPageUserQuestionChildVoList);
                     examPageUserQuestionFormTitleVoList.add(examPageUserQuestionFormTitleVo);
                 }
