@@ -83,11 +83,14 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
         LoginUser loginUser = redisUtil.getInfoByToken();
         Integer userId = loginUser.getUser().getId();
         String examId = examUserQuery.getExamId();
+        Exam exam = examService.getById(examId);
         ExamPageUser examPageUser = lambdaQuery().eq(ExamPageUser::getExamId, examId)
                 .eq(ExamPageUser::getUserId, userId)
                 .one();
         ExamUserVo vo = BeanUtil.copyProperties(examPageUser, ExamUserVo.class);
         vo.setExamName(examService.getById(vo.getExamId()).getExamName());
+        vo.setStartTime(exam.getStartTime());
+        vo.setEndTime(exam.getEndTime());
         //插入题目详情
         LambdaQueryWrapper<ExamPageUserQuestion> examPageUserQuestionLambdaQueryWrapper = new LambdaQueryWrapper<>();
         examPageUserQuestionLambdaQueryWrapper.eq(ExamPageUserQuestion::getExamId, examId)
@@ -137,9 +140,17 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                     .list()
                     .stream()
                     .collect(Collectors.groupingBy(ExamPageUserQuestionChild::getPid));
+            Map<String, ExamPageUserChildAnswer> examPageUserChildAnswerMap = examPageUserChildAnswerService.lambdaQuery()
+                    .eq(ExamPageUserChildAnswer::getQuestionId,id)
+                    .list()
+                    .stream()
+                    .collect(Collectors.toMap(ExamPageUserChildAnswer::getQuestionChildId, s->s));
             for (ExamPageUserQuestionFormTitle examPageUserQuestionFormTitle : examPageUserQuestionFormTitleList) {
                 ExamPageUserQuestionFormTitleVo examPageUserQuestionFormTitleVo = BeanUtil.copyProperties(examPageUserQuestionFormTitle, ExamPageUserQuestionFormTitleVo.class);
                 List<ExamPageUserQuestionChildVo> examPageUserQuestionChildVoList = BeanUtil.copyToList(examPageUserQuestionChildMap.get(examPageUserQuestionFormTitle.getId()), ExamPageUserQuestionChildVo.class);
+                for (ExamPageUserQuestionChildVo examPageUserQuestionChildVo : examPageUserQuestionChildVoList) {
+                    examPageUserQuestionChildVo.setUserAnswer(examPageUserChildAnswerMap.get(examPageUserQuestionChildVo.getId()) == null ? "" : examPageUserChildAnswerMap.get(examPageUserQuestionChildVo.getId()).getUserAnswer());
+                }
                 examPageUserQuestionFormTitleVo.setExamPageUserQuestionChildVoList(examPageUserQuestionChildVoList);
                 examPageUserQuestionFormTitleVoList.add(examPageUserQuestionFormTitleVo);
             }
@@ -480,9 +491,18 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                         .list()
                         .stream()
                         .collect(Collectors.groupingBy(ExamPageUserQuestionChild::getPid));
+                Map<String, ExamPageUserChildAnswer> examPageUserChildAnswerMap = examPageUserChildAnswerService.lambdaQuery()
+                        .eq(ExamPageUserChildAnswer::getQuestionId,examPageUserQuestionVo.getId())
+                        .list()
+                        .stream()
+                        .collect(Collectors.toMap(ExamPageUserChildAnswer::getQuestionChildId, s->s));
                 for (ExamPageUserQuestionFormTitle examPageUserQuestionFormTitle : examPageUserQuestionFormTitleList) {
                     ExamPageUserQuestionFormTitleVo examPageUserQuestionFormTitleVo = BeanUtil.copyProperties(examPageUserQuestionFormTitle, ExamPageUserQuestionFormTitleVo.class);
                     List<ExamPageUserQuestionChildVo> examPageUserQuestionChildVoList = BeanUtil.copyToList(examPageUserQuestionChildMap.get(examPageUserQuestionFormTitle.getId()), ExamPageUserQuestionChildVo.class);
+                    for (ExamPageUserQuestionChildVo examPageUserQuestionChildVo : examPageUserQuestionChildVoList) {
+                        examPageUserQuestionChildVo.setUserAnswer(examPageUserChildAnswerMap.get(examPageUserQuestionChildVo.getId()) == null ? "" : examPageUserChildAnswerMap.get(examPageUserQuestionChildVo.getId()).getUserAnswer());
+                        examPageUserQuestionChildVo.setRightAnswer(examPageUserChildAnswerMap.get(examPageUserQuestionChildVo.getId()) == null ? "" : examPageUserChildAnswerMap.get(examPageUserQuestionChildVo.getId()).getRightAnswer());
+                    }
                     examPageUserQuestionFormTitleVo.setExamPageUserQuestionChildVoList(examPageUserQuestionChildVoList);
                     examPageUserQuestionFormTitleVoList.add(examPageUserQuestionFormTitleVo);
                 }

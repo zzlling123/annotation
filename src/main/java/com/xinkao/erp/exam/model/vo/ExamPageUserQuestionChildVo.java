@@ -84,4 +84,13 @@ public class ExamPageUserQuestionChildVo {
 	@ApiModelProperty("排序")
 	private Integer sort;
 
+	/**
+	 * 用户答案
+	 */
+	@ApiModelProperty("用户答案")
+	private String userAnswer;
+
+	@ApiModelProperty("正确答案")
+	private String rightAnswer;
+
 }

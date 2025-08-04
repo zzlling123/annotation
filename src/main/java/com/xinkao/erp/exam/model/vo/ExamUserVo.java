@@ -1,10 +1,13 @@
 package com.xinkao.erp.exam.model.vo;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -64,6 +67,20 @@ public class ExamUserVo {
      */
     @ApiModelProperty("考试状态: 0-待发布 10-未开始 20-考试进行中 21-考试已结束")
     private Integer state;
+
+    /**
+     * 考试开始时间
+     */
+    @ApiModelProperty("考试开始时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
+    private Date startTime;
+
+    /**
+     * 考试结束时间
+     */
+    @ApiModelProperty("考试结束时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
+    private Date endTime;
 
     /**
      * 题目列表
