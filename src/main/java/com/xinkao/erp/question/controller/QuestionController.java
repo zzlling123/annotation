@@ -1,6 +1,7 @@
 package com.xinkao.erp.question.controller;
 
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.common.annotation.DataScope;
 import com.xinkao.erp.common.annotation.Log;
@@ -15,6 +16,7 @@ import com.xinkao.erp.question.entity.Label;
 import com.xinkao.erp.question.entity.Question;
 import com.xinkao.erp.question.entity.QuestionLabel;
 import com.xinkao.erp.question.entity.QuestionType;
+import com.xinkao.erp.question.excel.QuestionImportModel;
 import com.xinkao.erp.question.param.QuestionChildParam;
 import com.xinkao.erp.question.param.QuestionFormTitleParam;
 import com.xinkao.erp.question.param.QuestionParam;
@@ -25,18 +27,23 @@ import com.xinkao.erp.question.service.QuestionLabelService;
 import com.xinkao.erp.question.service.QuestionService;
 import com.xinkao.erp.question.service.QuestionTypeService;
 import com.xinkao.erp.question.vo.QuestionFormVo;
+import com.xinkao.erp.question.vo.QuestionImportResultVO;
 import com.xinkao.erp.question.vo.QuestionInfoVo;
 import com.xinkao.erp.question.vo.QuestionPageVo;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -59,6 +66,8 @@ public class    QuestionController extends BaseController {
     private QuestionTypeService questionTypeService;
     @Resource
     private LabelService labelService;
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
     @Value("${path.fileUrl}")
     private String fileUrl;
     @Value("${ipurl.url}")
@@ -325,5 +334,63 @@ public class    QuestionController extends BaseController {
     @ApiOperation("获根据题目ID取题目单详情")
     public BaseResponse<List<QuestionFormVo>> getQuestionFormInfo(@PathVariable Integer id){
         return questionService.getQuestionFormInfo(id);
+    }
+
+    /**
+     * 批量导入题目
+     */
+    @ApiOperation(value = "批量导入题目")
+    @PostMapping("/import")
+    public BaseResponse<QuestionImportResultVO> importQuestions(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return BaseResponse.fail("请选择要导入的文件");
+        }
+
+        String fileName = file.getOriginalFilename();
+        if (fileName == null || (!fileName.endsWith(".xlsx") && !fileName.endsWith(".xls"))) {
+            return BaseResponse.fail("请上传Excel文件");
+        }
+
+        try {
+            QuestionImportResultVO result = questionService.importQuestions(file);
+
+            if (result.getFailCount() > 0) {
+                return BaseResponse.other("导入完成，但存在错误数据", result);
+            } else {
+                return BaseResponse.ok("导入成功", result);
+            }
+        } catch (Exception e) {
+            return BaseResponse.fail("导入失败：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 下载错误数据
+     */
+    @ApiOperation(value = "下载导入错误数据")
+    @GetMapping("/downloadError/{token}")
+    public void downloadErrorData(@PathVariable String token, HttpServletResponse response) {
+        try {
+            Object errorData = redisTemplate.opsForValue().get("question_import_error:" + token);
+            if (errorData == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+
+            @SuppressWarnings("unchecked")
+            List<QuestionImportModel> errorList = (List<QuestionImportModel>) errorData;
+
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            response.setCharacterEncoding("utf-8");
+            String fileName = URLEncoder.encode("题目导入错误数据", "UTF-8").replaceAll("\\+", "%20");
+            response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
+
+            EasyExcel.write(response.getOutputStream(), QuestionImportModel.class)
+                    .sheet("错误数据")
+                    .doWrite(errorList);
+
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
     }
 }
