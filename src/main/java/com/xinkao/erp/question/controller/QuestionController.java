@@ -364,33 +364,4 @@ public class    QuestionController extends BaseController {
         }
     }
 
-    /**
-     * 下载错误数据
-     */
-    @ApiOperation(value = "下载导入错误数据")
-    @GetMapping("/downloadError/{token}")
-    public void downloadErrorData(@PathVariable String token, HttpServletResponse response) {
-        try {
-            Object errorData = redisTemplate.opsForValue().get("question_import_error:" + token);
-            if (errorData == null) {
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                return;
-            }
-
-            @SuppressWarnings("unchecked")
-            List<QuestionImportModel> errorList = (List<QuestionImportModel>) errorData;
-
-            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-            response.setCharacterEncoding("utf-8");
-            String fileName = URLEncoder.encode("题目导入错误数据", "UTF-8").replaceAll("\\+", "%20");
-            response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
-
-            EasyExcel.write(response.getOutputStream(), QuestionImportModel.class)
-                    .sheet("错误数据")
-                    .doWrite(errorList);
-
-        } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
-    }
 }
