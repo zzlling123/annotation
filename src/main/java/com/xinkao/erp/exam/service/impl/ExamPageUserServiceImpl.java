@@ -357,6 +357,25 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                         allScores += score;
                     }
                 }
+            }else if (600 == examPageUserAnswer.getShape()){
+                //题目单，循环判卷
+                int questionFormScore = 0;
+                //获取所有的子题答案数据
+                List<ExamPageUserChildAnswer> childAnswerList = examPageUserChildAnswerService.lambdaQuery()
+                        .eq(ExamPageUserChildAnswer::getQuestionId,examPageUserAnswer.getQuestionId())
+                        .eq(ExamPageUserChildAnswer::getNeedCorrect,0)
+                        .list();
+                for (ExamPageUserChildAnswer childAnswer : childAnswerList){
+                    if (childAnswer.getRightAnswer().equals(childAnswer.getUserAnswer())){
+                        childAnswer.setUserScore(childAnswer.getScore());
+                        questionFormScore += childAnswer.getUserScore();
+                    }
+                }
+                examPageUserChildAnswerService.updateBatchById(childAnswerList);
+                if (examPageUserAnswer.getNeedCorrect() == 0){
+                    examPageUserAnswer.setUserScore(questionFormScore);
+                    allScores += questionFormScore;
+                }
             }
         }
         //准备更新exam_page_stu表
