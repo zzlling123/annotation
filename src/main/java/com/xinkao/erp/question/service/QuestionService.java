@@ -10,10 +10,8 @@ import com.xinkao.erp.question.param.QuestionChildParam;
 import com.xinkao.erp.question.param.QuestionFormTitleParam;
 import com.xinkao.erp.question.param.QuestionParam;
 import com.xinkao.erp.question.query.QuestionQuery;
-import com.xinkao.erp.question.vo.QuestionExercisePageVo;
-import com.xinkao.erp.question.vo.QuestionFormVo;
-import com.xinkao.erp.question.vo.QuestionInfoVo;
-import com.xinkao.erp.question.vo.QuestionPageVo;
+import com.xinkao.erp.question.vo.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -107,4 +105,9 @@ public interface QuestionService extends BaseService<Question> {
     void selfSave();
 
     BaseResponse<List<QuestionFormVo>> getQuestionFormInfo(Integer questionId);
+
+    /**
+     * 批量导入题目
+     */
+    QuestionImportResultVO importQuestions(MultipartFile file);
 }
