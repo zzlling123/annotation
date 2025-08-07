@@ -3,6 +3,7 @@ package com.xinkao.erp.exam.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.exam.dto.ExamExpertDTO;
+import com.xinkao.erp.exam.dto.BatchExamExpertDTO;
 import com.xinkao.erp.exam.entity.ExamExpert;
 import com.xinkao.erp.exam.service.ExamExpertService;
 import com.xinkao.erp.exam.service.ExamExpertAssignmentService;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * 考试和专家模块控制器
@@ -61,6 +63,50 @@ public class ExamExpertController {
             return result ? BaseResponse.ok("新增成功") : BaseResponse.fail("新增失败");
         } catch (Exception e) {
             return BaseResponse.fail("新增失败：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 批量新增考试专家关联
+     */
+    @PostMapping("/batch-add")
+    @ApiOperation("批量新增考试专家关联")
+    public BaseResponse<?> batchAddExamExperts(@RequestBody BatchExamExpertDTO batchExamExpertDTO) {
+        try {
+            if (batchExamExpertDTO.getExamId() == null) {
+                return BaseResponse.fail("考试ID不能为空");
+            }
+            
+            if (batchExamExpertDTO.getExpertIds() == null || batchExamExpertDTO.getExpertIds().isEmpty()) {
+                return BaseResponse.fail("专家ID列表不能为空");
+            }
+            
+            // 检查是否已存在相同的关联
+            List<ExamExpert> existingExperts = examExpertService.lambdaQuery()
+                    .eq(ExamExpert::getExamId, batchExamExpertDTO.getExamId())
+                    .in(ExamExpert::getExpertId, batchExamExpertDTO.getExpertIds())
+                    .list();
+            
+            if (!existingExperts.isEmpty()) {
+                List<Integer> existingExpertIds = existingExperts.stream()
+                        .map(ExamExpert::getExpertId)
+                        .collect(java.util.stream.Collectors.toList());
+                return BaseResponse.fail("以下专家已关联该考试：" + existingExpertIds);
+            }
+            
+            // 批量创建关联
+            List<ExamExpert> examExperts = new ArrayList<>();
+            for (Integer expertId : batchExamExpertDTO.getExpertIds()) {
+                ExamExpert examExpert = new ExamExpert();
+                examExpert.setExamId(batchExamExpertDTO.getExamId());
+                examExpert.setExpertId(expertId);
+                examExperts.add(examExpert);
+            }
+            
+            boolean result = examExpertService.saveBatch(examExperts);
+            return result ? BaseResponse.ok("批量新增成功，共添加 " + examExperts.size() + " 个专家") : BaseResponse.fail("批量新增失败");
+        } catch (Exception e) {
+            return BaseResponse.fail("批量新增失败：" + e.getMessage());
         }
     }
 

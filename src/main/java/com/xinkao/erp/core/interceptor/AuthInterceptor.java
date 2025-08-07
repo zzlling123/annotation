@@ -55,6 +55,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 //        }
         String mainServerUrl = sysConfigService.getConfigByKey("device.authentication.server");
         if (mainServerUrl == null || mainServerUrl.isEmpty()) {
+            System.out.println("未配置认证服务器地址");
             response.setStatus(500);
             response.getWriter().write("未配置认证服务器地址");
             return false;
@@ -68,6 +69,8 @@ public class AuthInterceptor implements HandlerInterceptor {
         boolean hasDevice = responseBody != null && responseBody.getData() instanceof Boolean && (Boolean) responseBody.getData();
 
         if (!hasDevice) {
+            System.out.println("未找到该MAC地址的设备");
+            System.out.println("设备未注册，请联系管理员添加设备");
             // 没有找到该MAC地址的设备，返回错误
             response.setStatus(403);
             //修改返回前端乱码
