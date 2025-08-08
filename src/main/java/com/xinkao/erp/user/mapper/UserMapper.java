@@ -34,4 +34,8 @@ public interface UserMapper extends BaseMapper<User> {
 	List<ExamAndPracticeBarVo> getExamAndPracticeBarForExam(ExamAndPracticeBarQuery query,Integer userId);
 
 	List<ExamAndPracticePieVo> getExamAndPracticePieForExam(ExamAndPracticeBarQuery query, Integer userId);
+
+	List<ExamAndPracticeBarVo> getPracticeBarForExercise(ExamAndPracticeBarQuery query,Integer userId);
+
+	List<ExamAndPracticePieVo> getPracticePieForExercise(ExamAndPracticeBarQuery query, Integer userId);
 }

@@ -214,49 +214,49 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	@Override
 	public BaseResponse<List<ExamAndPracticeBarVo>> getExamAndPracticeBar(ExamAndPracticeBarQuery query){
 		LoginUser loginUser = redisUtil.getInfoByToken();
+		List<ExamAndPracticeBarVo> examAndPracticeBarVoList;
 		if (query.getQueryType().equals("1")){
-			List<ExamAndPracticeBarVo> examAndPracticeBarVoList = new ArrayList<>();
-			return BaseResponse.ok(examAndPracticeBarVoList);
+			examAndPracticeBarVoList = userMapper.getPracticeBarForExercise(query,loginUser.getUser().getId());
 		}else {
 			//考试
-			List<ExamAndPracticeBarVo> examAndPracticeBarVoList = userMapper.getExamAndPracticeBarForExam(query,loginUser.getUser().getId());
-			for (ExamAndPracticeBarVo examAndPracticeBarVo : examAndPracticeBarVoList) {
-				//赋值百分比
-				if ("0".equals(examAndPracticeBarVo.getUserScore()) || "0".equals(examAndPracticeBarVo.getScore())){
-					examAndPracticeBarVo.setScoreRate("0.00");
-				}else{
-					examAndPracticeBarVo.setScoreRate(NumberUtil.round(new BigDecimal(examAndPracticeBarVo.getUserScore()).divide(new BigDecimal(examAndPracticeBarVo.getScore()),2,BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100)),2).toString());
-				}
-			}
-			return BaseResponse.ok(examAndPracticeBarVoList);
+			examAndPracticeBarVoList = userMapper.getExamAndPracticeBarForExam(query,loginUser.getUser().getId());
 		}
+		for (ExamAndPracticeBarVo examAndPracticeBarVo : examAndPracticeBarVoList) {
+			//赋值百分比
+			if ("0".equals(examAndPracticeBarVo.getUserScore()) || "0".equals(examAndPracticeBarVo.getScore())){
+				examAndPracticeBarVo.setScoreRate("0.00");
+			}else{
+				examAndPracticeBarVo.setScoreRate(NumberUtil.round(new BigDecimal(examAndPracticeBarVo.getUserScore()).divide(new BigDecimal(examAndPracticeBarVo.getScore()),2,BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100)),2).toString());
+			}
+		}
+		return BaseResponse.ok(examAndPracticeBarVoList);
 	}
 
 	@Override
 	public BaseResponse<List<ExamAndPracticePieAllVo>> getExamAndPracticePie(ExamAndPracticeBarQuery query){
 		LoginUser loginUser = redisUtil.getInfoByToken();
+		List<ExamAndPracticePieVo> examAndPracticePieVoList;
 		if (query.getQueryType().equals("1")){
-			List<ExamAndPracticePieAllVo> voList = new ArrayList<>();
-			return BaseResponse.ok(voList);
+			examAndPracticePieVoList = userMapper.getPracticePieForExercise(query,loginUser.getUser().getId());
 		}else {
 			//考试
-			List<ExamAndPracticePieVo> examAndPracticePieVoList = userMapper.getExamAndPracticePieForExam(query,loginUser.getUser().getId());
-			List<ExamAndPracticePieAllVo> allVoList = new ArrayList<>();
-			int allNum = 0;
-			for (ExamAndPracticePieVo examAndPracticePieVo : examAndPracticePieVoList) {
-				ExamAndPracticePieAllVo vo = new ExamAndPracticePieAllVo();
-				allNum += Integer.parseInt(examAndPracticePieVo.getTeaNum());
-				allNum = allNum - Integer.parseInt(examAndPracticePieVo.getUserTeaNum());
-				vo.setTypeName(examAndPracticePieVo.getTypeName());
-				vo.setUserTeaNum(examAndPracticePieVo.getUserTeaNum());
-				allVoList.add(vo);
-			}
-			ExamAndPracticePieAllVo vo = new ExamAndPracticePieAllVo();
-			vo.setTypeName("未完成");
-			vo.setUserTeaNum(Integer.toString(allNum));
-			allVoList.add(vo);
-			return BaseResponse.ok(allVoList);
+			examAndPracticePieVoList = userMapper.getExamAndPracticePieForExam(query,loginUser.getUser().getId());
 		}
+		List<ExamAndPracticePieAllVo> allVoList = new ArrayList<>();
+		int allNum = 0;
+		for (ExamAndPracticePieVo examAndPracticePieVo : examAndPracticePieVoList) {
+			ExamAndPracticePieAllVo vo = new ExamAndPracticePieAllVo();
+			allNum += Integer.parseInt(examAndPracticePieVo.getTeaNum());
+			allNum = allNum - Integer.parseInt(examAndPracticePieVo.getUserTeaNum());
+			vo.setTypeName(examAndPracticePieVo.getTypeName());
+			vo.setUserTeaNum(examAndPracticePieVo.getUserTeaNum());
+			allVoList.add(vo);
+		}
+		ExamAndPracticePieAllVo vo = new ExamAndPracticePieAllVo();
+		vo.setTypeName("未完成");
+		vo.setUserTeaNum(Integer.toString(allNum));
+		allVoList.add(vo);
+		return BaseResponse.ok(allVoList);
 	}
 
 
