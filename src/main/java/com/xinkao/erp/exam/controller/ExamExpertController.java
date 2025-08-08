@@ -130,6 +130,40 @@ public class ExamExpertController {
     }
 
     /**
+     * 批量删除考试专家关联
+     */
+    @DeleteMapping("/batch-delete")
+    @ApiOperation("批量删除考试专家关联")
+    public BaseResponse<?> batchDeleteExamExperts(@RequestBody BatchExamExpertDTO batchExamExpertDTO) {
+        try {
+            if (batchExamExpertDTO.getExamId() == null) {
+                return BaseResponse.fail("考试ID不能为空");
+            }
+            
+            if (batchExamExpertDTO.getExpertIds() == null || batchExamExpertDTO.getExpertIds().isEmpty()) {
+                return BaseResponse.fail("专家ID列表不能为空");
+            }
+            
+            // 构建删除条件
+            LambdaQueryWrapper<ExamExpert> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(ExamExpert::getExamId, batchExamExpertDTO.getExamId())
+                   .in(ExamExpert::getExpertId, batchExamExpertDTO.getExpertIds());
+            
+            // 先查询要删除的记录数量
+            long count = examExpertService.count(wrapper);
+            if (count == 0) {
+                return BaseResponse.fail("未找到要删除的关联记录");
+            }
+            
+            // 执行批量删除
+            boolean result = examExpertService.remove(wrapper);
+            return result ? BaseResponse.ok("批量删除成功，共删除 " + count + " 条关联记录") : BaseResponse.fail("批量删除失败");
+        } catch (Exception e) {
+            return BaseResponse.fail("批量删除失败：" + e.getMessage());
+        }
+    }
+
+    /**
      * 更新考试专家关联
      */
     @PutMapping("/update")
