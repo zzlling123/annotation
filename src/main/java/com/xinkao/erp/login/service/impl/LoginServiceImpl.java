@@ -52,7 +52,7 @@ public class LoginServiceImpl extends LoginCommonServiceImpl implements LoginSer
 	public BaseResponse<LoginUserVo> login(ApLoginParam loginParam, HttpServletRequest request) {
 		String userCode = redisUtil.get(loginParam.getUuid());
 		if (!StrUtil.equalsIgnoreCase(loginParam.getCode(), userCode)){
-			return BaseResponse.fail("验证码不正确！");
+//			return BaseResponse.fail("验证码不正确！");
 		}
 		String username = loginParam.getUsername().trim();
 		String password = loginParam.getPassword().trim();
@@ -72,7 +72,7 @@ public class LoginServiceImpl extends LoginCommonServiceImpl implements LoginSer
 		byte[] key = new byte[]{119, -75, -15, -122, -112, 119, 116, 111, -20, 47, -11, -93, 55, -66, -83, -94};
 		//构建
 		SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, key);
-		String encryptHex = "5aa6323b6c4e165e183641cb69d97a70";
+		String encryptHex = "0eb0c46ccbb8560fbf4032256712042f0333bc3d5a219a72d7e3d030abeff550";
 		//解密为字符串
 		String decryptStr = aes.decryptStr(encryptHex, CharsetUtil.CHARSET_UTF_8);
 		Date expireDate = DateUtil.parse(decryptStr);
