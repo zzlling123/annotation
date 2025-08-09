@@ -392,4 +392,40 @@ public class    QuestionController extends BaseController {
         }
     }
 
+    @PrimaryDataSource
+    @GetMapping("/titleIntroductionTemplate/common")
+    @ApiOperation("下载普通题目批量导入模板.xlsx")
+    public void downloadCommonTemplate(HttpServletResponse response) throws IOException {
+        File baseDir = new File(System.getProperty("user.dir"), "titleIntroductionTemplate");
+        File file = new File(baseDir, "普通题目批量导入模板.xlsx");
+        if (!file.exists() || !file.isFile()) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "模板不存在");
+            return;
+        }
+        writeFile(response, file, "普通题目批量导入模板.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    }
+
+    @PrimaryDataSource
+    @GetMapping("/titleIntroductionTemplate/form")
+    @ApiOperation("下载题目单.zip")
+    public void downloadFormTemplate(HttpServletResponse response) throws IOException {
+        File baseDir = new File(System.getProperty("user.dir"), "titleIntroductionTemplate");
+        File file = new File(baseDir, "题目单.zip");
+        if (!file.exists() || !file.isFile()) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "模板不存在");
+            return;
+        }
+        writeFile(response, file, "题目单.zip", "application/zip");
+    }
+
+    private void writeFile(HttpServletResponse response, File file, String downloadName, String contentType) throws IOException {
+        response.reset();
+        response.setContentType(contentType);
+        String encoded = URLEncoder.encode(downloadName, "UTF-8").replaceAll("\\+", "%20");
+        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + encoded);
+        response.setHeader("Content-Length", String.valueOf(file.length()));
+        java.nio.file.Files.copy(file.toPath(), response.getOutputStream());
+        response.flushBuffer();
+    }
+
 }
