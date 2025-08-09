@@ -20,6 +20,7 @@ import com.xinkao.erp.exam.vo.ExamPageVo;
 import com.xinkao.erp.manage.entity.ClassInfo;
 import com.xinkao.erp.manage.service.ClassInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,6 +53,7 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
     private ExamPageSetTypeService examPageSetTypeService;
     @Autowired
     private ExamPageSetService examPageSetService;
+    @Lazy
     @Resource
     private ExamExpertAssignmentService examExpertAssignmentService;
 

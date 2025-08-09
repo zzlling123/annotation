@@ -57,8 +57,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	private UserMapper userMapper;
 	@Autowired
 	private UserOptLogService userOptLogService;
-	@Autowired
-	private ExamPageUserService examPageUserService;
 	@Value("${resetPassword}")
 	private String resetPassword;
 	@Autowired
