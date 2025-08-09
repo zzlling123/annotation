@@ -91,7 +91,7 @@
 	</select>
 
 	<select id="getPracticeBarForExercise" resultType="com.xinkao.erp.user.vo.ExamAndPracticeBarVo">
-		SELECT qt.id,qt.type_name,IF(SUM(ea.score) is null,0,SUM(ea.score)) score,IF(SUM(ea.user_score) is null,0,SUM(ea.user_score)) userScore
+		SELECT qt.id type,qt.type_name,IF(SUM(ea.score) is null,0,SUM(ea.score)) userScore,IF(SUM(ea.question_score) is null,0,SUM(ea.question_score)) score
 		FROM q_question_type qt
 		LEFT JOIN `exercise_records` ea ON qt.id = ea.module_id and user_id = #{userId} and ea.completion_status = 1
 		<if test="query.startTime != null and query.startTime != ''">

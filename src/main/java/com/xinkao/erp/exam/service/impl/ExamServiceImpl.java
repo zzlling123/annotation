@@ -86,6 +86,11 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
         detailVo.setClassList(classList);
         //补充试卷设置
         detailVo.setExamPageSetTypeVoList(examPageSetTypeService.lambdaQuery().eq(ExamPageSetType::getExamId, id).list());
+        //如果来源为社保局，则补充专家列表
+        if (exam.getSymbol() == 1) {
+            List<ExamExpert> examExpertList = examExpertService.lambdaQuery().eq(ExamExpert::getExamId, id).list();
+            detailVo.setExpertIds(examExpertList.stream().map(ExamExpert::getExpertId).map(String::valueOf).collect(Collectors.joining(",")));
+        }
         return detailVo;
     }
 
