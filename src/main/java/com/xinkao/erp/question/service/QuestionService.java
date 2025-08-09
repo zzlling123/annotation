@@ -13,6 +13,7 @@ import com.xinkao.erp.question.query.QuestionQuery;
 import com.xinkao.erp.question.vo.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -110,4 +111,9 @@ public interface QuestionService extends BaseService<Question> {
      * 批量导入题目
      */
     QuestionImportResultVO importQuestions(MultipartFile file);
+
+    /**
+     * 批量导入试题单
+     */
+    QuestionImportResultVO importQuestionFormZip(MultipartFile file) throws IOException;
 }
