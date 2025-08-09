@@ -858,7 +858,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
             result.setSuccessCount(vr.success);
             result.setFailCount(vr.total - vr.success);
             result.setErrorMessages(vr.errors);
-            // 校验通过则进行分组（一个题目单 + 其子题 为一组），仅构建不落库
+            // 校验通过则进行分组（一个题目单 + 其子题 为一组）
             if (vr.errors.isEmpty()) {
                 List<QFormGroup> groups = groupQuestionForms(rows);
 
@@ -915,30 +915,6 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         } finally {
             deleteDirectoryQuietly(tempDir);
         }
-    }
-
-
-    // 批量保存组内的二级标题到 q_question_form_title（pid=questionId）
-    private List<QuestionFormTitle> persistFormTitles(Integer questionId, QFormGroup group, List<String> errors) {
-        if (group == null || group.rows == null || group.rows.isEmpty()) return Collections.emptyList();
-        List<QuestionFormTitle> saved = new ArrayList<>();
-        for (RowItems ri : group.rows) {
-            if (ri.titles == null || ri.titles.isEmpty()) continue;
-            for (TitleItem t : ri.titles) {
-                if (t == null || StrUtil.isBlank(t.title)) continue;
-                QuestionFormTitle e = new QuestionFormTitle();
-                e.setPid(questionId);
-                e.setQuestion(t.title);
-                if (t.sort != null) e.setSort(t.sort);
-                boolean ok = questionFormTitleService.save(e);
-                if (ok && e.getId() != null) {
-                    saved.add(e);
-                } else {
-                    if (errors != null) errors.add("第" + group.headRowNum + "行[题目单]：二级标题保存失败 - " + t.title);
-                }
-            }
-        }
-        return saved;
     }
 
     // 逐条保存子标题，并将同一行解析出的答案保存到 q_question_child
@@ -1394,7 +1370,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
     }
 
     // ================= 仅保存题目单头部(q_question)并返回ID =================
-    // 说明：不处理任何子项/文件；你可在后续步骤调用此方法拿到 questionId
+    // 说明：不处理任何子项/文件；在后续步骤调用此方法拿到 questionId
     private Integer persistQuestionHead(Head h, List<String> errors, int rowNum) {
         if (h == null) { errors.add("第"+rowNum+"行[题目单]：head 为空"); return null; }
         Question q = new Question();
