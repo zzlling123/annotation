@@ -366,7 +366,7 @@ public class    QuestionController extends BaseController {
 
 
     @PrimaryDataSource
-    @PostMapping("/form/import-zip-v2")
+    @PostMapping("/form/import-zip")
     @ApiOperation("题目单导入（V2：多Sheet，无分隔符）")
     public BaseResponse<QuestionImportResultVO> importQuestionFormZipV2(@RequestParam("file") MultipartFile file) {
         if (file == null || file.isEmpty()) {
