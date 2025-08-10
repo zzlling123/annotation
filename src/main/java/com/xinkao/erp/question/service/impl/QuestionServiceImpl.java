@@ -828,198 +828,198 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
     }
 
 
-    /**
-     * 题目单的批量导入
-     * @param file
-     * @return
-     */
-    @Override
-    public QuestionImportResultVO importQuestionFormZip(MultipartFile file) throws IOException {
-        QuestionImportResultVO result = new QuestionImportResultVO();
-        List<String> errors = new ArrayList<>();
-        Path tempDir = Files.createTempDirectory("qform_zip_");
-        try {
-            unzipTo(tempDir, file);
-            // 1) 定位 Excel（递归找第一个 .xlsx/.xls）
-            File excelFile = findFirstExcel(tempDir);
-            if (excelFile == null) {
-                throw new IllegalArgumentException("zip 内未找到 Excel 文件（.xlsx/.xls）");
-            }
+//    /**
+//     * 题目单的批量导入
+//     * @param file
+//     * @return
+//     */
+//    @Override
+//    public QuestionImportResultVO importQuestionFormZip(MultipartFile file) throws IOException {
+//        QuestionImportResultVO result = new QuestionImportResultVO();
+//        List<String> errors = new ArrayList<>();
+//        Path tempDir = Files.createTempDirectory("qform_zip_");
+//        try {
+//            unzipTo(tempDir, file);
+//            // 1) 定位 Excel（递归找第一个 .xlsx/.xls）
+//            File excelFile = findFirstExcel(tempDir);
+//            if (excelFile == null) {
+//                throw new IllegalArgumentException("zip 内未找到 Excel 文件（.xlsx/.xls）");
+//            }
+//
+//            // 2) 读取为模型行（首个工作表）
+//            List<QuestionFormZipImportModel> rows = EasyExcel
+//                    .read(excelFile)
+//                    .head(QuestionFormZipImportModel.class)
+//                    .sheet()           // 默认第一个 sheet
+//                    .doReadSync();
+//            System.out.println("excel里面的数据："+rows.get(0).getType()+" "+rows.get(0).getQuestionFileRelPath()+" "+rows.get(0).getSymbol()+"子标题："+rows.get(1).getFormTitleItemsRaw());
+//            if (rows == null || rows.isEmpty()) {
+//                throw new IllegalArgumentException("Excel 内容为空");
+//            }
+//            // excelFile 已找到；rows 已读取
+//            ValidationResult vr = validateRows(rows, tempDir, excelFile.getParentFile());
+//            result.setTotalCount(vr.total);
+//            result.setSuccessCount(vr.success);
+//            result.setFailCount(vr.total - vr.success);
+//            result.setErrorMessages(vr.errors);
+//            // 校验通过则进行分组（一个题目单 + 其子题 为一组）
+//            if (vr.errors.isEmpty()) {
+//                List<QFormGroup> groups = groupQuestionForms(rows);
+//
+//                // 构建大小写不敏感索引，便于根据相对路径找文件
+//                Map<String, File> lowerIndex = buildLowercaseIndex(tempDir);
+//                for (QFormGroup g : groups) {
+//                    try {
+//                        // 1) 先上传题干文件/素材，得到访问URL
+//                        Head h = g.head;
+//                        if (h != null) {
+//                            String qFileUrl = null;
+//                            String qMatUrl = null;
+//                            if (StrUtil.isNotBlank(h.questionFileRelPath)) {
+//                                File src = findFileByRelPath(normalizeRelPath(h.questionFileRelPath), excelFile.getParentFile(), tempDir, lowerIndex);
+//                                if (src == null) {
+//                                    result.getErrorMessages().add("第" + g.headRowNum + "行[题目单]：题干文件未找到：" + h.questionFileRelPath);
+//                                    result.setFailCount(result.getFailCount() + 1);
+//                                    continue;
+//                                }
+//                                qFileUrl = saveToFileUrlAndGetAccessUrl(src);
+//                            }
+//                            if (StrUtil.isNotBlank(h.questionMaterialRelPath)) {
+//                                File src2 = findFileByRelPath(normalizeRelPath(h.questionMaterialRelPath), excelFile.getParentFile(), tempDir, lowerIndex);
+//                                if (src2 == null) {
+//                                    result.getErrorMessages().add("第" + g.headRowNum + "行[题目单]：题干素材未找到：" + h.questionMaterialRelPath);
+//                                    result.setFailCount(result.getFailCount() + 1);
+//                                    continue;
+//                                }
+//                                qMatUrl = saveToFileUrlAndGetAccessUrl(src2);
+//                            }
+//                            // 用上传后的访问URL替换原相对路径
+//                            h.questionFileRelPath = qFileUrl;
+//                            h.questionMaterialRelPath = qMatUrl;
+//                        }
+//
+//                        // 2) 保存题目单
+//                        Integer questionId = persistQuestionHead(h, result.getErrorMessages(), g.headRowNum);
+//                        if (questionId == null) {
+//                            result.setFailCount(result.getFailCount() + 1);
+//                            continue;
+//                        }
+//                        System.out.println("保存题目单成功，questionId=" + questionId);
+//                        // 保存该组的二级标题，并同时保存对应的子题答案
+//                        persistFormTitlesAndChildren(questionId, g, excelFile.getParentFile(), tempDir, lowerIndex, result.getErrorMessages());
+//                    } catch (Exception e) {
+//                        result.getErrorMessages().add("第" + g.headRowNum + "行[题目单]：保存失败 - " + e.getMessage());
+//                        result.setFailCount(result.getFailCount() + 1);
+//                        // 不中断，继续下一组
+//                    }
+//                }
+//            }
+//            return result;
+//
+//        } finally {
+//            deleteDirectoryQuietly(tempDir);
+//        }
+//    }
 
-            // 2) 读取为模型行（首个工作表）
-            List<QuestionFormZipImportModel> rows = EasyExcel
-                    .read(excelFile)
-                    .head(QuestionFormZipImportModel.class)
-                    .sheet()           // 默认第一个 sheet
-                    .doReadSync();
-            System.out.println("excel里面的数据："+rows.get(0).getType()+" "+rows.get(0).getQuestionFileRelPath()+" "+rows.get(0).getSymbol()+"子标题："+rows.get(1).getFormTitleItemsRaw());
-            if (rows == null || rows.isEmpty()) {
-                throw new IllegalArgumentException("Excel 内容为空");
-            }
-            // excelFile 已找到；rows 已读取
-            ValidationResult vr = validateRows(rows, tempDir, excelFile.getParentFile());
-            result.setTotalCount(vr.total);
-            result.setSuccessCount(vr.success);
-            result.setFailCount(vr.total - vr.success);
-            result.setErrorMessages(vr.errors);
-            // 校验通过则进行分组（一个题目单 + 其子题 为一组）
-            if (vr.errors.isEmpty()) {
-                List<QFormGroup> groups = groupQuestionForms(rows);
+//    // 逐条保存子标题，并将同一行解析出的答案保存到 q_question_child
+//    private void persistFormTitlesAndChildren(Integer questionId,
+//                                              QFormGroup group,
+//                                              File excelBaseDir,
+//                                              Path zipRoot,
+//                                              Map<String, File> lowerIndex,
+//                                              List<String> errors) {
+//        if (group == null || group.rows == null || group.rows.isEmpty()) return;
+//        for (RowItems ri : group.rows) {
+//            if (ri.titles == null || ri.titles.isEmpty()) continue;
+//            for (TitleItem t : ri.titles) {
+//                if (t == null || StrUtil.isBlank(t.title)) continue;
+//                // 1) 保存子标题
+//                QuestionFormTitle title = new QuestionFormTitle();
+//                title.setPid(questionId);
+//                title.setQuestion(t.title);
+//                if (t.sort != null) title.setSort(t.sort);
+//                boolean ok = questionFormTitleService.save(title);
+//                if (!ok || title.getId() == null) {
+//                    if (errors != null) errors.add("第" + group.headRowNum + "行[题目单]：二级标题保存失败 - " + t.title);
+//                    continue; // 跳过该标题的子题
+//                }
+//                Integer titleId = title.getId();
+//                System.out.println("子标题已保存：id=" + titleId + ", question=" + title.getQuestion() + ", sort=" + title.getSort());
+//
+//                // 2) 保存该行的文本答案到 q_question_child（非文件）
+//                if (ri.textAnswers != null && !ri.textAnswers.isEmpty()) {
+//                    for (TextAnswerItem ta : ri.textAnswers) {
+//                        if (ta == null || StrUtil.isBlank(ta.label)) continue;
+//                        QuestionChild child = new QuestionChild();
+//                        child.setQuestionId(questionId);
+//                        child.setPid(titleId);
+//                        child.setQuestion(ta.label);
+//                        child.setDefaultText(ta.tip);
+//                        child.setIsFile(0);
+//                        child.setAnswer(ta.answer);
+//                        if (ta.sort != null) child.setSort(ta.sort);
+//                        // 可选：状态/可用
+//                        child.setState(1);
+//                        boolean saved = questionChildService.save(child);
+//                        if (!saved) {
+//                            if (errors != null) errors.add("第" + ri.rowNum + "行[子题-文本答案]：保存失败 - " + ta.label);
+//                        }
+//                    }
+//                }
+//
+//                // 3) 保存该行的文件答案：先上传再存URL
+//                if (ri.fileAnswers != null && !ri.fileAnswers.isEmpty()) {
+//                    for (FileAnswerItem fa : ri.fileAnswers) {
+//                        if (fa == null || StrUtil.isBlank(fa.label) || StrUtil.isBlank(fa.fileRelPath)) continue;
+//                        try {
+//                            File src = findFileByRelPath(normalizeRelPath(fa.fileRelPath), excelBaseDir, zipRoot, lowerIndex);
+//                            if (src == null) {
+//                                if (errors != null) errors.add("第" + ri.rowNum + "行[子题-文件答案]：文件未找到 - " + fa.fileRelPath);
+//                                continue;
+//                            }
+//                            String url = saveToFileUrlAndGetAccessUrl(src);
+//                            QuestionChild child = new QuestionChild();
+//                            child.setQuestionId(questionId);
+//                            child.setPid(titleId);
+//                            child.setQuestion(fa.label);
+//                            child.setIsFile(1);
+//                            child.setFileType(fa.fileType);
+//                            child.setAnswer(url);
+//                            if (fa.sort != null) child.setSort(fa.sort);
+//                            child.setState(1);
+//                            boolean saved = questionChildService.save(child);
+//                            if (!saved) {
+//                                if (errors != null) errors.add("第" + ri.rowNum + "行[子题-文件答案]：保存失败 - " + fa.label);
+//                            }
+//                        } catch (Exception ex) {
+//                            if (errors != null) errors.add("第" + ri.rowNum + "行[子题-文件答案]：上传或保存失败 - " + ex.getMessage());
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 
-                // 构建大小写不敏感索引，便于根据相对路径找文件
-                Map<String, File> lowerIndex = buildLowercaseIndex(tempDir);
-                for (QFormGroup g : groups) {
-                    try {
-                        // 1) 先上传题干文件/素材，得到访问URL
-                        Head h = g.head;
-                        if (h != null) {
-                            String qFileUrl = null;
-                            String qMatUrl = null;
-                            if (StrUtil.isNotBlank(h.questionFileRelPath)) {
-                                File src = findFileByRelPath(normalizeRelPath(h.questionFileRelPath), excelFile.getParentFile(), tempDir, lowerIndex);
-                                if (src == null) {
-                                    result.getErrorMessages().add("第" + g.headRowNum + "行[题目单]：题干文件未找到：" + h.questionFileRelPath);
-                                    result.setFailCount(result.getFailCount() + 1);
-                                    continue;
-                                }
-                                qFileUrl = saveToFileUrlAndGetAccessUrl(src);
-                            }
-                            if (StrUtil.isNotBlank(h.questionMaterialRelPath)) {
-                                File src2 = findFileByRelPath(normalizeRelPath(h.questionMaterialRelPath), excelFile.getParentFile(), tempDir, lowerIndex);
-                                if (src2 == null) {
-                                    result.getErrorMessages().add("第" + g.headRowNum + "行[题目单]：题干素材未找到：" + h.questionMaterialRelPath);
-                                    result.setFailCount(result.getFailCount() + 1);
-                                    continue;
-                                }
-                                qMatUrl = saveToFileUrlAndGetAccessUrl(src2);
-                            }
-                            // 用上传后的访问URL替换原相对路径
-                            h.questionFileRelPath = qFileUrl;
-                            h.questionMaterialRelPath = qMatUrl;
-                        }
-
-                        // 2) 保存题目单
-                        Integer questionId = persistQuestionHead(h, result.getErrorMessages(), g.headRowNum);
-                        if (questionId == null) {
-                            result.setFailCount(result.getFailCount() + 1);
-                            continue;
-                        }
-                        System.out.println("保存题目单成功，questionId=" + questionId);
-                        // 保存该组的二级标题，并同时保存对应的子题答案
-                        persistFormTitlesAndChildren(questionId, g, excelFile.getParentFile(), tempDir, lowerIndex, result.getErrorMessages());
-                    } catch (Exception e) {
-                        result.getErrorMessages().add("第" + g.headRowNum + "行[题目单]：保存失败 - " + e.getMessage());
-                        result.setFailCount(result.getFailCount() + 1);
-                        // 不中断，继续下一组
-                    }
-                }
-            }
-            return result;
-
-        } finally {
-            deleteDirectoryQuietly(tempDir);
-        }
-    }
-
-    // 逐条保存子标题，并将同一行解析出的答案保存到 q_question_child
-    private void persistFormTitlesAndChildren(Integer questionId,
-                                              QFormGroup group,
-                                              File excelBaseDir,
-                                              Path zipRoot,
-                                              Map<String, File> lowerIndex,
-                                              List<String> errors) {
-        if (group == null || group.rows == null || group.rows.isEmpty()) return;
-        for (RowItems ri : group.rows) {
-            if (ri.titles == null || ri.titles.isEmpty()) continue;
-            for (TitleItem t : ri.titles) {
-                if (t == null || StrUtil.isBlank(t.title)) continue;
-                // 1) 保存子标题
-                QuestionFormTitle title = new QuestionFormTitle();
-                title.setPid(questionId);
-                title.setQuestion(t.title);
-                if (t.sort != null) title.setSort(t.sort);
-                boolean ok = questionFormTitleService.save(title);
-                if (!ok || title.getId() == null) {
-                    if (errors != null) errors.add("第" + group.headRowNum + "行[题目单]：二级标题保存失败 - " + t.title);
-                    continue; // 跳过该标题的子题
-                }
-                Integer titleId = title.getId();
-                System.out.println("子标题已保存：id=" + titleId + ", question=" + title.getQuestion() + ", sort=" + title.getSort());
-
-                // 2) 保存该行的文本答案到 q_question_child（非文件）
-                if (ri.textAnswers != null && !ri.textAnswers.isEmpty()) {
-                    for (TextAnswerItem ta : ri.textAnswers) {
-                        if (ta == null || StrUtil.isBlank(ta.label)) continue;
-                        QuestionChild child = new QuestionChild();
-                        child.setQuestionId(questionId);
-                        child.setPid(titleId);
-                        child.setQuestion(ta.label);
-                        child.setDefaultText(ta.tip);
-                        child.setIsFile(0);
-                        child.setAnswer(ta.answer);
-                        if (ta.sort != null) child.setSort(ta.sort);
-                        // 可选：状态/可用
-                        child.setState(1);
-                        boolean saved = questionChildService.save(child);
-                        if (!saved) {
-                            if (errors != null) errors.add("第" + ri.rowNum + "行[子题-文本答案]：保存失败 - " + ta.label);
-                        }
-                    }
-                }
-
-                // 3) 保存该行的文件答案：先上传再存URL
-                if (ri.fileAnswers != null && !ri.fileAnswers.isEmpty()) {
-                    for (FileAnswerItem fa : ri.fileAnswers) {
-                        if (fa == null || StrUtil.isBlank(fa.label) || StrUtil.isBlank(fa.fileRelPath)) continue;
-                        try {
-                            File src = findFileByRelPath(normalizeRelPath(fa.fileRelPath), excelBaseDir, zipRoot, lowerIndex);
-                            if (src == null) {
-                                if (errors != null) errors.add("第" + ri.rowNum + "行[子题-文件答案]：文件未找到 - " + fa.fileRelPath);
-                                continue;
-                            }
-                            String url = saveToFileUrlAndGetAccessUrl(src);
-                            QuestionChild child = new QuestionChild();
-                            child.setQuestionId(questionId);
-                            child.setPid(titleId);
-                            child.setQuestion(fa.label);
-                            child.setIsFile(1);
-                            child.setFileType(fa.fileType);
-                            child.setAnswer(url);
-                            if (fa.sort != null) child.setSort(fa.sort);
-                            child.setState(1);
-                            boolean saved = questionChildService.save(child);
-                            if (!saved) {
-                                if (errors != null) errors.add("第" + ri.rowNum + "行[子题-文件答案]：保存失败 - " + fa.label);
-                            }
-                        } catch (Exception ex) {
-                            if (errors != null) errors.add("第" + ri.rowNum + "行[子题-文件答案]：上传或保存失败 - " + ex.getMessage());
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    // 仅保存组内的二级标题（逐条保存，返回子标题ID；不保存答案）
-    private void persistFormTitlesOnly(Integer questionId, QFormGroup group, List<String> errors) {
-        if (group == null || group.rows == null || group.rows.isEmpty()) return;
-        for (RowItems ri : group.rows) {
-            if (ri.titles == null || ri.titles.isEmpty()) continue;
-            for (TitleItem t : ri.titles) {
-                if (t == null || StrUtil.isBlank(t.title)) continue;
-                QuestionFormTitle e = new QuestionFormTitle();
-                e.setPid(questionId);
-                e.setQuestion(t.title);
-                if (t.sort != null) e.setSort(t.sort);
-                boolean ok = questionFormTitleService.save(e);
-                if (ok && e.getId() != null) {
-                    System.out.println("子标题已保存：id=" + e.getId() + ", question=" + e.getQuestion() + ", sort=" + e.getSort());
-                } else {
-                    if (errors != null) errors.add("第" + group.headRowNum + "行[题目单]：二级标题保存失败 - " + t.title);
-                }
-            }
-        }
-    }
+//    // 仅保存组内的二级标题（逐条保存，返回子标题ID；不保存答案）
+//    private void persistFormTitlesOnly(Integer questionId, QFormGroup group, List<String> errors) {
+//        if (group == null || group.rows == null || group.rows.isEmpty()) return;
+//        for (RowItems ri : group.rows) {
+//            if (ri.titles == null || ri.titles.isEmpty()) continue;
+//            for (TitleItem t : ri.titles) {
+//                if (t == null || StrUtil.isBlank(t.title)) continue;
+//                QuestionFormTitle e = new QuestionFormTitle();
+//                e.setPid(questionId);
+//                e.setQuestion(t.title);
+//                if (t.sort != null) e.setSort(t.sort);
+//                boolean ok = questionFormTitleService.save(e);
+//                if (ok && e.getId() != null) {
+//                    System.out.println("子标题已保存：id=" + e.getId() + ", question=" + e.getQuestion() + ", sort=" + e.getSort());
+//                } else {
+//                    if (errors != null) errors.add("第" + group.headRowNum + "行[题目单]：二级标题保存失败 - " + t.title);
+//                }
+//            }
+//        }
+//    }
 
     // 防 Zip Slip 的相对路径规范化
     private String normalizeRelPath(String rel) {
@@ -1051,407 +1051,346 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
             }
         }
     }
-    //递归查找excel
-    private File findFirstExcel(Path root) throws IOException {
-        try (java.util.stream.Stream<Path> s = Files.walk(root)) {
-            return s.filter(p -> !Files.isDirectory(p))
-                    .filter(p -> {
-                        String n = p.getFileName().toString().toLowerCase();
-                        return n.endsWith(".xlsx") || n.endsWith(".xls");
-                    })
-                    .sorted()
-                    .map(Path::toFile)
-                    .findFirst()
-                    .orElse(null);
-        }
-    }
 
-    // 校验结果
-    private static class ValidationResult {
-        int total;
-        int success;
-        List<String> errors = new ArrayList<>();
-    }
+//    // 校验结果
+//    private static class ValidationResult {
+//        int total;
+//        int success;
+//        List<String> errors = new ArrayList<>();
+//    }
 
-    // 入口：校验并生成逐行错误（含行号与位置标识）
-    private ValidationResult validateRows(List<QuestionFormZipImportModel> rows,
-                                          Path zipRoot,
-                                          File excelBaseDir) throws IOException {
-        ValidationResult vr = new ValidationResult();
-        Map<String, File> lowerIndex = buildLowercaseIndex(zipRoot);
-
-        boolean hasCurrentHead = false;
-        for (int i = 0; i < rows.size(); i++) {
-            QuestionFormZipImportModel r = rows.get(i);
-            int rowNum = i + 2; // 数据从第2行
-            if (r == null) continue;
-
-            boolean allBlank = StrUtil.isBlank(r.getType()) && StrUtil.isBlank(r.getTitle())
-                    && StrUtil.isBlank(r.getQuestionFileRelPath()) && StrUtil.isBlank(r.getQuestionMaterialRelPath())
-                    && StrUtil.isBlank(r.getDifficultyLevel()) && StrUtil.isBlank(r.getSymbol()) && StrUtil.isBlank(r.getState())
-                    && StrUtil.isBlank(r.getFormTitleItemsRaw()) && StrUtil.isBlank(r.getFormAnswerItemsRaw()) && StrUtil.isBlank(r.getFormFileAnswerItemsRaw());
-            if (allBlank) continue;
-
-            vr.total++;
-
-            boolean isHead = StrUtil.isNotBlank(r.getTitle());
-            List<String> errs = new ArrayList<>();
-            if (isHead) {
-                hasCurrentHead = true;
-
-                // 头部必填
-                if (StrUtil.isBlank(r.getType())) errs.add("题目分类不能为空；");
-                if (StrUtil.isBlank(r.getTitle())) errs.add("题目标题不能为空；");
-                if (StrUtil.isBlank(r.getDifficultyLevel())) errs.add("难度不能为空；");
-                if (StrUtil.isBlank(r.getSymbol())) errs.add("试题标签不能为空；");
-                if (StrUtil.isBlank(r.getState())) errs.add("状态不能为空；");
-
-                // 题干文件/素材（可选），若填则校验存在性
-                if (StrUtil.isNotBlank(r.getQuestionFileRelPath())) {
-                    String rel = normalizeRelPath(r.getQuestionFileRelPath());
-                    if (findFileByRelPath(rel, excelBaseDir, zipRoot, lowerIndex) == null)
-                        errs.add("题干文件未找到：" + rel + "；");
-                }
-                if (StrUtil.isNotBlank(r.getQuestionMaterialRelPath())) {
-                    String rel = normalizeRelPath(r.getQuestionMaterialRelPath());
-                    if (findFileByRelPath(rel, excelBaseDir, zipRoot, lowerIndex) == null)
-                        errs.add("题干素材未找到：" + rel + "；");
-                }
-
-                // 头部的"新增二级标题"改为可选；若填写则校验格式
-                if (StrUtil.isNotBlank(r.getFormTitleItemsRaw())) {
-                    List<String> groups = splitGroups(r.getFormTitleItemsRaw());
-                    for (int gi = 0; gi < groups.size(); gi++) {
-                        List<String> fs = splitFields(groups.get(gi));
-                        if (fs.size() < 2) { errs.add("题目单-二级标题 第" + (gi+1) + "项格式应为“标题, 排序”；"); continue; }
-                        if (StrUtil.isBlank(fs.get(0))) errs.add("题目单-二级标题 第" + (gi+1) + "项：标题不能为空；");
-                        if (!isInteger(fs.get(1))) errs.add("题目单-二级标题 第" + (gi+1) + "项：排序必须为整数；");
-                    }
-                }
-
-                // 若同行填写了答案列也校验
-                if (StrUtil.isNotBlank(r.getFormAnswerItemsRaw())) {
-                    List<String> groups = splitGroups(r.getFormAnswerItemsRaw());
-                    for (int gi = 0; gi < groups.size(); gi++) {
-                        List<String> fs = splitFields(groups.get(gi));
-                        if (fs.size() < 4) { errs.add("子题-文本答案 第" + (gi+1) + "项格式应为“标签, 提示, 答案, 排序”；"); continue; }
-                        if (StrUtil.isBlank(fs.get(0))) errs.add("子题-文本答案 第" + (gi+1) + "项：标签不能为空；");
-                        if (StrUtil.isBlank(fs.get(2))) errs.add("子题-文本答案 第" + (gi+1) + "项：答案不能为空；");
-                        if (!isInteger(fs.get(3))) errs.add("子题-文本答案 第" + (gi+1) + "项：排序必须为整数；");
-                    }
-                }
-                if (StrUtil.isNotBlank(r.getFormFileAnswerItemsRaw())) {
-                    List<String> groups = splitGroups(r.getFormFileAnswerItemsRaw());
-                    for (int gi = 0; gi < groups.size(); gi++) {
-                        List<String> fs = splitFields(groups.get(gi));
-                        if (fs.size() < 4) { errs.add("子题-文件答案 第" + (gi+1) + "项格式应为“标签, 类型, 路径, 排序”；"); continue; }
-                        String rel = normalizeRelPath(fs.get(2));
-                        if (StrUtil.isBlank(fs.get(0))) errs.add("子题-文件答案 第" + (gi+1) + "项：标签不能为空；");
-                        if (StrUtil.isBlank(fs.get(1))) errs.add("子题-文件答案 第" + (gi+1) + "项：类型不能为空；");
-                        if (!isInteger(fs.get(3))) errs.add("子题-文件答案 第" + (gi+1) + "项：排序必须为整数；");
-                        if (findFileByRelPath(rel, excelBaseDir, zipRoot, lowerIndex) == null)
-                            errs.add("子题-文件答案 第" + (gi+1) + "项文件未找到：" + rel + "；");
-                    }
-                }
-
-                if (!errs.isEmpty()) vr.errors.add("第" + rowNum + "行[题目单]：" + String.join("", errs));
-                else vr.success++;
-
-            } else {
-                // 子内容行
-                if (!hasCurrentHead) {
-                    vr.errors.add("第" + rowNum + "行：检测到子内容，但未发现上方题目单头部行");
-                    continue;
-                }
-                boolean hasAny = StrUtil.isNotBlank(r.getFormTitleItemsRaw())
-                        || StrUtil.isNotBlank(r.getFormAnswerItemsRaw())
-                        || StrUtil.isNotBlank(r.getFormFileAnswerItemsRaw());
-                if (!hasAny) {
-                    vr.errors.add("第" + rowNum + "行：子内容行为空，请填写“新增二级标题/答案”列");
-                    continue;
-                }
-
-                boolean hasRowError = false;
-                // 子行：有内容则"新增二级标题"必填
-                if (StrUtil.isBlank(r.getFormTitleItemsRaw())) {
-                    vr.errors.add("第" + rowNum + "行[题目单-二级标题]：新增二级标题不能为空；");
-                    hasRowError = true;
-                } else {
-                    List<String> groups = splitGroups(r.getFormTitleItemsRaw());
-                    for (int gi = 0; gi < groups.size(); gi++) {
-                        List<String> fs = splitFields(groups.get(gi));
-                        if (fs.size() < 2) { vr.errors.add("第" + rowNum + "行[题目单-二级标题 第" + (gi+1) + "项]：格式应为“标题, 排序”；"); hasRowError = true; continue; }
-                        if (StrUtil.isBlank(fs.get(0))) { vr.errors.add("第" + rowNum + "行[题目单-二级标题 第" + (gi+1) + "项]：标题不能为空；"); hasRowError = true; }
-                        if (!isInteger(fs.get(1))) { vr.errors.add("第" + rowNum + "行[题目单-二级标题 第" + (gi+1) + "项]：排序必须为整数；"); hasRowError = true; }
-                    }
-                }
-                if (StrUtil.isNotBlank(r.getFormAnswerItemsRaw())) {
-                    List<String> groups = splitGroups(r.getFormAnswerItemsRaw());
-                    for (int gi = 0; gi < groups.size(); gi++) {
-                        List<String> fs = splitFields(groups.get(gi));
-                        if (fs.size() < 4) { vr.errors.add("第" + rowNum + "行[子题-文本答案 第" + (gi+1) + "项]：格式应为“标签, 提示, 答案, 排序”；"); hasRowError = true; continue; }
-                        if (StrUtil.isBlank(fs.get(0))) { vr.errors.add("第" + rowNum + "行[子题-文本答案 第" + (gi+1) + "项]：标签不能为空；"); hasRowError = true; }
-                        if (StrUtil.isBlank(fs.get(2))) { vr.errors.add("第" + rowNum + "行[子题-文本答案 第" + (gi+1) + "项]：答案不能为空；"); hasRowError = true; }
-                        if (!isInteger(fs.get(3))) { vr.errors.add("第" + rowNum + "行[子题-文本答案 第" + (gi+1) + "项]：排序必须为整数；"); hasRowError = true; }
-                    }
-                }
-                if (StrUtil.isNotBlank(r.getFormFileAnswerItemsRaw())) {
-                    List<String> groups = splitGroups(r.getFormFileAnswerItemsRaw());
-                    for (int gi = 0; gi < groups.size(); gi++) {
-                        List<String> fs = splitFields(groups.get(gi));
-                        if (fs.size() < 4) { vr.errors.add("第" + rowNum + "行[子题-文件答案 第" + (gi+1) + "项]：格式应为“标签, 类型, 路径, 排序”；"); hasRowError = true; continue; }
-                        String rel = normalizeRelPath(fs.get(2));
-                        if (StrUtil.isBlank(fs.get(0))) { vr.errors.add("第" + rowNum + "行[子题-文件答案 第" + (gi+1) + "项]：标签不能为空；"); hasRowError = true; }
-                        if (StrUtil.isBlank(fs.get(1))) { vr.errors.add("第" + rowNum + "行[子题-文件答案 第" + (gi+1) + "项]：类型不能为空；"); hasRowError = true; }
-                        if (!isInteger(fs.get(3))) { vr.errors.add("第" + rowNum + "行[子题-文件答案 第" + (gi+1) + "项]：排序必须为整数；"); hasRowError = true; }
-                        System.out.println("子标题文件路径："+fs.get(2));
-                        if (findFileByRelPath(rel, excelBaseDir, zipRoot, lowerIndex) == null) {
-                            vr.errors.add("第" + rowNum + "行[子题-文件答案 第" + (gi+1) + "项]：文件未找到：" + rel + "；");
-                            hasRowError = true;
-                        }
-                    }
-                }
-                if (!hasRowError) vr.success++;
-            }
-        }
-        return vr;
-    }
+//    // 入口：校验并生成逐行错误（含行号与位置标识）
+//    private ValidationResult validateRows(List<QuestionFormZipImportModel> rows,
+//                                          Path zipRoot,
+//                                          File excelBaseDir) throws IOException {
+//        ValidationResult vr = new ValidationResult();
+//        Map<String, File> lowerIndex = buildLowercaseIndex(zipRoot);
+//
+//        boolean hasCurrentHead = false;
+//        for (int i = 0; i < rows.size(); i++) {
+//            QuestionFormZipImportModel r = rows.get(i);
+//            int rowNum = i + 2; // 数据从第2行
+//            if (r == null) continue;
+//
+//            boolean allBlank = StrUtil.isBlank(r.getType()) && StrUtil.isBlank(r.getTitle())
+//                    && StrUtil.isBlank(r.getQuestionFileRelPath()) && StrUtil.isBlank(r.getQuestionMaterialRelPath())
+//                    && StrUtil.isBlank(r.getDifficultyLevel()) && StrUtil.isBlank(r.getSymbol()) && StrUtil.isBlank(r.getState())
+//                    && StrUtil.isBlank(r.getFormTitleItemsRaw()) && StrUtil.isBlank(r.getFormAnswerItemsRaw()) && StrUtil.isBlank(r.getFormFileAnswerItemsRaw());
+//            if (allBlank) continue;
+//
+//            vr.total++;
+//
+//            boolean isHead = StrUtil.isNotBlank(r.getTitle());
+//            List<String> errs = new ArrayList<>();
+//            if (isHead) {
+//                hasCurrentHead = true;
+//
+//                // 头部必填
+//                if (StrUtil.isBlank(r.getType())) errs.add("题目分类不能为空；");
+//                if (StrUtil.isBlank(r.getTitle())) errs.add("题目标题不能为空；");
+//                if (StrUtil.isBlank(r.getDifficultyLevel())) errs.add("难度不能为空；");
+//                if (StrUtil.isBlank(r.getSymbol())) errs.add("试题标签不能为空；");
+//                if (StrUtil.isBlank(r.getState())) errs.add("状态不能为空；");
+//
+//                // 题干文件/素材（可选），若填则校验存在性
+//                if (StrUtil.isNotBlank(r.getQuestionFileRelPath())) {
+//                    String rel = normalizeRelPath(r.getQuestionFileRelPath());
+//                    if (findFileByRelPath(rel, excelBaseDir, zipRoot, lowerIndex) == null)
+//                        errs.add("题干文件未找到：" + rel + "；");
+//                }
+//                if (StrUtil.isNotBlank(r.getQuestionMaterialRelPath())) {
+//                    String rel = normalizeRelPath(r.getQuestionMaterialRelPath());
+//                    if (findFileByRelPath(rel, excelBaseDir, zipRoot, lowerIndex) == null)
+//                        errs.add("题干素材未找到：" + rel + "；");
+//                }
+//
+//                // 头部的"新增二级标题"改为可选；若填写则校验格式
+//                if (StrUtil.isNotBlank(r.getFormTitleItemsRaw())) {
+//                    List<String> groups = splitGroups(r.getFormTitleItemsRaw());
+//                    for (int gi = 0; gi < groups.size(); gi++) {
+//                        List<String> fs = splitFields(groups.get(gi));
+//                        if (fs.size() < 2) { errs.add("题目单-二级标题 第" + (gi+1) + "项格式应为“标题, 排序”；"); continue; }
+//                        if (StrUtil.isBlank(fs.get(0))) errs.add("题目单-二级标题 第" + (gi+1) + "项：标题不能为空；");
+//                        if (!isInteger(fs.get(1))) errs.add("题目单-二级标题 第" + (gi+1) + "项：排序必须为整数；");
+//                    }
+//                }
+//
+//                // 若同行填写了答案列也校验
+//                if (StrUtil.isNotBlank(r.getFormAnswerItemsRaw())) {
+//                    List<String> groups = splitGroups(r.getFormAnswerItemsRaw());
+//                    for (int gi = 0; gi < groups.size(); gi++) {
+//                        List<String> fs = splitFields(groups.get(gi));
+//                        if (fs.size() < 4) { errs.add("子题-文本答案 第" + (gi+1) + "项格式应为“标签, 提示, 答案, 排序”；"); continue; }
+//                        if (StrUtil.isBlank(fs.get(0))) errs.add("子题-文本答案 第" + (gi+1) + "项：标签不能为空；");
+//                        if (StrUtil.isBlank(fs.get(2))) errs.add("子题-文本答案 第" + (gi+1) + "项：答案不能为空；");
+//                        if (!isInteger(fs.get(3))) errs.add("子题-文本答案 第" + (gi+1) + "项：排序必须为整数；");
+//                    }
+//                }
+//                if (StrUtil.isNotBlank(r.getFormFileAnswerItemsRaw())) {
+//                    List<String> groups = splitGroups(r.getFormFileAnswerItemsRaw());
+//                    for (int gi = 0; gi < groups.size(); gi++) {
+//                        List<String> fs = splitFields(groups.get(gi));
+//                        if (fs.size() < 4) { errs.add("子题-文件答案 第" + (gi+1) + "项格式应为“标签, 类型, 路径, 排序”；"); continue; }
+//                        String rel = normalizeRelPath(fs.get(2));
+//                        if (StrUtil.isBlank(fs.get(0))) errs.add("子题-文件答案 第" + (gi+1) + "项：标签不能为空；");
+//                        if (StrUtil.isBlank(fs.get(1))) errs.add("子题-文件答案 第" + (gi+1) + "项：类型不能为空；");
+//                        if (!isInteger(fs.get(3))) errs.add("子题-文件答案 第" + (gi+1) + "项：排序必须为整数；");
+//                        if (findFileByRelPath(rel, excelBaseDir, zipRoot, lowerIndex) == null)
+//                            errs.add("子题-文件答案 第" + (gi+1) + "项文件未找到：" + rel + "；");
+//                    }
+//                }
+//
+//                if (!errs.isEmpty()) vr.errors.add("第" + rowNum + "行[题目单]：" + String.join("", errs));
+//                else vr.success++;
+//
+//            } else {
+//                // 子内容行
+//                if (!hasCurrentHead) {
+//                    vr.errors.add("第" + rowNum + "行：检测到子内容，但未发现上方题目单头部行");
+//                    continue;
+//                }
+//                boolean hasAny = StrUtil.isNotBlank(r.getFormTitleItemsRaw())
+//                        || StrUtil.isNotBlank(r.getFormAnswerItemsRaw())
+//                        || StrUtil.isNotBlank(r.getFormFileAnswerItemsRaw());
+//                if (!hasAny) {
+//                    vr.errors.add("第" + rowNum + "行：子内容行为空，请填写“新增二级标题/答案”列");
+//                    continue;
+//                }
+//
+//                boolean hasRowError = false;
+//                // 子行：有内容则"新增二级标题"必填
+//                if (StrUtil.isBlank(r.getFormTitleItemsRaw())) {
+//                    vr.errors.add("第" + rowNum + "行[题目单-二级标题]：新增二级标题不能为空；");
+//                    hasRowError = true;
+//                } else {
+//                    List<String> groups = splitGroups(r.getFormTitleItemsRaw());
+//                    for (int gi = 0; gi < groups.size(); gi++) {
+//                        List<String> fs = splitFields(groups.get(gi));
+//                        if (fs.size() < 2) { vr.errors.add("第" + rowNum + "行[题目单-二级标题 第" + (gi+1) + "项]：格式应为“标题, 排序”；"); hasRowError = true; continue; }
+//                        if (StrUtil.isBlank(fs.get(0))) { vr.errors.add("第" + rowNum + "行[题目单-二级标题 第" + (gi+1) + "项]：标题不能为空；"); hasRowError = true; }
+//                        if (!isInteger(fs.get(1))) { vr.errors.add("第" + rowNum + "行[题目单-二级标题 第" + (gi+1) + "项]：排序必须为整数；"); hasRowError = true; }
+//                    }
+//                }
+//                if (StrUtil.isNotBlank(r.getFormAnswerItemsRaw())) {
+//                    List<String> groups = splitGroups(r.getFormAnswerItemsRaw());
+//                    for (int gi = 0; gi < groups.size(); gi++) {
+//                        List<String> fs = splitFields(groups.get(gi));
+//                        if (fs.size() < 4) { vr.errors.add("第" + rowNum + "行[子题-文本答案 第" + (gi+1) + "项]：格式应为“标签, 提示, 答案, 排序”；"); hasRowError = true; continue; }
+//                        if (StrUtil.isBlank(fs.get(0))) { vr.errors.add("第" + rowNum + "行[子题-文本答案 第" + (gi+1) + "项]：标签不能为空；"); hasRowError = true; }
+//                        if (StrUtil.isBlank(fs.get(2))) { vr.errors.add("第" + rowNum + "行[子题-文本答案 第" + (gi+1) + "项]：答案不能为空；"); hasRowError = true; }
+//                        if (!isInteger(fs.get(3))) { vr.errors.add("第" + rowNum + "行[子题-文本答案 第" + (gi+1) + "项]：排序必须为整数；"); hasRowError = true; }
+//                    }
+//                }
+//                if (StrUtil.isNotBlank(r.getFormFileAnswerItemsRaw())) {
+//                    List<String> groups = splitGroups(r.getFormFileAnswerItemsRaw());
+//                    for (int gi = 0; gi < groups.size(); gi++) {
+//                        List<String> fs = splitFields(groups.get(gi));
+//                        if (fs.size() < 4) { vr.errors.add("第" + rowNum + "行[子题-文件答案 第" + (gi+1) + "项]：格式应为“标签, 类型, 路径, 排序”；"); hasRowError = true; continue; }
+//                        String rel = normalizeRelPath(fs.get(2));
+//                        if (StrUtil.isBlank(fs.get(0))) { vr.errors.add("第" + rowNum + "行[子题-文件答案 第" + (gi+1) + "项]：标签不能为空；"); hasRowError = true; }
+//                        if (StrUtil.isBlank(fs.get(1))) { vr.errors.add("第" + rowNum + "行[子题-文件答案 第" + (gi+1) + "项]：类型不能为空；"); hasRowError = true; }
+//                        if (!isInteger(fs.get(3))) { vr.errors.add("第" + rowNum + "行[子题-文件答案 第" + (gi+1) + "项]：排序必须为整数；"); hasRowError = true; }
+//                        System.out.println("子标题文件路径："+fs.get(2));
+//                        if (findFileByRelPath(rel, excelBaseDir, zipRoot, lowerIndex) == null) {
+//                            vr.errors.add("第" + rowNum + "行[子题-文件答案 第" + (gi+1) + "项]：文件未找到：" + rel + "；");
+//                            hasRowError = true;
+//                        }
+//                    }
+//                }
+//                if (!hasRowError) vr.success++;
+//            }
+//        }
+//        return vr;
+//    }
 
 // ========= 工具 =========
 
-    // 多组用"、"分隔
-    private List<String> splitGroups(String raw) {
-        if (StrUtil.isBlank(raw)) return Collections.emptyList();
-        String[] arr = raw.split("、");
-        List<String> list = new ArrayList<>();
-        for (String a : arr) {
-            String t = a.trim();
-            if (!t.isEmpty()) {
-                list.add(t);
-            }
-        }
-        return list;
-    }
+//    // 多组用"、"分隔
+//    private List<String> splitGroups(String raw) {
+//        if (StrUtil.isBlank(raw)) return Collections.emptyList();
+//        String[] arr = raw.split("、");
+//        List<String> list = new ArrayList<>();
+//        for (String a : arr) {
+//            String t = a.trim();
+//            if (!t.isEmpty()) {
+//                list.add(t);
+//            }
+//        }
+//        return list;
+//    }
 
-    // 组内字段用"，"或","分隔
-    private List<String> splitFields(String group) {
-        String[] arr = group.split("，|,");
-        List<String> list = new ArrayList<>();
-        for (String a : arr) list.add(a.trim());
-        return list;
-    }
+//    // 组内字段用"，"或","分隔
+//    private List<String> splitFields(String group) {
+//        String[] arr = group.split("，|,");
+//        List<String> list = new ArrayList<>();
+//        for (String a : arr) list.add(a.trim());
+//        return list;
+//    }
 
-    private boolean isInteger(String s) {
-        if (StrUtil.isBlank(s)) return false;
-        try { Integer.parseInt(s.trim()); return true; } catch (Exception e) { return false; }
-    }
+//    private boolean isInteger(String s) {
+//        if (StrUtil.isBlank(s)) return false;
+//        try { Integer.parseInt(s.trim()); return true; } catch (Exception e) { return false; }
+//    }
 
-    // 建立不区分大小写的路径索引
-    private Map<String, File> buildLowercaseIndex(Path root) throws IOException {
-        Map<String, File> map = new HashMap<>();
-        try (java.util.stream.Stream<Path> s = Files.walk(root)) {
-            s.filter(Files::isRegularFile).forEach(p -> {
-                String rel = root.relativize(p).toString().replace("\\", "/");
-                while (rel.startsWith("/")) rel = rel.substring(1);
-                map.put(rel.toLowerCase(), p.toFile());
-            });
-        }
-        return map;
-    }
 
-    // ================= 分组：一个题目单(头部行) + 其后连续子内容行 =================
-    private static class QFormGroup {
-        int headRowNum;
-        Head head;
-        List<RowItems> rows = new ArrayList<>();
-    }
-    private static class Head {
-        String type, title, questionFileRelPath, questionMaterialRelPath, difficultyLevel, symbol, state;
-    }
-    private static class RowItems {
-        int rowNum;
-        List<TitleItem> titles = new ArrayList<>();
-        List<TextAnswerItem> textAnswers = new ArrayList<>();
-        List<FileAnswerItem> fileAnswers = new ArrayList<>();
-    }
-    private static class TitleItem { String title; Integer sort; }
-    private static class TextAnswerItem { String label, tip, answer; Integer sort; }
-    private static class FileAnswerItem { String label, fileType, fileRelPath; Integer sort; }
 
-    private List<QFormGroup> groupQuestionForms(List<QuestionFormZipImportModel> rows) {
-        List<QFormGroup> groups = new ArrayList<>();
-        QFormGroup current = null;
-        for (int i = 0; i < rows.size(); i++) {
-            QuestionFormZipImportModel r = rows.get(i);
-            if (r == null) continue;
-            boolean allBlank = StrUtil.isBlank(r.getType()) && StrUtil.isBlank(r.getTitle())
-                    && StrUtil.isBlank(r.getQuestionFileRelPath()) && StrUtil.isBlank(r.getQuestionMaterialRelPath())
-                    && StrUtil.isBlank(r.getDifficultyLevel()) && StrUtil.isBlank(r.getSymbol()) && StrUtil.isBlank(r.getState())
-                    && StrUtil.isBlank(r.getFormTitleItemsRaw()) && StrUtil.isBlank(r.getFormAnswerItemsRaw()) && StrUtil.isBlank(r.getFormFileAnswerItemsRaw());
-            if (allBlank) continue;
+//    // ================= 分组：一个题目单(头部行) + 其后连续子内容行 =================
+//    private static class QFormGroup {
+//        int headRowNum;
+//        Head head;
+//        List<RowItems> rows = new ArrayList<>();
+//    }
+//    private static class Head {
+//        String type, title, questionFileRelPath, questionMaterialRelPath, difficultyLevel, symbol, state;
+//    }
+//    private static class RowItems {
+//        int rowNum;
+//        List<TitleItem> titles = new ArrayList<>();
+//        List<TextAnswerItem> textAnswers = new ArrayList<>();
+//        List<FileAnswerItem> fileAnswers = new ArrayList<>();
+//    }
+//    private static class TitleItem { String title; Integer sort; }
+//    private static class TextAnswerItem { String label, tip, answer; Integer sort; }
+//    private static class FileAnswerItem { String label, fileType, fileRelPath; Integer sort; }
 
-            boolean isHead = StrUtil.isNotBlank(r.getTitle());
-            int rowNum = i + 2;
-            if (isHead) {
-                if (current != null) groups.add(current);
-                current = new QFormGroup();
-                current.headRowNum = rowNum;
-                Head h = new Head();
-                h.type = r.getType();
-                h.title = r.getTitle();
-                h.questionFileRelPath = normalizeRelPath(StrUtil.nullToEmpty(r.getQuestionFileRelPath()));
-                h.questionMaterialRelPath = normalizeRelPath(StrUtil.nullToEmpty(r.getQuestionMaterialRelPath()));
-                h.difficultyLevel = r.getDifficultyLevel();
-                h.symbol = r.getSymbol();
-                h.state = r.getState();
-                current.head = h;
+//    private List<QFormGroup> groupQuestionForms(List<QuestionFormZipImportModel> rows) {
+//        List<QFormGroup> groups = new ArrayList<>();
+//        QFormGroup current = null;
+//        for (int i = 0; i < rows.size(); i++) {
+//            QuestionFormZipImportModel r = rows.get(i);
+//            if (r == null) continue;
+//            boolean allBlank = StrUtil.isBlank(r.getType()) && StrUtil.isBlank(r.getTitle())
+//                    && StrUtil.isBlank(r.getQuestionFileRelPath()) && StrUtil.isBlank(r.getQuestionMaterialRelPath())
+//                    && StrUtil.isBlank(r.getDifficultyLevel()) && StrUtil.isBlank(r.getSymbol()) && StrUtil.isBlank(r.getState())
+//                    && StrUtil.isBlank(r.getFormTitleItemsRaw()) && StrUtil.isBlank(r.getFormAnswerItemsRaw()) && StrUtil.isBlank(r.getFormFileAnswerItemsRaw());
+//            if (allBlank) continue;
+//
+//            boolean isHead = StrUtil.isNotBlank(r.getTitle());
+//            int rowNum = i + 2;
+//            if (isHead) {
+//                if (current != null) groups.add(current);
+//                current = new QFormGroup();
+//                current.headRowNum = rowNum;
+//                Head h = new Head();
+//                h.type = r.getType();
+//                h.title = r.getTitle();
+//                h.questionFileRelPath = normalizeRelPath(StrUtil.nullToEmpty(r.getQuestionFileRelPath()));
+//                h.questionMaterialRelPath = normalizeRelPath(StrUtil.nullToEmpty(r.getQuestionMaterialRelPath()));
+//                h.difficultyLevel = r.getDifficultyLevel();
+//                h.symbol = r.getSymbol();
+//                h.state = r.getState();
+//                current.head = h;
+//
+//                RowItems first = new RowItems();
+//                first.rowNum = rowNum;
+//                first.titles = parseTitles(r.getFormTitleItemsRaw());
+//                first.textAnswers = parseTextAnswers(r.getFormAnswerItemsRaw());
+//                first.fileAnswers = parseFileAnswers(r.getFormFileAnswerItemsRaw());
+//                if (!first.titles.isEmpty() || !first.textAnswers.isEmpty() || !first.fileAnswers.isEmpty()) {
+//                    current.rows.add(first);
+//                }
+//            } else {
+//                if (current == null) continue; // 无头部行的子行，忽略（校验阶段已有错误提示）
+//                RowItems ri = new RowItems();
+//                ri.rowNum = rowNum;
+//                ri.titles = parseTitles(r.getFormTitleItemsRaw());
+//                ri.textAnswers = parseTextAnswers(r.getFormAnswerItemsRaw());
+//                ri.fileAnswers = parseFileAnswers(r.getFormFileAnswerItemsRaw());
+//                current.rows.add(ri);
+//            }
+//        }
+//        if (current != null) groups.add(current);
+//        return groups;
+//    }
 
-                RowItems first = new RowItems();
-                first.rowNum = rowNum;
-                first.titles = parseTitles(r.getFormTitleItemsRaw());
-                first.textAnswers = parseTextAnswers(r.getFormAnswerItemsRaw());
-                first.fileAnswers = parseFileAnswers(r.getFormFileAnswerItemsRaw());
-                if (!first.titles.isEmpty() || !first.textAnswers.isEmpty() || !first.fileAnswers.isEmpty()) {
-                    current.rows.add(first);
-                }
-            } else {
-                if (current == null) continue; // 无头部行的子行，忽略（校验阶段已有错误提示）
-                RowItems ri = new RowItems();
-                ri.rowNum = rowNum;
-                ri.titles = parseTitles(r.getFormTitleItemsRaw());
-                ri.textAnswers = parseTextAnswers(r.getFormAnswerItemsRaw());
-                ri.fileAnswers = parseFileAnswers(r.getFormFileAnswerItemsRaw());
-                current.rows.add(ri);
-            }
-        }
-        if (current != null) groups.add(current);
-        return groups;
-    }
+//    // 简单解析器：仅拆分，不做校验
+//    private List<TitleItem> parseTitles(String raw) {
+//        List<TitleItem> list = new ArrayList<>();
+//        if (StrUtil.isBlank(raw)) return list;
+//        for (String g : splitGroups(raw)) {
+//            List<String> fs = splitFields(g);
+//            if (fs.size() < 2) continue;
+//            TitleItem t = new TitleItem();
+//            t.title = fs.get(0);
+//            try { t.sort = Integer.valueOf(fs.get(1)); } catch (Exception ignore) {}
+//            list.add(t);
+//        }
+//        return list;
+//    }
+//    private List<TextAnswerItem> parseTextAnswers(String raw) {
+//        List<TextAnswerItem> list = new ArrayList<>();
+//        if (StrUtil.isBlank(raw)) return list;
+//        for (String g : splitGroups(raw)) {
+//            List<String> fs = splitFields(g);
+//            if (fs.size() < 4) continue;
+//            TextAnswerItem t = new TextAnswerItem();
+//            t.label = fs.get(0);
+//            t.tip = fs.get(1);
+//            t.answer = fs.get(2);
+//            try { t.sort = Integer.valueOf(fs.get(3)); } catch (Exception ignore) {}
+//            list.add(t);
+//        }
+//        return list;
+//    }
+//    private List<FileAnswerItem> parseFileAnswers(String raw) {
+//        List<FileAnswerItem> list = new ArrayList<>();
+//        if (StrUtil.isBlank(raw)) return list;
+//        for (String g : splitGroups(raw)) {
+//            List<String> fs = splitFields(g);
+//            if (fs.size() < 4) continue;
+//            FileAnswerItem t = new FileAnswerItem();
+//            t.label = fs.get(0);
+//            t.fileType = fs.get(1);
+//            t.fileRelPath = normalizeRelPath(fs.get(2));
+//            try { t.sort = Integer.valueOf(fs.get(3)); } catch (Exception ignore) {}
+//            list.add(t);
+//        }
+//        return list;
+//    }
 
-    // 简单解析器：仅拆分，不做校验
-    private List<TitleItem> parseTitles(String raw) {
-        List<TitleItem> list = new ArrayList<>();
-        if (StrUtil.isBlank(raw)) return list;
-        for (String g : splitGroups(raw)) {
-            List<String> fs = splitFields(g);
-            if (fs.size() < 2) continue;
-            TitleItem t = new TitleItem();
-            t.title = fs.get(0);
-            try { t.sort = Integer.valueOf(fs.get(1)); } catch (Exception ignore) {}
-            list.add(t);
-        }
-        return list;
-    }
-    private List<TextAnswerItem> parseTextAnswers(String raw) {
-        List<TextAnswerItem> list = new ArrayList<>();
-        if (StrUtil.isBlank(raw)) return list;
-        for (String g : splitGroups(raw)) {
-            List<String> fs = splitFields(g);
-            if (fs.size() < 4) continue;
-            TextAnswerItem t = new TextAnswerItem();
-            t.label = fs.get(0);
-            t.tip = fs.get(1);
-            t.answer = fs.get(2);
-            try { t.sort = Integer.valueOf(fs.get(3)); } catch (Exception ignore) {}
-            list.add(t);
-        }
-        return list;
-    }
-    private List<FileAnswerItem> parseFileAnswers(String raw) {
-        List<FileAnswerItem> list = new ArrayList<>();
-        if (StrUtil.isBlank(raw)) return list;
-        for (String g : splitGroups(raw)) {
-            List<String> fs = splitFields(g);
-            if (fs.size() < 4) continue;
-            FileAnswerItem t = new FileAnswerItem();
-            t.label = fs.get(0);
-            t.fileType = fs.get(1);
-            t.fileRelPath = normalizeRelPath(fs.get(2));
-            try { t.sort = Integer.valueOf(fs.get(3)); } catch (Exception ignore) {}
-            list.add(t);
-        }
-        return list;
-    }
-
-    // ================= 仅保存题目单头部(q_question)并返回ID =================
-    // 说明：不处理任何子项/文件；在后续步骤调用此方法拿到 questionId
-    private Integer persistQuestionHead(Head h, List<String> errors, int rowNum) {
-        if (h == null) { errors.add("第"+rowNum+"行[题目单]：head 为空"); return null; }
-        Question q = new Question();
-        q.setShape(QuestionTypesEnum.TIMUDAN.getCode());
-        // 标题
-        q.setTitle(h.title);
-        // 题干内容与纯文本：优先使用题干文件/素材相对路径
-        if (StrUtil.isNotBlank(h.questionFileRelPath)) {
-            String content = h.questionFileRelPath;
-            if (StrUtil.isNotBlank(h.questionMaterialRelPath)) {
-                content = content + "," + h.questionMaterialRelPath;
-            }
-            q.setQuestion(content);
-            q.setQuestionText(content);
-        } else if (StrUtil.isNotBlank(h.questionMaterialRelPath)) {
-            q.setQuestion(h.questionMaterialRelPath);
-            q.setQuestionText(h.questionMaterialRelPath);
-        }
-        // 分类/难度/范围/状态
-        try { if (StrUtil.isNotBlank(h.type)) q.setType(QuestionCategoryEnum.getCodeByName(h.type)); } catch (Exception ignore) {}
-        try { if (StrUtil.isNotBlank(h.difficultyLevel)) q.setDifficultyLevel(QuestionDifficultyEnum.getCodeByName(h.difficultyLevel)); } catch (Exception ignore) {}
-        try { if (StrUtil.isNotBlank(h.symbol)) q.setSymbol(String.valueOf(EntitySystemEnum.getCodeByName(h.symbol))); } catch (Exception ignore) {}
-        try { if (StrUtil.isNotBlank(h.state)) q.setState(StatusEnum.getCodeByName(h.state)); } catch (Exception ignore) {}
-
-        // 作答时间
-         q.setEstimatedTime(1);
-        //是题目单
-        q.setIsForm(1);
-        //答案
-        q.setAnswer("试题单");
-        //选项
-        q.setOptions("[A,B]");
-        boolean ok = this.save(q);
-        if (!ok || q.getId() == null) {
-            errors.add("第"+rowNum+"行[题目单]：保存失败");
-            return null;
-        }
-        return q.getId();
-    }
+//    // ================= 仅保存题目单头部(q_question)并返回ID =================
+//    // 说明：不处理任何子项/文件；在后续步骤调用此方法拿到 questionId
+//    private Integer persistQuestionHead(Head h, List<String> errors, int rowNum) {
+//        if (h == null) { errors.add("第"+rowNum+"行[题目单]：head 为空"); return null; }
+//        Question q = new Question();
+//        q.setShape(QuestionTypesEnum.TIMUDAN.getCode());
+//        // 标题
+//        q.setTitle(h.title);
+//        // 题干内容与纯文本：优先使用题干文件/素材相对路径
+//        if (StrUtil.isNotBlank(h.questionFileRelPath)) {
+//            String content = h.questionFileRelPath;
+//            if (StrUtil.isNotBlank(h.questionMaterialRelPath)) {
+//                content = content + "," + h.questionMaterialRelPath;
+//            }
+//            q.setQuestion(content);
+//            q.setQuestionText(content);
+//        } else if (StrUtil.isNotBlank(h.questionMaterialRelPath)) {
+//            q.setQuestion(h.questionMaterialRelPath);
+//            q.setQuestionText(h.questionMaterialRelPath);
+//        }
+//        // 分类/难度/范围/状态
+//        try { if (StrUtil.isNotBlank(h.type)) q.setType(QuestionCategoryEnum.getCodeByName(h.type)); } catch (Exception ignore) {}
+//        try { if (StrUtil.isNotBlank(h.difficultyLevel)) q.setDifficultyLevel(QuestionDifficultyEnum.getCodeByName(h.difficultyLevel)); } catch (Exception ignore) {}
+//        try { if (StrUtil.isNotBlank(h.symbol)) q.setSymbol(String.valueOf(EntitySystemEnum.getCodeByName(h.symbol))); } catch (Exception ignore) {}
+//        try { if (StrUtil.isNotBlank(h.state)) q.setState(StatusEnum.getCodeByName(h.state)); } catch (Exception ignore) {}
+//
+//        // 作答时间
+//         q.setEstimatedTime(1);
+//        //是题目单
+//        q.setIsForm(1);
+//        //答案
+//        q.setAnswer("试题单");
+//        //选项
+//        q.setOptions("[A,B]");
+//        boolean ok = this.save(q);
+//        if (!ok || q.getId() == null) {
+//            errors.add("第"+rowNum+"行[题目单]：保存失败");
+//            return null;
+//        }
+//        return q.getId();
+//    }
  
-    // 相对 Excel 目录 → zip 根目录 → 不区分大小写索引 依次查找
-    private File findFileByRelPath(String normalizedRel, File excelBaseDir, Path zipRoot, Map<String, File> lowerIndex) {
-        File f = new File(excelBaseDir, normalizedRel);
-        if (f.exists() && f.isFile()) return f;
-        f = new File(zipRoot.toFile(), normalizedRel);
-        if (f.exists() && f.isFile()) return f;
-        return lowerIndex.getOrDefault(normalizedRel.toLowerCase(), null);
-    }
 
-    // 将源文件复制到配置的 fileUrlDir 下，并返回可访问URL（与通用上传保持一致：UUID + 原文件名）
-    private String saveToFileUrlAndGetAccessUrl(File src) throws IOException {
-        if (src == null || !src.exists() || !src.isFile()) {
-            throw new IOException("源文件不存在或不可读");
-        }
-        // 确保目录存在
-        Path targetDir = Paths.get(fileUrlDir);
-        if (!Files.exists(targetDir)) {
-            Files.createDirectories(targetDir);
-        }
-        String originalName = src.getName();
-        String newName = UUID.randomUUID().toString().replace("-", "") + originalName;
-        Path targetPath = targetDir.resolve(newName);
-        Files.copy(src.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);
-        // 返回外网访问URL前缀 + /annotation/fileUrl/ + 文件名（参考现有通用上传接口）
-        return ipurlPrefix + "/annotation/fileUrl/" + newName;
-    }
-
-    // 递归安静删除目录
-    private void deleteDirectoryQuietly(Path dir) throws IOException {
-        if (dir == null) return;
-        if (!Files.exists(dir)) return;
-        Files.walk(dir)
-                .sorted(Comparator.reverseOrder())
-                .forEach(p -> {
-                    try { Files.deleteIfExists(p); } catch (IOException ignore) {}
-                });
-    }
 
     @Override
     public QuestionImportResultVO importQuestionFormZipV2(MultipartFile file) throws IOException {
@@ -1705,4 +1644,71 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         boolean ok = this.save(q);
         return ok ? q.getId() : null;
     }
+
+    // 相对 Excel 目录 → zip 根目录 → 不区分大小写索引 依次查找
+    private File findFileByRelPath(String normalizedRel, File excelBaseDir, Path zipRoot, Map<String, File> lowerIndex) {
+        File f = new File(excelBaseDir, normalizedRel);
+        if (f.exists() && f.isFile()) return f;
+        f = new File(zipRoot.toFile(), normalizedRel);
+        if (f.exists() && f.isFile()) return f;
+        return lowerIndex.getOrDefault(normalizedRel.toLowerCase(), null);
+    }
+
+    // 将源文件复制到配置的 fileUrlDir 下，并返回可访问URL（与通用上传保持一致：UUID + 原文件名）
+    private String saveToFileUrlAndGetAccessUrl(File src) throws IOException {
+        if (src == null || !src.exists() || !src.isFile()) {
+            throw new IOException("源文件不存在或不可读");
+        }
+        // 确保目录存在
+        Path targetDir = Paths.get(fileUrlDir);
+        if (!Files.exists(targetDir)) {
+            Files.createDirectories(targetDir);
+        }
+        String originalName = src.getName();
+        String newName = UUID.randomUUID().toString().replace("-", "") + originalName;
+        Path targetPath = targetDir.resolve(newName);
+        Files.copy(src.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+        // 返回外网访问URL前缀 + /annotation/fileUrl/ + 文件名（参考现有通用上传接口）
+        return ipurlPrefix + "/annotation/fileUrl/" + newName;
+    }
+
+    // 递归安静删除目录
+    private void deleteDirectoryQuietly(Path dir) throws IOException {
+        if (dir == null) return;
+        if (!Files.exists(dir)) return;
+        Files.walk(dir)
+                .sorted(Comparator.reverseOrder())
+                .forEach(p -> {
+                    try { Files.deleteIfExists(p); } catch (IOException ignore) {}
+                });
+    }
+
+    // 建立不区分大小写的路径索引
+    private Map<String, File> buildLowercaseIndex(Path root) throws IOException {
+        Map<String, File> map = new HashMap<>();
+        try (java.util.stream.Stream<Path> s = Files.walk(root)) {
+            s.filter(Files::isRegularFile).forEach(p -> {
+                String rel = root.relativize(p).toString().replace("\\", "/");
+                while (rel.startsWith("/")) rel = rel.substring(1);
+                map.put(rel.toLowerCase(), p.toFile());
+            });
+        }
+        return map;
+    }
+
+    //递归查找excel
+    private File findFirstExcel(Path root) throws IOException {
+        try (java.util.stream.Stream<Path> s = Files.walk(root)) {
+            return s.filter(p -> !Files.isDirectory(p))
+                    .filter(p -> {
+                        String n = p.getFileName().toString().toLowerCase();
+                        return n.endsWith(".xlsx") || n.endsWith(".xls");
+                    })
+                    .sorted()
+                    .map(Path::toFile)
+                    .findFirst()
+                    .orElse(null);
+        }
+    }
+
 }

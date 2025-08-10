@@ -112,10 +112,10 @@ public interface QuestionService extends BaseService<Question> {
      */
     QuestionImportResultVO importQuestions(MultipartFile file);
 
-    /**
-     * 批量导入试题单 V1
-     */
-    QuestionImportResultVO importQuestionFormZip(MultipartFile file) throws IOException;
+//    /**
+//     * 批量导入试题单 V1
+//     */
+//    QuestionImportResultVO importQuestionFormZip(MultipartFile file) throws IOException;
 
     /**
      * 批量导入试题单 V2（多Sheet结构化，不使用分隔符）

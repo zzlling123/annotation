@@ -366,33 +366,6 @@ public class    QuestionController extends BaseController {
 
 
     @PrimaryDataSource
-    @PostMapping("/form/import-zip")
-    @ApiOperation("题目单导入（zip+相对路径）")
-    public BaseResponse<QuestionImportResultVO> importQuestionFormZip(
-            @RequestParam("file") MultipartFile file) {
-
-        if (file == null || file.isEmpty()) {
-            return BaseResponse.fail("请上传zip文件");
-        }
-        String name = file.getOriginalFilename();
-        if (name == null || !name.toLowerCase().endsWith(".zip")) {
-            return BaseResponse.fail("仅支持.zip文件");
-        }
-
-        try {
-            // 后端在实现中自动创建题目主记录并返回生成的 questionId
-            QuestionImportResultVO result = questionService.importQuestionFormZip(file);
-
-            if (result.getFailCount() != null && result.getFailCount() > 0) {
-                return BaseResponse.other("导入完成，但存在错误数据", result);
-            }
-            return BaseResponse.ok("导入成功", result);
-        } catch (Exception e) {
-            return BaseResponse.fail("导入失败：" + e.getMessage());
-        }
-    }
-
-    @PrimaryDataSource
     @PostMapping("/form/import-zip-v2")
     @ApiOperation("题目单导入（V2：多Sheet，无分隔符）")
     public BaseResponse<QuestionImportResultVO> importQuestionFormZipV2(@RequestParam("file") MultipartFile file) {
