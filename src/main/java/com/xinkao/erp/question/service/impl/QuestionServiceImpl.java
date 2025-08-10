@@ -428,112 +428,119 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
      * @return
      */
     private Question VerifyerificationTopicRetrieveData(QuestionImportModel model) {
-        //获取数据解析出对应的题目类型，并根据不同类型解析数据返回数据
         //创建对象
         Question question = new Question();
-        //拿出题目类型准判断
         String shape = model.getShape();
-        
         try {
-            //单选题
-            if(QuestionTypesEnum.DANXUAN.getName().equals(shape)){
+            if (QuestionTypesEnum.DANXUAN.getName().equals(shape)) {
                 question.setShape(QuestionTypesEnum.DANXUAN.getCode());
-
                 question.setTitle(model.getTitle());
-                //选项处理
-                List<String> strings = extractOptions(model.getOptions());
-                String options = "[" + String.join(",", strings) + "]";
-                question.setOptions(options);
-                //答案处理：使用extractOptions将"A，B"转换为"AB"
-                List<String> answerOptions = extractOptions(model.getAnswer());
-                question.setAnswer(StringUtils.collectionToDelimitedString(answerOptions, ""));
-
+                // 选项：仅按%$%分隔，提取编号
+                List<String> optionTokens = splitByDelim(model.getOptions());
+                List<String> optionCodes = parseOptionCodesFromTokens(optionTokens);
+                question.setOptions("[" + String.join(",", optionCodes) + "]");
+                // 答案：必须一个编号
+                List<String> ans = splitByDelim(model.getAnswer());
+                question.setAnswer(ans.isEmpty() ? "" : ans.get(0));
                 question.setDifficultyLevel(QuestionDifficultyEnum.getCodeByName(model.getDifficultyLevel()));
-                //进行拼接题目选项存储Question字段
-                question.setQuestion(concatenateOptionsHtml(model.getOptions(),model.getQuestion()));
-                //存入questionTest
-                question.setQuestionText(concatenateOptionsPlain(model.getOptions(),model.getQuestion()));
-
+                question.setQuestion(concatenateOptionsHtmlByTokens(optionTokens, model.getQuestion()));
+                question.setQuestionText(concatenateOptionsPlainByTokens(optionTokens, model.getQuestion()));
             }
-            //多选题
-            if(QuestionTypesEnum.DUOXUAN.getName().equals(shape)){
+            if (QuestionTypesEnum.DUOXUAN.getName().equals(shape)) {
                 question.setShape(QuestionTypesEnum.DUOXUAN.getCode());
                 question.setTitle(model.getTitle());
-                //选项处理
-                List<String> strings = extractOptions(model.getOptions());
-                String options = "[" + String.join(",", strings) + "]";
-                question.setOptions(options);
-                //答案处理：使用extractOptions将"A，B，C"转换为"ABC"
-                List<String> answerOptions = extractOptions(model.getAnswer());
-                question.setAnswer(StringUtils.collectionToDelimitedString(answerOptions, ""));
-                
+                List<String> optionTokens = splitByDelim(model.getOptions());
+                List<String> optionCodes = parseOptionCodesFromTokens(optionTokens);
+                question.setOptions("[" + String.join(",", optionCodes) + "]");
+                // 多选答案：按%$%，存为拼接串（如 ACD）
+                List<String> ans = splitByDelim(model.getAnswer());
+                question.setAnswer(StringUtils.collectionToDelimitedString(ans, ""));
                 question.setDifficultyLevel(QuestionDifficultyEnum.getCodeByName(model.getDifficultyLevel()));
-                //进行拼接题目选项存储Question字段
-                question.setQuestion(concatenateOptionsHtml(model.getOptions(),model.getQuestion()));
-                //存入questionTest
-                question.setQuestionText(concatenateOptionsPlain(model.getOptions(),model.getQuestion()));
-                
+                question.setQuestion(concatenateOptionsHtmlByTokens(optionTokens, model.getQuestion()));
+                question.setQuestionText(concatenateOptionsPlainByTokens(optionTokens, model.getQuestion()));
             }
-            //填空题
-            if(QuestionTypesEnum.TIANKONG.getName().equals(shape)){
+            if (QuestionTypesEnum.TIANKONG.getName().equals(shape)) {
                 question.setShape(QuestionTypesEnum.TIANKONG.getCode());
                 question.setTitle(model.getTitle());
-                // 为填空题题目内容添加<p>标签格式化
                 question.setQuestion("<p>" + model.getQuestion() + "</p>");
                 question.setQuestionText(StripHT(model.getQuestion()));
-                
-                // 解析填空题答案
-                FillBlankAnswer fillBlankAnswer = parseFillBlankAnswer(model.getAnswer());
-                question.setOptions(fillBlankAnswer.getOptionsFormat());     // [填空答案1,填空答案2]
-                question.setAnswer(fillBlankAnswer.getAnswerFormat());       // 填空答案1&%&填空答案2
-                question.setAnswerCount(fillBlankAnswer.getAnswerCount());   // 答案数量
-                
+                // 填空：仅按%$%分隔
+                FillBlankAnswer fillBlankAnswer = parseFillBlankAnswerByDelim(model.getAnswer());
+                question.setOptions(fillBlankAnswer.getOptionsFormat());
+                question.setAnswer(fillBlankAnswer.getAnswerFormat());
+                question.setAnswerCount(fillBlankAnswer.getAnswerCount());
                 question.setDifficultyLevel(QuestionDifficultyEnum.getCodeByName(model.getDifficultyLevel()));
-                
             }
-            //主观题
-            if(QuestionTypesEnum.ZHUGUAN.getName().equals(shape)){
+            if (QuestionTypesEnum.ZHUGUAN.getName().equals(shape)) {
                 question.setShape(QuestionTypesEnum.ZHUGUAN.getCode());
                 question.setTitle(model.getTitle());
-                // 为主观题题目内容添加<p>标签格式化
                 question.setQuestion("<p>" + model.getQuestion() + "</p>");
                 question.setQuestionText(StripHT(model.getQuestion()));
                 question.setAnswer(model.getAnswer());
                 question.setDifficultyLevel(QuestionDifficultyEnum.getCodeByName(model.getDifficultyLevel()));
-                // 主观题需要设置是否需要批改
-                if(StrUtil.isNotBlank(model.getNeedCorrect())) {
+                if (StrUtil.isNotBlank(model.getNeedCorrect())) {
                     question.setNeedCorrect("是".equals(model.getNeedCorrect()) ? 1 : 0);
                 }
-                
             }
-
-            //存入解析
+            // 解析、范围、状态、预计用时、备注
             question.setAnswerTip(model.getAnswerTip());
-            //所属范围
             question.setSymbol(String.valueOf(EntitySystemEnum.getCodeByName(model.getSymbol())));
-            //状态
             question.setState(StatusEnum.getCodeByName(model.getState()));
-            //预计用时
             question.setEstimatedTime(1);
-            //备注
             question.setRemark(model.getRemark());
-
-
-            // 设置题目分类 - 这个之前缺失了
-            if(StrUtil.isNotBlank(model.getType())) {
-                // 假设type字段存储的是分类名称，需要根据名称获取对应的ID
-                // 这里可能需要根据实际的分类枚举来处理
+            if (StrUtil.isNotBlank(model.getType())) {
                 question.setType(QuestionCategoryEnum.getCodeByName(model.getType()));
             }
-            
         } catch (IllegalArgumentException e) {
             System.err.println("枚举转换失败: " + e.getMessage());
-            return null; // 返回null表示数据有问题
+            return null;
         }
-
         return question;
     }
 
+    // 使用token渲染HTML：每个token只取第一个"、"分隔编号与正文
+    private String concatenateOptionsHtmlByTokens(List<String> tokens, String prefix) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<p>").append(prefix).append("</p>").append("<span id='tag'></span>");
+        for (String tok : tokens) {
+            String code = tok;
+            String text = "";
+            int idx = tok.indexOf('、');
+            if (idx > 0) {
+                code = tok.substring(0, idx);
+                text = tok.substring(idx + 1);
+            }
+            sb.append("<p>").append(code).append(".").append(text).append("</p>");
+        }
+        return sb.toString();
+    }
+    private String concatenateOptionsPlainByTokens(List<String> tokens, String prefix) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(prefix);
+        for (String tok : tokens) {
+            String code = tok;
+            String text = "";
+            int idx = tok.indexOf('、');
+            if (idx > 0) {
+                code = tok.substring(0, idx);
+                text = tok.substring(idx + 1);
+            }
+            sb.append(code).append(".").append(text);
+        }
+        return sb.toString();
+    }
+
+    // 仅按%$%解析填空答案
+    private FillBlankAnswer parseFillBlankAnswerByDelim(String answerText) {
+        if (StrUtil.isBlank(answerText)) {
+            return new FillBlankAnswer("[]", "", 0);
+        }
+        List<String> list = splitByDelim(answerText);
+        if (list.isEmpty()) return new FillBlankAnswer("[]", "", 0);
+        String optionsFormat = "[" + String.join(",", list) + "]";
+        String answerFormat = String.join("&%&", list);
+        return new FillBlankAnswer(optionsFormat, answerFormat, list.size());
+    }
 
     private String parseShape(String shapeStr) {
         if (StrUtil.isBlank(shapeStr)) return null;
@@ -620,58 +627,39 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
             errors.append("答案不能为空；");
         }
 
-        // 根据题型验证选项
-        //获取选项列表
-        List<String> strings = extractOptions(model.getOptions());
+        // 仅按"%$%"分隔进行选项/答案校验
+        List<String> optionTokens = splitByDelim(model.getOptions());
+        List<String> optionCodes = parseOptionCodesFromTokens(optionTokens);
 
         if (QuestionTypesEnum.DANXUAN.getName().equals(model.getShape()) || QuestionTypesEnum.DUOXUAN.getName().equals(model.getShape())) {
-
-            if (StrUtil.isBlank(model.getOptions())) {
-                errors.append("单选题和多选题必须设置选项；");
+            if (optionTokens.isEmpty()) {
+                errors.append("单选题和多选题必须设置选项（使用%$%分隔）；");
             }
-            //判断单选题必须是一个选项并且选项是在所提供的选项当中
-            if(QuestionTypesEnum.DANXUAN.getName().equals(model.getShape())){
-                //单选题选项只能为一个 - 修复空指针异常
-                if(StrUtil.isNotBlank(model.getAnswer()) && model.getAnswer().length() > 1){
-                    errors.append("单选题选项必须唯一！");
-                }
-
-                //确保答案选项在提供的选项当中
-                if (StrUtil.isNotBlank(model.getAnswer()) && !strings.contains(model.getAnswer())) {
-                    // 如果选项不在列表中，进行记录错误
-                    errors.append("单选题选项不在所提供的选项中！");
+            List<String> answerTokens = splitByDelim(model.getAnswer());
+            if (QuestionTypesEnum.DANXUAN.getName().equals(model.getShape())) {
+                if (answerTokens.size() != 1) {
+                    errors.append("单选题答案必须且仅能选择一个（使用%$%分隔，不要并列多个）；");
+                } else if (!optionCodes.contains(answerTokens.get(0))) {
+                    errors.append("单选题答案不在所提供的选项中；");
                 }
             }
-            //判断多选题选项并且选项是在所提供的选项当中
-            if(QuestionTypesEnum.DUOXUAN.getName().equals(model.getShape())){
-                //多选题选项必须有多个 - 修复空指针异常
-                if(StrUtil.isBlank(model.getAnswer()) || model.getAnswer().length() <= 1){
-                    errors.append("多选题选项须有多个");
+            if (QuestionTypesEnum.DUOXUAN.getName().equals(model.getShape())) {
+                if (answerTokens.size() < 2) {
+                    errors.append("多选题至少选择两个答案（使用%$%分隔）；");
                 }
-
-                // 确保答案选项在提供的选项当中
-                if(StrUtil.isNotBlank(model.getAnswer())) {
-                    List<String> strings1 = extractOptions(model.getAnswer());
-                    boolean allOptionsValid = true;
-
-                    for (String option : strings1) {
-                        if (!strings.contains(option)) {
-                            allOptionsValid = false;
-                            break; // 如果有一个选项不在列表中，就标记为无效并退出循环
-                        }
+                if (!answerTokens.isEmpty()) {
+                    boolean allValid = true;
+                    for (String a : answerTokens) {
+                        if (!optionCodes.contains(a)) { allValid = false; break; }
                     }
-
-                    if (!allOptionsValid) {
-                        // 如果选项不在列表中，进行记录错误
-                        errors.append("多选题选项不在所提供的选项中！");
+                    if (!allValid) {
+                        errors.append("多选题存在不在选项中的答案；");
                     }
                 }
             }
-
         }
-        // 根据题型验证是否想需要批改
+        // 主观题校验
         if (QuestionTypesEnum.ZHUGUAN.getName().equals(model.getShape())) {
-            // 修复空指针异常
             if (StrUtil.isBlank(model.getNeedCorrect())) {
                 errors.append("主观题必须设置是否批改；");
             } else if (!"是".equals(model.getNeedCorrect()) && !"否".equals(model.getNeedCorrect())) {
@@ -680,13 +668,36 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         }
 
         if (errors.length() > 0) {
-            System.out.println("来到这里并且给出错误："+errors.toString());
             return "第" + rowNum + "行：" + errors.toString();
         }
-
         return null;
     }
 
+    // 仅按"%$%"切分
+    private List<String> splitByDelim(String text) {
+        if (StrUtil.isBlank(text)) return Collections.emptyList();
+        String[] arr = text.split("%\\$%");
+        List<String> list = new ArrayList<>();
+        for (String a : arr) {
+            String t = a == null ? null : a.trim();
+            if (StrUtil.isNotBlank(t)) list.add(t);
+        }
+        return list;
+    }
+
+    // 从每个token的开头抽取选项编号（A、B、A1…）
+    private List<String> parseOptionCodesFromTokens(List<String> tokens) {
+        List<String> codes = new ArrayList<>();
+        Pattern p = Pattern.compile("^([A-Z][0-9]*)");
+        for (String tok : tokens) {
+            Matcher m = p.matcher(tok);
+            if (m.find()) {
+                String code = m.group(1);
+                if (!codes.contains(code)) codes.add(code);
+            }
+        }
+        return codes;
+    }
 
     //拿取选项加值
     public static List<String> extractKeyValuePairs(String content) {
@@ -733,41 +744,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
 
     //拿取所有选项
     public static List<String> extractOptions(String content) {
-        List<String> options = new ArrayList<>();
-        
-        // 如果内容为空，返回空列表
-        if (StrUtil.isBlank(content)) {
-            return options;
-        }
-        
-        // 智能识别格式：如果包含"、"则按选项格式处理，否则按答案格式处理
-        if (content.contains("、")) {
-            // 选项格式：A、你好A，B、你好B  -> 提取 A, B
-            String regex = "([A-Z][0-9]*)、";
-            Pattern pattern = Pattern.compile(regex);
-            Matcher matcher = pattern.matcher(content);
-
-            while (matcher.find()) {
-                String option = matcher.group(1); // 获取选项部分（不包括"、"）
-                if (!options.contains(option)) { // 避免重复添加
-                    options.add(option);
-                }
-            }
-        } else {
-            // 答案格式：AB 或 A -> 提取每个字母作为单独选项
-            String regex = "([A-Z][0-9]*)";
-            Pattern pattern = Pattern.compile(regex);
-            Matcher matcher = pattern.matcher(content);
-
-            while (matcher.find()) {
-                String option = matcher.group(1);
-                if (!options.contains(option)) { // 避免重复添加
-                    options.add(option);
-                }
-            }
-        }
-
-        return options;
+        return Collections.emptyList();
     }
 
     /**
@@ -795,36 +772,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
      * 解析填空题答案
      */
     private FillBlankAnswer parseFillBlankAnswer(String answerText) {
-        if (StrUtil.isBlank(answerText)) {
-            return new FillBlankAnswer("[]", "", 0);
-        }
-        
-        // 按中文逗号分割答案
-        String[] answers = answerText.split("，");
-        List<String> answerList = new ArrayList<>();
-        
-        // 去除空白并添加到列表
-        for (String answer : answers) {
-            String trimmedAnswer = answer.trim();
-            if (StrUtil.isNotBlank(trimmedAnswer)) {
-                answerList.add(trimmedAnswer);
-            }
-        }
-        
-        if (answerList.isEmpty()) {
-            return new FillBlankAnswer("[]", "", 0);
-        }
-        
-        // 生成options格式：[填空答案1,填空答案2]
-        String optionsFormat = "[" + String.join(",", answerList) + "]";
-        
-        // 生成answer格式：填空答案1&%&填空答案2
-        String answerFormat = String.join("&%&", answerList);
-        
-        // 答案数量
-        Integer answerCount = answerList.size();
-        
-        return new FillBlankAnswer(optionsFormat, answerFormat, answerCount);
+        return parseFillBlankAnswerByDelim(answerText);
     }
 
 
@@ -1109,7 +1057,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
 //                    List<String> groups = splitGroups(r.getFormTitleItemsRaw());
 //                    for (int gi = 0; gi < groups.size(); gi++) {
 //                        List<String> fs = splitFields(groups.get(gi));
-//                        if (fs.size() < 2) { errs.add("题目单-二级标题 第" + (gi+1) + "项格式应为“标题, 排序”；"); continue; }
+//                        if (fs.size() < 2) { errs.add("题目单-二级标题 第" + (gi+1) + "项格式应为"标题, 排序"；"); continue; }
 //                        if (StrUtil.isBlank(fs.get(0))) errs.add("题目单-二级标题 第" + (gi+1) + "项：标题不能为空；");
 //                        if (!isInteger(fs.get(1))) errs.add("题目单-二级标题 第" + (gi+1) + "项：排序必须为整数；");
 //                    }
@@ -1120,7 +1068,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
 //                    List<String> groups = splitGroups(r.getFormAnswerItemsRaw());
 //                    for (int gi = 0; gi < groups.size(); gi++) {
 //                        List<String> fs = splitFields(groups.get(gi));
-//                        if (fs.size() < 4) { errs.add("子题-文本答案 第" + (gi+1) + "项格式应为“标签, 提示, 答案, 排序”；"); continue; }
+//                        if (fs.size() < 4) { errs.add("子题-文本答案 第" + (gi+1) + "项格式应为"标签, 提示, 答案, 排序"；"); continue; }
 //                        if (StrUtil.isBlank(fs.get(0))) errs.add("子题-文本答案 第" + (gi+1) + "项：标签不能为空；");
 //                        if (StrUtil.isBlank(fs.get(2))) errs.add("子题-文本答案 第" + (gi+1) + "项：答案不能为空；");
 //                        if (!isInteger(fs.get(3))) errs.add("子题-文本答案 第" + (gi+1) + "项：排序必须为整数；");
@@ -1130,7 +1078,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
 //                    List<String> groups = splitGroups(r.getFormFileAnswerItemsRaw());
 //                    for (int gi = 0; gi < groups.size(); gi++) {
 //                        List<String> fs = splitFields(groups.get(gi));
-//                        if (fs.size() < 4) { errs.add("子题-文件答案 第" + (gi+1) + "项格式应为“标签, 类型, 路径, 排序”；"); continue; }
+//                        if (fs.size() < 4) { errs.add("子题-文件答案 第" + (gi+1) + "项格式应为"标签, 类型, 路径, 排序"；"); continue; }
 //                        String rel = normalizeRelPath(fs.get(2));
 //                        if (StrUtil.isBlank(fs.get(0))) errs.add("子题-文件答案 第" + (gi+1) + "项：标签不能为空；");
 //                        if (StrUtil.isBlank(fs.get(1))) errs.add("子题-文件答案 第" + (gi+1) + "项：类型不能为空；");
@@ -1153,7 +1101,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
 //                        || StrUtil.isNotBlank(r.getFormAnswerItemsRaw())
 //                        || StrUtil.isNotBlank(r.getFormFileAnswerItemsRaw());
 //                if (!hasAny) {
-//                    vr.errors.add("第" + rowNum + "行：子内容行为空，请填写“新增二级标题/答案”列");
+//                    vr.errors.add("第" + rowNum + "行：子内容行为空，请填写"新增二级标题/答案"列");
 //                    continue;
 //                }
 //
@@ -1166,7 +1114,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
 //                    List<String> groups = splitGroups(r.getFormTitleItemsRaw());
 //                    for (int gi = 0; gi < groups.size(); gi++) {
 //                        List<String> fs = splitFields(groups.get(gi));
-//                        if (fs.size() < 2) { vr.errors.add("第" + rowNum + "行[题目单-二级标题 第" + (gi+1) + "项]：格式应为“标题, 排序”；"); hasRowError = true; continue; }
+//                        if (fs.size() < 2) { vr.errors.add("第" + rowNum + "行[题目单-二级标题 第" + (gi+1) + "项]：格式应为"标题, 排序"；"); hasRowError = true; continue; }
 //                        if (StrUtil.isBlank(fs.get(0))) { vr.errors.add("第" + rowNum + "行[题目单-二级标题 第" + (gi+1) + "项]：标题不能为空；"); hasRowError = true; }
 //                        if (!isInteger(fs.get(1))) { vr.errors.add("第" + rowNum + "行[题目单-二级标题 第" + (gi+1) + "项]：排序必须为整数；"); hasRowError = true; }
 //                    }
@@ -1175,7 +1123,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
 //                    List<String> groups = splitGroups(r.getFormAnswerItemsRaw());
 //                    for (int gi = 0; gi < groups.size(); gi++) {
 //                        List<String> fs = splitFields(groups.get(gi));
-//                        if (fs.size() < 4) { vr.errors.add("第" + rowNum + "行[子题-文本答案 第" + (gi+1) + "项]：格式应为“标签, 提示, 答案, 排序”；"); hasRowError = true; continue; }
+//                        if (fs.size() < 4) { vr.errors.add("第" + rowNum + "行[子题-文本答案 第" + (gi+1) + "项]：格式应为"标签, 提示, 答案, 排序"；"); hasRowError = true; continue; }
 //                        if (StrUtil.isBlank(fs.get(0))) { vr.errors.add("第" + rowNum + "行[子题-文本答案 第" + (gi+1) + "项]：标签不能为空；"); hasRowError = true; }
 //                        if (StrUtil.isBlank(fs.get(2))) { vr.errors.add("第" + rowNum + "行[子题-文本答案 第" + (gi+1) + "项]：答案不能为空；"); hasRowError = true; }
 //                        if (!isInteger(fs.get(3))) { vr.errors.add("第" + rowNum + "行[子题-文本答案 第" + (gi+1) + "项]：排序必须为整数；"); hasRowError = true; }
@@ -1185,7 +1133,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
 //                    List<String> groups = splitGroups(r.getFormFileAnswerItemsRaw());
 //                    for (int gi = 0; gi < groups.size(); gi++) {
 //                        List<String> fs = splitFields(groups.get(gi));
-//                        if (fs.size() < 4) { vr.errors.add("第" + rowNum + "行[子题-文件答案 第" + (gi+1) + "项]：格式应为“标签, 类型, 路径, 排序”；"); hasRowError = true; continue; }
+//                        if (fs.size() < 4) { vr.errors.add("第" + rowNum + "行[子题-文件答案 第" + (gi+1) + "项]：格式应为"标签, 类型, 路径, 排序"；"); hasRowError = true; continue; }
 //                        String rel = normalizeRelPath(fs.get(2));
 //                        if (StrUtil.isBlank(fs.get(0))) { vr.errors.add("第" + rowNum + "行[子题-文件答案 第" + (gi+1) + "项]：标签不能为空；"); hasRowError = true; }
 //                        if (StrUtil.isBlank(fs.get(1))) { vr.errors.add("第" + rowNum + "行[子题-文件答案 第" + (gi+1) + "项]：类型不能为空；"); hasRowError = true; }
@@ -1447,8 +1395,8 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
                     Integer questionId = persistQuestionHeadV2(h, qFileUrl, qMatUrl);
                     if (questionId == null) {
                         result.getErrorMessages().add("[" + h.getGroupCode() + "] 题目单保存失败");
-                        continue;
-                    }
+                    continue;
+                }
                     // 保存二级标题
                     Map<Integer, Integer> titleNo2Id = new HashMap<>();
                     List<QfTitleV2> tList = g2Titles.getOrDefault(h.getGroupCode(), Collections.emptyList());
@@ -1460,8 +1408,8 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
                         boolean ok = questionFormTitleService.save(e);
                         if (!ok || e.getId() == null) {
                             result.getErrorMessages().add("[" + h.getGroupCode() + "] 二级标题保存失败：" + t.getTitle());
-                            continue;
-                        }
+                    continue;
+                }
                         titleNo2Id.put(t.getTitleNo(), e.getId());
                     }
                     // 保存文字答案
@@ -1637,14 +1585,14 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         try { if (StrUtil.isNotBlank(h.getDifficultyLevel())) q.setDifficultyLevel(QuestionDifficultyEnum.getCodeByName(h.getDifficultyLevel())); } catch (Exception ignore) {}
         try { if (StrUtil.isNotBlank(h.getSymbol())) q.setSymbol(String.valueOf(EntitySystemEnum.getCodeByName(h.getSymbol()))); } catch (Exception ignore) {}
         try { if (StrUtil.isNotBlank(h.getState())) q.setState(StatusEnum.getCodeByName(h.getState())); } catch (Exception ignore) {}
-        q.setEstimatedTime(1);
+         q.setEstimatedTime(1);
         q.setIsForm(1);
         q.setAnswer("试题单");
         q.setOptions("[A,B]");
         boolean ok = this.save(q);
         return ok ? q.getId() : null;
     }
-
+ 
     // 相对 Excel 目录 → zip 根目录 → 不区分大小写索引 依次查找
     private File findFileByRelPath(String normalizedRel, File excelBaseDir, Path zipRoot, Map<String, File> lowerIndex) {
         File f = new File(excelBaseDir, normalizedRel);
