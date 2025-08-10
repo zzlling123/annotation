@@ -14,6 +14,10 @@ import com.xinkao.erp.manage.service.MarkService;
 import com.xinkao.erp.question.entity.*;
 import com.xinkao.erp.question.excel.QuestionFormZipImportModel;
 import com.xinkao.erp.question.excel.QuestionImportModel;
+import com.xinkao.erp.question.excel.QfHeadV2;
+import com.xinkao.erp.question.excel.QfTitleV2;
+import com.xinkao.erp.question.excel.QfTextAnsV2;
+import com.xinkao.erp.question.excel.QfFileAnsV2;
 import com.xinkao.erp.question.mapper.LabelMapper;
 import com.xinkao.erp.question.mapper.QuestionMapper;
 import com.xinkao.erp.question.param.QuestionChildParam;
@@ -1449,4 +1453,256 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
                 });
     }
 
+    @Override
+    public QuestionImportResultVO importQuestionFormZipV2(MultipartFile file) throws IOException {
+        QuestionImportResultVO result = new QuestionImportResultVO();
+        Path tempDir = Files.createTempDirectory("qform_zip_v2_");
+        try {
+            unzipTo(tempDir, file);
+            File excelFile = findFirstExcel(tempDir);
+            if (excelFile == null) {
+                throw new IllegalArgumentException("zip 内未找到 Excel 文件（.xlsx/.xls）");
+            }
+            // 读取4个Sheet
+            List<QfHeadV2> heads = EasyExcel.read(excelFile).head(QfHeadV2.class).sheet("题目单").doReadSync();
+            List<QfTitleV2> titles = EasyExcel.read(excelFile).head(QfTitleV2.class).sheet("二级标题").doReadSync();
+            List<QfTextAnsV2> textAnswers = EasyExcel.read(excelFile).head(QfTextAnsV2.class).sheet("文字答案").doReadSync();
+            List<QfFileAnsV2> fileAnswers = EasyExcel.read(excelFile).head(QfFileAnsV2.class).sheet("文件答案").doReadSync();
+            // 校验
+            V2Validation vr = validateV2(heads, titles, textAnswers, fileAnswers, tempDir, excelFile.getParentFile());
+            result.setTotalCount(vr.totalGroups);
+            result.setSuccessCount(vr.successGroups);
+            result.setFailCount(vr.totalGroups - vr.successGroups);
+            result.setErrorMessages(vr.errors);
+            if (!vr.errors.isEmpty()) {
+                return result;
+            }
+            // 分组
+            Map<String, List<QfTitleV2>> g2Titles = titles.stream().collect(Collectors.groupingBy(QfTitleV2::getGroupCode));
+            Map<String, List<QfTextAnsV2>> g2Texts = textAnswers.stream().collect(Collectors.groupingBy(QfTextAnsV2::getGroupCode));
+            Map<String, List<QfFileAnsV2>> g2Files = fileAnswers.stream().collect(Collectors.groupingBy(QfFileAnsV2::getGroupCode));
+            Map<String, File> lowerIndex = buildLowercaseIndex(tempDir);
+
+            int success = 0;
+            for (QfHeadV2 h : heads) {
+                try {
+                    // 上传题干文件/素材
+                    String qFileUrl = null, qMatUrl = null;
+                    if (StrUtil.isNotBlank(h.getQuestionFileRelPath())) {
+                        File src = findFileByRelPath(normalizeRelPath(h.getQuestionFileRelPath()), excelFile.getParentFile(), tempDir, lowerIndex);
+                        if (src == null) {
+                            result.getErrorMessages().add("[" + h.getGroupCode() + "] 题干文件未找到：" + h.getQuestionFileRelPath());
+                            continue;
+                        }
+                        qFileUrl = saveToFileUrlAndGetAccessUrl(src);
+                    }
+                    if (StrUtil.isNotBlank(h.getQuestionMaterialRelPath())) {
+                        File src2 = findFileByRelPath(normalizeRelPath(h.getQuestionMaterialRelPath()), excelFile.getParentFile(), tempDir, lowerIndex);
+                        if (src2 == null) {
+                            result.getErrorMessages().add("[" + h.getGroupCode() + "] 题干素材未找到：" + h.getQuestionMaterialRelPath());
+                            continue;
+                        }
+                        qMatUrl = saveToFileUrlAndGetAccessUrl(src2);
+                    }
+                    // 保存题目头
+                    Integer questionId = persistQuestionHeadV2(h, qFileUrl, qMatUrl);
+                    if (questionId == null) {
+                        result.getErrorMessages().add("[" + h.getGroupCode() + "] 题目单保存失败");
+                        continue;
+                    }
+                    // 保存二级标题
+                    Map<Integer, Integer> titleNo2Id = new HashMap<>();
+                    List<QfTitleV2> tList = g2Titles.getOrDefault(h.getGroupCode(), Collections.emptyList());
+                    for (QfTitleV2 t : tList) {
+                        QuestionFormTitle e = new QuestionFormTitle();
+                        e.setPid(questionId);
+                        e.setQuestion(t.getTitle());
+                        if (t.getSort() != null) e.setSort(t.getSort());
+                        boolean ok = questionFormTitleService.save(e);
+                        if (!ok || e.getId() == null) {
+                            result.getErrorMessages().add("[" + h.getGroupCode() + "] 二级标题保存失败：" + t.getTitle());
+                            continue;
+                        }
+                        titleNo2Id.put(t.getTitleNo(), e.getId());
+                    }
+                    // 保存文字答案
+                    List<QfTextAnsV2> taList = g2Texts.getOrDefault(h.getGroupCode(), Collections.emptyList());
+                    for (QfTextAnsV2 ta : taList) {
+                        Integer pid = titleNo2Id.get(ta.getTitleNo());
+                        if (pid == null) {
+                            result.getErrorMessages().add("[" + h.getGroupCode() + "] 找不到文字答案对应的二级标题 title_no=" + ta.getTitleNo());
+                            continue;
+                        }
+                        QuestionChild child = new QuestionChild();
+                        child.setQuestionId(questionId);
+                        child.setPid(pid);
+                        child.setQuestion(ta.getLabel());
+                        child.setDefaultText(ta.getTip());
+                        child.setIsFile(0);
+                        child.setAnswer(ta.getAnswer());
+                        if (ta.getSort() != null) child.setSort(ta.getSort());
+                        child.setState(1);
+                        boolean saved = questionChildService.save(child);
+                        if (!saved) {
+                            result.getErrorMessages().add("[" + h.getGroupCode() + "] 文字答案保存失败：" + ta.getLabel());
+                        }
+                    }
+                    // 保存文件答案
+                    List<QfFileAnsV2> faList = g2Files.getOrDefault(h.getGroupCode(), Collections.emptyList());
+                    for (QfFileAnsV2 fa : faList) {
+                        Integer pid = titleNo2Id.get(fa.getTitleNo());
+                        if (pid == null) {
+                            result.getErrorMessages().add("[" + h.getGroupCode() + "] 找不到文件答案对应的二级标题 title_no=" + fa.getTitleNo());
+                            continue;
+                        }
+                        File src = findFileByRelPath(normalizeRelPath(fa.getFileRelPath()), excelFile.getParentFile(), tempDir, lowerIndex);
+                        if (src == null) {
+                            result.getErrorMessages().add("[" + h.getGroupCode() + "] 文件答案未找到：" + fa.getFileRelPath());
+                            continue;
+                        }
+                        String url = saveToFileUrlAndGetAccessUrl(src);
+                        QuestionChild child = new QuestionChild();
+                        child.setQuestionId(questionId);
+                        child.setPid(pid);
+                        child.setQuestion(fa.getLabel());
+                        child.setIsFile(1);
+                        child.setFileType(fa.getFileType());
+                        child.setAnswer(url);
+                        if (fa.getSort() != null) child.setSort(fa.getSort());
+                        child.setState(1);
+                        boolean saved = questionChildService.save(child);
+                        if (!saved) {
+                            result.getErrorMessages().add("[" + h.getGroupCode() + "] 文件答案保存失败：" + fa.getLabel());
+                        }
+                    }
+                    success++;
+                } catch (Exception ex) {
+                    result.getErrorMessages().add("[" + h.getGroupCode() + "] 保存失败：" + ex.getMessage());
+                }
+            }
+            result.setSuccessCount(success);
+            result.setFailCount(result.getTotalCount() - success);
+            return result;
+        } finally {
+            deleteDirectoryQuietly(tempDir);
+        }
+    }
+
+    private static class V2Validation {
+        int totalGroups;
+        int successGroups;
+        List<String> errors = new ArrayList<>();
+    }
+
+    private V2Validation validateV2(List<QfHeadV2> heads,
+                                    List<QfTitleV2> titles,
+                                    List<QfTextAnsV2> textAnswers,
+                                    List<QfFileAnsV2> fileAnswers,
+                                    Path zipRoot,
+                                    File excelBaseDir) throws IOException {
+        V2Validation vr = new V2Validation();
+        if (heads == null) heads = Collections.emptyList();
+        if (titles == null) titles = Collections.emptyList();
+        if (textAnswers == null) textAnswers = Collections.emptyList();
+        if (fileAnswers == null) fileAnswers = Collections.emptyList();
+
+        Map<String, QfHeadV2> groupHead = new LinkedHashMap<>();
+        int row = 2;
+        for (QfHeadV2 h : heads) {
+            if (h == null) { row++; continue; }
+            List<String> errs = new ArrayList<>();
+            if (StrUtil.isBlank(h.getGroupCode())) errs.add("Sheet[题目单] 第"+row+"行：组代码不能为空；");
+            if (StrUtil.isBlank(h.getType())) errs.add("Sheet[题目单] 第"+row+"行：题目分类不能为空；");
+            if (StrUtil.isBlank(h.getTitle())) errs.add("Sheet[题目单] 第"+row+"行：题目标题不能为空；");
+            if (StrUtil.isBlank(h.getDifficultyLevel())) errs.add("Sheet[题目单] 第"+row+"行：难度不能为空；");
+            if (StrUtil.isBlank(h.getSymbol())) errs.add("Sheet[题目单] 第"+row+"行：试题标签不能为空；");
+            if (StrUtil.isBlank(h.getState())) errs.add("Sheet[题目单] 第"+row+"行：状态不能为空；");
+            if (groupHead.containsKey(h.getGroupCode())) errs.add("Sheet[题目单] 第"+row+"行：组代码重复；");
+            if (!errs.isEmpty()) vr.errors.addAll(errs); else groupHead.put(h.getGroupCode(), h);
+            row++;
+        }
+        vr.totalGroups = groupHead.size();
+
+        Map<String, Map<Integer, QfTitleV2>> g2TitleNo = new HashMap<>();
+        row = 2;
+        for (QfTitleV2 t : titles) {
+            if (t == null) { row++; continue; }
+            List<String> errs = new ArrayList<>();
+            if (StrUtil.isBlank(t.getGroupCode())) errs.add("Sheet[二级标题] 第"+row+"行：组代码不能为空；");
+            if (t.getTitleNo() == null) errs.add("Sheet[二级标题] 第"+row+"行：标题编号不能为空；");
+            if (StrUtil.isBlank(t.getTitle())) errs.add("Sheet[二级标题] 第"+row+"行：标题不能为空；");
+            if (t.getSort() == null) errs.add("Sheet[二级标题] 第"+row+"行：排序不能为空；");
+            if (!groupHead.containsKey(t.getGroupCode())) errs.add("Sheet[二级标题] 第"+row+"行：找不到对应题目单 groupCode；");
+            Map<Integer, QfTitleV2> idx = g2TitleNo.computeIfAbsent(t.getGroupCode(), k -> new HashMap<>());
+            if (t.getTitleNo() != null && idx.containsKey(t.getTitleNo())) errs.add("Sheet[二级标题] 第"+row+"行：同组标题编号重复；");
+            if (!errs.isEmpty()) vr.errors.addAll(errs); else idx.put(t.getTitleNo(), t);
+            row++;
+        }
+
+        row = 2;
+        for (QfTextAnsV2 a : textAnswers) {
+            if (a == null) { row++; continue; }
+            List<String> errs = new ArrayList<>();
+            if (StrUtil.isBlank(a.getGroupCode())) errs.add("Sheet[文字答案] 第"+row+"行：组代码不能为空；");
+            if (a.getTitleNo() == null) errs.add("Sheet[文字答案] 第"+row+"行：标题编号不能为空；");
+            if (StrUtil.isBlank(a.getLabel())) errs.add("Sheet[文字答案] 第"+row+"行：标签不能为空；");
+            if (StrUtil.isBlank(a.getAnswer())) errs.add("Sheet[文字答案] 第"+row+"行：答案不能为空；");
+            if (a.getSort() == null) errs.add("Sheet[文字答案] 第"+row+"行：排序不能为空；");
+            if (!groupHead.containsKey(a.getGroupCode())) errs.add("Sheet[文字答案] 第"+row+"行：找不到对应题目单 groupCode；");
+            Map<Integer, QfTitleV2> idx = g2TitleNo.getOrDefault(a.getGroupCode(), Collections.emptyMap());
+            if (a.getTitleNo() != null && !idx.containsKey(a.getTitleNo())) errs.add("Sheet[文字答案] 第"+row+"行：找不到对应二级标题 title_no；");
+            if (!errs.isEmpty()) vr.errors.addAll(errs);
+            row++;
+        }
+
+        row = 2;
+        for (QfFileAnsV2 f : fileAnswers) {
+            if (f == null) { row++; continue; }
+            List<String> errs = new ArrayList<>();
+            if (StrUtil.isBlank(f.getGroupCode())) errs.add("Sheet[文件答案] 第"+row+"行：组代码不能为空；");
+            if (f.getTitleNo() == null) errs.add("Sheet[文件答案] 第"+row+"行：标题编号不能为空；");
+            if (StrUtil.isBlank(f.getLabel())) errs.add("Sheet[文件答案] 第"+row+"行：标签不能为空；");
+            if (StrUtil.isBlank(f.getFileType())) errs.add("Sheet[文件答案] 第"+row+"行：类型不能为空；");
+            if (StrUtil.isBlank(f.getFileRelPath())) errs.add("Sheet[文件答案] 第"+row+"行：文件相对路径不能为空；");
+            if (f.getSort() == null) errs.add("Sheet[文件答案] 第"+row+"行：排序不能为空；");
+            if (!groupHead.containsKey(f.getGroupCode())) errs.add("Sheet[文件答案] 第"+row+"行：找不到对应题目单 groupCode；");
+            Map<Integer, QfTitleV2> idx = g2TitleNo.getOrDefault(f.getGroupCode(), Collections.emptyMap());
+            if (f.getTitleNo() != null && !idx.containsKey(f.getTitleNo())) errs.add("Sheet[文件答案] 第"+row+"行：找不到对应二级标题 title_no；");
+            // 路径存在性（zip内）
+            if (StrUtil.isNotBlank(f.getFileRelPath())) {
+                String rel = normalizeRelPath(f.getFileRelPath());
+                if (findFileByRelPath(rel, excelBaseDir, zipRoot, buildLowercaseIndex(zipRoot)) == null) {
+                    // 为避免性能影响，可在持久化时统一查找并上传，这里仅做基本提示可选
+                }
+            }
+            if (!errs.isEmpty()) vr.errors.addAll(errs);
+            row++;
+        }
+
+        // 若无错误，以有 head 的组为成功校验
+        if (vr.errors.isEmpty()) vr.successGroups = groupHead.size();
+        return vr;
+    }
+
+    private Integer persistQuestionHeadV2(QfHeadV2 h, String qFileUrl, String qMatUrl) {
+        Question q = new Question();
+        q.setShape(QuestionTypesEnum.TIMUDAN.getCode());
+        q.setTitle(h.getTitle());
+        if (StrUtil.isNotBlank(qFileUrl) || StrUtil.isNotBlank(qMatUrl)) {
+            String content = StrUtil.nullToEmpty(qFileUrl);
+            if (StrUtil.isNotBlank(qMatUrl)) content = StrUtil.isBlank(content) ? qMatUrl : content + "," + qMatUrl;
+            q.setQuestion(content);
+            q.setQuestionText(content);
+        }
+        try { if (StrUtil.isNotBlank(h.getType())) q.setType(QuestionCategoryEnum.getCodeByName(h.getType())); } catch (Exception ignore) {}
+        try { if (StrUtil.isNotBlank(h.getDifficultyLevel())) q.setDifficultyLevel(QuestionDifficultyEnum.getCodeByName(h.getDifficultyLevel())); } catch (Exception ignore) {}
+        try { if (StrUtil.isNotBlank(h.getSymbol())) q.setSymbol(String.valueOf(EntitySystemEnum.getCodeByName(h.getSymbol()))); } catch (Exception ignore) {}
+        try { if (StrUtil.isNotBlank(h.getState())) q.setState(StatusEnum.getCodeByName(h.getState())); } catch (Exception ignore) {}
+        q.setEstimatedTime(1);
+        q.setIsForm(1);
+        q.setAnswer("试题单");
+        q.setOptions("[A,B]");
+        boolean ok = this.save(q);
+        return ok ? q.getId() : null;
+    }
 }
