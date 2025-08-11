@@ -259,6 +259,27 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
     }
 
     @Override
+    public BaseResponse<?> delTitle(DeleteParam param) {
+        for (String id : param.getIds()) {
+            questionFormTitleService.lambdaUpdate().eq(QuestionFormTitle::getId, id)
+                    .set(QuestionFormTitle::getIsDel, CommonEnum.IS_DEL.YES.getCode())
+                    .update();
+            //同步删除child题目列表
+            questionChildService.lambdaUpdate().eq(QuestionChild::getPid, id)
+                    .set(QuestionChild::getIsDel, CommonEnum.IS_DEL.YES.getCode())
+                    .update();
+        }
+        return BaseResponse.ok("删除成功！");
+    }
+
+    @Override
+    public BaseResponse<?> delChild(DeleteParam param) {
+        return questionChildService.lambdaUpdate().in(QuestionChild::getId, param.getIds())
+                .set(QuestionChild::getIsDel, CommonEnum.IS_DEL.YES.getCode())
+                .update() ? BaseResponse.ok("删除成功！") : BaseResponse.fail("删除失败！");
+    }
+
+    @Override
     public void selfSave() {
         // 定义题目分类和题型
         List<QuestionType> types = questionTypeService.lambdaQuery().list();
@@ -313,10 +334,12 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
     public BaseResponse<List<QuestionFormVo>> getQuestionFormInfo(Integer questionId){
         List<QuestionFormTitle> questionFormTitleList = questionFormTitleService.lambdaQuery()
                 .eq(QuestionFormTitle::getPid, questionId)
+                .eq(QuestionFormTitle::getIsDel, CommonEnum.IS_DEL.NO.getCode())
                 .orderByAsc(QuestionFormTitle::getSort)
                 .list();
         Map<Integer,List<QuestionChild>> questionChildList = questionChildService.lambdaQuery()
                 .eq(QuestionChild::getQuestionId, questionId)
+                .eq(QuestionChild::getIsDel, CommonEnum.IS_DEL.NO.getCode())
                 .orderByAsc(QuestionChild::getSort)
                 .list()
                 .stream()

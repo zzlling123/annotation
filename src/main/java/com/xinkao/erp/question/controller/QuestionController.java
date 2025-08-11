@@ -294,7 +294,6 @@ public class    QuestionController extends BaseController {
     @ApiOperation("编辑题目")
     @Log(content = "编辑题目",operationType = OperationType.UPDATE)
     public BaseResponse<?> update(@Valid @RequestBody QuestionParam questionParam) {
-        System.out.println("测试");
         return questionService.update(questionParam);
     }
 
@@ -311,6 +310,36 @@ public class    QuestionController extends BaseController {
     @Log(content = "批量删除题目",operationType = OperationType.DELETE)
     public BaseResponse<?> del(@RequestBody DeleteParam param) {
         return questionService.del(param);
+    }
+
+    /**
+     * 批量删除二级标题题目
+     *
+     * @param param 二级标题题目ID列表
+     * @return 操作结果
+     */
+    @PrimaryDataSource
+    @DataScope(role = "1,2")
+    @PostMapping("/delTitle")
+    @ApiOperation("批量删除二级标题题目")
+    @Log(content = "批量删除二级标题题目",operationType = OperationType.DELETE)
+    public BaseResponse<?> delTitle(@RequestBody DeleteParam param) {
+        return questionService.delTitle(param);
+    }
+
+    /**
+     * 批量删除二级标题题目
+     *
+     * @param param 二级标题题目ID列表
+     * @return 操作结果
+     */
+    @PrimaryDataSource
+    @DataScope(role = "1,2")
+    @PostMapping("/delChild")
+    @ApiOperation("批量删除二级标题题目")
+    @Log(content = "批量删除二级标题题目",operationType = OperationType.DELETE)
+    public BaseResponse<?> delChild(@RequestBody DeleteParam param) {
+        return questionService.delChild(param);
     }
 
     /**

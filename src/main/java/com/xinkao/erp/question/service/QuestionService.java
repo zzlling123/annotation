@@ -102,6 +102,21 @@ public interface QuestionService extends BaseService<Question> {
      */
     BaseResponse<?> del(DeleteParam param);
 
+    /**
+     * 批量删除二级标题题目
+     *
+     * @param param 题库ID列表
+     * @return 操作结果
+     */
+    BaseResponse<?> delTitle(DeleteParam param);
+    /**
+     * 批量删除题目单子题
+     *
+     * @param param 题库ID列表
+     * @return 操作结果
+     */
+    BaseResponse<?> delChild(DeleteParam param);
+
 
     void selfSave();
 
