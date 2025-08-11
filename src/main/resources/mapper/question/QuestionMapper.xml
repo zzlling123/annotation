@@ -25,6 +25,9 @@
         <if test="query.forExercise != null and query.forExercise != ''">
             AND q.for_exercise = #{query.forExercise}
         </if>
+          <if test="query.symbol != null and query.symbol != ''">
+            AND q.symbol = #{query.symbol}
+        </if>
         order by q.create_time desc
     </select>
 
@@ -50,6 +53,9 @@
         </if>
         <if test="query.forExercise != null and query.forExercise != ''">
             AND q.for_exercise = #{query.forExercise}
+        </if>
+        <if test="query.symbol != null and query.symbol != ''">
+            AND q.symbol = #{query.symbol}
         </if>
         <!-- 新增的 classId 匹配条件 -->
         <if test="query.classId != null and query.classId != ''">

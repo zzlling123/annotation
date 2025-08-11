@@ -37,6 +37,9 @@ public class QuestionExercisePageVo extends BaseEntity {
     @ApiModelProperty("是否启用0否1是")
     private Integer state;
 
+    @ApiModelProperty("所属范围1人社局2学校")
+    private Integer symbol;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date createTime;
 

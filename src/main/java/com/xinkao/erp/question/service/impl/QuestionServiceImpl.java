@@ -341,6 +341,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
     public QuestionImportResultVO importQuestions(MultipartFile file) {
         QuestionImportResultVO result = new QuestionImportResultVO();
         List<String> errorMessages = new ArrayList<>();
+        List<QuestionImportResultVO.RowError> rowErrors = new ArrayList<>();
 
         try {
             List<QuestionImportModel> importList = EasyExcel.read(file.getInputStream())
@@ -353,6 +354,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
                 result.setSuccessCount(0);
                 result.setFailCount(0);
                 result.setErrorMessages(Arrays.asList("Excel文件为空或格式不正确"));
+                result.setRowErrors(new ArrayList<>());
                 return result;
             }
 
@@ -362,26 +364,39 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
 
             for (int i = 0; i < importList.size(); i++) {
                 QuestionImportModel model = importList.get(i);
+                int rowNum = i + 2; // Excel 数据从第2行
                 try {
-                    // 数据验证
-                    String validationError = validateQuestionData(model, i + 2);
+                    String validationError = validateQuestionData(model, rowNum);
                     if (StrUtil.isNotBlank(validationError)) {
                         errorMessages.add(validationError);
+                        QuestionImportResultVO.RowError re = new QuestionImportResultVO.RowError();
+                        re.setRowNum(rowNum);
+                        re.setMessage(validationError);
+                        rowErrors.add(re);
                         errorList.add(model);
                         continue;
                     }
 
-                    // 使用与单个新增相同的逻辑保存题目
                     BaseResponse<?> saveResult = saveQuestionFromImport(model);
                     if (!"ok".equals(saveResult.getState())) {
-                        errorMessages.add("第" + (i + 2) + "行：" + saveResult.getMsg());
+                        String msg = "第" + rowNum + "行：" + saveResult.getMsg();
+                        errorMessages.add(msg);
+                        QuestionImportResultVO.RowError re = new QuestionImportResultVO.RowError();
+                        re.setRowNum(rowNum);
+                        re.setMessage(saveResult.getMsg());
+                        rowErrors.add(re);
                         errorList.add(model);
                     } else {
                         successCount++;
                     }
 
                 } catch (Exception e) {
-                    errorMessages.add("第" + (i + 2) + "行：" + e.getMessage());
+                    String msg = "第" + rowNum + "行：" + e.getMessage();
+                    errorMessages.add(msg);
+                    QuestionImportResultVO.RowError re = new QuestionImportResultVO.RowError();
+                    re.setRowNum(rowNum);
+                    re.setMessage(e.getMessage());
+                    rowErrors.add(re);
                     errorList.add(model);
                 }
             }
@@ -389,12 +404,17 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
             result.setSuccessCount(successCount);
             result.setFailCount(importList.size() - successCount);
             result.setErrorMessages(errorMessages);
+            result.setRowErrors(rowErrors);
 
         } catch (Exception e) {
             result.setTotalCount(0);
             result.setSuccessCount(0);
             result.setFailCount(0);
             result.setErrorMessages(Arrays.asList("读取Excel文件失败：" + e.getMessage()));
+            QuestionImportResultVO.RowError re = new QuestionImportResultVO.RowError();
+            re.setRowNum(null);
+            re.setMessage("读取Excel文件失败：" + e.getMessage());
+            result.setRowErrors(java.util.Collections.singletonList(re));
         }
 
         return result;
