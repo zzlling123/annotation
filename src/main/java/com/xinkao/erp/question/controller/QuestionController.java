@@ -16,6 +16,7 @@ import com.xinkao.erp.question.entity.Label;
 import com.xinkao.erp.question.entity.Question;
 import com.xinkao.erp.question.entity.QuestionLabel;
 import com.xinkao.erp.question.entity.QuestionType;
+import com.xinkao.erp.question.excel.ImportResultErrorRow;
 import com.xinkao.erp.question.excel.QuestionImportModel;
 import com.xinkao.erp.question.param.QuestionChildParam;
 import com.xinkao.erp.question.param.QuestionFormTitleParam;
@@ -341,26 +342,90 @@ public class    QuestionController extends BaseController {
      */
     @ApiOperation(value = "批量导入题目")
     @PostMapping("/import")
-    public BaseResponse<QuestionImportResultVO> importQuestions(@RequestParam("file") MultipartFile file) {
+    public void importQuestions(@RequestParam("file") MultipartFile file,
+                                HttpServletRequest request,
+                                HttpServletResponse response) throws IOException {
         if (file.isEmpty()) {
-            return BaseResponse.fail("请选择要导入的文件");
+            writeJson(response, BaseResponse.fail("请选择要导入的文件"));
+            return;
         }
-
         String fileName = file.getOriginalFilename();
         if (fileName == null || (!fileName.endsWith(".xlsx") && !fileName.endsWith(".xls"))) {
-            return BaseResponse.fail("请上传Excel文件");
+            writeJson(response, BaseResponse.fail("请上传Excel文件"));
+            return;
         }
-
         try {
             QuestionImportResultVO result = questionService.importQuestions(file);
+            // 判断是否导出Excel
+            String export = request.getParameter("export");
+            if ("excel".equalsIgnoreCase(export)) {
+                // 组织导出数据
+                java.util.List<com.xinkao.erp.question.excel.ImportResultSummaryRow> summary = new java.util.ArrayList<>();
+                com.xinkao.erp.question.excel.ImportResultSummaryRow row = new com.xinkao.erp.question.excel.ImportResultSummaryRow();
+                row.setTotalCount(result.getTotalCount());
+                row.setSuccessCount(result.getSuccessCount());
+                row.setFailCount(result.getFailCount());
+                summary.add(row);
+                java.util.List<com.xinkao.erp.question.excel.ImportResultErrorRow> details = new java.util.ArrayList<>();
+                // 优先使用结构化错误
+                if (result.getRowErrors() != null && !result.getRowErrors().isEmpty()) {
+                    for (com.xinkao.erp.question.vo.QuestionImportResultVO.RowError re : result.getRowErrors()) {
+                        ImportResultErrorRow d = new ImportResultErrorRow();
+                        d.setRowNum(re.getRowNum());
+                        d.setMessage(re.getMessage());
+                        details.add(d);
+                    }
+                } else if (result.getErrorMessages() != null) {
+                    for (String msg : result.getErrorMessages()) {
+                        com.xinkao.erp.question.excel.ImportResultErrorRow d = new com.xinkao.erp.question.excel.ImportResultErrorRow();
+                        Integer rn = null;
+                        try {
+                            int idx1 = msg.indexOf("第");
+                            int idx2 = msg.indexOf("行");
+                            if (idx1 >= 0 && idx2 > idx1) {
+                                String num = msg.substring(idx1 + 1, idx2);
+                                rn = Integer.parseInt(num);
+                            }
+                        } catch (Exception ignore) {}
+                        d.setRowNum(rn);
+                        d.setMessage(msg);
+                        details.add(d);
+                    }
+                }
+                // 不要调用 response.reset()，避免清掉跨域头。需要时仅清缓冲区。
+                // response.resetBuffer();
+                // 补充CORS头（若代理/过滤器被绕过或已被清除）
+                String originHeaderValue = request.getHeader("Origin");
+                if (originHeaderValue != null && originHeaderValue.length() > 0) {
+                    response.setHeader("Access-Control-Allow-Origin", originHeaderValue);
+                    response.setHeader("Vary", "Origin");
+                }
+                response.setHeader("Access-Control-Allow-Credentials", "true");
+                response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
 
+                response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                String downloadName = java.net.URLEncoder.encode("批量导入结果.xlsx", "UTF-8").replaceAll("\\+", "%20");
+                response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + downloadName);
+                com.alibaba.excel.ExcelWriter writer = null;
+                try {
+                    writer = com.alibaba.excel.EasyExcel.write(response.getOutputStream()).build();
+                    com.alibaba.excel.write.metadata.WriteSheet s1 = com.alibaba.excel.EasyExcel.writerSheet(0, "汇总").head(com.xinkao.erp.question.excel.ImportResultSummaryRow.class).build();
+                    com.alibaba.excel.write.metadata.WriteSheet s2 = com.alibaba.excel.EasyExcel.writerSheet(1, "错误明细").head(com.xinkao.erp.question.excel.ImportResultErrorRow.class).build();
+                    writer.write(summary, s1);
+                    writer.write(details, s2);
+                } finally {
+                    if (writer != null) writer.finish();
+                }
+                return;
+            }
+            // 默认返回JSON
             if (result.getFailCount() > 0) {
-                return BaseResponse.other("导入完成，但存在错误数据", result);
+                writeJson(response, BaseResponse.other("导入完成，但存在错误数据", result));
             } else {
-                return BaseResponse.ok("导入成功", result);
+                writeJson(response, BaseResponse.ok("导入成功", result));
             }
         } catch (Exception e) {
-            return BaseResponse.fail("导入失败：" + e.getMessage());
+            writeJson(response, BaseResponse.fail("导入失败：" + e.getMessage()));
         }
     }
 
@@ -368,53 +433,122 @@ public class    QuestionController extends BaseController {
     @PrimaryDataSource
     @PostMapping("/form/import-zip")
     @ApiOperation("题目单导入（V2：多Sheet，无分隔符）")
-    public BaseResponse<QuestionImportResultVO> importQuestionFormZipV2(@RequestParam("file") MultipartFile file) {
+    public void importQuestionFormZipV2(@RequestParam("file") MultipartFile file,
+                                        HttpServletRequest request,
+                                        HttpServletResponse response) throws IOException {
         if (file == null || file.isEmpty()) {
-            return BaseResponse.fail("请上传zip文件");
+            writeJson(response, BaseResponse.fail("请上传zip文件"));
+            return;
         }
         String name = file.getOriginalFilename();
         if (name == null || !name.toLowerCase().endsWith(".zip")) {
-            return BaseResponse.fail("仅支持.zip文件");
+            writeJson(response, BaseResponse.fail("仅支持.zip文件"));
+            return;
         }
         try {
             QuestionImportResultVO result = questionService.importQuestionFormZipV2(file);
-            if (result.getFailCount() != null && result.getFailCount() > 0) {
-                return BaseResponse.other("导入完成，但存在错误数据", result);
+            String export = request.getParameter("export");
+            if ("excel".equalsIgnoreCase(export)) {
+                java.util.List<com.xinkao.erp.question.excel.ImportResultSummaryRow> summary = new java.util.ArrayList<>();
+                com.xinkao.erp.question.excel.ImportResultSummaryRow row = new com.xinkao.erp.question.excel.ImportResultSummaryRow();
+                row.setTotalCount(result.getTotalCount());
+                row.setSuccessCount(result.getSuccessCount());
+                row.setFailCount(result.getFailCount());
+                summary.add(row);
+                java.util.List<com.xinkao.erp.question.excel.ImportResultErrorRow> details = new java.util.ArrayList<>();
+                if (result.getRowErrors() != null && !result.getRowErrors().isEmpty()) {
+                    for (com.xinkao.erp.question.vo.QuestionImportResultVO.RowError re : result.getRowErrors()) {
+                        ImportResultErrorRow d = new ImportResultErrorRow();
+                        d.setRowNum(re.getRowNum());
+                        d.setMessage(re.getMessage());
+                        details.add(d);
+                    }
+                } else if (result.getErrorMessages() != null) {
+                    for (String msg : result.getErrorMessages()) {
+                        ImportResultErrorRow d = new ImportResultErrorRow();
+                        Integer rn = null;
+                        try {
+                            int idx1 = msg.indexOf("第");
+                            int idx2 = msg.indexOf("行");
+                            if (idx1 >= 0 && idx2 > idx1) {
+                                String num = msg.substring(idx1 + 1, idx2);
+                                rn = Integer.parseInt(num);
+                            }
+                        } catch (Exception ignore) {}
+                        d.setRowNum(rn);
+                        d.setMessage(msg);
+                        details.add(d);
+                    }
+                }
+                // CORS 头与导出
+                String originHeaderValue = request.getHeader("Origin");
+                if (originHeaderValue != null && originHeaderValue.length() > 0) {
+                    response.setHeader("Access-Control-Allow-Origin", originHeaderValue);
+                    response.setHeader("Vary", "Origin");
+                }
+                response.setHeader("Access-Control-Allow-Credentials", "true");
+                response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+                response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                String downloadName = java.net.URLEncoder.encode("题目单导入结果.xlsx", "UTF-8").replaceAll("\\+", "%20");
+                response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + downloadName);
+                com.alibaba.excel.ExcelWriter writer = null;
+                try {
+                    writer = com.alibaba.excel.EasyExcel.write(response.getOutputStream()).build();
+                    com.alibaba.excel.write.metadata.WriteSheet s1 = com.alibaba.excel.EasyExcel.writerSheet(0, "汇总").head(com.xinkao.erp.question.excel.ImportResultSummaryRow.class).build();
+                    com.alibaba.excel.write.metadata.WriteSheet s2 = com.alibaba.excel.EasyExcel.writerSheet(1, "错误明细").head(com.xinkao.erp.question.excel.ImportResultErrorRow.class).build();
+                    writer.write(summary, s1);
+                    writer.write(details, s2);
+                } finally {
+                    if (writer != null) writer.finish();
+                }
+                return;
             }
-            return BaseResponse.ok("导入成功", result);
+            // 默认返回JSON
+            if (result.getFailCount() != null && result.getFailCount() > 0) {
+                writeJson(response, BaseResponse.other("导入完成，但存在错误数据", result));
+            } else {
+                writeJson(response, BaseResponse.ok("导入成功", result));
+            }
         } catch (Exception e) {
-            return BaseResponse.fail("导入失败：" + e.getMessage());
+            writeJson(response, BaseResponse.fail("导入失败：" + e.getMessage()));
         }
     }
 
     @PrimaryDataSource
     @GetMapping("/titleIntroductionTemplate/common")
     @ApiOperation("下载普通题目批量导入模板.xlsx")
-    public void downloadCommonTemplate(HttpServletResponse response) throws IOException {
+    public void downloadCommonTemplate(HttpServletRequest request, HttpServletResponse response) throws IOException {
         File baseDir = new File(System.getProperty("user.dir"), "titleIntroductionTemplate");
         File file = new File(baseDir, "普通题目批量导入模板.xlsx");
         if (!file.exists() || !file.isFile()) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "模板不存在");
             return;
         }
-        writeFile(response, file, "普通题目批量导入模板.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        writeFile(request, response, file, "普通题目批量导入模板.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
     }
 
     @PrimaryDataSource
     @GetMapping("/titleIntroductionTemplate/form")
     @ApiOperation("下载题目单.zip")
-    public void downloadFormTemplate(HttpServletResponse response) throws IOException {
+    public void downloadFormTemplate(HttpServletRequest request, HttpServletResponse response) throws IOException {
         File baseDir = new File(System.getProperty("user.dir"), "titleIntroductionTemplate");
         File file = new File(baseDir, "题目单.zip");
         if (!file.exists() || !file.isFile()) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "模板不存在");
             return;
         }
-        writeFile(response, file, "题目单.zip", "application/zip");
+        writeFile(request, response, file, "题目单.zip", "application/zip");
     }
 
-    private void writeFile(HttpServletResponse response, File file, String downloadName, String contentType) throws IOException {
-        response.reset();
+    private void writeFile(HttpServletRequest request, HttpServletResponse response, File file, String downloadName, String contentType) throws IOException {
+        // 保持跨域头
+        String originHeaderValue = request.getHeader("Origin");
+        if (originHeaderValue != null && originHeaderValue.length() > 0) {
+            response.setHeader("Access-Control-Allow-Origin", originHeaderValue);
+            response.setHeader("Vary", "Origin");
+        }
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
         response.setContentType(contentType);
         String encoded = URLEncoder.encode(downloadName, "UTF-8").replaceAll("\\+", "%20");
         response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + encoded);
@@ -423,4 +557,15 @@ public class    QuestionController extends BaseController {
         response.flushBuffer();
     }
 
+    private void writeJson(HttpServletResponse response, Object body) throws IOException {
+        response.setContentType("application/json;charset=UTF-8");
+        String json;
+        try {
+            json = com.alibaba.fastjson.JSON.toJSONString(body);
+        } catch (Exception e) {
+            json = "{\"code\":500,\"msg\":\"序列化失败\"}";
+        }
+        response.getWriter().write(json);
+        response.getWriter().flush();
+    }
 }
