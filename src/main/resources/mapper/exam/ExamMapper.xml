@@ -34,8 +34,11 @@
                     <if test="difficultyLevel != null and difficultyLevel != ''">
                         and q.difficulty_level = #{difficultyLevel}
                     </if>
-                    <if test="symbol != null and symbol != ''">
-                        and q.symbol = #{symbol}
+                    <if test="symbol != null and symbol.size() > 0">
+                        and q.symbol in
+                        <foreach item="item" index="index" collection="symbol" open="(" separator="," close=")">
+                            #{item}
+                        </foreach>
                     </if>
                     GROUP BY qt.id,q.id,q.shape)
                     t GROUP BY t.id,t.shape ORDER BY t.id,t.shape

@@ -430,12 +430,13 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
 
     public Map<Integer,List<Question>> getQuestionMap(Exam exam,Map<Integer,List<ExamPageSetType>> examPageSetPointMap){
         Map<Integer,List<Question>> questionMap = new HashMap<>();
+        List<String> symbolList = Arrays.asList(exam.getSymbol().split(","));
         for (Integer integer : examPageSetPointMap.keySet()) {
             List<ExamPageSetType> examPageSetPointList = examPageSetPointMap.get(integer);
             List<Question> questionList = new ArrayList<>();
             for (ExamPageSetType examPageSetPoint : examPageSetPointList) {
                 //获取该知识点的随机抽取题目
-                questionList.addAll(questionMapper.getRandQuestion(examPageSetPoint,exam.getDifficultyLevel(),exam.getSymbol()));
+                questionList.addAll(questionMapper.getRandQuestion(examPageSetPoint,exam.getDifficultyLevel(),symbolList));
             }
             questionMap.put(integer,questionList);
         }

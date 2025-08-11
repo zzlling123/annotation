@@ -71,8 +71,11 @@
         <if test="difficultyLevel != null and difficultyLevel != ''">
             AND difficulty_level = #{difficultyLevel}
         </if>
-        <if test="symbol != null and symbol != ''">
-            AND symbol = #{symbol}
+        <if test="symbol != null and symbol.size() > 0">
+            and symbol in
+            <foreach item="item" index="index" collection="symbol" open="(" separator="," close=")">
+                #{item}
+            </foreach>
         </if>
         ORDER BY RAND() limit #{examPageSetType.questionNum}
     </select>
