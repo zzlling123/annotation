@@ -3,6 +3,9 @@ package com.xinkao.erp.core.interceptor;
 import com.xinkao.erp.device.service.DeviceService;
 import com.xinkao.erp.device.utils.DeviceUtils;
 import com.xinkao.erp.system.service.SysConfigService;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -11,6 +14,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
@@ -30,7 +34,8 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Resource
     private SysConfigService sysConfigService;
-    
+
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 //        String token = request.getHeader("Authorization");
@@ -73,28 +78,28 @@ public class AuthInterceptor implements HandlerInterceptor {
         System.out.println("当前设备的mac地址：" + macAddress);
         System.out.println("主服务器地址：" + ip);
         System.out.println("当前设备是否与主服务器一致：" + ip.equals(ipAddress));
-        if (!ip.equals(ipAddress)){
-            // 查询当前系统中是否存在该MAC地址的设备
-            //改成服务器远程访问
-            BaseResponse responseBody = restTemplate.getForObject(mainServerUrl + "/device/checkAuth?macAddress=" + macAddress, BaseResponse.class);
-            boolean hasDevice = responseBody != null && responseBody.getData() instanceof Boolean && (Boolean) responseBody.getData();
-
-            if (!hasDevice) {
-                System.out.println("未找到该MAC地址的设备");
-                System.out.println("设备未注册，请联系管理员添加设备");
-                // 没有找到该MAC地址的设备，返回错误
-                response.setStatus(403);
-                //修改返回前端乱码
-                response.setCharacterEncoding("UTF-8");
-                response.setContentType("application/json;charset=UTF-8");
-                response.setHeader("Content-Type", "application/json");
-                response.getWriter().write("设备未注册，请联系管理员添加设备");
-                return false;
-            }
-            System.out.println("MAC地址 " + macAddress + " 已注册，允许访问");
-        }else {
-            System.out.println("主服务器请求，允许访问");
+        if (ip.equals(ipAddress)){
+            System.out.println("当前设备已授权访问");
+            return true;
         }
+        // 查询当前系统中是否存在该MAC地址的设备
+        //改成服务器远程访问
+        BaseResponse responseBody = restTemplate.getForObject(mainServerUrl + "/device/checkAuth?macAddress=" + macAddress, BaseResponse.class);
+        boolean hasDevice = responseBody != null && responseBody.getData() instanceof Boolean && (Boolean) responseBody.getData();
+
+        if (!hasDevice) {
+            System.out.println("未找到该MAC地址的设备");
+            System.out.println("设备未注册，请联系管理员添加设备");
+            // 没有找到该MAC地址的设备，返回错误
+            response.setStatus(403);
+            //修改返回前端乱码
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/json;charset=UTF-8");
+            response.setHeader("Content-Type", "application/json");
+            response.getWriter().write("设备未注册，请联系管理员添加设备");
+            return false;
+        }
+        System.out.println("MAC地址 " + macAddress + " 已注册，允许访问");
 
 
         return true;
