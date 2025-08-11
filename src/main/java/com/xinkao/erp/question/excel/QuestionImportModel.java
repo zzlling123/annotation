@@ -35,11 +35,11 @@ public class QuestionImportModel {
     private String difficultyLevel;
 
 
-    @ExcelProperty(index = 5, value = "题目选项（以中文“，”为隔断）")
+    @ExcelProperty(index = 5, value = "题目选项（以英文“%$%”为隔断）")
     @ColumnWidth(50)
     private String options;
 
-    @ExcelProperty(index = 6, value = "答案（多选题以及如果有多个填空以中文“，”隔开）")
+    @ExcelProperty(index = 6, value = "答案（多选题以及如果有多个填空以中文“%$%”隔开）")
     @ColumnWidth(70)
     private String answer;
 

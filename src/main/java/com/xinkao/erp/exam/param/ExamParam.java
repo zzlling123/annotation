@@ -52,4 +52,7 @@ public class ExamParam {
     @ApiModelProperty("班级列表(ID逗号隔开)")
     @NotBlank(message = "班级列表不能为空")
     private String classIds;
+
+    @ApiModelProperty("专家列表(ID逗号隔开)")
+    private String expertIds;
 }

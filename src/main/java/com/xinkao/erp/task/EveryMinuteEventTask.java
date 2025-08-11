@@ -2,9 +2,11 @@ package com.xinkao.erp.task;
 
 import javax.annotation.Resource;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.xinkao.erp.common.validation.constraint.Date;
 import com.xinkao.erp.exam.entity.Exam;
 import com.xinkao.erp.exam.service.ExamService;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +36,7 @@ public class EveryMinuteEventTask {
         // 获取未开始的考试（state小于等于10）且开始时间大于当前时间的考试
         List<Exam> examList = examService.lambdaQuery()
                 .lt(Exam::getState, 20)
-                .le(Exam::getStartTime, LocalDateTime.now())
+                .le(Exam::getStartTime, DateUtil.date())
                 .eq(Exam::getIsDel, 0)
                 .list();
         if (examList.size() > 0) {
@@ -45,7 +47,7 @@ public class EveryMinuteEventTask {
         }
         List<Exam> examList2 = examService.lambdaQuery()
                 .eq(Exam::getState, 20)
-                .le(Exam::getEndTime, LocalDateTime.now())
+                .le(Exam::getEndTime, DateUtil.date())
                 .eq(Exam::getIsDel, 0)
                 .list();
         if (examList2.size() > 0) {

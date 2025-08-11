@@ -19,3 +19,4 @@ public class BatchExamExpertDTO {
     @ApiModelProperty("专家ID列表")
     private List<Integer> expertIds;
 }
+

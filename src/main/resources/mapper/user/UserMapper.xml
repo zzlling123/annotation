@@ -89,4 +89,34 @@
 		WHERE 1=1
 		GROUP BY qt.id ORDER BY qt.id
 	</select>
+
+	<select id="getPracticeBarForExercise" resultType="com.xinkao.erp.user.vo.ExamAndPracticeBarVo">
+		SELECT qt.id type,qt.type_name,IF(SUM(ea.score) is null,0,SUM(ea.score)) userScore,IF(SUM(ea.question_score) is null,0,SUM(ea.question_score)) score
+		FROM q_question_type qt
+		LEFT JOIN `exercise_records` ea ON qt.id = ea.module_id and user_id = #{userId} and ea.completion_status = 1
+		<if test="query.startTime != null and query.startTime != ''">
+			and ea.create_time >= #{query.startTime}
+		</if>
+		<if test="query.endTime != null and query.endTime != ''">
+			and #{query.endTime} >= ea.create_time
+		</if>
+		WHERE 1=1
+		GROUP BY qt.id ORDER BY qt.id
+	</select>
+
+	<select id="getPracticePieForExercise" resultType="com.xinkao.erp.user.vo.ExamAndPracticePieVo">
+		SELECT qt.id,qt.type_name,
+		COUNT(ea.id) teaNum,
+		SUM(IF(ea.completion_status = 1,1,0)) userTeaNum
+		FROM q_question_type qt
+		LEFT JOIN `exercise_records` ea ON qt.id = ea.module_id and user_id = #{userId}
+		<if test="query.startTime != null and query.startTime != ''">
+			and ea.create_time >= #{query.startTime}
+		</if>
+		<if test="query.endTime != null and query.endTime != ''">
+			and #{query.endTime} >= ea.create_time
+		</if>
+		WHERE 1=1
+		GROUP BY qt.id ORDER BY qt.id
+	</select>
 </mapper>

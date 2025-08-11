@@ -20,7 +20,11 @@ public enum QuestionTypesEnum {
     /**
      * 主观题
      */
-    ZHUGUAN(400, "主观题");
+    ZHUGUAN(400, "主观题"),
+    /**
+     * 题目单
+     */
+    TIMUDAN(600, "题目单");
 
     @EnumValue
     private final Integer code;

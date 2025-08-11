@@ -1,6 +1,7 @@
 package com.xinkao.erp.exam.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.common.exception.BusinessException;
 import com.xinkao.erp.common.model.BaseResponse;
@@ -8,26 +9,22 @@ import com.xinkao.erp.common.model.LoginUser;
 import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.common.service.impl.BaseServiceImpl;
 import com.xinkao.erp.exam.dto.QuestionTypeListDto;
-import com.xinkao.erp.exam.entity.Exam;
-import com.xinkao.erp.exam.entity.ExamClass;
-import com.xinkao.erp.exam.entity.ExamPageSet;
-import com.xinkao.erp.exam.entity.ExamPageSetType;
+import com.xinkao.erp.exam.entity.*;
 import com.xinkao.erp.exam.excel.ExamPageSetVo;
 import com.xinkao.erp.exam.mapper.ExamMapper;
 import com.xinkao.erp.exam.param.ExamParam;
 import com.xinkao.erp.exam.query.ExamQuery;
-import com.xinkao.erp.exam.service.ExamClassService;
-import com.xinkao.erp.exam.service.ExamPageSetService;
-import com.xinkao.erp.exam.service.ExamPageSetTypeService;
-import com.xinkao.erp.exam.service.ExamService;
+import com.xinkao.erp.exam.service.*;
 import com.xinkao.erp.exam.vo.ExamDetailVo;
 import com.xinkao.erp.exam.vo.ExamPageVo;
 import com.xinkao.erp.manage.entity.ClassInfo;
 import com.xinkao.erp.manage.service.ClassInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,6 +45,8 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
     @Autowired
     private ExamMapper examMapper;
     @Autowired
+    private ExamExpertService examExpertService;
+    @Autowired
     private ExamClassService examClassService;
     @Autowired
     private ClassInfoService classInfoService;
@@ -55,6 +54,9 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
     private ExamPageSetTypeService examPageSetTypeService;
     @Autowired
     private ExamPageSetService examPageSetService;
+    @Lazy
+    @Resource
+    private ExamExpertAssignmentService examExpertAssignmentService;
 
     @Override
     public Page<ExamPageVo> page(ExamQuery query, Pageable pageable) {
@@ -85,6 +87,11 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
         detailVo.setClassList(classList);
         //补充试卷设置
         detailVo.setExamPageSetTypeVoList(examPageSetTypeService.lambdaQuery().eq(ExamPageSetType::getExamId, id).list());
+        //如果来源为社保局，则补充专家列表
+        if (exam.getSymbol() == 1) {
+            List<ExamExpert> examExpertList = examExpertService.lambdaQuery().eq(ExamExpert::getExamId, id).list();
+            detailVo.setExpertIds(examExpertList.stream().map(ExamExpert::getExpertId).map(String::valueOf).collect(Collectors.joining(",")));
+        }
         return detailVo;
     }
 
@@ -115,6 +122,21 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
             examClassList.add(examClass);
         }
         examClassService.saveBatch(examClassList);
+        //执行如果是专家批改，则调用增加批改关系方法
+        if (exam.getSymbol() == 1){
+            if (StrUtil.isNotBlank(examParam.getExpertIds())){
+                List<ExamExpert> examExpertList = new ArrayList<>();
+                String[] expertIds = examParam.getExpertIds().split(",");
+                for (String expertId : expertIds) {
+                    ExamExpert examExpert = new ExamExpert();
+                    examExpert.setExamId(exam.getId());
+                    examExpert.setExpertId(Integer.parseInt(expertId));
+                    examExpertList.add(examExpert);
+                }
+                examExpertService.saveBatch(examExpertList);
+            }
+            examExpertAssignmentService.assignExamToExperts(exam.getId());
+        }
         return BaseResponse.ok("新增成功", exam.getId());
     }
 
@@ -144,6 +166,24 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
             if (examPageSet.getQuestionStatus() == 1){
                 return BaseResponse.fail("该考试已制卷，不可修改");
             }
+        }
+        //执行如果是专家批改，则调用增加批改关系方法
+        if (exam.getSymbol() == 1){
+            if (StrUtil.isNotBlank(examParam.getExpertIds())){
+                List<ExamExpert> examExpertList = new ArrayList<>();
+                String[] expertIds = examParam.getExpertIds().split(",");
+                for (String expertId : expertIds) {
+                    ExamExpert examExpert = new ExamExpert();
+                    examExpert.setExamId(exam.getId());
+                    examExpert.setExpertId(Integer.parseInt(expertId));
+                    examExpertList.add(examExpert);
+                }
+                examExpertService.lambdaUpdate()
+                        .eq(ExamExpert::getExamId, exam.getId())
+                        .remove();
+                examExpertService.saveBatch(examExpertList);
+            }
+            examExpertAssignmentService.assignExamToExperts(exam.getId());
         }
         examPageSet.setExamId(exam.getId());
         examPageSet.setScore(Integer.valueOf(examParam.getScore()));

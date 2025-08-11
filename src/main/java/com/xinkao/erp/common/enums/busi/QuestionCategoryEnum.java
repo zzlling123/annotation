@@ -10,7 +10,7 @@ public enum QuestionCategoryEnum {
     OCR_LABELING(3, "OCR标注"),
     VOICE_LABELING(4, "语音标注"),
     LABELING_2D(5, "2D标注"),
-    FACE_KEYPOINT_LABELING(6, "人脸关键标注"),
+    FACE_KEYPOINT_LABELING(6, "人脸关键点标注"),
     LABELING_2D_3D(7, "2D+3D点云标注");
 
     @EnumValue
