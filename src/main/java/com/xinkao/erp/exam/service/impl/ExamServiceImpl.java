@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -193,7 +194,8 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
     @Override
     public List<ExamPageSetVo> getExamPageSetByTypeAndShape(String examId) {
         Exam exam = getById(examId);
-        List<QuestionTypeListDto> questionTypeListDtos = examMapper.getExamPageSetByTypeAndShape(exam.getDifficultyLevel(),exam.getSymbol());
+        List<String> symbolList = Arrays.asList(exam.getSymbol().split(","));
+        List<QuestionTypeListDto> questionTypeListDtos = examMapper.getExamPageSetByTypeAndShape(exam.getDifficultyLevel(),symbolList);
         Map<Integer,List<QuestionTypeListDto>> map = questionTypeListDtos
                 .stream().collect(Collectors.groupingBy(QuestionTypeListDto::getId));
         List<ExamPageSetVo> list = new ArrayList<>();

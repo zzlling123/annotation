@@ -62,7 +62,7 @@ public class Exam extends DataEntity {
      * 标记
      */
     @TableField("symbol")
-    private Integer symbol;
+    private String symbol;
 
     /**
      * 组卷进度是否完成，0否1是
