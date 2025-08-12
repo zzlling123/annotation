@@ -328,16 +328,16 @@ public class    QuestionController extends BaseController {
     }
 
     /**
-     * 批量删除二级标题题目
+     * 批量删除子题
      *
-     * @param param 二级标题题目ID列表
+     * @param param 子题ID列表
      * @return 操作结果
      */
     @PrimaryDataSource
     @DataScope(role = "1,2")
     @PostMapping("/delChild")
-    @ApiOperation("批量删除二级标题题目")
-    @Log(content = "批量删除二级标题题目",operationType = OperationType.DELETE)
+    @ApiOperation("批量删除子题")
+    @Log(content = "批量删除子题",operationType = OperationType.DELETE)
     public BaseResponse<?> delChild(@RequestBody DeleteParam param) {
         return questionService.delChild(param);
     }
