@@ -430,7 +430,7 @@ public class    QuestionController extends BaseController {
         response.getWriter().flush();
     }
     /**
-     * 批量导入题目
+     * 批量导入题目（服务层读取与校验，支持新模板多Sheet与旧模板）
      */
     @ApiOperation(value = "批量导入题目")
     @PostMapping("/import")
@@ -448,10 +448,9 @@ public class    QuestionController extends BaseController {
         }
         try {
             QuestionImportResultVO result = questionService.importQuestions(file);
-            // 判断是否导出Excel
+            // 导出 Excel 或返回 JSON，沿用原有逻辑
             String export = request.getParameter("export");
             if ("excel".equalsIgnoreCase(export)) {
-                // 组织导出数据
                 java.util.List<com.xinkao.erp.question.excel.ImportResultSummaryRow> summary = new java.util.ArrayList<>();
                 com.xinkao.erp.question.excel.ImportResultSummaryRow row = new com.xinkao.erp.question.excel.ImportResultSummaryRow();
                 row.setTotalCount(result.getTotalCount());
@@ -459,7 +458,6 @@ public class    QuestionController extends BaseController {
                 row.setFailCount(result.getFailCount());
                 summary.add(row);
                 java.util.List<com.xinkao.erp.question.excel.ImportResultErrorRow> details = new java.util.ArrayList<>();
-                // 优先使用结构化错误
                 if (result.getRowErrors() != null && !result.getRowErrors().isEmpty()) {
                     for (com.xinkao.erp.question.vo.QuestionImportResultVO.RowError re : result.getRowErrors()) {
                         ImportResultErrorRow d = new ImportResultErrorRow();
@@ -484,9 +482,6 @@ public class    QuestionController extends BaseController {
                         details.add(d);
                     }
                 }
-                // 不要调用 response.reset()，避免清掉跨域头。需要时仅清缓冲区。
-                // response.resetBuffer();
-                // 补充CORS头（若代理/过滤器被绕过或已被清除）
                 String originHeaderValue = request.getHeader("Origin");
                 if (originHeaderValue != null && originHeaderValue.length() > 0) {
                     response.setHeader("Access-Control-Allow-Origin", originHeaderValue);
@@ -494,7 +489,6 @@ public class    QuestionController extends BaseController {
                 }
                 response.setHeader("Access-Control-Allow-Credentials", "true");
                 response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
-
                 response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
                 String downloadName = java.net.URLEncoder.encode("批量导入结果.xlsx", "UTF-8").replaceAll("\\+", "%20");
                 response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + downloadName);
@@ -510,14 +504,14 @@ public class    QuestionController extends BaseController {
                 }
                 return;
             }
-            // 默认返回JSON
             if (result.getFailCount() > 0) {
-                writeJson(response, BaseResponse.other("导入完成，但存在错误数据", result));
+                writeJson(response, BaseResponse.other("读取完成，但存在错误数据", result));
             } else {
-                writeJson(response, BaseResponse.ok("导入成功", result));
+                writeJson(response, BaseResponse.ok("读取成功", result));
             }
         } catch (Exception e) {
-            writeJson(response, BaseResponse.fail("导入失败：" + e.getMessage()));
+            e.printStackTrace();
+            writeJson(response, BaseResponse.fail("读取失败：" + e.getMessage()));
         }
     }
 

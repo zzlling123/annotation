@@ -22,6 +22,10 @@ public enum QuestionTypesEnum {
      */
     ZHUGUAN(400, "主观题"),
     /**
+     * 判断题
+     */
+    PANDUAN(700, "判断题"),
+    /**
      * 题目单
      */
     TIMUDAN(600, "题目单");
