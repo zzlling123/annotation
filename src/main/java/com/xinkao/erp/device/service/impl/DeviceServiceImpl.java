@@ -149,6 +149,7 @@ public class DeviceServiceImpl implements DeviceService {
         }
         BeanUtils.copyProperties(param, device);
         device.setUpdateTime(LocalDateTime.now());
+        device.setKeyExpireTime(LocalDateTime.now().plusHours(param.getKeyValidHours()));
         if (loginUser!=null){
             device.setUpdateBy(loginUser.getUser().getRealName());
         }

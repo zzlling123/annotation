@@ -18,7 +18,7 @@ public class LoginWebMvcConfig implements WebMvcConfigurer {
 //                .addPathPatterns("/**")
 //                .excludePathPatterns("/login/**","/device/**","/menu/**");
         registry.addInterceptor(authInterceptor)
-                .addPathPatterns("/**");
+                .addPathPatterns("/login/**");
     }
 
 }

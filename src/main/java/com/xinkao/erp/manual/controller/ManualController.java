@@ -30,7 +30,7 @@ import java.util.UUID;
  * 使用文档表 前端控制器
  * </p>
  *
- * @since 2025-07-26
+ * 2025-07-26
  */
 @RestController
 @RequestMapping("/manual")
