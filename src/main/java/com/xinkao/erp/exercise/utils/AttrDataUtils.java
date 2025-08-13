@@ -95,34 +95,34 @@ public class AttrDataUtils {
     }
 
     /**
-     * 判断两个 AttrData 对象的 position 和 size 是否在 10% 的相对误差范围内（含等于）
+     * 判断两个 AttrData 对象的 position 和 size 是否在 20% 的相对误差范围内（含等于）
      *
      * @param a 第一个对象
      * @param b 第二个对象
-     * @return 如果所有数值字段的相对误差 ≤ 10%，返回 true；否则返回 false
+     * @return 如果所有数值字段的相对误差 ≤ 20%，返回 true；否则返回 false
      */
     public static boolean isNumericalClose(AttrData a, AttrData b) {
         if (a == null || b == null) {
             return false;
         }
 
-        // 判断 position.x 是否在 10% 范围内
-        if (!isWithinRelativeError(a.position.x, b.position.x, 0.1)) {
+        // 判断 position.x 是否在 20% 范围内
+        if (!isWithinRelativeError(a.position.x, b.position.x, 0.2)) {
             return false;
         }
 
-        // 判断 position.y 是否在 10% 范围内
-        if (!isWithinRelativeError(a.position.y, b.position.y, 0.1)) {
+        // 判断 position.y 是否在 20% 范围内
+        if (!isWithinRelativeError(a.position.y, b.position.y, 0.2)) {
             return false;
         }
 
-        // 判断 size.width 是否在 10% 范围内
-        if (!isWithinRelativeError(a.size.width, b.size.width, 0.1)) {
+        // 判断 size.width 是否在 20% 范围内
+        if (!isWithinRelativeError(a.size.width, b.size.width, 0.2)) {
             return false;
         }
 
-        // 判断 size.height 是否在 10% 范围内
-        return isWithinRelativeError(a.size.height, b.size.height, 0.1);
+        // 判断 size.height 是否在 20% 范围内
+        return isWithinRelativeError(a.size.height, b.size.height, 0.2);
     }
 
     /**
