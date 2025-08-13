@@ -35,7 +35,7 @@ spring:
    # redis配置
   redis:
     # 地址
-    host: 139.9.129.215
+    host: 101.200.210.173
     # 端口，默认为6379
     port: 6379
     # 密码
@@ -53,9 +53,9 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://139.9.129.215:3306/hz_asset?characterEncoding=utf8&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
-    username: root
-    password: b735c7b3d1f69a37
+    url: jdbc:mysql://101.200.210.173:3306/hz_asset?characterEncoding=utf8&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+    username: hz_asset
+    password: 123456
   druid:
     # 开启web监控
     web-stat-filter:
