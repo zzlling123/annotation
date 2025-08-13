@@ -140,7 +140,7 @@ public class PointSubmitUtil {
 
                             double iou = calculateIoU(cuboid1, cuboid2);
                             System.out.println("重叠率: " + iou); // 输出约为0.0667（6.67%）
-                            if (iou < 0.9 || iou > 1.1) {
+                            if (iou < 0.8 || iou > 1.2) {
                                 //跳过，继续验证下一条
                                 // 如果循环完毕没有符合的则返回0
                                 if (k == userAttrs.size() - 1) {

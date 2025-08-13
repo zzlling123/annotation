@@ -152,7 +152,8 @@ public class ManualServiceImpl extends BaseServiceImpl<ManualMapper, Manual> imp
                 return BaseResponse.fail("该用户类型（" + userTypeName + "）的文档已存在，每个类型只能有一个文档");
             }
 
-            Manual manual = manualParam.convertTo();
+            // Manual manual = manualParam.convertTo();
+            Manual manual = BeanUtil.copyProperties(manualParam, Manual.class);
             boolean result = this.save(manual);
             
             return result ? BaseResponse.ok("新增成功") : BaseResponse.fail("新增失败");

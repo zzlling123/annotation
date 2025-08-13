@@ -73,7 +73,7 @@ public class ExamController {
      * @return 考试详情
      */
     @PrimaryDataSource
-    @DataScope(role = "1,2")
+    @DataScope(role = "1,2,18,19")
     @GetMapping("/detail/{id}")
     @ApiOperation("查看考试详情")
     public BaseResponse<ExamDetailVo> detail(@PathVariable Integer id) {
@@ -88,7 +88,7 @@ public class ExamController {
      * @return 操作结果
      */
     @PrimaryDataSource
-    @DataScope(role = "1,2")
+    @DataScope(role = "1,2,18,19")
     @PostMapping("/save")
     @ApiOperation("新增考试")
     @Log(content = "新增考试",operationType = OperationType.INSERT)
@@ -103,7 +103,7 @@ public class ExamController {
      * @return 操作结果
      */
     @PrimaryDataSource
-    @DataScope(role = "1,2")
+    @DataScope(role = "1,2,18,19")
     @PostMapping("/update")
     @ApiOperation("编辑考试")
     @Log(content = "编辑考试",operationType = OperationType.UPDATE)
@@ -118,7 +118,7 @@ public class ExamController {
      * @return 操作结果
      */
     @PrimaryDataSource
-    @DataScope(role = "1,2")
+    @DataScope(role = "1,2,18,19")
     @PostMapping("/del/{id}")
     @ApiOperation("删除考试")
     @Log(content = "删除考试",operationType = OperationType.DELETE)
@@ -131,7 +131,7 @@ public class ExamController {
      *
      */
     @PrimaryDataSource
-    @DataScope(role = "1,2")
+    @DataScope(role = "1,2,18,19")
     @ApiOperation(value = "获取试卷题目分布")
     @PostMapping("/getExamTypeSet")
     public BaseResponse<List<ExamPageSetVo>> getExamTypeSet(@RequestParam String examId) {

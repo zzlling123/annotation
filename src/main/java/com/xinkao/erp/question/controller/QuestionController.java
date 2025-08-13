@@ -37,6 +37,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.StreamUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -48,6 +50,7 @@ import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.io.InputStream;
 
 /**
  * <p>
@@ -328,16 +331,16 @@ public class    QuestionController extends BaseController {
     }
 
     /**
-     * 批量删除二级标题题目
+     * 批量删除子题
      *
-     * @param param 二级标题题目ID列表
+     * @param param 子题ID列表
      * @return 操作结果
      */
     @PrimaryDataSource
     @DataScope(role = "1,2")
     @PostMapping("/delChild")
-    @ApiOperation("批量删除二级标题题目")
-    @Log(content = "批量删除二级标题题目",operationType = OperationType.DELETE)
+    @ApiOperation("批量删除子题")
+    @Log(content = "批量删除子题",operationType = OperationType.DELETE)
     public BaseResponse<?> delChild(@RequestBody DeleteParam param) {
         return questionService.delChild(param);
     }
@@ -366,8 +369,68 @@ public class    QuestionController extends BaseController {
         return questionService.getQuestionFormInfo(id);
     }
 
+
+    @PrimaryDataSource
+    @GetMapping("/titleIntroductionTemplate/common")
+    @ApiOperation("下载普通题目批量导入模板.xlsx")
+    public void downloadCommonTemplate(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        ClassPathResource resource = new ClassPathResource("titleIntroductionTemplate/普通题目批量导入模板.xlsx");
+        if (!resource.exists()) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "模板不存在");
+            return;
+        }
+        try (InputStream in = resource.getInputStream()) {
+            writeFile(request, response, in, resource.contentLength(), "普通题目批量导入模板.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+    }
+
+    @PrimaryDataSource
+    @GetMapping("/titleIntroductionTemplate/form")
+    @ApiOperation("下载题目单.zip")
+    public void downloadFormTemplate(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        ClassPathResource resource = new ClassPathResource("titleIntroductionTemplate/题目单.zip");
+        if (!resource.exists()) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "模板不存在");
+            return;
+        }
+        try (InputStream in = resource.getInputStream()) {
+            writeFile(request, response, in, resource.contentLength(), "题目单.zip", "application/zip");
+        }
+    }
+
+
+    private void writeFile(HttpServletRequest request, HttpServletResponse response, InputStream inputStream, long contentLength, String downloadName, String contentType) throws IOException {
+        // 保持跨域头
+        String originHeaderValue = request.getHeader("Origin");
+        if (originHeaderValue != null && originHeaderValue.length() > 0) {
+            response.setHeader("Access-Control-Allow-Origin", originHeaderValue);
+            response.setHeader("Vary", "Origin");
+        }
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+        response.setContentType(contentType);
+        String encoded = URLEncoder.encode(downloadName, "UTF-8").replaceAll("\\+", "%20");
+        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + encoded);
+        if (contentLength >= 0) {
+            response.setHeader("Content-Length", String.valueOf(contentLength));
+        }
+        StreamUtils.copy(inputStream, response.getOutputStream());
+        response.flushBuffer();
+    }
+
+    private void writeJson(HttpServletResponse response, Object body) throws IOException {
+        response.setContentType("application/json;charset=UTF-8");
+        String json;
+        try {
+            json = com.alibaba.fastjson.JSON.toJSONString(body);
+        } catch (Exception e) {
+            json = "{\"code\":500,\"msg\":\"序列化失败\"}";
+        }
+        response.getWriter().write(json);
+        response.getWriter().flush();
+    }
     /**
-     * 批量导入题目
+     * 批量导入题目（服务层读取与校验，支持新模板多Sheet与旧模板）
      */
     @ApiOperation(value = "批量导入题目")
     @PostMapping("/import")
@@ -385,10 +448,9 @@ public class    QuestionController extends BaseController {
         }
         try {
             QuestionImportResultVO result = questionService.importQuestions(file);
-            // 判断是否导出Excel
+            // 导出 Excel 或返回 JSON，沿用原有逻辑
             String export = request.getParameter("export");
             if ("excel".equalsIgnoreCase(export)) {
-                // 组织导出数据
                 java.util.List<com.xinkao.erp.question.excel.ImportResultSummaryRow> summary = new java.util.ArrayList<>();
                 com.xinkao.erp.question.excel.ImportResultSummaryRow row = new com.xinkao.erp.question.excel.ImportResultSummaryRow();
                 row.setTotalCount(result.getTotalCount());
@@ -396,7 +458,6 @@ public class    QuestionController extends BaseController {
                 row.setFailCount(result.getFailCount());
                 summary.add(row);
                 java.util.List<com.xinkao.erp.question.excel.ImportResultErrorRow> details = new java.util.ArrayList<>();
-                // 优先使用结构化错误
                 if (result.getRowErrors() != null && !result.getRowErrors().isEmpty()) {
                     for (com.xinkao.erp.question.vo.QuestionImportResultVO.RowError re : result.getRowErrors()) {
                         ImportResultErrorRow d = new ImportResultErrorRow();
@@ -421,9 +482,6 @@ public class    QuestionController extends BaseController {
                         details.add(d);
                     }
                 }
-                // 不要调用 response.reset()，避免清掉跨域头。需要时仅清缓冲区。
-                // response.resetBuffer();
-                // 补充CORS头（若代理/过滤器被绕过或已被清除）
                 String originHeaderValue = request.getHeader("Origin");
                 if (originHeaderValue != null && originHeaderValue.length() > 0) {
                     response.setHeader("Access-Control-Allow-Origin", originHeaderValue);
@@ -431,7 +489,6 @@ public class    QuestionController extends BaseController {
                 }
                 response.setHeader("Access-Control-Allow-Credentials", "true");
                 response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
-
                 response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
                 String downloadName = java.net.URLEncoder.encode("批量导入结果.xlsx", "UTF-8").replaceAll("\\+", "%20");
                 response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + downloadName);
@@ -447,14 +504,14 @@ public class    QuestionController extends BaseController {
                 }
                 return;
             }
-            // 默认返回JSON
             if (result.getFailCount() > 0) {
-                writeJson(response, BaseResponse.other("导入完成，但存在错误数据", result));
+                writeJson(response, BaseResponse.other("读取完成，但存在错误数据", result));
             } else {
-                writeJson(response, BaseResponse.ok("导入成功", result));
+                writeJson(response, BaseResponse.ok("读取成功", result));
             }
         } catch (Exception e) {
-            writeJson(response, BaseResponse.fail("导入失败：" + e.getMessage()));
+            e.printStackTrace();
+            writeJson(response, BaseResponse.fail("读取失败：" + e.getMessage()));
         }
     }
 
@@ -543,58 +600,5 @@ public class    QuestionController extends BaseController {
         }
     }
 
-    @PrimaryDataSource
-    @GetMapping("/titleIntroductionTemplate/common")
-    @ApiOperation("下载普通题目批量导入模板.xlsx")
-    public void downloadCommonTemplate(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        File baseDir = new File(System.getProperty("user.dir"), "titleIntroductionTemplate");
-        File file = new File(baseDir, "普通题目批量导入模板.xlsx");
-        if (!file.exists() || !file.isFile()) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "模板不存在");
-            return;
-        }
-        writeFile(request, response, file, "普通题目批量导入模板.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-    }
 
-    @PrimaryDataSource
-    @GetMapping("/titleIntroductionTemplate/form")
-    @ApiOperation("下载题目单.zip")
-    public void downloadFormTemplate(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        File baseDir = new File(System.getProperty("user.dir"), "titleIntroductionTemplate");
-        File file = new File(baseDir, "题目单.zip");
-        if (!file.exists() || !file.isFile()) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "模板不存在");
-            return;
-        }
-        writeFile(request, response, file, "题目单.zip", "application/zip");
-    }
-
-    private void writeFile(HttpServletRequest request, HttpServletResponse response, File file, String downloadName, String contentType) throws IOException {
-        // 保持跨域头
-        String originHeaderValue = request.getHeader("Origin");
-        if (originHeaderValue != null && originHeaderValue.length() > 0) {
-            response.setHeader("Access-Control-Allow-Origin", originHeaderValue);
-            response.setHeader("Vary", "Origin");
-        }
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
-        response.setContentType(contentType);
-        String encoded = URLEncoder.encode(downloadName, "UTF-8").replaceAll("\\+", "%20");
-        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + encoded);
-        response.setHeader("Content-Length", String.valueOf(file.length()));
-        java.nio.file.Files.copy(file.toPath(), response.getOutputStream());
-        response.flushBuffer();
-    }
-
-    private void writeJson(HttpServletResponse response, Object body) throws IOException {
-        response.setContentType("application/json;charset=UTF-8");
-        String json;
-        try {
-            json = com.alibaba.fastjson.JSON.toJSONString(body);
-        } catch (Exception e) {
-            json = "{\"code\":500,\"msg\":\"序列化失败\"}";
-        }
-        response.getWriter().write(json);
-        response.getWriter().flush();
-    }
 }
