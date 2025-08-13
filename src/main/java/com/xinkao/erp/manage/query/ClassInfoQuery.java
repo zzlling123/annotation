@@ -14,4 +14,7 @@ public class ClassInfoQuery extends BasePageQuery implements Serializable {
     @ApiModelProperty("班级名称")
     private String className;
 
+    @ApiModelProperty("班主任ID（非管理员时由后端注入）")
+    private Integer directorId;
+
 }

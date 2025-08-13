@@ -10,6 +10,9 @@
         <if test="query.className != null and query.className != ''">
             and c.class_name LIKE CONCAT('%', #{query.className}, '%')
         </if>
+        <if test="query.directorId != null">
+            and c.director_id = #{query.directorId}
+        </if>
         ORDER BY c.id DESC
     </select>
 </mapper>
