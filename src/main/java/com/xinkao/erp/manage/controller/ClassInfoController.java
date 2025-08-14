@@ -47,7 +47,7 @@ public class ClassInfoController extends BaseController {
     @ApiOperation("分页查询班级信息")
     public BaseResponse<Page<ClassInfoVo>> page(@Valid @RequestBody ClassInfoQuery query) {
         LoginUser loginUser = redisUtil.getInfoByToken();
-        if (loginUser.getUser().getRoleId() != 1 && loginUser.getUser().getRoleId() != 18) {
+        if (loginUser.getUser().getRoleId() != 1 && loginUser.getUser().getRoleId() != 18 && loginUser.getUser().getRoleId() != 19) {
             query.setDirectorId(loginUser.getUser().getId());
         }
         Pageable pageable = query.getPageInfo();
