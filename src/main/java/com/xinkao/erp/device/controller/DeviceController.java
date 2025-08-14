@@ -109,8 +109,21 @@ public class DeviceController extends BaseController {
      */
     @GetMapping("/checkAuth")
     public BaseResponse<Boolean> checkDeviceAuth(@RequestParam("macAddress") String macAddress) {
-        boolean hasDevice = deviceService.getDeviceByMacAddress(macAddress) != null;
-        return BaseResponse.ok(hasDevice);
+        String mainServerUrl = sysConfigService.getConfigByKey("device.authentication.server");
+        if (mainServerUrl == null || mainServerUrl.isEmpty()) {
+            System.out.println("未配置认证服务器地址");
+            return BaseResponse.ok(false);
+        }
+        //主服务器ip地址
+        String ip = DeviceUtils.extractIpFromUrl(mainServerUrl);
+        //获取当前设备的ip地址
+        String ipAddress = DeviceUtils.getPublicIpAddress();
+        if (ip.equals(ipAddress)){
+            return BaseResponse.ok(true);
+        }else{
+            boolean hasDevice = deviceService.getDeviceByMacAddress(macAddress) != null;
+            return BaseResponse.ok(hasDevice);
+        }
     }
     /**
      * 本地请求验证设备授权状态
