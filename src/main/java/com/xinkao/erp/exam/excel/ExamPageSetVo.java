@@ -78,4 +78,13 @@ public class ExamPageSetVo{
 
     @ApiModelProperty("题目单每题得分")
     private String choiceFormScore;
+
+    @ApiModelProperty("判断题库题数")
+    private String choiceJudgeCount = "0";
+
+    @ApiModelProperty("判断题抽取题数")
+    private String choiceJudgeChouCount;
+
+    @ApiModelProperty("判断题每题得分")
+    private String choiceJudgeScore;
 }
