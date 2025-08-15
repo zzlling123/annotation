@@ -81,25 +81,39 @@ public class DeviceServiceImpl implements DeviceService {
         //获取登录用户
         Device device = new Device();
         BeanUtils.copyProperties(param, device);
+        //如果当前设备的mac地址是存在的，且是禁用，则改成状态为待审核
+        LambdaQueryWrapper<Device> wrapper = new LambdaQueryWrapper<>();
+        Device oldDevice = deviceMapper.selectOne(wrapper.eq(Device::getMacAddress, device.getMacAddress()));
+        if (oldDevice != null && oldDevice.getStatus() == 2) {
+            device.setStatus(0);
+            device.setDeviceName(param.getDeviceName());
+            device.setDescription(param.getDescription());
+            device.setKeyValidHours(param.getKeyValidHours());
+            device.setDeviceKey(DeviceUtils.generateDeviceKey());
+            device.setKeyGenerateTime(LocalDateTime.now());
+            device.setKeyExpireTime(LocalDateTime.now().plusHours(param.getKeyValidHours()));
+            device.setUpdateTime(LocalDateTime.now());
+            return deviceMapper.updateById(device) > 0;
+        }else {
+            // 生成设备密钥
+            device.setDeviceName(param.getDeviceName());
+            device.setDescription(param.getDescription());
+            device.setMacAddress(param.getMacAddress());
+            device.setKeyValidHours(param.getKeyValidHours());
+            device.setDeviceKey(DeviceUtils.generateDeviceKey());
+            device.setKeyGenerateTime(LocalDateTime.now());
+            device.setKeyExpireTime(LocalDateTime.now().plusHours(param.getKeyValidHours()));
 
-        // 生成设备密钥
-        device.setDeviceName(param.getDeviceName());
-        device.setDescription(param.getDescription());
-        device.setMacAddress(param.getMacAddress());
-        device.setKeyValidHours(param.getKeyValidHours());
-        device.setDeviceKey(DeviceUtils.generateDeviceKey());
-        device.setKeyGenerateTime(LocalDateTime.now());
-        device.setKeyExpireTime(LocalDateTime.now().plusHours(param.getKeyValidHours()));
-
-        if (!DeviceUtils.isValidMacAddress(device.getMacAddress())){
-            return false;
+            if (!DeviceUtils.isValidMacAddress(device.getMacAddress())){
+                return false;
+            }
+            device.setStatus(0);
+            device.setUpdateTime(LocalDateTime.now());
+            // 设置创建时间
+            device.setCreateTime(LocalDateTime.now());
+            device.setUpdateTime(LocalDateTime.now());
+            return deviceMapper.insert(device) > 0;
         }
-        device.setStatus(0);
-        device.setUpdateTime(LocalDateTime.now());
-        // 设置创建时间
-        device.setCreateTime(LocalDateTime.now());
-        device.setUpdateTime(LocalDateTime.now());
-        return deviceMapper.insert(device) > 0;
     }
     
     @Override

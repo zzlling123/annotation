@@ -71,13 +71,13 @@ public class AuthInterceptor implements HandlerInterceptor {
         //获取设备的mac地址
         //获取当前设备的ip地址
         String ipAddress = DeviceUtils.getPublicIpAddress();
-        System.out.println("当前设备的ip地址：" + ipAddress);
-        System.out.println("当前设备的mac地址：" + macAddress);
-        System.out.println("主服务器地址：" + ip);
+        System.out.println("请求拦截器内容开始");
         System.out.println("当前设备是否与主服务器一致：" + ip.equals(ipAddress));
         if (ip.equals(ipAddress)){
-            System.out.println("当前设备已授权访问");
+            System.out.println("当前设备为主服务器访问");
             return true;
+        }else {
+            System.out.println("登录拦截器-当前设备为非主服务器访问");
         }
         // 查询当前系统中是否存在该MAC地址的设备
         //改成服务器远程访问
@@ -96,9 +96,8 @@ public class AuthInterceptor implements HandlerInterceptor {
             response.getWriter().write("设备未注册，请联系管理员添加设备");
             return false;
         }
-        System.out.println("MAC地址 " + macAddress + " 已注册，允许访问");
-
-
+        //System.out.println("MAC地址 " + macAddress + " 已注册，允许访问");
+        System.out.println("请求拦截器内容开始");
         return true;
     }
     

@@ -255,6 +255,8 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
                     examPageSetImportModel.setChoicePracticeCount(vo.getQuestionOnNum());
                 }else if ("600".equals(vo.getShape())){
                     examPageSetImportModel.setChoiceFormCount(vo.getQuestionOnNum());
+                }else if ("700".equals(vo.getShape())){
+                    examPageSetImportModel.setChoiceJudgeCount(vo.getQuestionOnNum());
                 }
             }
             list.add(examPageSetImportModel);
