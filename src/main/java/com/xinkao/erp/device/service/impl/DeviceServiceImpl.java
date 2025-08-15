@@ -278,7 +278,7 @@ public class DeviceServiceImpl implements DeviceService {
         BeanUtils.copyProperties(device, vo);
         
         // 隐藏密钥中间部分
-        vo.setDeviceKey(DeviceUtils.maskDeviceKey(device.getDeviceKey()));
+        //vo.setDeviceKey(DeviceUtils.maskDeviceKey(device.getDeviceKey()));
         
         // 设置状态描述
         switch (device.getStatus()) {

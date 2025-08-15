@@ -286,7 +286,17 @@ public class DeviceController extends BaseController {
         boolean success = deviceService.regenerateDeviceKey(id);
         return success ? BaseResponse.ok("密钥重新生成成功") : BaseResponse.fail("密钥重新生成失败");
     }
-    
+
+    /**
+     * 通过id获取当前设备密钥信息
+     */
+    @GetMapping("/{id}/key")
+    @ApiOperation("通过id获取当前设备密钥信息")
+    public BaseResponse<DeviceVO> getDeviceKeyById(@PathVariable Long id) {
+        DeviceVO deviceKey = deviceService.getDeviceById(id);
+        return deviceKey != null ? BaseResponse.ok(deviceKey.getDeviceKey()) : BaseResponse.fail("设备密钥不存在");
+    }
+
     /**
      * 验证设备密钥
      */
