@@ -76,6 +76,8 @@ public class AuthInterceptor implements HandlerInterceptor {
         if (ip.equals(ipAddress)){
             System.out.println("当前设备为主服务器访问");
             return true;
+        }else {
+            System.out.println("登录拦截器-当前设备为非主服务器访问");
         }
         // 查询当前系统中是否存在该MAC地址的设备
         //改成服务器远程访问

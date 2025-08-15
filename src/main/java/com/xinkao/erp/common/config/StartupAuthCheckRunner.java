@@ -15,6 +15,8 @@ public class StartupAuthCheckRunner implements ApplicationRunner {
 
     @Autowired
     private SysConfigService sysConfigService;
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Override
     public void run(ApplicationArguments args) {
@@ -29,14 +31,12 @@ public class StartupAuthCheckRunner implements ApplicationRunner {
         System.out.println("当前设备是否与主服务器一致：" + ip.equals(ipAddress));
         if (!ip.equals(ipAddress)){
             String url = "http://114.67.238.43:10202/device/restartStatus?macAddress="+macAddress;
-
             if (mainServerUrl == null || mainServerUrl.isEmpty()) {
             }else{
                 // 2. 拼接主服务器接口
                 url = mainServerUrl + "/device/restartStatus?macAddress="+macAddress;
             }
             try {
-                RestTemplate restTemplate = new RestTemplate();
                 restTemplate.getForObject(url, String.class);
                 // 可根据需要打印日志
                 System.out.println("远程授权校验请求已发送");

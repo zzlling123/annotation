@@ -66,7 +66,7 @@ public class DeviceController extends BaseController {
      * @param macAddress 设备MAC地址
      * @return true=设备新重启，false=设备未重启
      */
-    @PostMapping("/checkRestartStatus")
+    @GetMapping("/checkRestartStatus")
     public BaseResponse<Boolean> checkRestartStatus(@RequestParam("macAddress") String macAddress) {
         Device device = deviceService.getDeviceByMacAddress(macAddress);
         if (device == null){
@@ -87,17 +87,32 @@ public class DeviceController extends BaseController {
         if (mainServerUrl == null || mainServerUrl.isEmpty()) {
             return ResponseEntity.status(500).body(false);
         }
-        //mainServerUrl = "http://127.0.0.1:10202/annotation";
-        // 2. 拼接主服务器接口
-        String url = mainServerUrl + "/device/checkRestartStatus";
-        try {
-            // 用POST方式，参数为DeviceParam对象
-            BaseResponse responseBody = restTemplate.postForObject(url, macAddress, BaseResponse.class);
-            boolean isAuthorized = responseBody != null && responseBody.getData() instanceof Boolean && (Boolean) responseBody.getData()!=null?(Boolean) responseBody.getData():false;
-            return ResponseEntity.ok(isAuthorized);
-        } catch (Exception e) {
-            // 主服务器不可用时的处理
-            return ResponseEntity.status(500).body(false);
+        //主服务器ip地址
+        String ip = DeviceUtils.extractIpFromUrl(mainServerUrl);
+        System.out.println("主服务器ip地址：" + ip);
+        //获取当前设备的ip地址
+        String ipAddress = DeviceUtils.getPublicIpAddress();
+        System.out.println("当前客户: " + ipAddress);
+        if (ip.equals(ipAddress)) {
+            System.out.println("当前设备与主服务器一致");
+            return ResponseEntity.ok(false);
+        }else {
+            System.out.println("当前设备与主服务器不一致");
+            //mainServerUrl = "http://127.0.0.1:10202/annotation";
+            // 2. 拼接主服务器接口
+            String url = mainServerUrl + "/device/checkRestartStatus";
+            try {
+                // 用POST方式，参数为DeviceParam对象
+//            BaseResponse responseBody = restTemplate.postForObject(url, macAddress, BaseResponse.class);
+//            boolean isAuthorized = responseBody != null && responseBody.getData() instanceof Boolean && (Boolean) responseBody.getData()!=null?(Boolean) responseBody.getData():false;
+
+                BaseResponse responseBody = restTemplate.getForObject(mainServerUrl + "/device/checkRestartStatus?macAddress=" + macAddress, BaseResponse.class);
+                boolean isAuthorized = responseBody != null && responseBody.getData() instanceof Boolean && (Boolean) responseBody.getData();
+                return ResponseEntity.ok(isAuthorized);
+            } catch (Exception e) {
+                // 主服务器不可用时的处理
+                return ResponseEntity.status(500).body(false);
+            }
         }
     }
 
@@ -109,21 +124,28 @@ public class DeviceController extends BaseController {
      */
     @GetMapping("/checkAuth")
     public BaseResponse<Boolean> checkDeviceAuth(@RequestParam("macAddress") String macAddress) {
-        String mainServerUrl = sysConfigService.getConfigByKey("device.authentication.server");
-        if (mainServerUrl == null || mainServerUrl.isEmpty()) {
-            System.out.println("未配置认证服务器地址");
-            return BaseResponse.ok(false);
-        }
-        //主服务器ip地址
-        String ip = DeviceUtils.extractIpFromUrl(mainServerUrl);
-        //获取当前设备的ip地址
-        String ipAddress = DeviceUtils.getPublicIpAddress();
-        if (ip.equals(ipAddress)){
-            return BaseResponse.ok(true);
-        }else{
-            boolean hasDevice = deviceService.getDeviceByMacAddress(macAddress) != null;
-            return BaseResponse.ok(hasDevice);
-        }
+//        String mainServerUrl = sysConfigService.getConfigByKey("device.authentication.server");
+//        System.out.println("进入验证方法mainServerUrl:"+mainServerUrl);
+//        if (mainServerUrl == null || mainServerUrl.isEmpty()) {
+//            System.out.println("未配置认证服务器地址");
+//            return BaseResponse.ok(false);
+//        }
+//        //主服务器ip地址
+//        String ip = DeviceUtils.extractIpFromUrl(mainServerUrl);
+//        System.out.println("主服务器ip地址：" + ip);
+//        //获取当前设备的ip地址
+//        String ipAddress = DeviceUtils.getPublicIpAddress();
+//        System.out.println("当前客户: " + ipAddress);
+//        if (ip.equals(ipAddress)){
+//            System.out.println("当前设备与主服务器一致");
+//            return BaseResponse.ok(true);
+//        }else{
+//            System.out.println("当前设备与主服务器不一致");
+//            boolean hasDevice = deviceService.getDeviceByMacAddress(macAddress) != null;
+//            return BaseResponse.ok(hasDevice);
+//        }
+        boolean hasDevice = deviceService.getDeviceByMacAddress(macAddress) != null;
+        return BaseResponse.ok(hasDevice);
     }
     /**
      * 本地请求验证设备授权状态
@@ -137,15 +159,28 @@ public class DeviceController extends BaseController {
         if (mainServerUrl == null || mainServerUrl.isEmpty()) {
             return ResponseEntity.status(500).body(false);
         }
-        // 2. 拼接主服务器接口
-        String url = mainServerUrl + "/device/checkAuth";
-        try {
-            BaseResponse responseBody = restTemplate.getForObject(mainServerUrl + "/device/checkAuth?macAddress=" + macAddress, BaseResponse.class);
-            boolean isAuthorized = responseBody != null && responseBody.getData() instanceof Boolean && (Boolean) responseBody.getData();
-            return ResponseEntity.ok(isAuthorized);
-        } catch (Exception e) {
-            // 主服务器不可用时的处理
-            return ResponseEntity.status(500).body(false);
+                //主服务器ip地址
+        String ip = DeviceUtils.extractIpFromUrl(mainServerUrl);
+        System.out.println("主服务器ip地址：" + ip);
+        //获取当前设备的ip地址
+        String ipAddress = DeviceUtils.getPublicIpAddress();
+        System.out.println("当前客户: " + ipAddress);
+        if (ip.equals(ipAddress)) {
+            System.out.println("当前设备与主服务器一致");
+            return ResponseEntity.ok(true);
+        }else {
+            System.out.println("当前设备与主服务器不一致");
+            //mainServerUrl = "http://127.0.0.1:10202/annotation";
+            // 2. 拼接主服务器接口
+            String url = mainServerUrl + "/device/checkAuth";
+            try {
+                BaseResponse responseBody = restTemplate.getForObject(mainServerUrl + "/device/checkAuth?macAddress=" + macAddress, BaseResponse.class);
+                boolean isAuthorized = responseBody != null && responseBody.getData() instanceof Boolean && (Boolean) responseBody.getData();
+                return ResponseEntity.ok(isAuthorized);
+            } catch (Exception e) {
+                // 主服务器不可用时的处理
+                return ResponseEntity.status(500).body(false);
+            }
         }
     }
 
@@ -161,6 +196,7 @@ public class DeviceController extends BaseController {
         if (mainServerUrl == null || mainServerUrl.isEmpty()) {
             return ResponseEntity.status(500).body(false);
         }
+        //mainServerUrl = "http://127.0.0.1:10202/annotation";
         // 2. 拼接主服务器接口
         String url = mainServerUrl + "/device/addAuth";
         try {
