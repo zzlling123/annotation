@@ -753,7 +753,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         question.setDifficultyLevel(QuestionDifficultyEnum.getCodeByName(record.getDiff()));
         question.setSymbol(String.valueOf(EntitySystemEnum.getCodeByName(record.getSym())));
         question.setTitle(record.getQ());
-        question.setQuestion("<p>"+record.getQ()+"</p>");
+        question.setQuestion("<p>"+record.getQ()+"</p>"+"<span id='tag'></span><p>A.正确</p><p>B.错误</p>");
         question.setQuestionText(record.getQ());
         question.setOptions("[A,B]");
         question.setAnswer(record.getAns());
