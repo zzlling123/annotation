@@ -54,9 +54,7 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
     private ExamPageSetTypeService examPageSetTypeService;
     @Autowired
     private ExamPageSetService examPageSetService;
-    @Lazy
-    @Resource
-    private ExamExpertAssignmentService examExpertAssignmentService;
+
 
     @Override
     public Page<ExamPageVo> page(ExamQuery query, Pageable pageable) {
@@ -88,7 +86,7 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
         //补充试卷设置
         detailVo.setExamPageSetTypeVoList(examPageSetTypeService.lambdaQuery().eq(ExamPageSetType::getExamId, id).list());
         //如果来源为社保局，则补充专家列表
-        if (Arrays.asList(exam.getSymbol().split(",")).contains("1")) {
+        if (exam.getIsExpert() == 1) {
             List<ExamExpert> examExpertList = examExpertService.lambdaQuery().eq(ExamExpert::getExamId, id).list();
             detailVo.setExpertIds(examExpertList.stream().map(ExamExpert::getExpertId).map(String::valueOf).collect(Collectors.joining(",")));
         }
@@ -123,7 +121,7 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
         }
         examClassService.saveBatch(examClassList);
         //执行如果是专家批改，则调用增加批改关系方法
-        if (Arrays.asList(exam.getSymbol().split(",")).contains("1")){
+        if ("1".equals(examParam.getIsExpert())){
             if (StrUtil.isNotBlank(examParam.getExpertIds())){
                 List<ExamExpert> examExpertList = new ArrayList<>();
                 String[] expertIds = examParam.getExpertIds().split(",");
@@ -135,7 +133,6 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
                 }
                 examExpertService.saveBatch(examExpertList);
             }
-            examExpertAssignmentService.assignExamToExperts(exam.getId());
         }
         return BaseResponse.ok("新增成功", exam.getId());
     }
@@ -168,7 +165,7 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
             }
         }
         //执行如果是专家批改，则调用增加批改关系方法
-        if (Arrays.asList(exam.getSymbol().split(",")).contains("1")){
+        if ("1".equals(examParam.getIsExpert())){
             if (StrUtil.isNotBlank(examParam.getExpertIds())){
                 List<ExamExpert> examExpertList = new ArrayList<>();
                 String[] expertIds = examParam.getExpertIds().split(",");
@@ -183,7 +180,6 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
                         .remove();
                 examExpertService.saveBatch(examExpertList);
             }
-            examExpertAssignmentService.assignExamToExperts(exam.getId());
         }
         examPageSet.setExamId(exam.getId());
         examPageSet.setScore(Integer.valueOf(examParam.getScore()));

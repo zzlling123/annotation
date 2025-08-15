@@ -55,4 +55,12 @@ public class ExamParam {
 
     @ApiModelProperty("专家列表(ID逗号隔开)")
     private String expertIds;
+
+    @ApiModelProperty("考试时长分钟")
+    @NotBlank(message = "考试时长不能为空")
+    private String duration;
+
+    @ApiModelProperty("是否专家评审，0否1是")
+    @NotBlank(message = "是否专家评审不能为空")
+    private String isExpert;
 }

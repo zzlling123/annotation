@@ -76,5 +76,11 @@ public class Exam extends DataEntity {
     @TableField("is_del")
     private Integer isDel;
 
+    /**
+     * 是否专家评审0否1是
+     */
+    @TableField("is_expert")
+    private Integer isExpert;
+
 
 }
