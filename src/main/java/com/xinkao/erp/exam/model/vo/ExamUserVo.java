@@ -86,4 +86,7 @@ public class ExamUserVo {
      * 题目列表
      */
     private List<ExamPageUserQuestionVo> questionVoList;
+
+    @ApiModelProperty("考试时长")
+    private String duration;
 }

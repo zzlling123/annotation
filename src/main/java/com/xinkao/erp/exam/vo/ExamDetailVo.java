@@ -59,4 +59,13 @@ public class ExamDetailVo extends BaseEntity {
 
     @ApiModelProperty("题目设置分布详情")
     private List<ExamPageSetType> examPageSetTypeVoList;
+
+    @ApiModelProperty("考试时长")
+    private String duration;
+
+    /**
+     * 是否专家评审0否1是
+     */
+    @ApiModelProperty("是否专家评审0否1是")
+    private String isExpert;
 }
