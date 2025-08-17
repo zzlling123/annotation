@@ -81,7 +81,7 @@ public class ExamPageTeacherController {
     }
 
     @PrimaryDataSource
-    @DataScope(role = "2")
+    @DataScope(role = "2,20")
     @PostMapping("/getExamUserInfo/{examPageUserId}")
     @ApiOperation("点击学生，获取该学生此次试卷答题信息")
     public BaseResponse<ExamPageAnswerVo> getExamUserAnswerInfo(@PathVariable String examPageUserId) {
@@ -89,7 +89,7 @@ public class ExamPageTeacherController {
     }
 
     @PrimaryDataSource
-    @DataScope(role = "2")
+    @DataScope(role = "2,20")
     @PostMapping("/correct")
     @ApiOperation("批改，提交分数(如果是该学生该试卷最后一道问答题则会进行计算总分)")
     @Log(content = "批改",operationType = OperationType.INSERT)
@@ -98,7 +98,7 @@ public class ExamPageTeacherController {
     }
 
     @PrimaryDataSource
-    @DataScope(role = "2")
+    @DataScope(role = "2,20")
     @PostMapping("/correctChild")
     @ApiOperation("子题批改，提交分数(如果是该学生该题目单最后一道题则会进行计算该题总分)")
     @Log(content = "子题批改",operationType = OperationType.INSERT)
