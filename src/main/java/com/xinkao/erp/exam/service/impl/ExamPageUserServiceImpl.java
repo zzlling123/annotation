@@ -91,6 +91,7 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
         vo.setExamName(examService.getById(vo.getExamId()).getExamName());
         vo.setStartTime(exam.getStartTime());
         vo.setEndTime(exam.getEndTime());
+        vo.setDuration(exam.getDuration().toString());
         //插入题目详情
         LambdaQueryWrapper<ExamPageUserQuestion> examPageUserQuestionLambdaQueryWrapper = new LambdaQueryWrapper<>();
         examPageUserQuestionLambdaQueryWrapper.eq(ExamPageUserQuestion::getExamId, examId)
