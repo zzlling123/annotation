@@ -27,4 +27,7 @@ public interface ExamExpertAssignmentService extends IService<ExamExpertAssignme
      * @return 分配列表
      */
     List<ExamExpertAssignment> getAssignmentsByExpertId(Integer expertId);
+
+
+    List<ExamExpertAssignment> getAssignmentsByExamIdAndExpertId(Integer examId, Integer expertId);
 } 

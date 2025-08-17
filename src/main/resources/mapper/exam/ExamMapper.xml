@@ -23,6 +23,19 @@
         ORDER BY e.create_time DESC
     </select>
 
+    <select id="page1" resultType="com.xinkao.erp.exam.vo.ExamPageVo">
+        SELECT *
+        FROM exam
+        where 1=1 and is_del = 0
+        <if test="examIds != null and examIds.size() > 0">
+            and id in
+            <foreach item="item" index="index" collection="examIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        ORDER BY create_time DESC
+    </select>
+
     <select id="getExamPageSetByTypeAndShape" resultType="com.xinkao.erp.exam.dto.QuestionTypeListDto">
         SELECT t.id,t.type_name,t.shape,
                SUM(CASE t.state WHEN 1 then 1 else 0 end ) questionOnNum

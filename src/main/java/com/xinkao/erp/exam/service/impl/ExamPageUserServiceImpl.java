@@ -656,4 +656,10 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
     public List<ExamPageUserVo> getExamPageUserName(Integer classId) {
         return examPageUserMapper.getExamPageUserName(classId);
     }
+
+    @Override
+    public Page<ExamPageUserListVo> getExamUserListForExamIdByUserIds(Integer examId, List<Integer> userIds, Pageable pageable) {
+        return examPageUserMapper.getExamUserListForExamIdByUserIds(examId, userIds, pageable.toPage());
+    }
+
 }

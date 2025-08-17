@@ -33,5 +33,7 @@ public interface ExamPageUserMapper extends BaseMapper<ExamPageUser> {
 
     Page<ExamPageUserListVo> getExamUserListForExamId(Page page, ExamUserQuery query);
 
+    Page<ExamPageUserListVo> getExamUserListForExamIdByUserIds(Integer examId, List<Integer> userIds, Page page);
+
     List<ExamPageUserVo> getExamPageUserName(Integer classId);
 }

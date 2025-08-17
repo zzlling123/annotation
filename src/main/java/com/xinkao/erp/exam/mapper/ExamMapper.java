@@ -24,5 +24,7 @@ public interface ExamMapper extends BaseMapper<Exam> {
 
     Page<ExamPageVo> page(Page page, ExamQuery query,List<Integer> classIds);
 
+    Page<ExamPageVo> page1(Page page,List<Integer> examIds);
+
     List<QuestionTypeListDto> getExamPageSetByTypeAndShape(Integer difficultyLevel, List<String> symbol);
 }

@@ -117,6 +117,16 @@ public class ExamExpertAssignmentServiceImpl extends ServiceImpl<ExamExpertAssig
                 .eq(ExamExpertAssignment::getIsDel, 0)
                 .list();
     }
+
+    //通过ExamId和ExpertId获取专家的分配信息
+    @Override
+    public List<ExamExpertAssignment> getAssignmentsByExamIdAndExpertId(Integer examId, Integer expertId) {
+        return this.lambdaQuery()
+                .eq(ExamExpertAssignment::getExamId, examId)
+                .eq(ExamExpertAssignment::getExpertId, expertId)
+                .eq(ExamExpertAssignment::getIsDel, 0)
+                .list();
+    }
     
     /**
      * 获取评审专家角色ID

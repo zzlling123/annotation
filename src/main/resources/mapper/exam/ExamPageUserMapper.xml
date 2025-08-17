@@ -40,4 +40,14 @@
                  LEFT JOIN `user` u ON u.id = epu.user_id
         WHERE  epu.class_id = #{query.classId}
     </select>
+
+    <select id="getExamUserListForExamIdByUserIds" resultType="com.xinkao.erp.exam.vo.ExamPageUserListVo">
+        SELECT epu.*,u.real_name
+        FROM `exam_page_user` epu
+        LEFT JOIN `user` u ON u.id = epu.user_id
+        WHERE epu.exam_id = #{examId} and epu.user_id in
+        <foreach item="item" index="index" collection="userIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
 </mapper>

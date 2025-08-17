@@ -57,4 +57,6 @@ public interface ExamPageUserService extends BaseService<ExamPageUser> {
     BaseResponse<ExamPageUserQuestionVo> getUserQuestionInfo(String id);
 
     List<ExamPageUserVo> getExamPageUserName(Integer classId);
+
+    Page<ExamPageUserListVo> getExamUserListForExamIdByUserIds(Integer examId, List<Integer> userIds, Pageable pageable);
 }
