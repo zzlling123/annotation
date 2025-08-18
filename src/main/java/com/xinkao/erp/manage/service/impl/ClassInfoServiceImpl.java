@@ -2,6 +2,7 @@ package com.xinkao.erp.manage.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.common.enums.CommonEnum;
+import com.xinkao.erp.common.model.LoginUser;
 import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.service.impl.BaseServiceImpl;
@@ -33,6 +34,11 @@ public class ClassInfoServiceImpl extends BaseServiceImpl<ClassInfoMapper, Class
     public BaseResponse<?> save(ClassInfoParam classInfoParam) {
         if (lambdaQuery().eq(ClassInfo::getClassName, classInfoParam.getClassName()).eq(ClassInfo::getIsDel, CommonEnum.IS_DEL.NO.getCode()).count() > 0) {
             return BaseResponse.fail("班级名称已存在！");
+        }
+        //获取当前登录用户信息
+        LoginUser loginUserAll = redisUtil.getInfoByToken();
+        if(loginUserAll.getUser().getRoleId()==19){
+            classInfoParam.setDirectorId(loginUserAll.getUser().getId());
         }
         ClassInfo classInfo = new ClassInfo();
         BeanUtils.copyProperties(classInfoParam, classInfo);

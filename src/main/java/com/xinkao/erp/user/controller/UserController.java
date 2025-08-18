@@ -70,7 +70,7 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
-	@DataScope(role = "1,2,18,19")
+	@DataScope(role = "1,18,19")
 	@PostMapping("/page")
 	@ApiOperation("分页")
 	public BaseResponse<Page<UserPageVo>> page(@RequestBody UserQuery query) {
@@ -176,6 +176,7 @@ public class UserController extends BaseController {
 	@PostMapping("/del")
 	@ApiOperation("删除用户")
 	public BaseResponse del(@RequestBody UpdateStateParam updateStateParam) {
+
 		if (StrUtil.isBlank(updateStateParam.getIds())){
 			return BaseResponse.fail("参数错误,id不可为空！");
 		}
