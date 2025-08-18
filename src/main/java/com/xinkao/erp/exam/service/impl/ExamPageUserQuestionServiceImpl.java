@@ -378,6 +378,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                         examPageUserQuestionChild.setScore(scoreChild);
                         examPageUserQuestionChild.setPid(examPageUserQuestionFormTitle.getId());
                         examPageUserQuestionChild.setQuestionId(examQuestionId);
+                        examPageUserQuestionChild.setNeedCorrect(question.getNeedCorrect());
                         examPageUserQuestionChildList.add(examPageUserQuestionChild);
                     }
                 }
