@@ -519,9 +519,11 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                 for (ExamPageUserQuestionFormTitle examPageUserQuestionFormTitle : examPageUserQuestionFormTitleList) {
                     ExamPageUserQuestionFormTitleVo examPageUserQuestionFormTitleVo = BeanUtil.copyProperties(examPageUserQuestionFormTitle, ExamPageUserQuestionFormTitleVo.class);
                     List<ExamPageUserQuestionChildVo> examPageUserQuestionChildVoList = BeanUtil.copyToList(examPageUserQuestionChildMap.get(examPageUserQuestionFormTitle.getId()), ExamPageUserQuestionChildVo.class);
-                    for (ExamPageUserQuestionChildVo examPageUserQuestionChildVo : examPageUserQuestionChildVoList) {
-                        examPageUserQuestionChildVo.setUserAnswer(examPageUserChildAnswerMap.get(examPageUserQuestionChildVo.getId()) == null ? "" : examPageUserChildAnswerMap.get(examPageUserQuestionChildVo.getId()).getUserAnswer());
-                        examPageUserQuestionChildVo.setRightAnswer(examPageUserChildAnswerMap.get(examPageUserQuestionChildVo.getId()) == null ? "" : examPageUserChildAnswerMap.get(examPageUserQuestionChildVo.getId()).getRightAnswer());
+                    if (examPageUserQuestionChildVoList != null){
+                        for (ExamPageUserQuestionChildVo examPageUserQuestionChildVo : examPageUserQuestionChildVoList) {
+                            examPageUserQuestionChildVo.setUserAnswer(examPageUserChildAnswerMap.get(examPageUserQuestionChildVo.getId()) == null ? "" : examPageUserChildAnswerMap.get(examPageUserQuestionChildVo.getId()).getUserAnswer());
+                            examPageUserQuestionChildVo.setRightAnswer(examPageUserChildAnswerMap.get(examPageUserQuestionChildVo.getId()) == null ? "" : examPageUserChildAnswerMap.get(examPageUserQuestionChildVo.getId()).getRightAnswer());
+                        }
                     }
                     examPageUserQuestionFormTitleVo.setExamPageUserQuestionChildVoList(examPageUserQuestionChildVoList);
                     examPageUserQuestionFormTitleVoList.add(examPageUserQuestionFormTitleVo);
