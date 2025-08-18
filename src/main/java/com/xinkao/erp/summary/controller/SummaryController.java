@@ -487,7 +487,10 @@ public class SummaryController {
             }
             List<Integer> userIds = null;
             LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery();
-            wrapper.eq(User::getRoleId,3);
+            List<Integer> roleIds = new ArrayList<Integer>();
+            roleIds.add(3);
+            roleIds.add(21);
+            wrapper.in(User::getRoleId, roleIds);
             wrapper.in(User::getClassId,classId);
             List<User> userList = userService.list(wrapper);
             if (userList==null || userList.size()==0){
