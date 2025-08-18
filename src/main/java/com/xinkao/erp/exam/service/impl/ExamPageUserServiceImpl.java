@@ -290,8 +290,8 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                 }
             }else if (200 == examPageUserAnswer.getShape()){
                 //如果是多选题，判断是否全部正确或部分正确
-                List<String> teaAnswerList = Arrays.asList(examPageUserAnswer.getRightAnswer().split("&%&"));
-                List<String> stuAnswerList = Arrays.asList(examPageUserAnswer.getUserAnswer().split("&%&"));
+                List<String> teaAnswerList = Arrays.asList(examPageUserAnswer.getRightAnswer().split(""));
+                List<String> stuAnswerList = Arrays.asList(examPageUserAnswer.getUserAnswer().split(""));
                 if (teaAnswerList.containsAll(stuAnswerList)) {
                     if (teaAnswerList.size() == stuAnswerList.size()) {// 全选对
                         examPageUserAnswer.setUserScore(examPageUserAnswer.getScore());
