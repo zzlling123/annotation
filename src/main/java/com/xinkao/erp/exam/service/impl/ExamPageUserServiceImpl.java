@@ -290,8 +290,8 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                 }
             }else if (200 == examPageUserAnswer.getShape()){
                 //如果是多选题，判断是否全部正确或部分正确
-                List<String> teaAnswerList = Arrays.asList(examPageUserAnswer.getRightAnswer().split("&%&"));
-                List<String> stuAnswerList = Arrays.asList(examPageUserAnswer.getUserAnswer().split("&%&"));
+                List<String> teaAnswerList = Arrays.asList(examPageUserAnswer.getRightAnswer().split(""));
+                List<String> stuAnswerList = Arrays.asList(examPageUserAnswer.getUserAnswer().split(""));
                 if (teaAnswerList.containsAll(stuAnswerList)) {
                     if (teaAnswerList.size() == stuAnswerList.size()) {// 全选对
                         examPageUserAnswer.setUserScore(examPageUserAnswer.getScore());
@@ -519,9 +519,11 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                 for (ExamPageUserQuestionFormTitle examPageUserQuestionFormTitle : examPageUserQuestionFormTitleList) {
                     ExamPageUserQuestionFormTitleVo examPageUserQuestionFormTitleVo = BeanUtil.copyProperties(examPageUserQuestionFormTitle, ExamPageUserQuestionFormTitleVo.class);
                     List<ExamPageUserQuestionChildVo> examPageUserQuestionChildVoList = BeanUtil.copyToList(examPageUserQuestionChildMap.get(examPageUserQuestionFormTitle.getId()), ExamPageUserQuestionChildVo.class);
-                    for (ExamPageUserQuestionChildVo examPageUserQuestionChildVo : examPageUserQuestionChildVoList) {
-                        examPageUserQuestionChildVo.setUserAnswer(examPageUserChildAnswerMap.get(examPageUserQuestionChildVo.getId()) == null ? "" : examPageUserChildAnswerMap.get(examPageUserQuestionChildVo.getId()).getUserAnswer());
-                        examPageUserQuestionChildVo.setRightAnswer(examPageUserChildAnswerMap.get(examPageUserQuestionChildVo.getId()) == null ? "" : examPageUserChildAnswerMap.get(examPageUserQuestionChildVo.getId()).getRightAnswer());
+                    if (examPageUserQuestionChildVoList != null){
+                        for (ExamPageUserQuestionChildVo examPageUserQuestionChildVo : examPageUserQuestionChildVoList) {
+                            examPageUserQuestionChildVo.setUserAnswer(examPageUserChildAnswerMap.get(examPageUserQuestionChildVo.getId()) == null ? "" : examPageUserChildAnswerMap.get(examPageUserQuestionChildVo.getId()).getUserAnswer());
+                            examPageUserQuestionChildVo.setRightAnswer(examPageUserChildAnswerMap.get(examPageUserQuestionChildVo.getId()) == null ? "" : examPageUserChildAnswerMap.get(examPageUserQuestionChildVo.getId()).getRightAnswer());
+                        }
                     }
                     examPageUserQuestionFormTitleVo.setExamPageUserQuestionChildVoList(examPageUserQuestionChildVoList);
                     examPageUserQuestionFormTitleVoList.add(examPageUserQuestionFormTitleVo);
