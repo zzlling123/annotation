@@ -7,6 +7,7 @@ import com.xinkao.erp.common.enums.CommonEnum;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.LoginUser;
 import com.xinkao.erp.common.util.RedisUtil;
+import com.xinkao.erp.exam.entity.Exam;
 import com.xinkao.erp.exam.entity.ExamPageUser;
 import com.xinkao.erp.exam.entity.ExamPageUserAnswer;
 import com.xinkao.erp.exam.model.vo.ExamPageUserVo;
@@ -14,6 +15,7 @@ import com.xinkao.erp.exam.param.ExamPageUserParam;
 import com.xinkao.erp.exam.service.ExamClassService;
 import com.xinkao.erp.exam.service.ExamPageUserAnswerService;
 import com.xinkao.erp.exam.service.ExamPageUserService;
+import com.xinkao.erp.exam.service.ExamService;
 import com.xinkao.erp.exercise.entity.ExerciseRecords;
 import com.xinkao.erp.exercise.entity.InstantFeedbacks;
 import com.xinkao.erp.exercise.query.ExerciseRecordsQuery;
@@ -73,6 +75,8 @@ public class SummaryController {
     private ShapeService shapeService;
     @Autowired
     private ExamClassService examClassService;
+    @Autowired
+    private ExamService examService;
 
 //    统计
 //    学生成绩统计	详细记录每个学生的练习和考试成绩，生成个人成绩单和进步曲线图，帮助学生了解自己的学习效果。
@@ -884,7 +888,20 @@ public class SummaryController {
     @ApiOperation("根据班级获取考试列表")
     //@PrimaryDataSource
     public BaseResponse<?> getExamListByClass(@PathVariable Integer classId) {
-        List<ExamClVo> examClassList = examClassService.listByClassId(classId);
-        return BaseResponse.ok(examClassList);
+        //获取登录用户
+        LoginUser loginUserAll = redisUtil.getInfoByToken();
+        if (loginUserAll == null || loginUserAll.getUser() == null) {
+            return BaseResponse.fail("用户未登录");
+        }else if (loginUserAll.getUser().getRoleId() == 19) {
+            //管理员
+            LambdaQueryWrapper<Exam> wrapper = Wrappers.lambdaQuery();
+            wrapper.eq(Exam::getIsExpert, 0);
+            wrapper.eq(Exam::getState, 1);
+            List<Exam> examList = examService.list(wrapper);
+            return BaseResponse.ok(examList);
+        }else{
+            List<ExamClVo> examClassList = examClassService.listByClassId(classId);
+            return BaseResponse.ok(examClassList);
+        }
     }
 }
