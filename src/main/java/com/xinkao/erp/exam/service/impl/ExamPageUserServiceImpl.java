@@ -567,7 +567,7 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                 .one();
         //判断分数是否超过该题总分
         if (examPageUserChildAnswer.getScore() < Integer.parseInt(param.getScore())){
-            return BaseResponse.fail("分数不能超过该题总分");
+            return BaseResponse.fail("分数不能超过该子题总分");
         }
         examPageUserChildAnswer.setCorrectId(loginUser.getUser().getId());
         examPageUserChildAnswer.setCorrectTime(DateUtil.date());
@@ -575,10 +575,8 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
         //修改
         examPageUserChildAnswerService.updateById(examPageUserChildAnswer);
         //异步执行计算总分
-        ThreadUtil.execAsync(()->{
-            //计算总分
-            sumQuestionFormScore(examPageUserChildAnswer.getQuestionId());
-        });
+        //计算总分
+        sumQuestionFormScore(examPageUserChildAnswer.getQuestionId());
         return BaseResponse.ok("批改成功");
     }
 
@@ -606,12 +604,11 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                 .one();
         examPageUserAnswer.setUserScore(allScore);
         examPageUserAnswer.setCorrectId(loginUser.getUser().getId());
+        examPageUserAnswer.setCorrectTime(DateUtil.date());
         examPageUserAnswerService.updateById(examPageUserAnswer);
         //再看是否为最后的题目单的最后一题，如果是则异步执行计算总分
-        ThreadUtil.execAsync(()->{
-            //计算总分
-            sumScore(examPageUserAnswer.getUserId(),examPageUserAnswer.getExamId());
-        });
+        //计算总分
+        sumScore(examPageUserAnswer.getUserId(),examPageUserAnswer.getExamId());
     }
 
     @Override

@@ -113,5 +113,8 @@ public class ExamPageUserQuestionChild extends DataSnowIdEntity {
     @TableField(exist = false)
     private Integer score;
 
+    @TableField(exist = false)
+    private Integer needCorrect;
+
 
 }
