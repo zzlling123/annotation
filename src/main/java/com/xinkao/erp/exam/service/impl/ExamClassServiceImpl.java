@@ -28,4 +28,9 @@ public class ExamClassServiceImpl extends BaseServiceImpl<ExamClassMapper, ExamC
     public List<ExamClVo> listByClassId(Integer classId) {
         return examClassMapper.listByClassId(classId);
     }
+
+    @Override
+    public List<ExamClVo> listRSGLy(Integer classId) {
+        return examClassMapper.listRSGLy(classId);
+    }
 }

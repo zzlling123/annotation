@@ -893,12 +893,8 @@ public class SummaryController {
         if (loginUserAll == null || loginUserAll.getUser() == null) {
             return BaseResponse.fail("用户未登录");
         }else if (loginUserAll.getUser().getRoleId() == 19) {
-            //管理员
-            LambdaQueryWrapper<Exam> wrapper = Wrappers.lambdaQuery();
-            wrapper.eq(Exam::getIsExpert, 0);
-            wrapper.eq(Exam::getState, 1);
-            List<Exam> examList = examService.list(wrapper);
-            return BaseResponse.ok(examList);
+            List<ExamClVo> examClassList = examClassService.listRSGLy(classId) ;
+            return BaseResponse.ok(examClassList);
         }else{
             List<ExamClVo> examClassList = examClassService.listByClassId(classId);
             return BaseResponse.ok(examClassList);
