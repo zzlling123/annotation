@@ -70,7 +70,7 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
-	@DataScope(role = "1,18,19")
+	@DataScope(role = "1,2,18,19")
 	@PostMapping("/page")
 	@ApiOperation("分页")
 	public BaseResponse<Page<UserPageVo>> page(@RequestBody UserQuery query) {
@@ -265,7 +265,7 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
-	@DataScope(role = "1,3,18,19")
+	@DataScope(role = "1,2,3,18,19")
 	@PostMapping("/getUserInfoBySelf")
 	@ApiOperation("获取用户信息")
 	public BaseResponse<UserInfoVo> getUserInfoBySelf() {
