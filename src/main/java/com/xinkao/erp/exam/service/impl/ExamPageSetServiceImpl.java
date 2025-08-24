@@ -23,6 +23,7 @@ import com.xinkao.erp.user.entity.User;
 import com.xinkao.erp.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,8 +57,7 @@ public class ExamPageSetServiceImpl extends BaseServiceImpl<ExamPageSetMapper, E
     private UserService userService;
     @Autowired
     private ExamClassService examClassService;
-    @Autowired
-    private ExamPageSetService examPageSetService;
+    @Lazy
     @Autowired
     private ExamPageUserQuestionService examPageStuQuestionService;
 
@@ -189,7 +189,7 @@ public class ExamPageSetServiceImpl extends BaseServiceImpl<ExamPageSetMapper, E
         }
 
         redisUtil.set(token, "0", 2, TimeUnit.HOURS);
-        examPageSetService.updateById(examPageSet);
+        updateById(examPageSet);
         //异步线程执行导入
         @Valid ExamPageSet finalExamPageSet = examPageSet;
         ThreadUtil.execAsync(() -> {
