@@ -65,7 +65,7 @@ public class ExamPageUserQuestionController {
             return BaseResponse.fail("该考试当前状态不允许制卷！");
         }
         if(examPageSet.getQuestionStatus() != 1){
-            return BaseResponse.fail("该尚未导入试题分布设置，不可组卷！");
+            return BaseResponse.fail("该考试尚未导入试题分布设置，不可组卷！");
         }
         //获取考试相关班级，然后查询班级下有多少人
         List<Integer> classList = examClassService.lambdaQuery().eq(ExamClass::getExamId, examId).list().stream().map(ExamClass::getClassId).collect(Collectors.toList());

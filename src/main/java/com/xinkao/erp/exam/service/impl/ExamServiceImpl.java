@@ -161,7 +161,7 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
         }else{
             //考试如果已经制卷，则不可修改
             if (examPageSet.getQuestionStatus() == 1){
-                return BaseResponse.fail("该考试已制卷，不可修改");
+                return BaseResponse.fail("该考试已设置题目分布，不可修改");
             }
         }
         //执行如果是专家批改，则调用增加批改关系方法
