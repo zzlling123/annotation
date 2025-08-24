@@ -17,5 +17,6 @@ import java.util.List;
 public interface ExamClassService extends BaseService<ExamClass> {
 
     List<ExamClVo> listByClassId(Integer classId);
+    List<ExamClVo> listRSGLy(Integer classId);
 
 }
