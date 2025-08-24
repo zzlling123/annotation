@@ -1,39 +1,29 @@
 package com.xinkao.erp.exam.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.thread.ThreadUtil;
 import com.alibaba.fastjson.JSONObject;
-import com.xinkao.erp.common.constant.XinKaoConstant;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.HandleResult;
 import com.xinkao.erp.common.util.RedisUtil;
 import com.xinkao.erp.common.util.ResultUtils;
-import com.xinkao.erp.exam.entity.ExamClass;
 import com.xinkao.erp.exam.entity.ExamPageSet;
 import com.xinkao.erp.exam.entity.ExamPageSetType;
 import com.xinkao.erp.exam.excel.ExamPageSetImportErrorModel;
 import com.xinkao.erp.exam.mapper.ExamPageSetMapper;
 import com.xinkao.erp.exam.param.ExamPageSetParam;
-import com.xinkao.erp.exam.service.ExamClassService;
 import com.xinkao.erp.exam.service.ExamPageSetService;
 import com.xinkao.erp.common.service.impl.BaseServiceImpl;
 import com.xinkao.erp.exam.service.ExamPageSetTypeService;
-import com.xinkao.erp.exam.service.ExamPageUserQuestionService;
-import com.xinkao.erp.user.entity.User;
-import com.xinkao.erp.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -53,13 +43,6 @@ public class ExamPageSetServiceImpl extends BaseServiceImpl<ExamPageSetMapper, E
     private RedisUtil redisUtils;
     @Autowired
     private ExamPageSetTypeService examPageSetTypeService;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private ExamClassService examClassService;
-    @Lazy
-    @Autowired
-    private ExamPageUserQuestionService examPageStuQuestionService;
 
     /**
      * 导入分类题目分布
@@ -142,15 +125,6 @@ public class ExamPageSetServiceImpl extends BaseServiceImpl<ExamPageSetMapper, E
     @Transactional
     @Override
     public BaseResponse<?> saveExamPageSetPoint(String examId, List<ExamPageSetParam> list) {
-        //生成固定token
-        String token = XinKaoConstant.ROLL_MAKING+examId;
-        //验证该token是否有值，如果有则拦截
-        if (redisUtil.get(token) != null){
-            //如果value ！= 1则返回
-            if (!"1".equals(redisUtil.get(token))){
-                return BaseResponse.fail("该考试正在制卷中，请勿重复操作！");
-            }
-        }
         //设置总分
         int allScore = 0;
         //判断所有分数加起来是否等于总分，如果不等于则报错
@@ -180,21 +154,6 @@ public class ExamPageSetServiceImpl extends BaseServiceImpl<ExamPageSetMapper, E
         examPageSetTypeService.saveBatch(examPageSetTypeList);
         //修改设置
         updateById(examPageSet);
-        //开始制卷
-        //获取考试相关班级，然后查询班级下有多少人
-        List<Integer> classList = examClassService.lambdaQuery().eq(ExamClass::getExamId, examId).list().stream().map(ExamClass::getClassId).collect(Collectors.toList());
-        List<User> userList = userService.lambdaQuery().in(User::getClassId, classList).eq(User::getIsDel, 0).list();
-        if (userList.isEmpty()){
-            return BaseResponse.fail("该考试下没有考生，请检查关联班级");
-        }
-
-        redisUtil.set(token, "0", 2, TimeUnit.HOURS);
-        updateById(examPageSet);
-        //异步线程执行导入
-        @Valid ExamPageSet finalExamPageSet = examPageSet;
-        ThreadUtil.execAsync(() -> {
-            examPageStuQuestionService.rollMaking(finalExamPageSet,userList,token);
-        });
-        return BaseResponse.ok("该考试下考生共"+userList.size()+"人,开始制卷......",token);
+        return BaseResponse.ok("成功");
     }
 }
