@@ -201,7 +201,10 @@ public class DeviceController extends BaseController {
         String url = mainServerUrl + "/device/addAuth";
         try {
             // 用POST方式，参数为DeviceParam对象
-            Boolean isAuthorized = restTemplate.postForObject(url, param, Boolean.class);
+            //Boolean isAuthorized = restTemplate.postForObject(url, param, Boolean.class);
+            BaseResponse responseBody = restTemplate.postForObject(url, param, BaseResponse.class);
+            Boolean isAuthorized = responseBody != null && responseBody.getData() instanceof Boolean ? (Boolean) responseBody.getData() : false;
+            System.out.println("远程授权校验请求已发送（同步模式）结果：" + isAuthorized);
             return ResponseEntity.ok(isAuthorized != null && isAuthorized);
         } catch (Exception e) {
             // 主服务器不可用时的处理
@@ -215,9 +218,9 @@ public class DeviceController extends BaseController {
      * @return true=申请成功，false=已存在或失败
      */
     @PostMapping("/addAuth")
-    public ResponseEntity<Boolean> addDeviceAuth(@RequestBody DeviceParam param) {
+    public BaseResponse<Boolean> addDeviceAuth(@RequestBody DeviceParam param) {
         boolean success = deviceService.addDeviceAuthRequest(param);
-        return ResponseEntity.ok(success);
+        return BaseResponse.ok(success);
     }
     /**
      * 分页查询设备列表
@@ -347,13 +350,40 @@ public class DeviceController extends BaseController {
      * 重启后通过密钥验证系统启动
      */
     @PostMapping("/system-startup/validate")
-    @ApiOperation("重启后通过密钥验证系统启动")
-    public BaseResponse<?> validateSystemStartup(@Valid @RequestBody KeyValidationParam param) {
+    @ApiOperation("重启后通过密钥验证系统启动-服务器自动运行")
+    public BaseResponse<Boolean> validateSystemStartup(@Valid @RequestBody KeyValidationParam param) {
         boolean valid = deviceService.isDeviceKeyValid(param.getMacAddress(), param.getDeviceKey());
-        if (valid) {
-            return BaseResponse.ok("系统启动验证成功");
-        } else {
-            return BaseResponse.fail("系统启动验证失败，请检查MAC地址和密钥");
+//        if (valid) {
+//            return BaseResponse.ok("系统启动验证成功");
+//        } else {
+//            return BaseResponse.fail("系统启动验证失败，请检查MAC地址和密钥");
+//        }
+        return BaseResponse.ok(valid);
+    }
+
+    /**
+     * 重启后通过密钥验证系统启动
+     */
+    @PostMapping("/system-startup/validateLocal")
+    @ApiOperation("重启后通过密钥验证系统启动-服务器自动运行")
+    public BaseResponse<?> validateSystemStartupLocal(@Valid @RequestBody KeyValidationParam param) {
+        // 1. 获取主服务器地址
+        String mainServerUrl = sysConfigService.getConfigByKey("device.authentication.server");
+        // 2. 拼接主服务器接口
+        String url = mainServerUrl + "/device/system-startup/validate";
+        try {
+            // 用POST方式，参数为DeviceParam对象，后端返回 BaseResponse<Boolean>
+            BaseResponse responseBody = restTemplate.postForObject(url, param, BaseResponse.class);
+            Boolean isAuthorized = responseBody != null && responseBody.getData() instanceof Boolean ? (Boolean) responseBody.getData() : false;
+            System.out.println("远程授权校验请求已发送（同步模式）结果：" + isAuthorized);
+            if (Boolean.TRUE.equals(isAuthorized)) {
+                return BaseResponse.ok("系统启动验证成功");
+            } else {
+                return BaseResponse.fail("系统启动验证失败，请检查MAC地址和密钥");
+            }
+        } catch (Exception e) {
+            // 主服务器不可用时的处理
+            return BaseResponse.fail("主服务器不可用");
         }
     }
 } 

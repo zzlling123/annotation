@@ -93,6 +93,7 @@ public class DeviceServiceImpl implements DeviceService {
             device.setKeyGenerateTime(LocalDateTime.now());
             device.setKeyExpireTime(LocalDateTime.now().plusHours(param.getKeyValidHours()));
             device.setUpdateTime(LocalDateTime.now());
+            device.setRestartStatus(0);
             return deviceMapper.updateById(device) > 0;
         }else {
             // 生成设备密钥
@@ -112,6 +113,7 @@ public class DeviceServiceImpl implements DeviceService {
             // 设置创建时间
             device.setCreateTime(LocalDateTime.now());
             device.setUpdateTime(LocalDateTime.now());
+            device.setRestartStatus(0);
             return deviceMapper.insert(device) > 0;
         }
     }
@@ -221,9 +223,11 @@ public class DeviceServiceImpl implements DeviceService {
         if (device == null) {
             return false;
         }
-        
+        System.out.println("deviceKey:" + deviceKey);
+        System.out.println("device____key:" + device.getDeviceKey());
         // 检查密钥是否匹配
         if (!device.getDeviceKey().equals(deviceKey)) {
+            System.out.println("密钥不匹配");
             return false;
         }
         
@@ -239,6 +243,7 @@ public class DeviceServiceImpl implements DeviceService {
         
         // 更新最后激活时间
         device.setLastActivateTime(LocalDateTime.now());
+        device.setRestartStatus(0);
         deviceMapper.updateById(device);
         
         return true;
