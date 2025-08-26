@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -25,10 +26,10 @@ public class ExamDetailVo extends BaseEntity {
     private Integer status;
 
     @ApiModelProperty("考试总分")
-    private Integer score;
+    private BigDecimal score;
 
     @ApiModelProperty("考试及格分")
-    private Integer scorePass;
+    private BigDecimal scorePass;
 
     @ApiModelProperty("难度")
     private String difficultyLevel;

@@ -7,6 +7,8 @@ import com.xinkao.erp.common.model.entity.DataSnowIdEntity;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 /**
  * <p>
  * 试卷表
@@ -96,13 +98,13 @@ public class ExamPageUserQuestion extends DataSnowIdEntity {
      * 题目分数
      */
     @TableField("score")
-    private Integer score;
+    private BigDecimal score;
 
     /**
      * 部分答对分数(限多选)
      */
     @TableField("score_part")
-    private Integer scorePart;
+    private BigDecimal scorePart;
 
     /**
      * 答案

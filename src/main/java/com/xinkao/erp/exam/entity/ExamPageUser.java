@@ -6,6 +6,8 @@ import com.xinkao.erp.common.model.entity.DataSnowIdEntity;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 /**
  * <p>
  * 考生表
@@ -72,7 +74,7 @@ public class ExamPageUser extends DataSnowIdEntity {
      * 最后得分
      */
     @TableField("score")
-    private Integer score;
+    private BigDecimal score;
 
     /**
      * 出分时间

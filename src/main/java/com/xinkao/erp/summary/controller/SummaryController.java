@@ -1,5 +1,6 @@
 package com.xinkao.erp.summary.controller;
 
+import cn.hutool.core.util.NumberUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.xinkao.erp.common.annotation.PrimaryDataSource;
@@ -48,6 +49,7 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -600,12 +602,15 @@ public class SummaryController {
             for (Shape shape : shapeList){
                 ClassSummaryParam classSummaryParam = new ClassSummaryParam();
                 List<ExamPageUserAnswer> examPageUserAnswer_shape = examPageUserAnswerList.stream().filter(examPageUserAnswer -> examPageUserAnswer.getShape()==Integer.parseInt(shape.getShapeCode())).collect(Collectors.toList());
-                Integer maxScore = examPageUserAnswer_shape.stream().mapToInt(ExamPageUserAnswer::getUserScore).max().orElse(0);
-                Integer minScore = examPageUserAnswer_shape.stream().mapToInt(ExamPageUserAnswer::getUserScore).min().orElse(0);
-                Integer avgScore = 0;
+                BigDecimal maxScore = examPageUserAnswer_shape.stream().map(ExamPageUserAnswer::getUserScore).max(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
+                BigDecimal minScore = examPageUserAnswer_shape.stream().map(ExamPageUserAnswer::getUserScore).min(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
+                BigDecimal avgScore = new BigDecimal(0);
                 if (examPageUserAnswer_shape.isEmpty()||examPageUserAnswer_shape.size()==0){
                 }else {
-                    avgScore = examPageUserAnswer_shape.stream().mapToInt(ExamPageUserAnswer::getUserScore).sum()/examPageUserAnswer_shape.size();
+                    for (ExamPageUserAnswer examPageUserAnswer : examPageUserAnswer_shape) {
+                        avgScore = avgScore.add(examPageUserAnswer.getUserScore());
+                    }
+                    avgScore = NumberUtil.div(avgScore,examPageUserAnswer_shape.size());
                     classSummaryParam.setExamId(examPageUserAnswer_shape.get(0).getExamId());
                     classSummaryParam.setShape(shape.getShapeCode());
                     classSummaryParam.setMaxScore(maxScore+"");
@@ -621,12 +626,15 @@ public class SummaryController {
                 //筛选出来操作题
                 List<ExamPageUserAnswer> examPageUserAnswer_type =
                         examPageUserAnswerList.stream().filter(examPageUserAnswer -> examPageUserAnswer.getType().equals(questionType.getId())&&examPageUserAnswer.getShape()==500).collect(Collectors.toList());
-                Integer maxScore = examPageUserAnswer_type.stream().mapToInt(ExamPageUserAnswer::getUserScore).max().orElse(0);
-                Integer minScore = examPageUserAnswer_type.stream().mapToInt(ExamPageUserAnswer::getUserScore).min().orElse(0);
-                Integer avgScore = 0;
+                BigDecimal maxScore = examPageUserAnswer_type.stream().map(ExamPageUserAnswer::getUserScore).max(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
+                BigDecimal minScore = examPageUserAnswer_type.stream().map(ExamPageUserAnswer::getUserScore).min(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
+                BigDecimal avgScore = new BigDecimal(0);
                 if (examPageUserAnswer_type.isEmpty()||examPageUserAnswer_type.size()==0){
                 }else {
-                    avgScore = examPageUserAnswer_type.stream().mapToInt(ExamPageUserAnswer::getUserScore).sum()/examPageUserAnswer_type.size();
+                    for (ExamPageUserAnswer examPageUserAnswer : examPageUserAnswer_type) {
+                        avgScore = avgScore.add(examPageUserAnswer.getUserScore());
+                    }
+                    avgScore = NumberUtil.div(avgScore,examPageUserAnswer_type.size());
                     double sumAccuracy = examPageUserAnswer_type.stream()
                             .mapToDouble(feedback -> feedback.getAccuracyRate() != null ? feedback.getAccuracyRate().doubleValue() : 0)
                             .sum();
@@ -814,12 +822,16 @@ public class SummaryController {
             for (Shape shape : shapeList){
                 ClassSummaryParam classSummaryParam = new ClassSummaryParam();
                 List<ExamPageUserAnswer> examPageUserAnswer_shape = examPageUserAnswerList_stu.stream().filter(examPageUserAnswer -> examPageUserAnswer.getShape()==Integer.parseInt(shape.getShapeCode())).collect(Collectors.toList());
-                Integer maxScore = examPageUserAnswer_shape.stream().mapToInt(ExamPageUserAnswer::getUserScore).max().orElse(0);
-                Integer minScore = examPageUserAnswer_shape.stream().mapToInt(ExamPageUserAnswer::getUserScore).min().orElse(0);
-                Integer avgScore = 0;
+                BigDecimal maxScore = examPageUserAnswer_shape.stream().map(ExamPageUserAnswer::getUserScore).max(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
+                BigDecimal minScore = examPageUserAnswer_shape.stream().map(ExamPageUserAnswer::getUserScore).min(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
+                BigDecimal avgScore = new BigDecimal(0);
+
                 if (examPageUserAnswer_shape.isEmpty()||examPageUserAnswer_shape.size()==0){
                 }else {
-                    avgScore = examPageUserAnswer_shape.stream().mapToInt(ExamPageUserAnswer::getUserScore).sum()/examPageUserAnswer_shape.size();
+                    for (ExamPageUserAnswer examPageUserAnswer : examPageUserAnswer_shape) {
+                        avgScore = avgScore.add(examPageUserAnswer.getUserScore());
+                    }
+                    avgScore = NumberUtil.div(avgScore,examPageUserAnswer_shape.size());
                     classSummaryParam.setExamId(examPageUserAnswer_shape.get(0).getExamId());
                     classSummaryParam.setShape(shape.getShapeCode());
                     classSummaryParam.setMaxScore(maxScore+"");
@@ -835,12 +847,15 @@ public class SummaryController {
                 //筛选出来操作题
                 List<ExamPageUserAnswer> examPageUserAnswer_type =
                         examPageUserAnswerList_stu.stream().filter(examPageUserAnswer -> examPageUserAnswer.getType().equals(questionType.getId())&&examPageUserAnswer.getShape()==500).collect(Collectors.toList());
-                Integer maxScore = examPageUserAnswer_type.stream().mapToInt(ExamPageUserAnswer::getUserScore).max().orElse(0);
-                Integer minScore = examPageUserAnswer_type.stream().mapToInt(ExamPageUserAnswer::getUserScore).min().orElse(0);
-                Integer avgScore = 0;
+                BigDecimal maxScore = examPageUserAnswer_type.stream().map(ExamPageUserAnswer::getUserScore).max(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
+                BigDecimal minScore = examPageUserAnswer_type.stream().map(ExamPageUserAnswer::getUserScore).min(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
+                BigDecimal avgScore = new BigDecimal(0);
                 if (examPageUserAnswer_type.isEmpty()||examPageUserAnswer_type.size()==0){
                 }else {
-                    avgScore = examPageUserAnswer_type.stream().mapToInt(ExamPageUserAnswer::getUserScore).sum()/examPageUserAnswer_type.size();
+                    for (ExamPageUserAnswer examPageUserAnswer : examPageUserAnswer_type) {
+                        avgScore = avgScore.add(examPageUserAnswer.getUserScore());
+                    }
+                    avgScore = NumberUtil.div(avgScore,examPageUserAnswer_type.size());
                     double sumAccuracy = examPageUserAnswer_type.stream()
                             .mapToDouble(feedback -> feedback.getAccuracyRate() != null ? feedback.getAccuracyRate().doubleValue() : 0)
                             .sum();

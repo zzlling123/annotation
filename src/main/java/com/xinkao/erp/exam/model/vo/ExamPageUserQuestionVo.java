@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -122,7 +123,7 @@ public class ExamPageUserQuestionVo {
 	 * 用户得分
 	 */
 	@ApiModelProperty("用户得分")
-	private Integer userScore;
+	private BigDecimal userScore;
 
 	/**
 	 * 批改人ID

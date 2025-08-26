@@ -280,13 +280,13 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                 .eq(ExamPageUserAnswer::getUserId,userId)
                 .orderByAsc(ExamPageUserAnswer::getNumSort)
                 .list();
-        int allScores = 0;
+        BigDecimal allScores = BigDecimal.ZERO;
         for (ExamPageUserAnswer examPageUserAnswer : examPageUserAnswers) {
             //如果是单选题，判断是否正确,//填空题(暂时先按照全部正确才给分)
             if (100 == examPageUserAnswer.getShape() || 300 == examPageUserAnswer.getShape() || 700 == examPageUserAnswer.getShape() ){
                 if (examPageUserAnswer.getUserAnswer().equals(examPageUserAnswer.getRightAnswer())){
                     examPageUserAnswer.setUserScore(examPageUserAnswer.getScore());
-                    allScores += examPageUserAnswer.getScore();
+                    allScores = allScores.add(examPageUserAnswer.getScore());
                 }
             }else if (200 == examPageUserAnswer.getShape()){
                 //如果是多选题，判断是否全部正确或部分正确
@@ -295,10 +295,10 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                 if (teaAnswerList.containsAll(stuAnswerList)) {
                     if (teaAnswerList.size() == stuAnswerList.size()) {// 全选对
                         examPageUserAnswer.setUserScore(examPageUserAnswer.getScore());
-                        allScores += examPageUserAnswer.getScore();
+                        allScores = allScores.add(examPageUserAnswer.getScore());
                     } else {// 部分选对
                         examPageUserAnswer.setUserScore(examPageUserAnswer.getScorePart());
-                        allScores += examPageUserAnswer.getScorePart();
+                        allScores = allScores.add(examPageUserAnswer.getScorePart());
                     }
                 }
             }else if (400 == examPageUserAnswer.getShape()){
@@ -306,18 +306,18 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                 if (examPageUserAnswer.getNeedCorrect() == 0){
                     if (examPageUserAnswer.getRightAnswer().equals(examPageUserAnswer.getUserAnswer())){
                         examPageUserAnswer.setUserScore(examPageUserAnswer.getScore());
-                        allScores += examPageUserAnswer.getUserScore();
+                        allScores = allScores.add(examPageUserAnswer.getUserScore());
                     }
                 }
             }else if (500 == examPageUserAnswer.getShape()){
                 //操作题
-                Integer score = 0;
+                BigDecimal score = BigDecimal.ZERO;
                 if (examPageUserAnswer.getNeedCorrect() == 0){
                     if (examPageUserAnswer.getType() == 1 || examPageUserAnswer.getType() == 3){
                         //图像标注与OCR标注直接验证与答案完全一致则可以得分
                         if (examPageUserAnswer.getUserAnswer().equals(examPageUserAnswer.getRightAnswer())){
                             examPageUserAnswer.setUserScore(examPageUserAnswer.getScore());
-                            allScores += examPageUserAnswer.getUserScore();
+                            allScores = allScores.add(examPageUserAnswer.getUserScore());
                         }
                     }else if (examPageUserAnswer.getType() == 2 || examPageUserAnswer.getType() == 7){
                         //3D点云标注或者2D+3D标注
@@ -332,20 +332,20 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                         examPageUserAnswer.setDa(dto.getDa());
                         examPageUserAnswer.setAccuracyRate(dto.getAccuracyRate());
                         examPageUserAnswer.setCoverageRate(dto.getCoverageRate());
-                        allScores += score;
+                        allScores = allScores.add(examPageUserAnswer.getScore());
                     }else if (examPageUserAnswer.getType() == 4){
                         //语音标注
                         if(markQuestionUtils.check_answer_voice(examPageUserAnswer.getUserAnswer(),examPageUserAnswer.getRightAnswer())){
                             score = examPageUserAnswer.getScore();
                         }else {
-                            score = 0;
+                            score = BigDecimal.ZERO;
                         }
                         examPageUserAnswer.setUserScore(score);
-                        allScores += score;
+                        allScores = allScores.add(score);
                     }else if (examPageUserAnswer.getType() == 5 || examPageUserAnswer.getType() == 6){
                         //2D标注、人脸关键点标注
                         PanJuanParam dto = markQuestionUtils.check_answer_2D_xyq(examPageUserAnswer.getUserAnswer(),examPageUserAnswer.getRightAnswer());
-                        score = dto.getCoverageRate().multiply(new BigDecimal(score)).setScale(0, RoundingMode.HALF_UP).intValueExact();
+                        score = BigDecimal.valueOf(dto.getCoverageRate().multiply(score).setScale(0, RoundingMode.HALF_UP).intValueExact());
                         examPageUserAnswer.setUserScore(score);
                         examPageUserAnswer.setBiao(dto.getBiao());
                         examPageUserAnswer.setCuo(dto.getCuo());
@@ -355,12 +355,12 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                         examPageUserAnswer.setDa(dto.getDa());
                         examPageUserAnswer.setAccuracyRate(dto.getAccuracyRate());
                         examPageUserAnswer.setCoverageRate(dto.getCoverageRate());
-                        allScores += score;
+                        allScores = allScores.add(score);
                     }
                 }
             }else if (600 == examPageUserAnswer.getShape()){
                 //题目单，循环判卷
-                int questionFormScore = 0;
+                BigDecimal questionFormScore = BigDecimal.ZERO;
                 //获取所有的子题答案数据
                 List<ExamPageUserChildAnswer> childAnswerList = examPageUserChildAnswerService.lambdaQuery()
                         .eq(ExamPageUserChildAnswer::getQuestionId,examPageUserAnswer.getQuestionId())
@@ -369,13 +369,13 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                 for (ExamPageUserChildAnswer childAnswer : childAnswerList){
                     if (childAnswer.getRightAnswer().equals(childAnswer.getUserAnswer())){
                         childAnswer.setUserScore(childAnswer.getScore());
-                        questionFormScore += childAnswer.getUserScore();
+                        questionFormScore = questionFormScore.add(childAnswer.getUserScore());
                     }
                 }
                 examPageUserChildAnswerService.updateBatchById(childAnswerList);
                 if (examPageUserAnswer.getNeedCorrect() == 0){
                     examPageUserAnswer.setUserScore(questionFormScore);
-                    allScores += questionFormScore;
+                    allScores = allScores.add(questionFormScore);
                 }
             }
         }
@@ -388,7 +388,7 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
         examPageUser.setAnswerTs(DateUtil.now());
         //判断是否需要批改，如果需要则先不赋分
         if (examPageUser.getNeedCorrect() == 1){
-            examPageUser.setScore(0);
+            examPageUser.setScore(new BigDecimal(0));
         }else{
             examPageUser.setScore(allScores);
             //计算是否合格
@@ -396,7 +396,7 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                     .eq(ExamPageSet::getExamId,examId)
                     .one();
             int passStatus = 0;
-            if (allScores >= examPageSet.getScorePass()){
+            if (allScores.compareTo(examPageSet.getScorePass()) >= 0){
                 passStatus = 1;
                 examPageUser.setPassStatus(passStatus);
             }
@@ -494,7 +494,7 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
             //查询是否已作答
             ExamPageUserAnswer examPageUserAnswer = examPageUserAnswerMap.get(examPageUserQuestionVo.getId());
             examPageUserQuestionVo.setUserAnswer(examPageUserAnswer == null ? "" : examPageUserAnswer.getUserAnswer());
-            examPageUserQuestionVo.setUserScore(examPageUserAnswer == null ? 0 : examPageUserAnswer.getUserScore());
+            examPageUserQuestionVo.setUserScore(examPageUserAnswer == null ? new BigDecimal(0) : examPageUserAnswer.getUserScore());
             examPageUserQuestionVo.setNeedCorrect(examPageUserAnswer.getNeedCorrect());
             examPageUserQuestionVo.setCorrectId(examPageUserAnswer.getCorrectId().toString());
             examPageUserQuestionVo.setCorrectTime(examPageUserAnswer.getCorrectTime());
@@ -542,12 +542,12 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                 .eq(ExamPageUserAnswer::getQuestionId, param.getUserQuestionId()).last("limit 1")
                 .one();
         //判断分数是否超过该题总分
-        if (examPageUserAnswer.getScore() < Integer.parseInt(param.getScore())){
+        if (examPageUserAnswer.getScore().compareTo(new BigDecimal(param.getScore())) < 0){
             return BaseResponse.fail("分数不能超过该题总分");
         }
         examPageUserAnswer.setCorrectId(loginUser.getUser().getId());
         examPageUserAnswer.setCorrectTime(DateUtil.date());
-        examPageUserAnswer.setUserScore(Integer.parseInt(param.getScore()));
+        examPageUserAnswer.setUserScore(new BigDecimal(param.getScore()));
         //修改
         examPageUserAnswerService.updateById(examPageUserAnswer);
         //异步执行计算总分
@@ -566,12 +566,12 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                 .last("limit 1")
                 .one();
         //判断分数是否超过该题总分
-        if (examPageUserChildAnswer.getScore() < Integer.parseInt(param.getScore())){
+        if (examPageUserChildAnswer.getScore().compareTo(new BigDecimal(param.getScore())) < 0 ){
             return BaseResponse.fail("分数不能超过该子题总分");
         }
         examPageUserChildAnswer.setCorrectId(loginUser.getUser().getId());
         examPageUserChildAnswer.setCorrectTime(DateUtil.date());
-        examPageUserChildAnswer.setUserScore(Integer.parseInt(param.getScore()));
+        examPageUserChildAnswer.setUserScore(new BigDecimal(param.getScore()));
         //修改
         examPageUserChildAnswerService.updateById(examPageUserChildAnswer);
         //异步执行计算总分
@@ -590,13 +590,13 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
             return;
         }
         LoginUser loginUser = redisUtil.getInfoByToken();
-        Integer allScore = 0;
+        BigDecimal allScore = new BigDecimal(0);
         //如果没有，则计算总分进行修改和状态更新
         List<ExamPageUserChildAnswer> examPageUserChildAnswerList = examPageUserChildAnswerService.lambdaQuery()
                 .eq(ExamPageUserChildAnswer::getQuestionId,questionFormId)
                 .list();
         for (ExamPageUserChildAnswer examPageUserChildAnswer : examPageUserChildAnswerList) {
-            allScore += examPageUserChildAnswer.getUserScore();
+            allScore = allScore.add(examPageUserChildAnswer.getUserScore());
         }
         ExamPageUserAnswer examPageUserAnswer = examPageUserAnswerService.lambdaQuery()
                 .eq(ExamPageUserAnswer::getQuestionId,questionFormId)
@@ -622,14 +622,14 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                 .count() > 0){
             return;
         }
-        Integer allScore = 0;
+        BigDecimal allScore = new BigDecimal(0);
         //如果没有，则计算总分进行修改和状态更新
         List<ExamPageUserAnswer> examPageUserAnswerList = examPageUserAnswerService.lambdaQuery()
                 .eq(ExamPageUserAnswer::getExamId,examId)
                 .eq(ExamPageUserAnswer::getUserId,userId)
                 .list();
         for (ExamPageUserAnswer examPageUserAnswer : examPageUserAnswerList) {
-            allScore += examPageUserAnswer.getUserScore();
+            allScore = allScore.add(examPageUserAnswer.getUserScore());
         }
         //修改分数及状态
         ExamPageUser examPageUser = lambdaQuery()
@@ -645,7 +645,7 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                 .eq(ExamPageSet::getExamId,examId)
                 .one();
         int passStatus = 0;
-        if (allScore >= examPageSet.getScorePass()){
+        if (allScore.compareTo(examPageSet.getScorePass()) >= 0){
             passStatus = 1;
             examPageUser.setPassStatus(passStatus);
         }

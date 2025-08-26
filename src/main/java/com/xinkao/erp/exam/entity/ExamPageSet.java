@@ -6,6 +6,8 @@ import com.xinkao.erp.common.model.entity.DataEntity;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 /**
  * <p>
  * 考试设置表
@@ -29,13 +31,13 @@ public class ExamPageSet extends DataEntity {
      * 总分
      */
     @TableField("score")
-    private Integer score;
+    private BigDecimal score;
 
     /**
      * 合格分数
      */
     @TableField("score_pass")
-    private Integer scorePass;
+    private BigDecimal scorePass;
 
     /**
      * 生成方式:0-同题同序 1-同题不同序 2-不同题不同序
