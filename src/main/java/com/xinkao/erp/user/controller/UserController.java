@@ -86,7 +86,7 @@ public class UserController extends BaseController {
 	 * @param query
 	 */
 	@PrimaryDataSource
-	@DataScope(role = "1")
+	@DataScope(role = "1,18,19")
 	@ApiOperation(value = "用户导出")
 	@RequestMapping(value = "/exportUser", method = RequestMethod.POST, produces = "application/octet-stream")
 	public void exportUser(HttpServletResponse response,@RequestBody UserQuery query) {
@@ -218,7 +218,7 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@PrimaryDataSource
-	@DataScope(role = "1")
+	@DataScope(role = "1,18,19")
 	@ApiOperation(value = "导入用户")
 	@RequestMapping(value = "/importUpdateClass", method = RequestMethod.POST)
 	public BaseResponse importUpdateClass(HttpServletResponse response, @RequestParam(value="file") MultipartFile file) {
