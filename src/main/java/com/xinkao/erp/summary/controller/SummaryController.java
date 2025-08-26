@@ -447,9 +447,15 @@ public class SummaryController {
             ClassSummaryParam classSummaryParam = new ClassSummaryParam();
             for (Integer examId : examIds){
                 List<ExamPageUserVo> examPageUserList1 = examPageUserList.stream().filter(examPageUser -> examPageUser.getExamId().equals(examId)).collect(Collectors.toList());
-                Integer maxScore = examPageUserList1.stream().mapToInt(ExamPageUserVo::getScore).max().orElse(0);
-                Integer minScore = examPageUserList1.stream().mapToInt(ExamPageUserVo::getScore).min().orElse(0);
-                Integer avgScore = examPageUserList1.stream().mapToInt(ExamPageUserVo::getScore).sum()/examPageUserList1.size();
+                BigDecimal maxScore = examPageUserList1.stream()
+                        .map(ExamPageUserVo::getScore)
+                        .max(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
+                BigDecimal minScore = examPageUserList1.stream().map(ExamPageUserVo::getScore).min(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
+                BigDecimal avgScore = new BigDecimal(0);
+                for (ExamPageUserVo examPageUserVo : examPageUserList1) {
+                    avgScore = avgScore.add(examPageUserVo.getScore());
+                }
+                avgScore = NumberUtil.div(avgScore,examPageUserList1.size());
                 //classSummaryParam.setExamId(examId+"");
                 classSummaryParam.setAvgScore(avgScore+"");
                 classSummaryParam.setMaxScore(maxScore+"");

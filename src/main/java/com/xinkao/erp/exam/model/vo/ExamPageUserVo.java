@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 /**
  * <p>
  * 考生考试信息表
@@ -89,7 +91,7 @@ public class ExamPageUserVo {
      */
     @ApiModelProperty("最后得分")
     @TableField("score")
-    private Integer score;
+    private BigDecimal score;
 
     /**
      * 出分时间

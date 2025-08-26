@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -48,7 +49,7 @@ public class ExamUserVo {
      * 最后得分
      */
     @ApiModelProperty("最后得分")
-    private Integer score;
+    private BigDecimal score;
 
     /**
      * 出分时间

@@ -82,7 +82,7 @@ public class ExamPageUserParam {
      * 最后得分
      */
     @ApiModelProperty("最后得分")
-    private Integer score;
+    private BigDecimal score;
 
     /**
      * 出分时间

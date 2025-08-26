@@ -99,13 +99,13 @@ public class ExamPageUserQuestionVo {
 	 * 题目分数
 	 */
 	@ApiModelProperty("题目分数")
-	private Integer score;
+	private BigDecimal score;
 
 	/**
 	 * 部分答对分数(限多选)
 	 */
 	@ApiModelProperty("部分答对分数(限多选)")
-	private Integer scorePart;
+	private BigDecimal scorePart;
 
 	/**
 	 * 答案
