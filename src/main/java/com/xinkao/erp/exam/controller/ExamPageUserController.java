@@ -105,7 +105,7 @@ public class ExamPageUserController {
      */
     @PrimaryDataSource
     @RequestMapping("/submitChildAnswer")
-    @ApiOperation("子题提交答案")
+    @ApiOperation("子题提交答案 ")
     @Log(content = "子题提交答案",operationType = OperationType.INSERT)
     public BaseResponse<?> submitChildAnswer(@Valid @RequestBody ExamPageUserChildAnswerParam param) {
         return examPageUserService.submitChildAnswer(param);
