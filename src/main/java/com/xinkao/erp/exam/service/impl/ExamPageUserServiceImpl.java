@@ -282,6 +282,9 @@ public class ExamPageUserServiceImpl extends BaseServiceImpl<ExamPageUserMapper,
                 .list();
         int allScores = 0;
         for (ExamPageUserAnswer examPageUserAnswer : examPageUserAnswers) {
+            if (StrUtil.isBlank(examPageUserAnswer.getUserAnswer())){
+                examPageUserAnswer.setUserAnswer("");
+            }
             //如果是单选题，判断是否正确,//填空题(暂时先按照全部正确才给分)
             if (100 == examPageUserAnswer.getShape() || 300 == examPageUserAnswer.getShape() || 700 == examPageUserAnswer.getShape() ){
                 if (examPageUserAnswer.getUserAnswer().equals(examPageUserAnswer.getRightAnswer())){
