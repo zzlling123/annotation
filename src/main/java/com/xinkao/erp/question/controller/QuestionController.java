@@ -22,6 +22,7 @@ import com.xinkao.erp.question.param.QuestionChildParam;
 import com.xinkao.erp.question.param.QuestionFormTitleParam;
 import com.xinkao.erp.question.param.QuestionParam;
 import com.xinkao.erp.question.param.QuestionTypeParam;
+import com.xinkao.erp.question.param.QuestionTypeAddParam;
 import com.xinkao.erp.question.query.QuestionQuery;
 import com.xinkao.erp.question.service.LabelService;
 import com.xinkao.erp.question.service.QuestionLabelService;
@@ -89,6 +90,17 @@ public class    QuestionController extends BaseController {
     }
 
     /**
+     * 新增题目分类
+     */
+    @PrimaryDataSource
+    @DataScope(role = "1")
+    @PostMapping("/saveQuestionType")
+    @ApiOperation("新增题目分类")
+    public BaseResponse<?> saveQuestionType(@RequestBody @Valid QuestionTypeAddParam param) {
+        return questionTypeService.save(param);
+    }
+
+    /**
      * 修改题目分类
      */
     @PrimaryDataSource
@@ -97,6 +109,17 @@ public class    QuestionController extends BaseController {
     @ApiOperation("修改题目分类")
     public BaseResponse<?> updateQuestionType(@RequestBody @Valid QuestionTypeParam param) {
         return questionTypeService.update(param);
+    }
+
+    /**
+     * 删除题目分类
+     */
+    @PrimaryDataSource
+    @DataScope(role = "1")
+    @PostMapping("/delQuestionType")
+    @ApiOperation("删除题目分类")
+    public BaseResponse<?> delQuestionType(@RequestBody DeleteParam param) {
+        return questionTypeService.delQuestionType(param);
     }
 
     @PrimaryDataSource
