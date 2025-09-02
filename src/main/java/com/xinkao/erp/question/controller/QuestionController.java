@@ -248,7 +248,7 @@ public class    QuestionController extends BaseController {
      * @return 操作结果
      */
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,18")
     @PostMapping("/save")
     @ApiOperation("新增题目")
     @Log(content = "新增题目",operationType = OperationType.INSERT)
