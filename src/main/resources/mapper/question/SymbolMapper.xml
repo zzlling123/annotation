@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinkao.erp.question.mapper.SymbolMapper">
+
+    <select id="page" resultType="com.xinkao.erp.question.entity.Symbol">
+        SELECT *
+        FROM q_symbol
+        WHERE 1=1 AND is_del = 0
+        <if test="query.symbolName != null">
+            AND symbol_name LIKE CONCAT('%',#{query.symbolName},'%')
+        </if>
+        order by create_time desc
+    </select>
+</mapper>
