@@ -3,6 +3,7 @@ package com.xinkao.erp.exam.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -364,7 +366,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                 .collect(Collectors.groupingBy(QuestionChild::getPid));
         List<ExamPageUserQuestionChild> examPageUserQuestionChildList = new ArrayList<>();
         if (examPageUserQuestionFormTitleList.size() > 0){
-            Integer scoreChild = questionChildList.size() == 0?0:Integer.parseInt(question.getScore())/questionChildList.size();
+            BigDecimal scoreChild = questionChildList.size() == 0?BigDecimal.ZERO: NumberUtil.div(new BigDecimal(question.getScore()),new BigDecimal(questionChildList.size()));
             for (ExamPageUserQuestionFormTitle examPageUserQuestionFormTitle : examPageUserQuestionFormTitleList) {
                 ExamPageUserQuestionChild examPageUserQuestionChild = new ExamPageUserQuestionChild();
                 List<QuestionChild> questionChildThisTitlePidList = new ArrayList<>();
@@ -378,6 +380,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                         examPageUserQuestionChild.setScore(scoreChild);
                         examPageUserQuestionChild.setPid(examPageUserQuestionFormTitle.getId());
                         examPageUserQuestionChild.setQuestionId(examQuestionId);
+                        examPageUserQuestionChild.setNeedCorrect(question.getNeedCorrect());
                         examPageUserQuestionChildList.add(examPageUserQuestionChild);
                     }
                 }

@@ -20,23 +20,23 @@ import lombok.Setter;
 @Getter
 public class UserImportErrorModel extends BaseExcelModel {
 
-    @ExcelProperty(value = "用户名", index = 0)
-    @Excel(prompt = "必填")
-    @ColumnWidth(20)
-    private String username;
-
-    @ExcelProperty(value = "性别", index = 1)
-    @Excel(prompt = "必填")
-    @ColumnWidth(20)
-    private String sex;
-
-    @ExcelProperty(value = "姓名", index = 2)
+    @ExcelProperty(value = "姓名", index = 0)
     @Excel(prompt = "必填")
     @ColumnWidth(20)
     private String realName;
 
-    @ExcelProperty(value = "班级名称", index = 3)
+    @ExcelProperty(value = "身份证号", index = 1)
     @Excel(prompt = "必填")
+    @ColumnWidth(20)
+    private String idCard;
+
+    @ExcelProperty(value = "手机号", index = 2)
+    @Excel(prompt = "必填")
+    @ColumnWidth(20)
+    private String mobile;
+
+    @ExcelProperty(value = "班级名称", index = 3)
+    @Excel(prompt = "学生和社会考生必填，其他角色可选")
     @ColumnWidth(20)
     private String className;
 
@@ -45,22 +45,12 @@ public class UserImportErrorModel extends BaseExcelModel {
     @ColumnWidth(20)
     private String roleName;
 
-    @ExcelProperty(value = "手机号", index = 5)
+    @ExcelProperty(value = "性别", index = 5)
     @Excel(prompt = "必填")
     @ColumnWidth(20)
-    private String mobile;
+    private String sex;
 
-    @ExcelProperty(value = "身份证号", index = 6)
-    @Excel(prompt = "必填")
-    @ColumnWidth(20)
-    private String idCard;
-
-    @ExcelProperty(value = "邮箱地址", index = 7)
-    @Excel(prompt = "必填")
-    @ColumnWidth(20)
-    private String email;
-
-    @ExcelProperty(value = "错误信息", index = 8)
+    @ExcelProperty(value = "错误信息", index = 6)
     @ColumnWidth(20)
     private String errorInfo;
 }

@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @ApiModel("考试参数")
@@ -39,11 +41,11 @@ public class ExamPageSetParam {
      * 每题分数
      */
     @ApiModelProperty("score")
-    private Integer score;
+    private BigDecimal score;
 
     /**
      * 部分得分
      */
     @ApiModelProperty("score_part")
-    private Integer scorePart;
+    private BigDecimal scorePart;
 }

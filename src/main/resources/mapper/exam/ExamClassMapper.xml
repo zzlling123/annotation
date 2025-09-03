@@ -20,4 +20,16 @@
         left join exam on exam_class.exam_id = exam.id
         where class_id = #{classId}
     </select>
+
+    <select id="listRSGLy" resultMap="ExamClResultMap">
+        select
+            exam_class.exam_id,
+            exam.exam_name,
+            exam_class.class_id,
+            class_info.class_name
+        from exam_class
+                 left join class_info on exam_class.class_id = class_info.id
+                 left join exam on exam_class.exam_id = exam.id
+        where class_id = #{classId} and exam.is_expert = 1
+    </select>
 </mapper>

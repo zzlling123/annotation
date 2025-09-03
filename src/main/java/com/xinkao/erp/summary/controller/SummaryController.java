@@ -1,5 +1,6 @@
 package com.xinkao.erp.summary.controller;
 
+import cn.hutool.core.util.NumberUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.xinkao.erp.common.annotation.PrimaryDataSource;
@@ -7,6 +8,7 @@ import com.xinkao.erp.common.enums.CommonEnum;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.LoginUser;
 import com.xinkao.erp.common.util.RedisUtil;
+import com.xinkao.erp.exam.entity.Exam;
 import com.xinkao.erp.exam.entity.ExamPageUser;
 import com.xinkao.erp.exam.entity.ExamPageUserAnswer;
 import com.xinkao.erp.exam.model.vo.ExamPageUserVo;
@@ -14,6 +16,7 @@ import com.xinkao.erp.exam.param.ExamPageUserParam;
 import com.xinkao.erp.exam.service.ExamClassService;
 import com.xinkao.erp.exam.service.ExamPageUserAnswerService;
 import com.xinkao.erp.exam.service.ExamPageUserService;
+import com.xinkao.erp.exam.service.ExamService;
 import com.xinkao.erp.exercise.entity.ExerciseRecords;
 import com.xinkao.erp.exercise.entity.InstantFeedbacks;
 import com.xinkao.erp.exercise.query.ExerciseRecordsQuery;
@@ -46,6 +49,7 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -73,6 +77,8 @@ public class SummaryController {
     private ShapeService shapeService;
     @Autowired
     private ExamClassService examClassService;
+    @Autowired
+    private ExamService examService;
 
 //    统计
 //    学生成绩统计	详细记录每个学生的练习和考试成绩，生成个人成绩单和进步曲线图，帮助学生了解自己的学习效果。
@@ -441,9 +447,15 @@ public class SummaryController {
             ClassSummaryParam classSummaryParam = new ClassSummaryParam();
             for (Integer examId : examIds){
                 List<ExamPageUserVo> examPageUserList1 = examPageUserList.stream().filter(examPageUser -> examPageUser.getExamId().equals(examId)).collect(Collectors.toList());
-                Integer maxScore = examPageUserList1.stream().mapToInt(ExamPageUserVo::getScore).max().orElse(0);
-                Integer minScore = examPageUserList1.stream().mapToInt(ExamPageUserVo::getScore).min().orElse(0);
-                Integer avgScore = examPageUserList1.stream().mapToInt(ExamPageUserVo::getScore).sum()/examPageUserList1.size();
+                BigDecimal maxScore = examPageUserList1.stream()
+                        .map(ExamPageUserVo::getScore)
+                        .max(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
+                BigDecimal minScore = examPageUserList1.stream().map(ExamPageUserVo::getScore).min(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
+                BigDecimal avgScore = new BigDecimal(0);
+                for (ExamPageUserVo examPageUserVo : examPageUserList1) {
+                    avgScore = avgScore.add(examPageUserVo.getScore());
+                }
+                avgScore = NumberUtil.div(avgScore,examPageUserList1.size());
                 //classSummaryParam.setExamId(examId+"");
                 classSummaryParam.setAvgScore(avgScore+"");
                 classSummaryParam.setMaxScore(maxScore+"");
@@ -487,7 +499,10 @@ public class SummaryController {
             }
             List<Integer> userIds = null;
             LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery();
-            wrapper.eq(User::getRoleId,3);
+            List<Integer> roleIds = new ArrayList<Integer>();
+            roleIds.add(3);
+            roleIds.add(21);
+            wrapper.in(User::getRoleId, roleIds);
             wrapper.in(User::getClassId,classId);
             List<User> userList = userService.list(wrapper);
             if (userList==null || userList.size()==0){
@@ -568,7 +583,10 @@ public class SummaryController {
             }
             List<Integer> userIds = null;
             LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery();
-            wrapper.eq(User::getRoleId,3);
+            List<Integer> roleIds = new ArrayList<Integer>();
+            roleIds.add(3);
+            roleIds.add(21);
+            wrapper.in(User::getRoleId,roleIds);
             wrapper.in(User::getClassId,classId);
             List<User> userList = userService.list(wrapper);
             if (userList==null || userList.size()==0){
@@ -590,12 +608,15 @@ public class SummaryController {
             for (Shape shape : shapeList){
                 ClassSummaryParam classSummaryParam = new ClassSummaryParam();
                 List<ExamPageUserAnswer> examPageUserAnswer_shape = examPageUserAnswerList.stream().filter(examPageUserAnswer -> examPageUserAnswer.getShape()==Integer.parseInt(shape.getShapeCode())).collect(Collectors.toList());
-                Integer maxScore = examPageUserAnswer_shape.stream().mapToInt(ExamPageUserAnswer::getUserScore).max().orElse(0);
-                Integer minScore = examPageUserAnswer_shape.stream().mapToInt(ExamPageUserAnswer::getUserScore).min().orElse(0);
-                Integer avgScore = 0;
+                BigDecimal maxScore = examPageUserAnswer_shape.stream().map(ExamPageUserAnswer::getUserScore).max(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
+                BigDecimal minScore = examPageUserAnswer_shape.stream().map(ExamPageUserAnswer::getUserScore).min(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
+                BigDecimal avgScore = new BigDecimal(0);
                 if (examPageUserAnswer_shape.isEmpty()||examPageUserAnswer_shape.size()==0){
                 }else {
-                    avgScore = examPageUserAnswer_shape.stream().mapToInt(ExamPageUserAnswer::getUserScore).sum()/examPageUserAnswer_shape.size();
+                    for (ExamPageUserAnswer examPageUserAnswer : examPageUserAnswer_shape) {
+                        avgScore = avgScore.add(examPageUserAnswer.getUserScore());
+                    }
+                    avgScore = NumberUtil.div(avgScore,examPageUserAnswer_shape.size());
                     classSummaryParam.setExamId(examPageUserAnswer_shape.get(0).getExamId());
                     classSummaryParam.setShape(shape.getShapeCode());
                     classSummaryParam.setMaxScore(maxScore+"");
@@ -611,12 +632,15 @@ public class SummaryController {
                 //筛选出来操作题
                 List<ExamPageUserAnswer> examPageUserAnswer_type =
                         examPageUserAnswerList.stream().filter(examPageUserAnswer -> examPageUserAnswer.getType().equals(questionType.getId())&&examPageUserAnswer.getShape()==500).collect(Collectors.toList());
-                Integer maxScore = examPageUserAnswer_type.stream().mapToInt(ExamPageUserAnswer::getUserScore).max().orElse(0);
-                Integer minScore = examPageUserAnswer_type.stream().mapToInt(ExamPageUserAnswer::getUserScore).min().orElse(0);
-                Integer avgScore = 0;
+                BigDecimal maxScore = examPageUserAnswer_type.stream().map(ExamPageUserAnswer::getUserScore).max(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
+                BigDecimal minScore = examPageUserAnswer_type.stream().map(ExamPageUserAnswer::getUserScore).min(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
+                BigDecimal avgScore = new BigDecimal(0);
                 if (examPageUserAnswer_type.isEmpty()||examPageUserAnswer_type.size()==0){
                 }else {
-                    avgScore = examPageUserAnswer_type.stream().mapToInt(ExamPageUserAnswer::getUserScore).sum()/examPageUserAnswer_type.size();
+                    for (ExamPageUserAnswer examPageUserAnswer : examPageUserAnswer_type) {
+                        avgScore = avgScore.add(examPageUserAnswer.getUserScore());
+                    }
+                    avgScore = NumberUtil.div(avgScore,examPageUserAnswer_type.size());
                     double sumAccuracy = examPageUserAnswer_type.stream()
                             .mapToDouble(feedback -> feedback.getAccuracyRate() != null ? feedback.getAccuracyRate().doubleValue() : 0)
                             .sum();
@@ -804,12 +828,16 @@ public class SummaryController {
             for (Shape shape : shapeList){
                 ClassSummaryParam classSummaryParam = new ClassSummaryParam();
                 List<ExamPageUserAnswer> examPageUserAnswer_shape = examPageUserAnswerList_stu.stream().filter(examPageUserAnswer -> examPageUserAnswer.getShape()==Integer.parseInt(shape.getShapeCode())).collect(Collectors.toList());
-                Integer maxScore = examPageUserAnswer_shape.stream().mapToInt(ExamPageUserAnswer::getUserScore).max().orElse(0);
-                Integer minScore = examPageUserAnswer_shape.stream().mapToInt(ExamPageUserAnswer::getUserScore).min().orElse(0);
-                Integer avgScore = 0;
+                BigDecimal maxScore = examPageUserAnswer_shape.stream().map(ExamPageUserAnswer::getUserScore).max(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
+                BigDecimal minScore = examPageUserAnswer_shape.stream().map(ExamPageUserAnswer::getUserScore).min(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
+                BigDecimal avgScore = new BigDecimal(0);
+
                 if (examPageUserAnswer_shape.isEmpty()||examPageUserAnswer_shape.size()==0){
                 }else {
-                    avgScore = examPageUserAnswer_shape.stream().mapToInt(ExamPageUserAnswer::getUserScore).sum()/examPageUserAnswer_shape.size();
+                    for (ExamPageUserAnswer examPageUserAnswer : examPageUserAnswer_shape) {
+                        avgScore = avgScore.add(examPageUserAnswer.getUserScore());
+                    }
+                    avgScore = NumberUtil.div(avgScore,examPageUserAnswer_shape.size());
                     classSummaryParam.setExamId(examPageUserAnswer_shape.get(0).getExamId());
                     classSummaryParam.setShape(shape.getShapeCode());
                     classSummaryParam.setMaxScore(maxScore+"");
@@ -825,12 +853,15 @@ public class SummaryController {
                 //筛选出来操作题
                 List<ExamPageUserAnswer> examPageUserAnswer_type =
                         examPageUserAnswerList_stu.stream().filter(examPageUserAnswer -> examPageUserAnswer.getType().equals(questionType.getId())&&examPageUserAnswer.getShape()==500).collect(Collectors.toList());
-                Integer maxScore = examPageUserAnswer_type.stream().mapToInt(ExamPageUserAnswer::getUserScore).max().orElse(0);
-                Integer minScore = examPageUserAnswer_type.stream().mapToInt(ExamPageUserAnswer::getUserScore).min().orElse(0);
-                Integer avgScore = 0;
+                BigDecimal maxScore = examPageUserAnswer_type.stream().map(ExamPageUserAnswer::getUserScore).max(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
+                BigDecimal minScore = examPageUserAnswer_type.stream().map(ExamPageUserAnswer::getUserScore).min(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
+                BigDecimal avgScore = new BigDecimal(0);
                 if (examPageUserAnswer_type.isEmpty()||examPageUserAnswer_type.size()==0){
                 }else {
-                    avgScore = examPageUserAnswer_type.stream().mapToInt(ExamPageUserAnswer::getUserScore).sum()/examPageUserAnswer_type.size();
+                    for (ExamPageUserAnswer examPageUserAnswer : examPageUserAnswer_type) {
+                        avgScore = avgScore.add(examPageUserAnswer.getUserScore());
+                    }
+                    avgScore = NumberUtil.div(avgScore,examPageUserAnswer_type.size());
                     double sumAccuracy = examPageUserAnswer_type.stream()
                             .mapToDouble(feedback -> feedback.getAccuracyRate() != null ? feedback.getAccuracyRate().doubleValue() : 0)
                             .sum();
@@ -878,7 +909,16 @@ public class SummaryController {
     @ApiOperation("根据班级获取考试列表")
     //@PrimaryDataSource
     public BaseResponse<?> getExamListByClass(@PathVariable Integer classId) {
-        List<ExamClVo> examClassList = examClassService.listByClassId(classId);
-        return BaseResponse.ok(examClassList);
+        //获取登录用户
+        LoginUser loginUserAll = redisUtil.getInfoByToken();
+        if (loginUserAll == null || loginUserAll.getUser() == null) {
+            return BaseResponse.fail("用户未登录");
+        }else if (loginUserAll.getUser().getRoleId() == 19) {
+            List<ExamClVo> examClassList = examClassService.listRSGLy(classId) ;
+            return BaseResponse.ok(examClassList);
+        }else{
+            List<ExamClVo> examClassList = examClassService.listByClassId(classId);
+            return BaseResponse.ok(examClassList);
+        }
     }
 }

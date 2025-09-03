@@ -82,7 +82,7 @@ public class MarkQuestionUtils {
             examPageUserAnswer.setUserAnswer(userAnswer);
             examPageUserAnswer.setRightAnswer(correctAnswer);
             examPageUserAnswer.setShape(shape);
-            examPageUserAnswer.setScore(score);
+            examPageUserAnswer.setScore(new BigDecimal(score));
             return pointSubmitUtil.get3DPointScore(examPageUserAnswer);
         }else if (moduleId==3){//3	OCR标注
             return check_answer_2D_xyq(userAnswer,correctAnswer);

@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -106,8 +107,8 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
         //保存试卷设置
         ExamPageSet examPageSet = new ExamPageSet();
         examPageSet.setExamId(exam.getId());
-        examPageSet.setScore(Integer.valueOf(examParam.getScore()));
-        examPageSet.setScorePass(Integer.valueOf(examParam.getScorePass()));
+        examPageSet.setScore(new BigDecimal(examParam.getScore()));
+        examPageSet.setScorePass(new BigDecimal(examParam.getScorePass()));
         examPageSet.setPageMode(Integer.valueOf(examParam.getPageMode()));
         examPageSetService.save(examPageSet);
         //保存班级管理
@@ -161,7 +162,7 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
         }else{
             //考试如果已经制卷，则不可修改
             if (examPageSet.getQuestionStatus() == 1){
-                return BaseResponse.fail("该考试已制卷，不可修改");
+                return BaseResponse.fail("该考试已设置题目分布，不可修改");
             }
         }
         //执行如果是专家批改，则调用增加批改关系方法
@@ -182,8 +183,8 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
             }
         }
         examPageSet.setExamId(exam.getId());
-        examPageSet.setScore(Integer.valueOf(examParam.getScore()));
-        examPageSet.setScorePass(Integer.valueOf(examParam.getScorePass()));
+        examPageSet.setScore(new BigDecimal(examParam.getScore()));
+        examPageSet.setScorePass(new BigDecimal(examParam.getScorePass()));
         examPageSet.setPageMode(Integer.valueOf(examParam.getPageMode()));
         examPageSetService.saveOrUpdate(examPageSet);
         //清除后，保存班级管理

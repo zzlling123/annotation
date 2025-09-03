@@ -42,7 +42,7 @@ public class PointSubmitUtil {
             dto.setDa(da);
             dto.setAccuracyRate(new BigDecimal(0));
             dto.setCoverageRate(new BigDecimal(0));
-            dto.setScore(0);
+            dto.setScore(new BigDecimal(0));
             return dto;
         }
         // 比对帧的个数
@@ -158,7 +158,7 @@ public class PointSubmitUtil {
                 }
             }
         }
-        double score = (biao  / (float)zong) * examPageUserAnswer.getScore();
+        BigDecimal score = examPageUserAnswer.getScore().multiply(new BigDecimal(biao  / (float)zong));
         String str = String.valueOf(score);
         str = str.substring(0, str.indexOf("."));
 
@@ -171,7 +171,7 @@ public class PointSubmitUtil {
         dto.setDa(da);
         dto.setAccuracyRate(zong == 0 ? new BigDecimal(0) :new BigDecimal(biao).divide(new BigDecimal(zong), 2, RoundingMode.HALF_UP));
         dto.setCoverageRate(da == 0 ? new BigDecimal(0) :new BigDecimal(biao).divide(new BigDecimal(da), 2, RoundingMode.HALF_UP));
-        dto.setScore(Integer.parseInt(str));
+        dto.setScore(new BigDecimal(str));
         return dto;
     }
 

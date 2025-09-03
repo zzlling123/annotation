@@ -41,5 +41,5 @@ public class PanJuanParam {
     private Long operationDuration;
 
     @ApiModelProperty("用户得分")
-    private Integer score;
+    private BigDecimal score;
 }

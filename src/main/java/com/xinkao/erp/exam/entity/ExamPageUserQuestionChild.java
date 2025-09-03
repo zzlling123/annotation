@@ -7,6 +7,8 @@ import com.xinkao.erp.common.model.entity.DataSnowIdEntity;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 /**
  * <p>
  * 题目单子题表
@@ -111,7 +113,10 @@ public class ExamPageUserQuestionChild extends DataSnowIdEntity {
     private Integer isDel;
 
     @TableField(exist = false)
-    private Integer score;
+    private BigDecimal score;
+
+    @TableField(exist = false)
+    private Integer needCorrect;
 
 
 }

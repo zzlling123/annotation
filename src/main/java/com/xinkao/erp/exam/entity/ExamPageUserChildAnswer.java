@@ -3,6 +3,8 @@ package com.xinkao.erp.exam.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.xinkao.erp.common.model.entity.DataEntity;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -75,13 +77,13 @@ public class ExamPageUserChildAnswer extends DataSnowIdEntity {
      * 题目分数
      */
     @TableField("score")
-    private Integer score;
+    private BigDecimal score;
 
     /**
      * 部分答对分数(限多选)
      */
     @TableField("score_part")
-    private Integer scorePart;
+    private BigDecimal scorePart;
 
     /**
      * 答题状态:0-未答题 1-已答题
@@ -99,7 +101,7 @@ public class ExamPageUserChildAnswer extends DataSnowIdEntity {
      * 用户得分
      */
     @TableField("user_score")
-    private Integer userScore;
+    private BigDecimal userScore;
 
     /**
      * 是否需要批改(有问答题)0否1是

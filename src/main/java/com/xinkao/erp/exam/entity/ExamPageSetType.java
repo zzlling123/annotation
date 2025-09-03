@@ -6,6 +6,8 @@ import com.xinkao.erp.common.model.entity.DataEntity;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 /**
  * <p>
  * 试卷设置-类型分布表
@@ -53,13 +55,13 @@ public class ExamPageSetType extends DataEntity {
      * 每题分数
      */
     @TableField("score")
-    private Integer score;
+    private BigDecimal score;
 
     /**
      * 部分得分
      */
     @TableField("score_part")
-    private Integer scorePart;
+    private BigDecimal scorePart;
 
 
 }

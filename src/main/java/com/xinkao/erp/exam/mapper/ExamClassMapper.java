@@ -19,4 +19,6 @@ import java.util.List;
 @Mapper
 public interface ExamClassMapper extends BaseMapper<ExamClass> {
     List<ExamClVo> listByClassId(@Param("classId") Integer classId);
+
+    List<ExamClVo> listRSGLy(@Param("classId") Integer classId);
 }

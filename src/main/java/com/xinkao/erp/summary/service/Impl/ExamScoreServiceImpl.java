@@ -54,7 +54,7 @@ public class ExamScoreServiceImpl implements ExamScoreService {
         for (User student : students) {
             List<ExamPageUserAnswer> userAnswers = groupByUser.getOrDefault(student.getId(), Collections.emptyList());
             int totalScore = userAnswers.stream()
-                    .mapToInt(a -> a.getUserScore() == null ? 0 : a.getUserScore())
+                    .mapToInt(a -> a.getUserScore() == null ? 0 : a.getUserScore().intValue())
                     .sum();
             StudentExamScoreDTO dto = new StudentExamScoreDTO();
             dto.setUserId(student.getId());
@@ -81,7 +81,7 @@ public class ExamScoreServiceImpl implements ExamScoreService {
         for (Map.Entry<Integer, List<ExamPageUserAnswer>> entry : groupByExam.entrySet()) {
             Integer examId = entry.getKey();
             int totalScore = entry.getValue().stream()
-                    .mapToInt(a -> a.getUserScore() == null ? 0 : a.getUserScore())
+                    .mapToInt(a -> a.getUserScore() == null ? 0 : a.getUserScore().intValue())
                     .sum();
             String examName = "";
             Exam exam = examMapper.selectById(examId);
