@@ -122,7 +122,7 @@ public class ExerciseOperateController {
             feedbacks.setCorrectAnswer(question.getAnswer());
             feedbacks.setUserId(loginUserAll.getUser().getId());
             feedbacks.setCreateTime(new Date());
-            feedbacks.setFinishedState(1);
+            feedbacks.setFinishedState(0);
             instantFeedbacksService.save(feedbacks);
         }
         feedbacks = instantFeedbacksService.getOne(new QueryWrapper<InstantFeedbacks>().eq("user_id", loginUserAll.getUser().getId()).eq("question_id", questionId));
@@ -162,6 +162,7 @@ public class ExerciseOperateController {
         //计算createTime和updateTime的时间差多少秒
         long time = feedbacks.getUpdateTime().getTime() - feedbacks.getCreateTime().getTime();
         feedbacks.setOperationDuration(time / 1000);
+        feedbacks.setFinishedState(1);
         instantFeedbacksService.updateById(feedbacks);
         return BaseResponse.ok(feedbacks);
     }
