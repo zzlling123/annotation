@@ -162,6 +162,7 @@ public class ExerciseOperateController {
         //计算createTime和updateTime的时间差多少秒
         long time = feedbacks.getUpdateTime().getTime() - feedbacks.getCreateTime().getTime();
         feedbacks.setOperationDuration(time / 1000);
+        feedbacks.setFinishedState(1);
         instantFeedbacksService.updateById(feedbacks);
         return BaseResponse.ok(feedbacks);
     }
