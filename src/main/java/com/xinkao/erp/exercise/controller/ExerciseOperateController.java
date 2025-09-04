@@ -122,7 +122,7 @@ public class ExerciseOperateController {
             feedbacks.setCorrectAnswer(question.getAnswer());
             feedbacks.setUserId(loginUserAll.getUser().getId());
             feedbacks.setCreateTime(new Date());
-            feedbacks.setFinishedState(0);
+            feedbacks.setFinishedState(1);
             instantFeedbacksService.save(feedbacks);
         }
         feedbacks = instantFeedbacksService.getOne(new QueryWrapper<InstantFeedbacks>().eq("user_id", loginUserAll.getUser().getId()).eq("question_id", questionId));
