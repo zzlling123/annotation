@@ -47,9 +47,12 @@ public class ClassInfoController extends BaseController {
     @ApiOperation("分页查询班级信息")
     public BaseResponse<Page<ClassInfoVo>> page(@Valid @RequestBody ClassInfoQuery query) {
         LoginUser loginUser = redisUtil.getInfoByToken();
-        if (loginUser.getUser().getRoleId() != 1 && loginUser.getUser().getRoleId() != 18 && loginUser.getUser().getRoleId() != 19) {
+        
+        // 角色1和18可以查看所有班级，角色19只能查看自己管理的班级，其他角色也只能查看自己管理的班级
+        if (loginUser.getUser().getRoleId() != 1 && loginUser.getUser().getRoleId() != 18) {
             query.setDirectorId(loginUser.getUser().getId());
         }
+        
         Pageable pageable = query.getPageInfo();
         Page<ClassInfoVo> voPage = classInfoService.page(query, pageable);
         return BaseResponse.ok(voPage);
@@ -63,6 +66,17 @@ public class ClassInfoController extends BaseController {
 	@PostMapping("/getList")
     @ApiOperation("下拉列表班级信息")
     public BaseResponse<List<ClassInfo>> getList() {
+        LoginUser loginUser = redisUtil.getInfoByToken();
+        
+        // 如果用户角色为19，只返回该用户作为班主任的班级
+        if (loginUser.getUser().getRoleId() == 19) {
+            return BaseResponse.ok(classInfoService.lambdaQuery()
+                .eq(ClassInfo::getDirectorId, loginUser.getUser().getId())
+                .eq(ClassInfo::getIsDel, CommonEnum.IS_DEL.NO.getCode())
+                .list());
+        }
+        
+        // 其他角色返回所有未删除的班级
         return BaseResponse.ok(classInfoService.lambdaQuery().eq(ClassInfo::getIsDel, CommonEnum.IS_DEL.NO.getCode()).list());
     }
 
