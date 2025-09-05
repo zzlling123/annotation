@@ -97,7 +97,7 @@ public class PointSubmitUtil {
                     is_error = true;
                 }
 
-                // 比对每个数组的attr的第三个数组
+                // 比对每个数组的attr的最后一个个数组
                 for (String key : rightFrameForOne.keySet()) {
                     List<Map<String, Object>> rightAttrs = rightFrameForOne.get(key);
                     List<Map<String, Object>> userAttrs = userFrameForOne.get(key);
@@ -112,8 +112,9 @@ public class PointSubmitUtil {
                     for (int j = 0; j < rightAttrs.size(); j++) {
                         //循环判断每一个userAttr中的标记、误差
                         JSONArray rightAttr = (JSONArray) rightAttrs.get(j).get("attr");
-                        //获取rightAttr的第三个数组
-                        List<String> rightThirdAttr = (List<String>) rightAttr.get(2);
+                        //获取rightAttr的最后一个个数组
+                        String rightThirdAttr = (String) rightAttr.get(rightAttr.size() - 1);
+//                        List<String> rightThirdAttr = (List<String>) rightAttr.get(rightAttr.size() - 1);
                         shu++;
                         // 计算position的误差
                         Map<String, BigDecimal> rightPosition = (Map<String, BigDecimal>) rightAttrs.get(j).get("position");
@@ -121,7 +122,7 @@ public class PointSubmitUtil {
                         for (int k = 0; k < userAttrs.size(); k++){
                             //循环遍历userAttrs，判断是否有attr一致且误差值小于0.95或不大于1.05，如果循环完毕没有符合的则返回0
                             JSONArray userAttr = (JSONArray) userAttrs.get(k).get("attr");
-                            List<String> userThirdAttr = (List<String>) userAttr.get(2);
+                            String userThirdAttr = (String) userAttr.get(userAttr.size() - 1);
                             if (!rightThirdAttr.equals(userThirdAttr)) {
                                 //跳过，继续验证下一条
                                 // 如果循环完毕没有符合的则返回0
