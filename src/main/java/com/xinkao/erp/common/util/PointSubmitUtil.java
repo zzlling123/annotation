@@ -161,7 +161,7 @@ public class PointSubmitUtil {
         }
         BigDecimal score = examPageUserAnswer.getScore().multiply(new BigDecimal(biao  / (float)zong));
         String str = String.valueOf(score);
-        str = str.substring(0, str.indexOf("."));
+        str = "0".equals(str)? "0" :str.substring(0, str.indexOf("."));
 
         dto.setIsCorrect(is_error ? 0 : 1);
         dto.setBiao(biao);
