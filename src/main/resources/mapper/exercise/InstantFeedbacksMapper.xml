@@ -22,8 +22,12 @@
         <if test="query.isCorrect != null and query.isCorrect != ''">
             AND ife.is_correct = #{query.isCorrect}
         </if>
-        <if test="query.userId != null and query.userId != ''">
+        <!--<if test="query.userId != null and query.userId != ''">
             AND ife.user_id = #{query.userId}
+        </if>-->
+        <if test="query.userId != null and query.userId.size() > 0">
+            AND ife.user_id in
+            <foreach collection="query.userId" item="stId" open="(" separator="," close=")">#{stId}</foreach>
         </if>
         <if test="query.startTime != null and query.startTime != ''">
             AND ife.update_time >= concat(#{query.startTime}, ' 00:00:00')

@@ -11,6 +11,7 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -84,8 +85,7 @@ public class InstantFeedbacksQuery  extends BasePageQuery implements Serializabl
 
 
     @ApiModelProperty("用户ID")
-    @TableField("user_id")
-    private Integer userId;
+    private List<Integer> userId;
 
     @ApiModelProperty("用户姓名")
     @TableField(exist = false)

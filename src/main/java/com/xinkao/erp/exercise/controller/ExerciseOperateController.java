@@ -4,27 +4,26 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.xinkao.erp.common.annotation.Log;
 import com.xinkao.erp.common.annotation.PrimaryDataSource;
-import com.xinkao.erp.common.enums.system.OperationType;
+import com.xinkao.erp.common.enums.CommonEnum;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.LoginUser;
-import com.xinkao.erp.common.model.param.DeleteParam;
 import com.xinkao.erp.common.model.support.Pageable;
 import com.xinkao.erp.common.util.RedisUtil;
-import com.xinkao.erp.exercise.entity.ExerciseRecords;
 import com.xinkao.erp.exercise.entity.InstantFeedbacks;
 import com.xinkao.erp.exercise.param.*;
-import com.xinkao.erp.exercise.query.ExerciseRecordsQuery;
 import com.xinkao.erp.exercise.query.InstantFeedbacksQuery;
 import com.xinkao.erp.exercise.service.ExerciseRecordsService;
 import com.xinkao.erp.exercise.service.InstantFeedbacksService;
 import com.xinkao.erp.exercise.utils.MarkQuestionUtils;
+import com.xinkao.erp.manage.entity.ClassInfo;
+import com.xinkao.erp.manage.service.ClassInfoService;
 import com.xinkao.erp.question.entity.Question;
 import com.xinkao.erp.question.query.QuestionQuery;
 import com.xinkao.erp.question.service.QuestionService;
 import com.xinkao.erp.question.vo.QuestionExercisePageVo;
-import com.xinkao.erp.question.vo.QuestionPageVo;
+import com.xinkao.erp.user.entity.User;
+import com.xinkao.erp.user.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -34,8 +33,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -60,6 +57,10 @@ public class ExerciseOperateController {
     private InstantFeedbacksService instantFeedbacksService;
     @Autowired
     private MarkQuestionUtils markQuestionUtils;
+    @Autowired
+    private ClassInfoService classInfoService;
+    @Autowired
+    private UserService userService;
 
 
     /**
@@ -283,7 +284,25 @@ public class ExerciseOperateController {
     public BaseResponse<Page<InstantFeedbacks>> pageSummary(@Valid @RequestBody InstantFeedbacksQuery query) {
         //获取当前用户
         LoginUser loginUserAll = redisUtil.getInfoByToken();
-        query.setUserId(loginUserAll.getUser().getId());
+        //判断summaryStuParam是否存在stuId
+        List<Integer> stuIds = new ArrayList<>();
+        if (loginUserAll.getUser().getRoleId()==1){
+            //超级管理员，查看所有信息
+        }else if (loginUserAll.getUser().getRoleId()==3){
+            //学生，只能查看自己的信息
+            stuIds.add(loginUserAll.getUser().getId());
+        }else if (loginUserAll.getUser().getRoleId()==2){
+            //老师，只能查看自己学生的信息
+            //查询老师所带班级
+            List<ClassInfo> classInfoList = classInfoService.lambdaQuery().eq(ClassInfo::getDirectorId, loginUserAll.getUser().getId()).eq(ClassInfo::getIsDel, CommonEnum.IS_DEL.NO.getCode()).list();
+            //查询班级classInfoList下的学生id
+            LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery();
+            wrapper.eq(User::getIsDel, CommonEnum.IS_DEL.NO.getCode());
+            wrapper.in(User::getClassId, classInfoList.stream().map(ClassInfo::getId).collect(Collectors.toList()));
+            List<User> userList = userService.list(wrapper);
+            stuIds = userList.stream().map(User::getId).collect(Collectors.toList());
+        }
+        query.setUserId(stuIds);
         query.setShape(500);
         Pageable pageable = query.getPageInfo();
         Page<InstantFeedbacks> voPage = instantFeedbacksService.page(query, pageable);
