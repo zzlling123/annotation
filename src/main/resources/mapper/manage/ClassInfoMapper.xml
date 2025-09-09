@@ -13,6 +13,12 @@
         <if test="query.directorId != null">
             and c.director_id = #{query.directorId}
         </if>
+        <if test="query.directorIdList != null and query.directorIdList.size() > 0">
+            and c.director_id in
+            <foreach item="item" index="index" collection="query.directorIdList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         ORDER BY c.id DESC
     </select>
 </mapper>

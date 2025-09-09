@@ -255,3 +255,4 @@ public class PointSubmitUtil {
         return end - start;
     }
 }
+

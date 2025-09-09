@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,5 +17,8 @@ public class ClassInfoQuery extends BasePageQuery implements Serializable {
 
     @ApiModelProperty("班主任ID（非管理员时由后端注入）")
     private Integer directorId;
+
+    @ApiModelProperty("班主任ID列表")
+    private List<Integer> directorIdList;
 
 }
