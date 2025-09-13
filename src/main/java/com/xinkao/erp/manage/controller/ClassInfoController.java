@@ -14,6 +14,8 @@ import com.xinkao.erp.manage.param.ClassInfoParam;
 import com.xinkao.erp.manage.query.ClassInfoQuery;
 import com.xinkao.erp.manage.service.ClassInfoService;
 import com.xinkao.erp.manage.vo.ClassInfoVo;
+import com.xinkao.erp.user.entity.User;
+import com.xinkao.erp.user.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 管理端班级相关服务
@@ -36,6 +39,9 @@ public class ClassInfoController extends BaseController {
     @Autowired
     private ClassInfoService classInfoService;
 
+    @Autowired
+    private UserService userService;
+
     /**
      * 分页查询班级信息
      *
@@ -48,8 +54,23 @@ public class ClassInfoController extends BaseController {
     public BaseResponse<Page<ClassInfoVo>> page(@Valid @RequestBody ClassInfoQuery query) {
         LoginUser loginUser = redisUtil.getInfoByToken();
         
-        // 角色1和18可以查看所有班级，角色19只能查看自己管理的班级，其他角色也只能查看自己管理的班级
-        if (loginUser.getUser().getRoleId() != 1 && loginUser.getUser().getRoleId() != 18) {
+        // 角色1和18可以查看所有班级
+        if (loginUser.getUser().getRoleId() == 1 || loginUser.getUser().getRoleId() == 18) {
+            // 不设置任何过滤条件，查看所有班级
+        }
+        // 角色19可以查看所有角色19用户创建的班级
+        else if (loginUser.getUser().getRoleId() == 19) {
+            List<Integer> role19UserIds = userService.lambdaQuery()
+                    .eq(User::getRoleId, 19)
+                    .eq(User::getIsDel, 0)
+                    .list()
+                    .stream()
+                    .map(User::getId)
+                    .collect(Collectors.toList());
+            query.setDirectorIdList(role19UserIds);
+        }
+        // 其他角色只能查看自己管理的班级
+        else {
             query.setDirectorId(loginUser.getUser().getId());
         }
         
@@ -68,10 +89,18 @@ public class ClassInfoController extends BaseController {
     public BaseResponse<List<ClassInfo>> getList() {
         LoginUser loginUser = redisUtil.getInfoByToken();
         
-        // 如果用户角色为19，只返回该用户作为班主任的班级
+        // 如果用户角色为19，返回所有角色19用户创建的班级
         if (loginUser.getUser().getRoleId() == 19) {
+            List<Integer> role19UserIds = userService.lambdaQuery()
+                    .eq(User::getRoleId, 19)
+                    .eq(User::getIsDel, 0)
+                    .list()
+                    .stream()
+                    .map(User::getId)
+                    .collect(Collectors.toList());
+            
             return BaseResponse.ok(classInfoService.lambdaQuery()
-                .eq(ClassInfo::getDirectorId, loginUser.getUser().getId())
+                .in(ClassInfo::getDirectorId, role19UserIds)
                 .eq(ClassInfo::getIsDel, CommonEnum.IS_DEL.NO.getCode())
                 .list());
         }

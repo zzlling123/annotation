@@ -118,54 +118,60 @@ public class SummaryController {
             }
         }
         if (summaryStuParam.getType() == 0){
-            List<ExerciseRecordsQuery> exerciseRecordsList = exerciseRecordsService.getListUserName(summaryStuParam);
-            List<ExerciseRecordsVo> exerciseRecordsVoList = new ArrayList<>();
-            for (ExerciseRecordsQuery exerciseRecordsQuery : exerciseRecordsList) {
-                ExerciseRecordsVo exerciseRecordsVo = new ExerciseRecordsVo();
-                BeanUtils.copyProperties(exerciseRecordsQuery, exerciseRecordsVo);
-                exerciseRecordsVoList.add(exerciseRecordsVo);
-            }
-            int zong = 0; //需要标注的个数
-            int biao = 0;  //标注个数
-            int cuo = 0;//应该标注未标注个数
-            int wu = 0;//错误标注个数
-            int shu = 0;//属性个数
-            int da = 0; //学生标注个数
-            double accuracyRate = 0;
-            double coverageRate = 0;
-            for (ExerciseRecordsVo exerciseRecordsVo : exerciseRecordsVoList) {
-                List<InstantFeedbacks> instantFeedbacksList = instantFeedbacksService.list(new LambdaQueryWrapper<InstantFeedbacks>().eq(InstantFeedbacks::getShape, 500).eq(InstantFeedbacks::getRecordId, exerciseRecordsVo.getId()));
-                //循环练习记录查询每个练习记录所对应的上述数据然后计算总数据
-                for (InstantFeedbacks instantFeedbacks : instantFeedbacksList) {
-                    zong = zong + instantFeedbacks.getZong();
-                    da = da + instantFeedbacks.getDa();
-                    biao = biao + instantFeedbacks.getBiao();
-                    wu = wu + instantFeedbacks.getWu();
-                    cuo = cuo + instantFeedbacks.getCuo();
-                    shu = shu + instantFeedbacks.getShu();
-                    if (instantFeedbacks.getAccuracyRate() != null) {
-                        accuracyRate += instantFeedbacks.getAccuracyRate().doubleValue();
-                    }
-                    if (instantFeedbacks.getCoverageRate() != null) {
-                        coverageRate += instantFeedbacks.getCoverageRate().doubleValue();
-                    }
-                }
-                int size = instantFeedbacksList.size();
-                exerciseRecordsVo.setDa(size != 0 ? da / size : 0);
-                exerciseRecordsVo.setBiao(size != 0 ? biao / size : 0);
-                exerciseRecordsVo.setCuo(size != 0 ? cuo / size : 0);
-                exerciseRecordsVo.setWu(size != 0 ? wu / size : 0);
-                exerciseRecordsVo.setShu(size != 0 ? shu / size : 0);
-                exerciseRecordsVo.setZong(size!=0?zong / size:0);
-                if (size != 0) {
-                    exerciseRecordsVo.setAccuracyRate(new BigDecimal(accuracyRate / size).setScale(2, RoundingMode.HALF_UP));
-                    exerciseRecordsVo.setCoverageRate(new BigDecimal(coverageRate / size).setScale(2, RoundingMode.HALF_UP));
-                } else {
-                    exerciseRecordsVo.setAccuracyRate(new BigDecimal(0));
-                    exerciseRecordsVo.setCoverageRate(new BigDecimal(0));
-                }
-            }
-            return BaseResponse.ok(exerciseRecordsVoList);
+//            List<ExerciseRecordsQuery> exerciseRecordsList = exerciseRecordsService.getListUserName(summaryStuParam);
+//            List<ExerciseRecordsVo> exerciseRecordsVoList = new ArrayList<>();
+//            for (ExerciseRecordsQuery exerciseRecordsQuery : exerciseRecordsList) {
+//                ExerciseRecordsVo exerciseRecordsVo = new ExerciseRecordsVo();
+//                BeanUtils.copyProperties(exerciseRecordsQuery, exerciseRecordsVo);
+//                exerciseRecordsVoList.add(exerciseRecordsVo);
+//            }
+//            int zong = 0; //需要标注的个数
+//            int biao = 0;  //标注个数
+//            int cuo = 0;//应该标注未标注个数
+//            int wu = 0;//错误标注个数
+//            int shu = 0;//属性个数
+//            int da = 0; //学生标注个数
+//            double accuracyRate = 0;
+//            double coverageRate = 0;
+//            for (ExerciseRecordsVo exerciseRecordsVo : exerciseRecordsVoList) {
+//                List<InstantFeedbacks> instantFeedbacksList = instantFeedbacksService.list(new LambdaQueryWrapper<InstantFeedbacks>().eq(InstantFeedbacks::getShape, 500).eq(InstantFeedbacks::getRecordId, exerciseRecordsVo.getId()));
+//                //循环练习记录查询每个练习记录所对应的上述数据然后计算总数据
+//                for (InstantFeedbacks instantFeedbacks : instantFeedbacksList) {
+//                    zong = zong + instantFeedbacks.getZong();
+//                    da = da + instantFeedbacks.getDa();
+//                    biao = biao + instantFeedbacks.getBiao();
+//                    wu = wu + instantFeedbacks.getWu();
+//                    cuo = cuo + instantFeedbacks.getCuo();
+//                    shu = shu + instantFeedbacks.getShu();
+//                    if (instantFeedbacks.getAccuracyRate() != null) {
+//                        accuracyRate += instantFeedbacks.getAccuracyRate().doubleValue();
+//                    }
+//                    if (instantFeedbacks.getCoverageRate() != null) {
+//                        coverageRate += instantFeedbacks.getCoverageRate().doubleValue();
+//                    }
+//                }
+//                int size = instantFeedbacksList.size();
+//                exerciseRecordsVo.setDa(size != 0 ? da / size : 0);
+//                exerciseRecordsVo.setBiao(size != 0 ? biao / size : 0);
+//                exerciseRecordsVo.setCuo(size != 0 ? cuo / size : 0);
+//                exerciseRecordsVo.setWu(size != 0 ? wu / size : 0);
+//                exerciseRecordsVo.setShu(size != 0 ? shu / size : 0);
+//                exerciseRecordsVo.setZong(size!=0?zong / size:0);
+//                if (size != 0) {
+//                    exerciseRecordsVo.setAccuracyRate(new BigDecimal(accuracyRate / size).setScale(2, RoundingMode.HALF_UP));
+//                    exerciseRecordsVo.setCoverageRate(new BigDecimal(coverageRate / size).setScale(2, RoundingMode.HALF_UP));
+//                } else {
+//                    exerciseRecordsVo.setAccuracyRate(new BigDecimal(0));
+//                    exerciseRecordsVo.setCoverageRate(new BigDecimal(0));
+//                }
+//            }
+//            return BaseResponse.ok(exerciseRecordsVoList);
+            List<InstantFeedbacks> instantFeedbacksList = instantFeedbacksService.list(new LambdaQueryWrapper<InstantFeedbacks>().eq(InstantFeedbacks::getShape, 500).in(InstantFeedbacks::getUserId,summaryStuParam.getStuId() ));
+            //加上user的名字
+            instantFeedbacksList.forEach(instantFeedbacks -> {
+                instantFeedbacks.setRealName(userService.getById(instantFeedbacks.getUserId()).getRealName());
+            });
+            return BaseResponse.ok(instantFeedbacksList);
         }else if (summaryStuParam.getType() == 1){
             LambdaQueryWrapper<ExamPageUser> wrapper = Wrappers.lambdaQuery();
             if (summaryStuParam.getStuId() != null&& summaryStuParam.getStuId().size()>0){
@@ -385,59 +391,65 @@ public class SummaryController {
         }
         List<Integer> userIds = userList.stream().map(User::getId).collect(Collectors.toList());
         if (summaryParam.getType() == 0){
-            LambdaQueryWrapper<ExerciseRecords> wrapper = Wrappers.lambdaQuery();
-            wrapper.in(ExerciseRecords::getUserId,userIds);
-            List<ExerciseRecords> exerciseRecordsList = exerciseRecordsService.list(wrapper);
-            //List<ExerciseRecords>的数据转到List<ExerciseRecordsVo>中
-            List<ExerciseRecordsVo> exerciseRecordsVoList = new ArrayList<>();
-            for (ExerciseRecords exerciseRecords : exerciseRecordsList) {
-                ExerciseRecordsVo exerciseRecordsVo = new ExerciseRecordsVo();
-                BeanUtils.copyProperties(exerciseRecords, exerciseRecordsVo);
-                exerciseRecordsVoList.add(exerciseRecordsVo);
-            }
-            int zong = 0; //需要标注的个数
-            int biao = 0;  //标注个数
-            int cuo = 0;//应该标注未标注个数
-            int wu = 0;//错误标注个数
-            int shu = 0;//属性个数
-            int da = 0; //学生标注个数
-            double accuracyRate = 0;
-            double coverageRate = 0;
-            //循环练习查询每个练习所对应的练习记录
-            for (ExerciseRecordsVo exerciseRecordsVo : exerciseRecordsVoList) {
-                List<InstantFeedbacks> instantFeedbacksList = instantFeedbacksService.list(new LambdaQueryWrapper<InstantFeedbacks>().eq(InstantFeedbacks::getShape, 500).eq(InstantFeedbacks::getRecordId, exerciseRecordsVo.getId()));
-                //循环练习记录查询每个练习记录所对应的上述数据然后计算总数据
-                for (InstantFeedbacks instantFeedbacks : instantFeedbacksList) {
-                    zong = zong + instantFeedbacks.getZong();
-                    da = da + instantFeedbacks.getDa();
-                    biao = biao + instantFeedbacks.getBiao();
-                    wu = wu + instantFeedbacks.getWu();
-                    cuo = cuo + instantFeedbacks.getCuo();
-                    shu = shu + instantFeedbacks.getShu();
-                    if (instantFeedbacks.getAccuracyRate() != null) {
-                        accuracyRate += instantFeedbacks.getAccuracyRate().doubleValue();
-                    }
-                    if (instantFeedbacks.getCoverageRate() != null) {
-                        coverageRate += instantFeedbacks.getCoverageRate().doubleValue();
-                    }
-                }
-                int size = instantFeedbacksList.size();
-                exerciseRecordsVo.setDa(size!=0?da / size:0);
-                exerciseRecordsVo.setBiao(size!=0?biao / size:0);
-                exerciseRecordsVo.setCuo(size!=0?cuo / size:0);
-                exerciseRecordsVo.setWu(size!=0?wu / size:0);
-                exerciseRecordsVo.setShu(size!=0?shu / size:0);
-                exerciseRecordsVo.setZong(size!=0?zong / size:0);
-                if (size!=0){
-                    exerciseRecordsVo.setAccuracyRate(new BigDecimal(accuracyRate/size).setScale(2, RoundingMode.HALF_UP));
-                    exerciseRecordsVo.setCoverageRate(new BigDecimal(coverageRate/size).setScale(2, RoundingMode.HALF_UP));
-                }else {
-                    exerciseRecordsVo.setAccuracyRate(new BigDecimal(0));
-                    exerciseRecordsVo.setCoverageRate(new BigDecimal(0));
-                }
-
-            }
-            return BaseResponse.ok(exerciseRecordsVoList);
+//            LambdaQueryWrapper<ExerciseRecords> wrapper = Wrappers.lambdaQuery();
+//            wrapper.in(ExerciseRecords::getUserId,userIds);
+//            List<ExerciseRecords> exerciseRecordsList = exerciseRecordsService.list(wrapper);
+//            //List<ExerciseRecords>的数据转到List<ExerciseRecordsVo>中
+//            List<ExerciseRecordsVo> exerciseRecordsVoList = new ArrayList<>();
+//            for (ExerciseRecords exerciseRecords : exerciseRecordsList) {
+//                ExerciseRecordsVo exerciseRecordsVo = new ExerciseRecordsVo();
+//                BeanUtils.copyProperties(exerciseRecords, exerciseRecordsVo);
+//                exerciseRecordsVoList.add(exerciseRecordsVo);
+//            }
+//            int zong = 0; //需要标注的个数
+//            int biao = 0;  //标注个数
+//            int cuo = 0;//应该标注未标注个数
+//            int wu = 0;//错误标注个数
+//            int shu = 0;//属性个数
+//            int da = 0; //学生标注个数
+//            double accuracyRate = 0;
+//            double coverageRate = 0;
+//            //循环练习查询每个练习所对应的练习记录
+//            for (ExerciseRecordsVo exerciseRecordsVo : exerciseRecordsVoList) {
+//                List<InstantFeedbacks> instantFeedbacksList = instantFeedbacksService.list(new LambdaQueryWrapper<InstantFeedbacks>().eq(InstantFeedbacks::getShape, 500).eq(InstantFeedbacks::getRecordId, exerciseRecordsVo.getId()));
+//                //循环练习记录查询每个练习记录所对应的上述数据然后计算总数据
+//                for (InstantFeedbacks instantFeedbacks : instantFeedbacksList) {
+//                    zong = zong + instantFeedbacks.getZong();
+//                    da = da + instantFeedbacks.getDa();
+//                    biao = biao + instantFeedbacks.getBiao();
+//                    wu = wu + instantFeedbacks.getWu();
+//                    cuo = cuo + instantFeedbacks.getCuo();
+//                    shu = shu + instantFeedbacks.getShu();
+//                    if (instantFeedbacks.getAccuracyRate() != null) {
+//                        accuracyRate += instantFeedbacks.getAccuracyRate().doubleValue();
+//                    }
+//                    if (instantFeedbacks.getCoverageRate() != null) {
+//                        coverageRate += instantFeedbacks.getCoverageRate().doubleValue();
+//                    }
+//                }
+//                int size = instantFeedbacksList.size();
+//                exerciseRecordsVo.setDa(size!=0?da / size:0);
+//                exerciseRecordsVo.setBiao(size!=0?biao / size:0);
+//                exerciseRecordsVo.setCuo(size!=0?cuo / size:0);
+//                exerciseRecordsVo.setWu(size!=0?wu / size:0);
+//                exerciseRecordsVo.setShu(size!=0?shu / size:0);
+//                exerciseRecordsVo.setZong(size!=0?zong / size:0);
+//                if (size!=0){
+//                    exerciseRecordsVo.setAccuracyRate(new BigDecimal(accuracyRate/size).setScale(2, RoundingMode.HALF_UP));
+//                    exerciseRecordsVo.setCoverageRate(new BigDecimal(coverageRate/size).setScale(2, RoundingMode.HALF_UP));
+//                }else {
+//                    exerciseRecordsVo.setAccuracyRate(new BigDecimal(0));
+//                    exerciseRecordsVo.setCoverageRate(new BigDecimal(0));
+//                }
+//
+//            }
+//            return BaseResponse.ok(exerciseRecordsVoList);
+            List<InstantFeedbacks> instantFeedbacksList = instantFeedbacksService.list(new LambdaQueryWrapper<InstantFeedbacks>().eq(InstantFeedbacks::getShape, 500).in(InstantFeedbacks::getUserId,userIds));
+            //加上user的名字
+            instantFeedbacksList.forEach(instantFeedbacks -> {
+                instantFeedbacks.setRealName(userService.getById(instantFeedbacks.getUserId()).getRealName());
+            });
+            return BaseResponse.ok(instantFeedbacksList);
         }
         else if (summaryParam.getType() == 1){
             //关联user表查询考试记录并返回学生姓名

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,4 +19,10 @@ public class ExamQuery extends BasePageQuery implements Serializable {
 
     @ApiModelProperty("考试状态")
     private Integer status;
+
+    @ApiModelProperty("创建者ID")
+    private String createBy;
+
+    @ApiModelProperty("创建者ID列表")
+    private List<String> createByList;
 }

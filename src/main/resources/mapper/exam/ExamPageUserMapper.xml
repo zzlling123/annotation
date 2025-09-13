@@ -45,9 +45,12 @@
         SELECT epu.*,u.real_name
         FROM `exam_page_user` epu
         LEFT JOIN `user` u ON u.id = epu.user_id
-        WHERE epu.exam_id = #{examId} and epu.user_id in
-        <foreach item="item" index="index" collection="userIds" open="(" separator="," close=")">
-            #{item}
-        </foreach>
+        WHERE epu.exam_id = #{examId}
+        <if test="userIds != null and userIds.size() > 0">
+            and epu.user_id in
+            <foreach item="item" index="index" collection="userIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
     </select>
 </mapper>

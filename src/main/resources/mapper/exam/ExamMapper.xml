@@ -13,6 +13,15 @@
         <if test="query.status != null">
             and e.state = #{query.status}
         </if>
+        <if test="query.createBy != null and query.createBy != ''">
+            and e.create_by = #{query.createBy}
+        </if>
+        <if test="query.createByList != null and query.createByList.size() > 0">
+            and e.create_by in
+            <foreach item="item" index="index" collection="query.createByList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         <if test="classIds != null and classIds.size() > 0">
             and ec.class_id in
             <foreach item="item" index="index" collection="classIds" open="(" separator="," close=")">

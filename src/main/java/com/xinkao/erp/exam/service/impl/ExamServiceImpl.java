@@ -19,6 +19,8 @@ import com.xinkao.erp.exam.vo.ExamDetailVo;
 import com.xinkao.erp.exam.vo.ExamPageVo;
 import com.xinkao.erp.manage.entity.ClassInfo;
 import com.xinkao.erp.manage.service.ClassInfoService;
+import com.xinkao.erp.user.entity.User;
+import com.xinkao.erp.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -55,6 +57,8 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
     private ExamPageSetTypeService examPageSetTypeService;
     @Autowired
     private ExamPageSetService examPageSetService;
+    @Autowired
+    private UserService userService;
 
 
     @Override
@@ -66,6 +70,31 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
         if (loginUser.getUser().getRoleId() == 2) {
             classIds = classInfoService.lambdaQuery().eq(ClassInfo::getDirectorId, loginUser.getUser().getId()).eq(ClassInfo::getIsDel,0).list().stream().map(ClassInfo::getId).collect(Collectors.toList());
         }
+        
+        // 如果是人社局角色（角色19），则只显示所有角色19用户创建的考试
+        if (loginUser.getUser().getRoleId() == 19) {
+            List<String> role19UserIds = userService.lambdaQuery()
+                    .eq(User::getRoleId, 19)
+                    .eq(User::getIsDel, 0)
+                    .list()
+                    .stream()
+                    .map(user -> user.getId().toString())
+                    .collect(Collectors.toList());
+            query.setCreateByList(role19UserIds);
+        }
+        
+        // 如果是角色18，则显示角色2（教师）和角色18创建的考试
+        if (loginUser.getUser().getRoleId() == 18) {
+            List<String> role2And18UserIds = userService.lambdaQuery()
+                    .in(User::getRoleId, Arrays.asList(2, 18))
+                    .eq(User::getIsDel, 0)
+                    .list()
+                    .stream()
+                    .map(user -> user.getId().toString())
+                    .collect(Collectors.toList());
+            query.setCreateByList(role2And18UserIds);
+        }
+        
         return examMapper.page(page, query,classIds);
     }
 
