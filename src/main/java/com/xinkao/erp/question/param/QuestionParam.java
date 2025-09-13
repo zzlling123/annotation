@@ -38,6 +38,9 @@ public class QuestionParam implements InputConverter<Question> {
     @NotBlank(message = "难度不能为空")
     private String difficultyLevel;
 
+    @ApiModelProperty("知识点ID")
+    private String difficultyPointId;
+
     @ApiModelProperty("题目所属标记")
     @NotBlank(message = "题目所属标记不能为空")
     private String symbol;

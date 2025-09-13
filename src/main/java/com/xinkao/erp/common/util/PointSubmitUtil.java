@@ -136,8 +136,8 @@ public class PointSubmitUtil {
                             Map<String, BigDecimal> userPosition = (Map<String, BigDecimal>) userAttrs.get(k).get("position");
                             Map<String, Object> userSize = (Map<String, Object>) userAttrs.get(k).get("size");
                             //组成Cuboid进行比对
-                            Cuboid cuboid1 = new Cuboid(get3DDouble(rightPosition.get("x")), get3DDouble(rightPosition.get("y")), get3DDouble(rightPosition.get("z")), get3DDoubleStr(rightSize.get("x")), get3DDoubleStr(rightSize.get("y")), get3DDoubleStr(rightSize.get("z")));
-                            Cuboid cuboid2 = new Cuboid(get3DDouble(userPosition.get("x")), get3DDouble(userPosition.get("y")), get3DDouble(userPosition.get("z")), get3DDoubleStr(userSize.get("x")), get3DDoubleStr(userSize.get("y")), get3DDoubleStr(userSize.get("z")));
+                            Cuboid cuboid1 = new Cuboid(get3DDoubleStr(rightPosition.get("x")), get3DDoubleStr(rightPosition.get("y")), get3DDoubleStr(rightPosition.get("z")), get3DDoubleStr(rightSize.get("x")), get3DDoubleStr(rightSize.get("y")), get3DDoubleStr(rightSize.get("z")));
+                            Cuboid cuboid2 = new Cuboid(get3DDoubleStr(userPosition.get("x")), get3DDoubleStr(userPosition.get("y")), get3DDoubleStr(userPosition.get("z")), get3DDoubleStr(userSize.get("x")), get3DDoubleStr(userSize.get("y")), get3DDoubleStr(userSize.get("z")));
 
                             double iou = calculateIoU(cuboid1, cuboid2);
                             System.out.println("重叠率: " + iou); // 输出约为0.0667（6.67%）
@@ -185,7 +185,13 @@ public class PointSubmitUtil {
     }
 
     public double get3DDoubleStr(Object str){
+        if (str == null){
+            return 0;
+        }
         String newStr = String.valueOf(str);
+        if (StrUtil.isBlank(newStr)){
+            return 0;
+        }
         return Double.parseDouble(newStr.substring(0, newStr.indexOf(".") + 2));
     }
 

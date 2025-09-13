@@ -35,6 +35,9 @@ public class QuestionPageVo extends BaseEntity {
     @ApiModelProperty("难度")
     private String difficultyLevel;
 
+    @ApiModelProperty("知识点Id")
+    private String difficultyPointId;
+
     @ApiModelProperty("题目所属标记")
     private String symbol;
 
