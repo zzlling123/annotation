@@ -1075,6 +1075,11 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
     public QuestionImportResultVO importQuestionFormZipV2(MultipartFile file) throws IOException {
         QuestionImportResultVO result = new QuestionImportResultVO();
         Path tempDir = Files.createTempDirectory("qform_zip_v2_");
+        
+        // 🔥 初始化知识点缓存
+        currentImportKnowledgeCache = knowledgePointCacheManager.buildKnowledgePointCache();
+        currentImportErrors = new ArrayList<>();
+        
         try {
             unzipTo(tempDir, file);
             File excelFile = findFirstExcel(tempDir);
@@ -1200,9 +1205,28 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
             }
             result.setSuccessCount(success);
             result.setFailCount(result.getTotalCount() - success);
+            
+            // 🔥 合并知识点匹配产生的错误信息
+            if (!currentImportErrors.isEmpty()) {
+                if (result.getRowErrors() == null) {
+                    result.setRowErrors(new ArrayList<>());
+                }
+                result.getRowErrors().addAll(currentImportErrors);
+                
+                // 同时添加到错误消息列表（向后兼容）
+                if (result.getErrorMessages() == null) {
+                    result.setErrorMessages(new ArrayList<>());
+                }
+                currentImportErrors.forEach(error -> 
+                    result.getErrorMessages().add(error.getMessage()));
+            }
+            
             return result;
         } finally {
             deleteDirectoryQuietly(tempDir);
+            // 🔥 清理知识点缓存
+            currentImportKnowledgeCache = null;
+            currentImportErrors = null;
         }
     }
 
@@ -1312,11 +1336,41 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
             q.setQuestion(content);
             q.setQuestionText(content);
         }
+        
+        Integer difficultyLevel = null;
         try { if (StrUtil.isNotBlank(h.getType())) q.setType(QuestionCategoryEnum.getCodeByName(h.getType())); } catch (Exception ignore) {}
-        try { if (StrUtil.isNotBlank(h.getDifficultyLevel())) q.setDifficultyLevel(QuestionDifficultyEnum.getCodeByName(h.getDifficultyLevel())); } catch (Exception ignore) {}
+        try { if (StrUtil.isNotBlank(h.getDifficultyLevel())) { 
+            difficultyLevel = QuestionDifficultyEnum.getCodeByName(h.getDifficultyLevel()); 
+            q.setDifficultyLevel(difficultyLevel); 
+        }} catch (Exception ignore) {}
         try { if (StrUtil.isNotBlank(h.getSymbol())) q.setSymbol(String.valueOf(EntitySystemEnum.getCodeByName(h.getSymbol()))); } catch (Exception ignore) {}
         try { if (StrUtil.isNotBlank(h.getState())) q.setState(StatusEnum.getCodeByName(h.getState())); } catch (Exception ignore) {}
-         q.setEstimatedTime(1);
+        
+        // 🔥 关键新增：知识点匹配逻辑
+        if (StrUtil.isNotBlank(h.getKnowledgePointName()) && difficultyLevel != null) {
+            KnowledgePointCacheManager.KnowledgePointMatchResult matchResult = 
+                knowledgePointCacheManager.matchFromCache(
+                    currentImportKnowledgeCache, 
+                    difficultyLevel, 
+                    h.getKnowledgePointName()
+                );
+            
+            handleFormKnowledgePointMatchResult(h, q, matchResult);
+        }
+        
+        // 🔥 打印题目单Excel数据
+        log.info("📊 [题目单] 组代码[{}]：题目分类=[{}], 难度=[{}], 标签=[{}], 知识点=[{}], 标题=[{}], 文件URL=[{}]", 
+            h.getGroupCode(), h.getType(), h.getDifficultyLevel(), h.getSymbol(), 
+            h.getKnowledgePointName(),
+            h.getTitle() != null ? (h.getTitle().length() > 30 ? h.getTitle().substring(0, 30) + "..." : h.getTitle()) : "无",
+            qFileUrl);
+        
+        // 🔥 调试：打印即将入库的question对象信息
+        log.info("📝 准备入库题目单：ID={}, 难度等级={}, 知识点ID={}, 标题={}", 
+            q.getId(), q.getDifficultyLevel(), q.getDifficultyPointId(), 
+            q.getTitle() != null ? q.getTitle().substring(0, Math.min(20, q.getTitle().length())) + "..." : "无");
+        
+        q.setEstimatedTime(1);
         q.setIsForm(1);
         q.setAnswer("试题单");
         q.setOptions("[A,B]");
@@ -1444,5 +1498,52 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         return fmt.formatCellValue(row.getCell(col)).trim();
     }
 
-
+    
+    /**
+     * 处理题目单知识点匹配结果
+     */
+    private void handleFormKnowledgePointMatchResult(QfHeadV2 head, Question question, 
+            KnowledgePointCacheManager.KnowledgePointMatchResult matchResult) {
+        
+        if (matchResult.isMatched()) {
+            question.setDifficultyPointId(matchResult.getDifficultyPointId());
+            
+            // 模糊匹配给出提示
+            if ("FUZZY".equals(matchResult.getMatchType())) {
+                addFormWarning(head.getGroupCode(), 
+                    String.format("[题目单] 组代码[%s]：%s", head.getGroupCode(), matchResult.getSuggestion()),
+                    "KNOWLEDGE_POINT_FUZZY_MATCHED");
+            }
+        } else {
+            // 未匹配到，设置为null但允许保存
+            question.setDifficultyPointId(null);
+            
+            String errorMsg;
+            if (StrUtil.isNotBlank(matchResult.getErrorMessage())) {
+                errorMsg = matchResult.getErrorMessage();
+            } else {
+                String availablePoints = matchResult.getAvailablePoints().size() > 5 ? 
+                    String.join("、", matchResult.getAvailablePoints().subList(0, 5)) + "等" :
+                    String.join("、", matchResult.getAvailablePoints());
+                errorMsg = String.format("知识点【%s】未匹配成功，数据已导入，可在前台修改。难度等级%d可选知识点：%s", 
+                    head.getKnowledgePointName(), question.getDifficultyLevel(), availablePoints);
+            }
+            
+            addFormWarning(head.getGroupCode(), 
+                String.format("[题目单] 组代码[%s]：%s", head.getGroupCode(), errorMsg),
+                "KNOWLEDGE_POINT_NOT_MATCHED");
+        }
+    }
+    
+    /**
+     * 添加题目单警告信息到当前导入会话
+     */
+    private void addFormWarning(String groupCode, String message, String warningType) {
+        QuestionImportResultVO.RowError warning = new QuestionImportResultVO.RowError();
+        warning.setRowNum(null); // 题目单没有具体行号，使用组代码标识
+        warning.setMessage(message);
+        warning.setWarningType(warningType);
+        warning.setIsWarning(true);
+        currentImportErrors.add(warning);
+    }
 }

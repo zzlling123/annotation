@@ -631,10 +631,24 @@ public class    QuestionController extends BaseController {
                 return;
             }
             // 默认返回JSON
+            // 检查是否有知识点相关的警告
+            boolean hasKnowledgePointWarnings = result.getRowErrors() != null && 
+                result.getRowErrors().stream()
+                    .anyMatch(error -> "KNOWLEDGE_POINT_NOT_MATCHED".equals(error.getWarningType()) ||
+                                     "KNOWLEDGE_POINT_FUZZY_MATCHED".equals(error.getWarningType()));
+            
             if (result.getFailCount() != null && result.getFailCount() > 0) {
-                writeJson(response, BaseResponse.other("导入完成，但存在错误数据", result));
+                if (hasKnowledgePointWarnings) {
+                    writeJson(response, BaseResponse.other("题目单导入完成，部分知识点未匹配成功，请在系统中手动设置", result));
+                } else {
+                    writeJson(response, BaseResponse.other("导入完成，但存在错误数据", result));
+                }
             } else {
-                writeJson(response, BaseResponse.ok("导入成功", result));
+                if (hasKnowledgePointWarnings) {
+                    writeJson(response, BaseResponse.other("题目单导入成功，部分知识点未精确匹配，请检查并调整", result));
+                } else {
+                    writeJson(response, BaseResponse.ok("导入成功", result));
+                }
             }
         } catch (Exception e) {
             writeJson(response, BaseResponse.fail("导入失败：" + e.getMessage()));
