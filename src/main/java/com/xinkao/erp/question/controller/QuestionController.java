@@ -616,6 +616,7 @@ public class    QuestionController extends BaseController {
                 row.setFailCount(result.getFailCount());
                 summary.add(row);
                 java.util.List<com.xinkao.erp.question.excel.ImportResultErrorRow> details = new java.util.ArrayList<>();
+                // 处理结构化错误信息（rowErrors）
                 if (result.getRowErrors() != null && !result.getRowErrors().isEmpty()) {
                     for (com.xinkao.erp.question.vo.QuestionImportResultVO.RowError re : result.getRowErrors()) {
                         ImportResultErrorRow d = new ImportResultErrorRow();
@@ -623,7 +624,9 @@ public class    QuestionController extends BaseController {
                         d.setMessage(re.getMessage());
                         details.add(d);
                     }
-                } else if (result.getErrorMessages() != null) {
+                }
+                // 处理传统错误信息（errorMessages）- 与rowErrors并行处理
+                if (result.getErrorMessages() != null && !result.getErrorMessages().isEmpty()) {
                     for (String msg : result.getErrorMessages()) {
                         ImportResultErrorRow d = new ImportResultErrorRow();
                         Integer rn = null;
@@ -667,20 +670,22 @@ public class    QuestionController extends BaseController {
             // 检查是否有警告和不同类型的警告
             boolean hasKnowledgePointNotMatched = false;
             boolean hasKnowledgePointFuzzyMatched = false;
+            boolean hasQuestionTypeNotMatched = false;
             boolean hasOtherWarnings = false;
             int warningCount = 0;
             
             if (result.getRowErrors() != null) {
                 for (com.xinkao.erp.question.vo.QuestionImportResultVO.RowError error : result.getRowErrors()) {
-                    if (Boolean.TRUE.equals(error.getIsWarning())) {
-                        warningCount++;
-                        if ("KNOWLEDGE_POINT_NOT_MATCHED".equals(error.getWarningType())) {
-                            hasKnowledgePointNotMatched = true;
-                        } else if ("KNOWLEDGE_POINT_FUZZY_MATCHED".equals(error.getWarningType())) {
-                            hasKnowledgePointFuzzyMatched = true;
-                        } else {
-                            hasOtherWarnings = true;
-                        }
+                    // 统计所有错误和警告（不只是警告）
+                    warningCount++;
+                    if ("KNOWLEDGE_POINT_NOT_MATCHED".equals(error.getWarningType())) {
+                        hasKnowledgePointNotMatched = true;
+                    } else if ("KNOWLEDGE_POINT_FUZZY_MATCHED".equals(error.getWarningType())) {
+                        hasKnowledgePointFuzzyMatched = true;
+                    } else if ("QUESTION_TYPE_NOT_MATCHED".equals(error.getWarningType())) {
+                        hasQuestionTypeNotMatched = true;
+                    } else {
+                        hasOtherWarnings = true;
                     }
                 }
             }
@@ -695,6 +700,10 @@ public class    QuestionController extends BaseController {
             if (hasKnowledgePointFuzzyMatched) {
                 if (warningMsg.length() > 0) warningMsg.append("，");
                 warningMsg.append("部分知识点为模糊匹配");
+            }
+            if (hasQuestionTypeNotMatched) {
+                if (warningMsg.length() > 0) warningMsg.append("，");
+                warningMsg.append("部分题目分类不存在");
             }
             if (hasOtherWarnings) {
                 if (warningMsg.length() > 0) warningMsg.append("，");

@@ -500,6 +500,24 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         }
         return currentImportQuestionTypeCache.get(typeName.trim());
     }
+    
+    /**
+     * 从组代码中提取数字部分作为伪行号
+     * 例如：QF-0001 -> 1, GROUP-0123 -> 123
+     */
+    private Integer extractRowNumberFromGroupCode(String groupCode) {
+        if (StrUtil.isBlank(groupCode)) {
+            return null;
+        }
+        try {
+            // 使用正则表达式提取最后一组数字
+            String numbers = groupCode.replaceAll(".*?(\\d+)$", "$1");
+            return Integer.parseInt(numbers);
+        } catch (Exception e) {
+            // 如果提取失败，返回null
+            return null;
+        }
+    }
 
     // ===== 读取Excel，抽取为内存结构 =====
     private ReadResult readExcelForImport(byte[] bytes) throws Exception {
@@ -1217,11 +1235,43 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
                         qMatUrl = saveToFileUrlAndGetAccessUrl(src2);
                     }
                     // 保存题目头
-                    Integer questionId = persistQuestionHeadV2(h, qFileUrl, qMatUrl);
+                    Integer questionId = null;
+                    try {
+                        questionId = persistQuestionHeadV2(h, qFileUrl, qMatUrl);
+                    } catch (IllegalArgumentException e) {
+                        // 捕获题目分类不匹配等验证错误，添加到rowErrors中以确保Excel显示
+                        QuestionImportResultVO.RowError error = new QuestionImportResultVO.RowError();
+                        // 使用组代码的数字部分作为"行号"，便于Excel显示和排序
+                        Integer pseudoRowNum = extractRowNumberFromGroupCode(h.getGroupCode());
+                        error.setRowNum(pseudoRowNum);
+                        error.setMessage(e.getMessage());
+                        error.setWarningType("QUESTION_TYPE_NOT_MATCHED");
+                        error.setIsWarning(false); // 这是错误，不是警告
+                        if (result.getRowErrors() == null) {
+                            result.setRowErrors(new ArrayList<>());
+                        }
+                        result.getRowErrors().add(error);
+                        log.warn("题目单保存失败：{}", e.getMessage());
+                        continue;
+                    } catch (Exception e) {
+                        // 捕获其他异常
+                        QuestionImportResultVO.RowError error = new QuestionImportResultVO.RowError();
+                        Integer pseudoRowNum = extractRowNumberFromGroupCode(h.getGroupCode());
+                        error.setRowNum(pseudoRowNum);
+                        error.setMessage("[" + h.getGroupCode() + "] 题目单保存失败：" + e.getMessage());
+                        error.setWarningType("SYSTEM_ERROR");
+                        error.setIsWarning(false);
+                        if (result.getRowErrors() == null) {
+                            result.setRowErrors(new ArrayList<>());
+                        }
+                        result.getRowErrors().add(error);
+                        log.error("题目单保存异常：", e);
+                        continue;
+                    }
                     if (questionId == null) {
                         result.getErrorMessages().add("[" + h.getGroupCode() + "] 题目单保存失败");
-                    continue;
-                }
+                        continue;
+                    }
                     // 保存二级标题
                     Map<Integer, Integer> titleNo2Id = new HashMap<>();
                     List<QfTitleV2> tList = g2Titles.getOrDefault(h.getGroupCode(), Collections.emptyList());
@@ -1301,13 +1351,6 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
                     result.setRowErrors(new ArrayList<>());
                 }
                 result.getRowErrors().addAll(currentImportErrors);
-                
-                // 同时添加到错误消息列表（向后兼容）
-                if (result.getErrorMessages() == null) {
-                    result.setErrorMessages(new ArrayList<>());
-                }
-                currentImportErrors.forEach(error -> 
-                    result.getErrorMessages().add(error.getMessage()));
             }
             
             return result;
@@ -1428,12 +1471,20 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         }
         
         Integer difficultyLevel = null;
-        try { 
-            if (StrUtil.isNotBlank(h.getType())) {
-                Integer typeId = validateQuestionType(h.getType());
+        // 题目分类验证和设置 - 分类不匹配直接失败
+        if (StrUtil.isNotBlank(h.getType())) {
+            Integer typeId = validateQuestionType(h.getType());
+            if (typeId != null) {
                 q.setType(typeId);
-            } 
-        } catch (Exception ignore) {}
+            } else {
+                // 题目分类不匹配，直接失败不继续处理
+                String availableTypes = String.join("、", currentImportQuestionTypeCache.keySet());
+                String errorMessage = String.format("[题目单] 组代码[%s]：题目分类'%s'在数据库中不存在，可用分类：%s", 
+                    h.getGroupCode(), h.getType(), availableTypes);
+                log.error("❌ 题目单分类匹配失败，停止处理：{}", errorMessage);
+                throw new IllegalArgumentException(errorMessage);
+            }
+        }
         try { if (StrUtil.isNotBlank(h.getDifficultyLevel())) { 
             difficultyLevel = QuestionDifficultyEnum.getCodeByName(h.getDifficultyLevel()); 
             q.setDifficultyLevel(difficultyLevel); 
