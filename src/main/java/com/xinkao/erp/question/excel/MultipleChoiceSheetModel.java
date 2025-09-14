@@ -58,4 +58,8 @@ public class MultipleChoiceSheetModel {
     @ExcelProperty("答案")
     @ColumnWidth(12)
     private String answer;
+
+    @ExcelProperty("知识点名称")
+    @ColumnWidth(20)
+    private String knowledgePointName;
 } 

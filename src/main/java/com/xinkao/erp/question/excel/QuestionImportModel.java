@@ -63,8 +63,8 @@ public class QuestionImportModel {
     @ColumnWidth(30)
     private String remark;
 
-
-
-
+    @ExcelProperty(index = 12, value = "知识点名称")
+    @ColumnWidth(20)
+    private String knowledgePointName;
 
 }

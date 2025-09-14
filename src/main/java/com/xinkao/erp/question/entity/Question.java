@@ -1,5 +1,6 @@
 package com.xinkao.erp.question.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.xinkao.erp.common.model.entity.DataEntity;
@@ -40,7 +41,7 @@ public class Question extends DataEntity {
     /**
      * 知识点ID
      */
-    @TableField("difficulty_point_id")
+    @TableField(value = "difficulty_point_id", insertStrategy = FieldStrategy.IGNORED)
     private Integer difficultyPointId;
 
     /**

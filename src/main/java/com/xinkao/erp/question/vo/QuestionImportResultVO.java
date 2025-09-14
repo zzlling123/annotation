@@ -29,5 +29,7 @@ public class QuestionImportResultVO {
     public static class RowError {
         private Integer rowNum;   // Excel 行号（可能为null）
         private String message;   // 错误描述
+        private String warningType; // 警告类型：KNOWLEDGE_POINT_NOT_MATCHED, KNOWLEDGE_POINT_FUZZY_MATCHED
+        private Boolean isWarning; // 是否为警告（数据已保存但有问题）
     }
 }

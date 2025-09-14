@@ -38,4 +38,8 @@ public class TrueFalseSheetModel {
     @ExcelProperty("对/错")
     @ColumnWidth(10)
     private String answer;
+
+    @ExcelProperty("知识点名称")
+    @ColumnWidth(20)
+    private String knowledgePointName;
 }

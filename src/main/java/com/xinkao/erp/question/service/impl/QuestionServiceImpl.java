@@ -30,6 +30,7 @@ import com.xinkao.erp.question.query.QuestionQuery;
 import com.xinkao.erp.question.vo.*;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinkao.erp.common.model.support.Pageable;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Question> implements QuestionService {
 
@@ -73,11 +75,19 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
     private MarkService markService;
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
+    @Autowired
+    private KnowledgePointCacheManager knowledgePointCacheManager;
 
     @Value("${path.fileUrl}")
     private String fileUrlDir;
     @Value("${ipurl.url}")
     private String ipurlPrefix;
+
+    // 当前导入会话的知识点缓存
+    private Map<Integer, List<DifficultyPoint>> currentImportKnowledgeCache;
+    
+    // 当前导入会话的错误收集器
+    private List<QuestionImportResultVO.RowError> currentImportErrors;
 
     @Override
     public Page<QuestionPageVo> page(QuestionQuery query, Pageable pageable) {
@@ -363,6 +373,10 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
     @Override
     public QuestionImportResultVO importQuestions(MultipartFile file) {
         try {
+            // 🔥 关键优化：导入开始时构建知识点缓存
+            currentImportKnowledgeCache = knowledgePointCacheManager.buildKnowledgePointCache();
+            currentImportErrors = new ArrayList<>();
+            
             byte[] bytes = file.getBytes();
             ReadResult data = readExcelForImport(bytes);
 
@@ -384,7 +398,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
             for (SingleChoiceRec r : data.singles) {
                 if (!invalidSingleRows.contains(r.excelRow)) {
                     try {
-                        saveSingleChoiceRecord(r);
+                        saveSingleChoiceRecordWithKnowledgePoint(r);
                     } catch (Exception ex) {
                         QuestionImportResultVO.RowError re = new QuestionImportResultVO.RowError();
                         re.setRowNum(r.excelRow);
@@ -398,7 +412,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
             for (MultipleChoiceRec r : data.multiples) {
                 if (!invalidMultipleRows.contains(r.excelRow)) {
                     try {
-                        saveMultipleChoiceRecord(r);
+                        saveMultipleChoiceRecordWithKnowledgePoint(r);
                     } catch (Exception ex) {
                         QuestionImportResultVO.RowError re = new QuestionImportResultVO.RowError();
                         re.setRowNum(r.excelRow);
@@ -412,7 +426,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
             for (TrueFalseRec r : data.judges) {
                 if (!invalidJudgeRows.contains(r.excelRow)) {
                     try {
-                        saveTrueFalseRecord(r);
+                        saveTrueFalseRecordWithKnowledgePoint(r);
                     } catch (Exception ex) {
                         QuestionImportResultVO.RowError re = new QuestionImportResultVO.RowError();
                         re.setRowNum(r.excelRow);
@@ -423,6 +437,15 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
                     }
                 }
             }
+            
+            // 合并知识点匹配产生的错误信息
+            if (!currentImportErrors.isEmpty()) {
+                if (res.getRowErrors() == null) {
+                    res.setRowErrors(new ArrayList<>());
+                }
+                res.getRowErrors().addAll(currentImportErrors);
+            }
+            
             return res;
         } catch (Exception e) {
             QuestionImportResultVO result = new QuestionImportResultVO();
@@ -434,8 +457,12 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
             re.setRowNum(null);
             re.setMessage("读取Excel文件失败：" + e.getMessage());
             result.setRowErrors(java.util.Collections.singletonList(re));
-        return result;
-    }
+            return result;
+        } finally {
+            // 清理缓存，避免内存泄漏
+            currentImportKnowledgeCache = null;
+            currentImportErrors = null;
+        }
     }
 
     // ===== 读取Excel，抽取为内存结构 =====
@@ -463,10 +490,17 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
                     m.setOptionC(getCell(row, idx.get("选项C")));
                     m.setOptionD(getCell(row, idx.get("选项D")));
                     m.setAnswer(getCell(row, idx.get("答案")));
+                    m.setKnowledgePointName(getCell(row, idx.get("知识点名称")));
                     if (StrUtil.isAllBlank(m.getType(), m.getDifficultyLevel(), m.getSymbol(), m.getQuestion(), m.getOptionA(), m.getOptionB(), m.getOptionC(), m.getOptionD(), m.getAnswer())) continue;
                     rec.row = m;
                     rec.showIndex = ++show;
                     data.singles.add(rec);
+                    
+                    // 🔥 打印单选题Excel数据
+                    log.info("📊 [单选题] Excel第{}行数据：题目分类=[{}], 难度=[{}], 所属范围=[{}], 知识点=[{}], 试题=[{}], 选项A=[{}], 选项B=[{}], 选项C=[{}], 选项D=[{}], 答案=[{}]", 
+                        rec.excelRow, m.getType(), m.getDifficultyLevel(), m.getSymbol(), m.getKnowledgePointName(),
+                        m.getQuestion() != null ? (m.getQuestion().length() > 30 ? m.getQuestion().substring(0, 30) + "..." : m.getQuestion()) : "无",
+                        m.getOptionA(), m.getOptionB(), m.getOptionC(), m.getOptionD(), m.getAnswer());
                 }
             }
             // 多选
@@ -491,10 +525,17 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
                     m.setOptionD(getCell(row, idx.get("选项D")));
                     m.setOptionE(getCell(row, idx.get("选项E")));
                     m.setAnswer(getCell(row, idx.get("答案")));
+                    m.setKnowledgePointName(getCell(row, idx.get("知识点名称")));
                     if (StrUtil.isAllBlank(m.getType(), m.getDifficultyLevel(), m.getSymbol(), m.getQuestion(), m.getOptionA(), m.getOptionB(), m.getOptionC(), m.getOptionD(), m.getOptionE(), m.getAnswer())) continue;
                     rec.row = m;
                     rec.showIndex = ++show;
                     data.multiples.add(rec);
+                    
+                    // 🔥 打印多选题Excel数据
+                    log.info("📊 [多选题] Excel第{}行数据：题目分类=[{}], 难度=[{}], 所属范围=[{}], 知识点=[{}], 试题=[{}], 选项A=[{}], 选项B=[{}], 选项C=[{}], 选项D=[{}], 选项E=[{}], 答案=[{}]", 
+                        rec.excelRow, m.getType(), m.getDifficultyLevel(), m.getSymbol(), m.getKnowledgePointName(),
+                        m.getQuestion() != null ? (m.getQuestion().length() > 30 ? m.getQuestion().substring(0, 30) + "..." : m.getQuestion()) : "无",
+                        m.getOptionA(), m.getOptionB(), m.getOptionC(), m.getOptionD(), m.getOptionE(), m.getAnswer());
                 }
             }
             // 判断
@@ -514,10 +555,17 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
                     m.setSymbol(getCell(row, idx.get("所属范围")));
                     m.setQuestion(getCell(row, idx.get("试题")));
                     m.setAnswer(getCell(row, idx.get("对/错")));
+                    m.setKnowledgePointName(getCell(row, idx.get("知识点名称")));
                     if (StrUtil.isAllBlank(m.getType(), m.getDifficultyLevel(), m.getSymbol(), m.getQuestion(), m.getAnswer())) continue;
                     rec.row = m;
                     rec.showIndex = ++show;
                     data.judges.add(rec);
+                    
+                    // 🔥 打印判断题Excel数据
+                    log.info("📊 [判断题] Excel第{}行数据：题目分类=[{}], 难度=[{}], 所属范围=[{}], 知识点=[{}], 试题=[{}], 答案=[{}]", 
+                        rec.excelRow, m.getType(), m.getDifficultyLevel(), m.getSymbol(), m.getKnowledgePointName(),
+                        m.getQuestion() != null ? (m.getQuestion().length() > 30 ? m.getQuestion().substring(0, 30) + "..." : m.getQuestion()) : "无",
+                        m.getAnswer());
                 }
             }
         }
@@ -607,6 +655,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         String getC(){ return row.getOptionC(); }
         String getD(){ return row.getOptionD(); }
         String getAns(){ return row.getAnswer(); }
+        String getKnowledgePointName(){ return row.getKnowledgePointName(); }
     }
     private static class MultipleChoiceRec {
         int excelRow; int showIndex;
@@ -621,6 +670,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         String getD(){ return row.getOptionD(); }
         String getE(){ return row.getOptionE(); }
         String getAns(){ return row.getAnswer(); }
+        String getKnowledgePointName(){ return row.getKnowledgePointName(); }
     }
     private static class TrueFalseRec {
         int excelRow; int showIndex;
@@ -630,6 +680,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         String getSym(){ return row.getSymbol(); }
         String getQ(){ return row.getQuestion(); }
         String getAns(){ return row.getAnswer(); }
+        String getKnowledgePointName(){ return row.getKnowledgePointName(); }
     }
     private static class ReadResult {
         List<SingleChoiceRec> singles = new ArrayList<>();
@@ -638,6 +689,153 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
     }
 
     // ===== 按题型的存库接口
+    /**
+     * 保存单选题记录（包含知识点匹配）
+     */
+    private void saveSingleChoiceRecordWithKnowledgePoint(SingleChoiceRec record) {
+        // 归一化输入
+        String questionText = StrUtil.trimToEmpty(record.getQ());
+        String optA = StrUtil.trimToEmpty(record.getA());
+        String optB = StrUtil.trimToEmpty(record.getB());
+        String optC = StrUtil.trimToEmpty(record.getC());
+        String optD = StrUtil.trimToEmpty(record.getD());
+        String answer = StrUtil.trimToEmpty(record.getAns()).toUpperCase();
+
+        // 选项保持顺序且仅保留非空
+        java.util.LinkedHashMap<String, String> optionMap = new java.util.LinkedHashMap<>();
+        if (StrUtil.isNotBlank(optA)) optionMap.put("A", optA);
+        if (StrUtil.isNotBlank(optB)) optionMap.put("B", optB);
+        if (StrUtil.isNotBlank(optC)) optionMap.put("C", optC);
+        if (StrUtil.isNotBlank(optD)) optionMap.put("D", optD);
+
+        // 拼装题干HTML/纯文本与选项编码
+        String htmlContent = buildSingleChoiceHtml(questionText, optionMap);
+        String plainContent = buildSingleChoicePlain(questionText, optionMap);
+        String optionsCodes = "[" + String.join(",", optionMap.keySet()) + "]";
+
+        // 组装实体
+        Question question = new Question();
+        question.setShape(QuestionTypesEnum.DANXUAN.getCode());
+        // 分类/难度/范围
+        question.setType(QuestionCategoryEnum.getCodeByName(record.getType()));
+        Integer difficultyLevel = QuestionDifficultyEnum.getCodeByName(record.getDiff());
+        question.setDifficultyLevel(difficultyLevel);
+        question.setSymbol(String.valueOf(EntitySystemEnum.getCodeByName(record.getSym())));
+        // 标题与题干
+        question.setTitle(questionText);
+        question.setQuestion(htmlContent);
+        question.setQuestionText(plainContent);
+        // 选项与答案
+        question.setOptions(optionsCodes);
+        question.setAnswer(answer);
+        // 其他默认
+        question.setEstimatedTime(1);
+
+        // 🔥 关键新增：知识点匹配逻辑
+        if (StrUtil.isNotBlank(record.getKnowledgePointName())) {
+            KnowledgePointCacheManager.KnowledgePointMatchResult matchResult = 
+                knowledgePointCacheManager.matchFromCache(
+                    currentImportKnowledgeCache, 
+                    difficultyLevel, 
+                    record.getKnowledgePointName()
+                );
+            
+            handleKnowledgePointMatchResult(record, question, matchResult, "[单选题]");
+        }
+
+        // 🔥 调试：打印即将入库的question对象信息
+        log.info("📝 准备入库题目：ID={}, 难度等级={}, 知识点ID={}, 标题={}", 
+            question.getId(), question.getDifficultyLevel(), question.getDifficultyPointId(), 
+            question.getTitle() != null ? question.getTitle().substring(0, Math.min(20, question.getTitle().length())) + "..." : "无");
+        
+        // 入库
+        questionMapper.insert(question);
+    }
+
+    /**
+     * 处理知识点匹配结果的通用方法
+     */
+    private void handleKnowledgePointMatchResult(
+            Object record, 
+            Question question, 
+            KnowledgePointCacheManager.KnowledgePointMatchResult matchResult, 
+            String questionType) {
+        
+        if (matchResult.isMatched()) {
+            question.setDifficultyPointId(matchResult.getDifficultyPointId());
+            
+            // 模糊匹配给出提示
+            if ("FUZZY".equals(matchResult.getMatchType())) {
+                int showIndex = getShowIndex(record);
+                addWarningToCurrentImport(getExcelRow(record), 
+                    String.format("%s 第%d行：%s", questionType, showIndex, matchResult.getSuggestion()),
+                    "KNOWLEDGE_POINT_FUZZY_MATCHED");
+            }
+        } else {
+            // 未匹配到，设置为null但允许保存
+            question.setDifficultyPointId(null);
+            
+            String errorMsg;
+            if (StrUtil.isNotBlank(matchResult.getErrorMessage())) {
+                errorMsg = matchResult.getErrorMessage();
+            } else {
+                String knowledgePointName = getKnowledgePointName(record);
+                String availablePoints = matchResult.getAvailablePoints().size() > 5 ? 
+                    String.join("、", matchResult.getAvailablePoints().subList(0, 5)) + "等" :
+                    String.join("、", matchResult.getAvailablePoints());
+                errorMsg = String.format("知识点【%s】未匹配成功，数据已导入，可在前台修改。难度等级%d可选知识点：%s", 
+                    knowledgePointName, question.getDifficultyLevel(), availablePoints);
+            }
+            
+            int showIndex = getShowIndex(record);
+            addWarningToCurrentImport(getExcelRow(record), 
+                String.format("%s 第%d行：%s", questionType, showIndex, errorMsg),
+                "KNOWLEDGE_POINT_NOT_MATCHED");
+        }
+    }
+    
+    /**
+     * 获取记录的行号
+     */
+    private int getExcelRow(Object record) {
+        if (record instanceof SingleChoiceRec) return ((SingleChoiceRec) record).excelRow;
+        if (record instanceof MultipleChoiceRec) return ((MultipleChoiceRec) record).excelRow;
+        if (record instanceof TrueFalseRec) return ((TrueFalseRec) record).excelRow;
+        return 0;
+    }
+    
+    /**
+     * 获取记录的显示序号
+     */
+    private int getShowIndex(Object record) {
+        if (record instanceof SingleChoiceRec) return ((SingleChoiceRec) record).showIndex;
+        if (record instanceof MultipleChoiceRec) return ((MultipleChoiceRec) record).showIndex;
+        if (record instanceof TrueFalseRec) return ((TrueFalseRec) record).showIndex;
+        return 0;
+    }
+    
+    /**
+     * 获取记录的知识点名称
+     */
+    private String getKnowledgePointName(Object record) {
+        if (record instanceof SingleChoiceRec) return ((SingleChoiceRec) record).getKnowledgePointName();
+        if (record instanceof MultipleChoiceRec) return ((MultipleChoiceRec) record).getKnowledgePointName();
+        if (record instanceof TrueFalseRec) return ((TrueFalseRec) record).getKnowledgePointName();
+        return "";
+    }
+    
+    /**
+     * 添加警告信息到当前导入会话
+     */
+    private void addWarningToCurrentImport(Integer rowNum, String message, String warningType) {
+        QuestionImportResultVO.RowError warning = new QuestionImportResultVO.RowError();
+        warning.setRowNum(rowNum);
+        warning.setMessage(message);
+        warning.setWarningType(warningType);
+        warning.setIsWarning(true);
+        currentImportErrors.add(warning);
+    }
+
     private void saveSingleChoiceRecord(SingleChoiceRec record) {
         // 归一化输入
         String questionText = StrUtil.trimToEmpty(record.getQ());
@@ -699,6 +897,71 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         return sb.toString();
     }
 
+    /**
+     * 保存多选题记录（包含知识点匹配）
+     */
+    private void saveMultipleChoiceRecordWithKnowledgePoint(MultipleChoiceRec record) {
+        // 归一化输入
+        String questionText = StrUtil.trimToEmpty(record.getQ());
+        String optA = StrUtil.trimToEmpty(record.getA());
+        String optB = StrUtil.trimToEmpty(record.getB());
+        String optC = StrUtil.trimToEmpty(record.getC());
+        String optD = StrUtil.trimToEmpty(record.getD());
+        String optE = StrUtil.trimToEmpty(record.getE());
+        String answer = StrUtil.trimToEmpty(record.getAns()).toUpperCase(); // 如 AB、ACD
+
+        // 选项保持顺序且仅保留非空（A-E）
+        java.util.LinkedHashMap<String, String> optionMap = new java.util.LinkedHashMap<>();
+        if (StrUtil.isNotBlank(optA)) optionMap.put("A", optA);
+        if (StrUtil.isNotBlank(optB)) optionMap.put("B", optB);
+        if (StrUtil.isNotBlank(optC)) optionMap.put("C", optC);
+        if (StrUtil.isNotBlank(optD)) optionMap.put("D", optD);
+        if (StrUtil.isNotBlank(optE)) optionMap.put("E", optE);
+
+        // 拼装题干HTML/纯文本与选项编码
+        String htmlContent = buildSingleChoiceHtml(questionText, optionMap);
+        String plainContent = buildSingleChoicePlain(questionText, optionMap);
+        String optionsCodes = "[" + String.join(",", optionMap.keySet()) + "]";
+
+        // 组装实体
+        Question question = new Question();
+        question.setShape(QuestionTypesEnum.DUOXUAN.getCode());
+        // 分类/难度/范围
+        question.setType(QuestionCategoryEnum.getCodeByName(record.getType()));
+        Integer difficultyLevel = QuestionDifficultyEnum.getCodeByName(record.getDiff());
+        question.setDifficultyLevel(difficultyLevel);
+        question.setSymbol(String.valueOf(EntitySystemEnum.getCodeByName(record.getSym())));
+        // 标题与题干
+        question.setTitle(questionText);
+        question.setQuestion(htmlContent);
+        question.setQuestionText(plainContent);
+        // 选项与答案
+        question.setOptions(optionsCodes);
+        question.setAnswer(answer); // 多选答案直接保存字母组合
+        // 其他默认
+        question.setEstimatedTime(1);
+
+        // 🔥 关键新增：知识点匹配逻辑
+        if (StrUtil.isNotBlank(record.getKnowledgePointName())) {
+            KnowledgePointCacheManager.KnowledgePointMatchResult matchResult = 
+                knowledgePointCacheManager.matchFromCache(
+                    currentImportKnowledgeCache, 
+                    difficultyLevel, 
+                    record.getKnowledgePointName()
+                );
+            
+            handleKnowledgePointMatchResult(record, question, matchResult, "[多选题]");
+        }
+
+        // 🔥 调试：打印即将入库的question对象信息
+        log.info("📝 准备入库题目：ID={}, 难度等级={}, 知识点ID={}, 标题={}", 
+            question.getId(), question.getDifficultyLevel(), question.getDifficultyPointId(), 
+            question.getTitle() != null ? question.getTitle().substring(0, Math.min(20, question.getTitle().length())) + "..." : "无");
+
+        // 入库
+        questionMapper.insert(question);
+    }
+
     private void saveMultipleChoiceRecord(MultipleChoiceRec record) {
         // 归一化输入
         String questionText = StrUtil.trimToEmpty(record.getQ());
@@ -738,6 +1001,47 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         question.setAnswer(answer); // 多选答案直接保存字母组合
         // 其他默认
         question.setEstimatedTime(1);
+
+        // 入库
+        questionMapper.insert(question);
+    }
+
+    /**
+     * 保存判断题记录（包含知识点匹配）
+     */
+    private void saveTrueFalseRecordWithKnowledgePoint(TrueFalseRec record) {
+        // 判断题
+        Question question = new Question();
+
+        question.setShape(QuestionTypesEnum.PANDUAN.getCode());
+        // 分类/难度/范围
+        question.setType(QuestionCategoryEnum.getCodeByName(record.getType()));
+        Integer difficultyLevel = QuestionDifficultyEnum.getCodeByName(record.getDiff());
+        question.setDifficultyLevel(difficultyLevel);
+        question.setSymbol(String.valueOf(EntitySystemEnum.getCodeByName(record.getSym())));
+        question.setTitle(record.getQ());
+        question.setQuestion("<p>"+record.getQ()+"</p>"+"<span id='tag'></span><p>A.正确</p><p>B.错误</p>");
+        question.setQuestionText(record.getQ());
+        question.setOptions("[A,B]");
+        question.setAnswer(record.getAns());
+        question.setEstimatedTime(1);
+
+        // 🔥 关键新增：知识点匹配逻辑
+        if (StrUtil.isNotBlank(record.getKnowledgePointName())) {
+            KnowledgePointCacheManager.KnowledgePointMatchResult matchResult = 
+                knowledgePointCacheManager.matchFromCache(
+                    currentImportKnowledgeCache, 
+                    difficultyLevel, 
+                    record.getKnowledgePointName()
+                );
+            
+            handleKnowledgePointMatchResult(record, question, matchResult, "[判断题]");
+        }
+
+        // 🔥 调试：打印即将入库的question对象信息
+        log.info("📝 准备入库题目：ID={}, 难度等级={}, 知识点ID={}, 标题={}", 
+            question.getId(), question.getDifficultyLevel(), question.getDifficultyPointId(), 
+            question.getTitle() != null ? question.getTitle().substring(0, Math.min(20, question.getTitle().length())) + "..." : "无");
 
         // 入库
         questionMapper.insert(question);
