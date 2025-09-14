@@ -530,21 +530,54 @@ public class    QuestionController extends BaseController {
                 }
                 return;
             }
-            // 检查是否有知识点相关的警告
-            boolean hasKnowledgePointWarnings = result.getRowErrors() != null && 
-                result.getRowErrors().stream()
-                    .anyMatch(error -> "KNOWLEDGE_POINT_NOT_MATCHED".equals(error.getWarningType()) ||
-                                     "KNOWLEDGE_POINT_FUZZY_MATCHED".equals(error.getWarningType()));
+            // 检查是否有警告和不同类型的警告
+            boolean hasKnowledgePointNotMatched = false;
+            boolean hasKnowledgePointFuzzyMatched = false;
+            boolean hasOtherWarnings = false;
+            int warningCount = 0;
+            
+            if (result.getRowErrors() != null) {
+                for (com.xinkao.erp.question.vo.QuestionImportResultVO.RowError error : result.getRowErrors()) {
+                    if (Boolean.TRUE.equals(error.getIsWarning())) {
+                        warningCount++;
+                        if ("KNOWLEDGE_POINT_NOT_MATCHED".equals(error.getWarningType())) {
+                            hasKnowledgePointNotMatched = true;
+                        } else if ("KNOWLEDGE_POINT_FUZZY_MATCHED".equals(error.getWarningType())) {
+                            hasKnowledgePointFuzzyMatched = true;
+                        } else {
+                            hasOtherWarnings = true;
+                        }
+                    }
+                }
+            }
+            
+            boolean hasAnyWarnings = warningCount > 0;
+            
+            // 构建警告提示信息
+            StringBuilder warningMsg = new StringBuilder();
+            if (hasKnowledgePointNotMatched) {
+                warningMsg.append("部分知识点未找到匹配");
+            }
+            if (hasKnowledgePointFuzzyMatched) {
+                if (warningMsg.length() > 0) warningMsg.append("，");
+                warningMsg.append("部分知识点为模糊匹配");
+            }
+            if (hasOtherWarnings) {
+                if (warningMsg.length() > 0) warningMsg.append("，");
+                warningMsg.append("存在其他警告信息");
+            }
             
             if (result.getFailCount() > 0) {
-                if (hasKnowledgePointWarnings) {
-                    writeJson(response, BaseResponse.other("导入完成，部分知识点未匹配成功，请在系统中手动设置", result));
+                if (hasAnyWarnings) {
+                    String message = String.format("导入完成，但存在%d条警告：%s，请检查并手动调整", warningCount, warningMsg.toString());
+                    writeJson(response, BaseResponse.other(message, result));
                 } else {
                     writeJson(response, BaseResponse.other("读取完成，但存在错误数据", result));
                 }
             } else {
-                if (hasKnowledgePointWarnings) {
-                    writeJson(response, BaseResponse.other("导入成功，部分知识点未精确匹配，请检查并调整", result));
+                if (hasAnyWarnings) {
+                    String message = String.format("导入成功，但存在%d条警告：%s，建议检查并调整", warningCount, warningMsg.toString());
+                    writeJson(response, BaseResponse.other(message, result));
                 } else {
                     writeJson(response, BaseResponse.ok("读取成功", result));
                 }
@@ -631,21 +664,54 @@ public class    QuestionController extends BaseController {
                 return;
             }
             // 默认返回JSON
-            // 检查是否有知识点相关的警告
-            boolean hasKnowledgePointWarnings = result.getRowErrors() != null && 
-                result.getRowErrors().stream()
-                    .anyMatch(error -> "KNOWLEDGE_POINT_NOT_MATCHED".equals(error.getWarningType()) ||
-                                     "KNOWLEDGE_POINT_FUZZY_MATCHED".equals(error.getWarningType()));
+            // 检查是否有警告和不同类型的警告
+            boolean hasKnowledgePointNotMatched = false;
+            boolean hasKnowledgePointFuzzyMatched = false;
+            boolean hasOtherWarnings = false;
+            int warningCount = 0;
+            
+            if (result.getRowErrors() != null) {
+                for (com.xinkao.erp.question.vo.QuestionImportResultVO.RowError error : result.getRowErrors()) {
+                    if (Boolean.TRUE.equals(error.getIsWarning())) {
+                        warningCount++;
+                        if ("KNOWLEDGE_POINT_NOT_MATCHED".equals(error.getWarningType())) {
+                            hasKnowledgePointNotMatched = true;
+                        } else if ("KNOWLEDGE_POINT_FUZZY_MATCHED".equals(error.getWarningType())) {
+                            hasKnowledgePointFuzzyMatched = true;
+                        } else {
+                            hasOtherWarnings = true;
+                        }
+                    }
+                }
+            }
+            
+            boolean hasAnyWarnings = warningCount > 0;
+            
+            // 构建警告提示信息
+            StringBuilder warningMsg = new StringBuilder();
+            if (hasKnowledgePointNotMatched) {
+                warningMsg.append("部分知识点未找到匹配");
+            }
+            if (hasKnowledgePointFuzzyMatched) {
+                if (warningMsg.length() > 0) warningMsg.append("，");
+                warningMsg.append("部分知识点为模糊匹配");
+            }
+            if (hasOtherWarnings) {
+                if (warningMsg.length() > 0) warningMsg.append("，");
+                warningMsg.append("存在其他警告信息");
+            }
             
             if (result.getFailCount() != null && result.getFailCount() > 0) {
-                if (hasKnowledgePointWarnings) {
-                    writeJson(response, BaseResponse.other("题目单导入完成，部分知识点未匹配成功，请在系统中手动设置", result));
+                if (hasAnyWarnings) {
+                    String message = String.format("题目单导入完成，但存在%d条警告：%s，请检查并手动调整", warningCount, warningMsg.toString());
+                    writeJson(response, BaseResponse.other(message, result));
                 } else {
                     writeJson(response, BaseResponse.other("导入完成，但存在错误数据", result));
                 }
             } else {
-                if (hasKnowledgePointWarnings) {
-                    writeJson(response, BaseResponse.other("题目单导入成功，部分知识点未精确匹配，请检查并调整", result));
+                if (hasAnyWarnings) {
+                    String message = String.format("题目单导入成功，但存在%d条警告：%s，建议检查并调整", warningCount, warningMsg.toString());
+                    writeJson(response, BaseResponse.other(message, result));
                 } else {
                     writeJson(response, BaseResponse.ok("导入成功", result));
                 }

@@ -88,6 +88,9 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
     
     // 当前导入会话的错误收集器
     private List<QuestionImportResultVO.RowError> currentImportErrors;
+    
+    // 当前导入会话的题目分类缓存
+    private Map<String, Integer> currentImportQuestionTypeCache;
 
     @Override
     public Page<QuestionPageVo> page(QuestionQuery query, Pageable pageable) {
@@ -373,8 +376,9 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
     @Override
     public QuestionImportResultVO importQuestions(MultipartFile file) {
         try {
-            // 🔥 关键优化：导入开始时构建知识点缓存
+            // 🔥 关键优化：导入开始时构建知识点缓存和题目分类缓存
             currentImportKnowledgeCache = knowledgePointCacheManager.buildKnowledgePointCache();
+            currentImportQuestionTypeCache = buildQuestionTypeCache();
             currentImportErrors = new ArrayList<>();
             
             byte[] bytes = file.getBytes();
@@ -461,8 +465,40 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         } finally {
             // 清理缓存，避免内存泄漏
             currentImportKnowledgeCache = null;
+            currentImportQuestionTypeCache = null;
             currentImportErrors = null;
         }
+    }
+    
+    /**
+     * 构建题目分类缓存：题目分类名称 -> 分类ID
+     */
+    private Map<String, Integer> buildQuestionTypeCache() {
+        Map<String, Integer> cache = new HashMap<>();
+        try {
+            List<QuestionType> questionTypes = questionTypeService.list();
+            for (QuestionType questionType : questionTypes) {
+                if (questionType.getTypeName() != null && questionType.getId() != null) {
+                    cache.put(questionType.getTypeName().trim(), questionType.getId());
+                }
+            }
+            log.info("题目分类缓存构建完成，共加载 {} 个分类", cache.size());
+        } catch (Exception e) {
+            log.error("构建题目分类缓存失败", e);
+        }
+        return cache;
+    }
+    
+    /**
+     * 验证题目分类是否存在于数据库中
+     * @param typeName 题目分类名称
+     * @return 分类ID，如果不存在则返回null
+     */
+    private Integer validateQuestionType(String typeName) {
+        if (StrUtil.isBlank(typeName)) {
+            return null;
+        }
+        return currentImportQuestionTypeCache.get(typeName.trim());
     }
 
     // ===== 读取Excel，抽取为内存结构 =====
@@ -580,7 +616,16 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         // 单选
         for (SingleChoiceRec r : data.singles) {
             List<String> errs = new ArrayList<>();
-            if (StrUtil.isBlank(r.getType())) errs.add("题目分类不能为空"); else { try { QuestionCategoryEnum.getCodeByName(r.getType()); } catch (Exception e) { errs.add("题目分类不正确"); } }
+            if (StrUtil.isBlank(r.getType())) {
+                errs.add("题目分类不能为空");
+            } else {
+                Integer typeId = validateQuestionType(r.getType());
+                if (typeId == null) {
+                    // 获取所有可用的分类名称作为提示
+                    String availableTypes = String.join("、", currentImportQuestionTypeCache.keySet());
+                    errs.add("题目分类'" + r.getType() + "'在数据库中不存在，可用分类：" + availableTypes);
+                }
+            }
             if (StrUtil.isBlank(r.getDiff())) errs.add("题目难度不能为空"); else { try { QuestionDifficultyEnum.getCodeByName(r.getDiff()); } catch (Exception e) { errs.add("题目难度不正确，仅限：一级、二级、三级、四级、五级"); } }
             if (StrUtil.isBlank(r.getSym())) errs.add("所属范围不能为空"); else { try { EntitySystemEnum.getCodeByName(r.getSym()); } catch (Exception e) { errs.add("所属范围不正确"); } }
             if (StrUtil.isBlank(r.getQ())) errs.add("试题不能为空");
@@ -598,7 +643,16 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         // 多选
         for (MultipleChoiceRec r : data.multiples) {
             List<String> errs = new ArrayList<>();
-            if (StrUtil.isBlank(r.getType())) errs.add("题目分类不能为空"); else { try { QuestionCategoryEnum.getCodeByName(r.getType()); } catch (Exception e) { errs.add("题目分类不正确"); } }
+            if (StrUtil.isBlank(r.getType())) {
+                errs.add("题目分类不能为空");
+            } else {
+                Integer typeId = validateQuestionType(r.getType());
+                if (typeId == null) {
+                    // 获取所有可用的分类名称作为提示
+                    String availableTypes = String.join("、", currentImportQuestionTypeCache.keySet());
+                    errs.add("题目分类'" + r.getType() + "'在数据库中不存在，可用分类：" + availableTypes);
+                }
+            }
             if (StrUtil.isBlank(r.getDiff())) errs.add("题目难度不能为空"); else { try { QuestionDifficultyEnum.getCodeByName(r.getDiff()); } catch (Exception e) { errs.add("题目难度不正确，仅限：一级、二级、三级、四级、五级"); } }
             if (StrUtil.isBlank(r.getSym())) errs.add("所属范围不能为空"); else { try { EntitySystemEnum.getCodeByName(r.getSym()); } catch (Exception e) { errs.add("所属范围不正确"); } }
             if (StrUtil.isBlank(r.getQ())) errs.add("试题不能为空");
@@ -623,7 +677,16 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         // 判断
         for (TrueFalseRec r : data.judges) {
             List<String> errs = new ArrayList<>();
-            if (StrUtil.isBlank(r.getType())) errs.add("题目分类不能为空"); else { try { QuestionCategoryEnum.getCodeByName(r.getType()); } catch (Exception e) { errs.add("题目分类不正确"); } }
+            if (StrUtil.isBlank(r.getType())) {
+                errs.add("题目分类不能为空");
+            } else {
+                Integer typeId = validateQuestionType(r.getType());
+                if (typeId == null) {
+                    // 获取所有可用的分类名称作为提示
+                    String availableTypes = String.join("、", currentImportQuestionTypeCache.keySet());
+                    errs.add("题目分类'" + r.getType() + "'在数据库中不存在，可用分类：" + availableTypes);
+                }
+            }
             if (StrUtil.isBlank(r.getDiff())) errs.add("题目难度不能为空"); else { try { QuestionDifficultyEnum.getCodeByName(r.getDiff()); } catch (Exception e) { errs.add("题目难度不正确，仅限：一级、二级、三级、四级、五级"); } }
             if (StrUtil.isBlank(r.getSym())) errs.add("所属范围不能为空"); else { try { EntitySystemEnum.getCodeByName(r.getSym()); } catch (Exception e) { errs.add("所属范围不正确"); } }
             if (StrUtil.isBlank(r.getQ())) errs.add("试题不能为空");
@@ -716,8 +779,9 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         // 组装实体
         Question question = new Question();
         question.setShape(QuestionTypesEnum.DANXUAN.getCode());
-        // 分类/难度/范围
-        question.setType(QuestionCategoryEnum.getCodeByName(record.getType()));
+        // 分类/难度/范围 - 使用数据库查询的分类ID
+        Integer typeId = validateQuestionType(record.getType());
+        question.setType(typeId);
         Integer difficultyLevel = QuestionDifficultyEnum.getCodeByName(record.getDiff());
         question.setDifficultyLevel(difficultyLevel);
         question.setSymbol(String.valueOf(EntitySystemEnum.getCodeByName(record.getSym())));
@@ -767,8 +831,10 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
             // 模糊匹配给出提示
             if ("FUZZY".equals(matchResult.getMatchType())) {
                 int showIndex = getShowIndex(record);
+                String knowledgePointName = getKnowledgePointName(record);
                 addWarningToCurrentImport(getExcelRow(record), 
-                    String.format("%s 第%d行：%s", questionType, showIndex, matchResult.getSuggestion()),
+                    String.format("%s 第%d行：知识点'%s'进行了模糊匹配，%s", 
+                        questionType, showIndex, knowledgePointName, matchResult.getSuggestion()),
                     "KNOWLEDGE_POINT_FUZZY_MATCHED");
             }
         } else {
@@ -777,19 +843,28 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
             
             String errorMsg;
             if (StrUtil.isNotBlank(matchResult.getErrorMessage())) {
-                errorMsg = matchResult.getErrorMessage();
+                // 使用知识点匹配器返回的错误信息（比如：难度等级下没有可用知识点）
+                String knowledgePointName = getKnowledgePointName(record);
+                errorMsg = String.format("知识点【%s】匹配失败：%s", knowledgePointName, matchResult.getErrorMessage());
             } else {
                 String knowledgePointName = getKnowledgePointName(record);
-                String availablePoints = matchResult.getAvailablePoints().size() > 5 ? 
-                    String.join("、", matchResult.getAvailablePoints().subList(0, 5)) + "等" :
-                    String.join("、", matchResult.getAvailablePoints());
-                errorMsg = String.format("知识点【%s】未匹配成功，数据已导入，可在前台修改。难度等级%d可选知识点：%s", 
+                String availablePoints;
+                if (matchResult.getAvailablePoints() == null || matchResult.getAvailablePoints().isEmpty()) {
+                    availablePoints = "暂无";
+                } else {
+                    availablePoints = matchResult.getAvailablePoints().size() > 5 ? 
+                        String.join("、", matchResult.getAvailablePoints().subList(0, 5)) + "等" :
+                        String.join("、", matchResult.getAvailablePoints());
+                }
+                errorMsg = String.format("知识点【%s】在难度等级%d下未找到匹配项，数据已保存但知识点为空。可选知识点：%s", 
                     knowledgePointName, question.getDifficultyLevel(), availablePoints);
             }
             
             int showIndex = getShowIndex(record);
+            String warningMessage = String.format("%s 第%d行：%s", questionType, showIndex, errorMsg);
+            log.warn("🔴 知识点未匹配警告：{}", warningMessage);
             addWarningToCurrentImport(getExcelRow(record), 
-                String.format("%s 第%d行：%s", questionType, showIndex, errorMsg),
+                warningMessage,
                 "KNOWLEDGE_POINT_NOT_MATCHED");
         }
     }
@@ -834,6 +909,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         warning.setWarningType(warningType);
         warning.setIsWarning(true);
         currentImportErrors.add(warning);
+        log.info("📝 已添加警告到导入会话：行号={}, 类型={}, 消息={}", rowNum, warningType, message);
     }
 
     private void saveSingleChoiceRecord(SingleChoiceRec record) {
@@ -860,8 +936,9 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         // 组装实体
         Question question = new Question();
         question.setShape(QuestionTypesEnum.DANXUAN.getCode());
-        // 分类/难度/范围
-        question.setType(QuestionCategoryEnum.getCodeByName(record.getType()));
+        // 分类/难度/范围 - 使用数据库查询的分类ID
+        Integer typeId = validateQuestionType(record.getType());
+        question.setType(typeId);
         question.setDifficultyLevel(QuestionDifficultyEnum.getCodeByName(record.getDiff()));
         question.setSymbol(String.valueOf(EntitySystemEnum.getCodeByName(record.getSym())));
         // 标题与题干
@@ -926,8 +1003,9 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         // 组装实体
         Question question = new Question();
         question.setShape(QuestionTypesEnum.DUOXUAN.getCode());
-        // 分类/难度/范围
-        question.setType(QuestionCategoryEnum.getCodeByName(record.getType()));
+        // 分类/难度/范围 - 使用数据库查询的分类ID
+        Integer typeId = validateQuestionType(record.getType());
+        question.setType(typeId);
         Integer difficultyLevel = QuestionDifficultyEnum.getCodeByName(record.getDiff());
         question.setDifficultyLevel(difficultyLevel);
         question.setSymbol(String.valueOf(EntitySystemEnum.getCodeByName(record.getSym())));
@@ -988,8 +1066,9 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         // 组装实体
         Question question = new Question();
         question.setShape(QuestionTypesEnum.DUOXUAN.getCode());
-        // 分类/难度/范围
-        question.setType(QuestionCategoryEnum.getCodeByName(record.getType()));
+        // 分类/难度/范围 - 使用数据库查询的分类ID
+        Integer typeId = validateQuestionType(record.getType());
+        question.setType(typeId);
         question.setDifficultyLevel(QuestionDifficultyEnum.getCodeByName(record.getDiff()));
         question.setSymbol(String.valueOf(EntitySystemEnum.getCodeByName(record.getSym())));
         // 标题与题干
@@ -1014,8 +1093,9 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         Question question = new Question();
 
         question.setShape(QuestionTypesEnum.PANDUAN.getCode());
-        // 分类/难度/范围
-        question.setType(QuestionCategoryEnum.getCodeByName(record.getType()));
+        // 分类/难度/范围 - 使用数据库查询的分类ID
+        Integer typeId = validateQuestionType(record.getType());
+        question.setType(typeId);
         Integer difficultyLevel = QuestionDifficultyEnum.getCodeByName(record.getDiff());
         question.setDifficultyLevel(difficultyLevel);
         question.setSymbol(String.valueOf(EntitySystemEnum.getCodeByName(record.getSym())));
@@ -1028,12 +1108,19 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
 
         // 🔥 关键新增：知识点匹配逻辑
         if (StrUtil.isNotBlank(record.getKnowledgePointName())) {
+            log.info("🔍 开始知识点匹配：题目类型=[判断题], 难度等级=[{}], 知识点=[{}], Excel行=[{}]", 
+                difficultyLevel, record.getKnowledgePointName(), record.excelRow);
+            
             KnowledgePointCacheManager.KnowledgePointMatchResult matchResult = 
                 knowledgePointCacheManager.matchFromCache(
                     currentImportKnowledgeCache, 
                     difficultyLevel, 
                     record.getKnowledgePointName()
                 );
+            
+            log.info("🎯 知识点匹配结果：是否匹配=[{}], 匹配类型=[{}], 知识点ID=[{}], 错误信息=[{}]", 
+                matchResult.isMatched(), matchResult.getMatchType(), matchResult.getDifficultyPointId(), 
+                matchResult.getErrorMessage());
             
             handleKnowledgePointMatchResult(record, question, matchResult, "[判断题]");
         }
@@ -1052,8 +1139,9 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         Question question = new Question();
 
         question.setShape(QuestionTypesEnum.PANDUAN.getCode());
-        // 分类/难度/范围
-        question.setType(QuestionCategoryEnum.getCodeByName(record.getType()));
+        // 分类/难度/范围 - 使用数据库查询的分类ID
+        Integer typeId = validateQuestionType(record.getType());
+        question.setType(typeId);
         question.setDifficultyLevel(QuestionDifficultyEnum.getCodeByName(record.getDiff()));
         question.setSymbol(String.valueOf(EntitySystemEnum.getCodeByName(record.getSym())));
         question.setTitle(record.getQ());
@@ -1076,8 +1164,9 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         QuestionImportResultVO result = new QuestionImportResultVO();
         Path tempDir = Files.createTempDirectory("qform_zip_v2_");
         
-        // 🔥 初始化知识点缓存
+        // 🔥 初始化知识点缓存和题目分类缓存
         currentImportKnowledgeCache = knowledgePointCacheManager.buildKnowledgePointCache();
+        currentImportQuestionTypeCache = buildQuestionTypeCache();
         currentImportErrors = new ArrayList<>();
         
         try {
@@ -1224,8 +1313,9 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
             return result;
         } finally {
             deleteDirectoryQuietly(tempDir);
-            // 🔥 清理知识点缓存
+            // 🔥 清理知识点缓存和题目分类缓存
             currentImportKnowledgeCache = null;
+            currentImportQuestionTypeCache = null;
             currentImportErrors = null;
         }
     }
@@ -1338,7 +1428,12 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         }
         
         Integer difficultyLevel = null;
-        try { if (StrUtil.isNotBlank(h.getType())) q.setType(QuestionCategoryEnum.getCodeByName(h.getType())); } catch (Exception ignore) {}
+        try { 
+            if (StrUtil.isNotBlank(h.getType())) {
+                Integer typeId = validateQuestionType(h.getType());
+                q.setType(typeId);
+            } 
+        } catch (Exception ignore) {}
         try { if (StrUtil.isNotBlank(h.getDifficultyLevel())) { 
             difficultyLevel = QuestionDifficultyEnum.getCodeByName(h.getDifficultyLevel()); 
             q.setDifficultyLevel(difficultyLevel); 
@@ -1511,7 +1606,8 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
             // 模糊匹配给出提示
             if ("FUZZY".equals(matchResult.getMatchType())) {
                 addFormWarning(head.getGroupCode(), 
-                    String.format("[题目单] 组代码[%s]：%s", head.getGroupCode(), matchResult.getSuggestion()),
+                    String.format("[题目单] 组代码[%s]：知识点'%s'进行了模糊匹配，%s", 
+                        head.getGroupCode(), head.getKnowledgePointName(), matchResult.getSuggestion()),
                     "KNOWLEDGE_POINT_FUZZY_MATCHED");
             }
         } else {
@@ -1520,17 +1616,25 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
             
             String errorMsg;
             if (StrUtil.isNotBlank(matchResult.getErrorMessage())) {
-                errorMsg = matchResult.getErrorMessage();
+                // 使用知识点匹配器返回的错误信息（比如：难度等级下没有可用知识点）
+                errorMsg = String.format("知识点【%s】匹配失败：%s", head.getKnowledgePointName(), matchResult.getErrorMessage());
             } else {
-                String availablePoints = matchResult.getAvailablePoints().size() > 5 ? 
-                    String.join("、", matchResult.getAvailablePoints().subList(0, 5)) + "等" :
-                    String.join("、", matchResult.getAvailablePoints());
-                errorMsg = String.format("知识点【%s】未匹配成功，数据已导入，可在前台修改。难度等级%d可选知识点：%s", 
+                String availablePoints;
+                if (matchResult.getAvailablePoints() == null || matchResult.getAvailablePoints().isEmpty()) {
+                    availablePoints = "暂无";
+                } else {
+                    availablePoints = matchResult.getAvailablePoints().size() > 5 ? 
+                        String.join("、", matchResult.getAvailablePoints().subList(0, 5)) + "等" :
+                        String.join("、", matchResult.getAvailablePoints());
+                }
+                errorMsg = String.format("知识点【%s】在难度等级%d下未找到匹配项，数据已保存但知识点为空。可选知识点：%s", 
                     head.getKnowledgePointName(), question.getDifficultyLevel(), availablePoints);
             }
             
+            String warningMessage = String.format("[题目单] 组代码[%s]：%s", head.getGroupCode(), errorMsg);
+            log.warn("🔴 题目单知识点未匹配警告：{}", warningMessage);
             addFormWarning(head.getGroupCode(), 
-                String.format("[题目单] 组代码[%s]：%s", head.getGroupCode(), errorMsg),
+                warningMessage,
                 "KNOWLEDGE_POINT_NOT_MATCHED");
         }
     }
