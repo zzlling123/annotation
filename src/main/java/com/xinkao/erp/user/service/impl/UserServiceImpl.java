@@ -1,7 +1,6 @@
 package com.xinkao.erp.user.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
@@ -13,12 +12,11 @@ import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.model.HandleResult;
 import com.xinkao.erp.common.model.LoginUser;
 import com.xinkao.erp.common.model.param.UpdateStateParam;
-import com.xinkao.erp.common.util.PasswordCheckUtil;
 import com.xinkao.erp.common.util.ResultUtils;
-import com.xinkao.erp.exam.service.ExamPageUserService;
 import com.xinkao.erp.login.service.UserOptLogService;
 import com.xinkao.erp.user.excel.UserImportErrorModel;
 import com.xinkao.erp.user.param.AccountUpdatePwdParam;
+import com.xinkao.erp.user.param.PersonalInfoUpdateParam;
 import com.xinkao.erp.user.param.UserParam;
 import com.xinkao.erp.user.param.UserUpdateParam;
 import com.xinkao.erp.user.query.ExamAndPracticeBarQuery;
@@ -184,7 +182,13 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	@Override
 	public UserInfoVo getUserInfoBySelf() {
 		LoginUser loginUser = redisUtil.getInfoByToken();
-		return userMapper.getUserInfoBySelf(loginUser.getUser().getId());
+		UserInfoVo userInfoVo = userMapper.getUserInfoBySelf(loginUser.getUser().getId());
+		
+		// 打印调试信息
+		log.info("获取用户信息: userId={}, mobile={}, email={}", 
+			loginUser.getUser().getId(), userInfoVo.getMobile(), userInfoVo.getEmail());
+		
+		return userInfoVo;
 	}
 
 	@Override
@@ -206,7 +210,15 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 		String salt =  RandomUtil.randomString(6);
 		user.setSalt(salt);
 		user.setPassword(SecureUtil.md5(salt+param.getNewPwd()));
-		return updateById(user)? BaseResponse.ok("修改成功！"): BaseResponse.fail("修改失败！");
+		
+		boolean result = updateById(user);
+		if (result) {
+			// 记录操作日志
+			userOptLogService.saveLog("修改密码", "密码修改成功");
+			return BaseResponse.ok("修改成功！");
+		} else {
+			return BaseResponse.fail("修改失败！");
+		}
 	}
 
 	@Override
@@ -228,6 +240,36 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 			}
 		}
 		return BaseResponse.ok(examAndPracticeBarVoList);
+	}
+
+	@Override
+	public BaseResponse<?> updatePersonalInfo(PersonalInfoUpdateParam param) {
+		LoginUser loginUser = redisUtil.getInfoByToken();
+		User user = getById(loginUser.getUser().getId());
+		
+		if (user == null) {
+			return BaseResponse.fail("用户不存在！");
+		}
+		
+		// 只更新可修改的字段：真实姓名、邮箱和头像
+		if (StrUtil.isNotBlank(param.getRealName())) {
+			user.setRealName(param.getRealName());
+		}
+		if (StrUtil.isNotBlank(param.getEmail())) {
+			user.setEmail(param.getEmail());
+		}
+		if (StrUtil.isNotBlank(param.getHeadImg())) {
+			user.setHeadImg(param.getHeadImg());
+		}
+		
+		boolean result = updateById(user);
+		if (result) {
+			// 记录操作日志
+			userOptLogService.saveLog("更新个人信息", JSON.toJSONString(param));
+			return BaseResponse.ok("个人信息更新成功！");
+		} else {
+			return BaseResponse.fail("个人信息更新失败！");
+		}
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package com.xinkao.erp.user.controller;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -29,6 +30,7 @@ import com.xinkao.erp.user.excel.UserImportErrorModel;
 import com.xinkao.erp.user.excel.UserImportModel;
 import com.xinkao.erp.user.excel.UserModelListener;
 import com.xinkao.erp.user.param.AccountUpdatePwdParam;
+import com.xinkao.erp.user.param.PersonalInfoUpdateParam;
 import com.xinkao.erp.user.param.UserParam;
 import com.xinkao.erp.user.param.UserUpdateParam;
 import com.xinkao.erp.user.query.ExamAndPracticeBarQuery;
@@ -37,6 +39,7 @@ import com.xinkao.erp.user.service.UserService;
 import com.xinkao.erp.user.vo.*;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import com.xinkao.erp.common.controller.BaseController;
@@ -45,8 +48,10 @@ import com.xinkao.erp.common.model.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -63,6 +68,11 @@ public class UserController extends BaseController {
 	protected UserService userService;
 	@Autowired
 	private RedisUtil redisUtils;
+	
+	@Value("${path.fileUrl}")
+	private String fileUrl;
+	@Value("${ipurl.url}")
+	private String ipurl;
 
 	/**
 	 * 分页
@@ -279,8 +289,23 @@ public class UserController extends BaseController {
 	@PrimaryDataSource
 	@PostMapping("/updatePassword")
 	@ApiOperation("修改密码")
-	public BaseResponse<?> updatePassword(@RequestBody @Valid AccountUpdatePwdParam param) {
-		return userService.updatePassword(param);
+	public BaseResponse<?> updatePassword(@RequestBody @Valid AccountUpdatePwdParam param, HttpServletRequest request) {
+		BaseResponse<?> result = userService.updatePassword(param);
+		
+		// 如果密码修改成功，清除当前用户的token
+		if (result != null && "ok".equals(result.getState())) {
+			try {
+				String token = request.getHeader("Authorization");
+				if (StrUtil.isNotBlank(token)) {
+					redisUtil.deleteObject(token);
+					log.info("用户密码修改成功，已清除token");
+				}
+			} catch (Exception e) {
+				log.warn("清除token失败: {}", e.getMessage());
+			}
+		}
+		
+		return result;
 	}
 
 	/**
@@ -305,5 +330,68 @@ public class UserController extends BaseController {
 	@ApiOperation("获取练习/考试饼状图，计算练习，考试下所有题在各题型中的占比")
 	public BaseResponse<List<ExamAndPracticePieAllVo>> getExamAndPracticePie(@RequestBody ExamAndPracticeBarQuery query) {
 		return userService.getExamAndPracticePie(query);
+	}
+
+	/**
+	 * 更新个人信息
+	 * @param param 个人信息更新参数
+	 * @return 更新结果
+	 */
+	@PrimaryDataSource
+	@PostMapping("/updatePersonalInfo")
+	@ApiOperation("更新个人信息")
+	public BaseResponse<?> updatePersonalInfo(@RequestBody @Valid PersonalInfoUpdateParam param) {
+		return userService.updatePersonalInfo(param);
+	}
+
+	/**
+	 * 头像上传
+	 * @param file 头像文件
+	 * @return 头像URL
+	 */
+	@PrimaryDataSource
+	@PostMapping("/uploadAvatar")
+	@ApiOperation("头像上传")
+	public BaseResponse<String> uploadAvatar(@RequestParam("file") MultipartFile file) {
+		try {
+			// 验证文件类型
+			String originalFilename = file.getOriginalFilename();
+			if (originalFilename == null) {
+				return BaseResponse.fail("文件名不能为空");
+			}
+			
+			String extension = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
+			if (!extension.matches("\\.(jpg|jpeg|png|gif|bmp)$")) {
+				return BaseResponse.fail("只支持图片格式：jpg、jpeg、png、gif、bmp");
+			}
+			
+			// 验证文件大小（限制2MB）
+			if (file.getSize() > 2 * 1024 * 1024) {
+				return BaseResponse.fail("头像文件大小不能超过2MB");
+			}
+			
+			// 创建文件目录
+			File dir = new File(fileUrl);
+			if (!dir.exists()) {
+				dir.mkdirs();
+			}
+			
+			// 生成唯一文件名
+			String fileName = UUID.randomUUID().toString().replace("-", "") + extension;
+			File targetFile = new File(fileUrl, fileName);
+			
+			// 保存文件
+			file.transferTo(targetFile);
+			
+			// 返回访问URL
+			String avatarUrl = ipurl + "/annotation/fileUrl/" + fileName;
+			
+			log.info("用户头像上传成功：{}", avatarUrl);
+			return BaseResponse.ok("头像上传成功", avatarUrl);
+			
+		} catch (IOException e) {
+			log.error("头像上传失败", e);
+			return BaseResponse.fail("头像上传失败：" + e.getMessage());
+		}
 	}
 }
