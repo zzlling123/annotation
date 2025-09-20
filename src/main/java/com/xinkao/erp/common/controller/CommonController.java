@@ -71,7 +71,7 @@ public class CommonController {
 
 
     // 使用HttpServletRequest作为参数
-    @PrimaryDataSource
+//    @PrimaryDataSource
     @PostMapping("/upload/file")
     @ApiOperation("上传文件")
     public BaseResponse<String> uploadRequest(@RequestParam(value="file") MultipartFile file, HttpServletRequest request) {
