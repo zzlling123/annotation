@@ -21,6 +21,8 @@ public class QfHeadV2 {
     private String symbol;
     @ExcelProperty("状态(state)")
     private String state;
+    @ExcelProperty("知识点名称(knowledgePointName)")
+    private String knowledgePointName;
     @ExcelProperty("备注(remark)")
     private String remark;
 } 

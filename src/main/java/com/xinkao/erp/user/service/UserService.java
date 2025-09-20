@@ -9,6 +9,7 @@ import com.xinkao.erp.common.service.BaseService;
 import com.xinkao.erp.user.entity.User;
 import com.xinkao.erp.user.excel.UserImportErrorModel;
 import com.xinkao.erp.user.param.AccountUpdatePwdParam;
+import com.xinkao.erp.user.param.PersonalInfoUpdateParam;
 import com.xinkao.erp.user.param.UserParam;
 import com.xinkao.erp.user.param.UserUpdateParam;
 import com.xinkao.erp.user.query.ExamAndPracticeBarQuery;
@@ -58,7 +59,9 @@ public interface UserService extends BaseService<User> {
 
 	BaseResponse<List<ExamAndPracticeBarVo>> getExamAndPracticeBar(ExamAndPracticeBarQuery query);
 
-	BaseResponse<List<ExamAndPracticePieAllVo>> getExamAndPracticePie(ExamAndPracticeBarQuery query);
+    BaseResponse<?> updatePersonalInfo(PersonalInfoUpdateParam param);
+
+    BaseResponse<List<ExamAndPracticePieAllVo>> getExamAndPracticePie(ExamAndPracticeBarQuery query);
 
 	//生成自定义账号ID
 	String generateCustomAccountId(UserParam userParam);

@@ -110,6 +110,7 @@ logging:
 mybatis-plus:
   configuration:
     default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler
+    map-underscore-to-camel-case: true
 ##钉钉告警
 dingtalk:
   alarm: 

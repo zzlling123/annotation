@@ -530,10 +530,57 @@ public class    QuestionController extends BaseController {
                 }
                 return;
             }
+            // 检查是否有警告和不同类型的警告
+            boolean hasKnowledgePointNotMatched = false;
+            boolean hasKnowledgePointFuzzyMatched = false;
+            boolean hasOtherWarnings = false;
+            int warningCount = 0;
+            
+            if (result.getRowErrors() != null) {
+                for (com.xinkao.erp.question.vo.QuestionImportResultVO.RowError error : result.getRowErrors()) {
+                    if (Boolean.TRUE.equals(error.getIsWarning())) {
+                        warningCount++;
+                        if ("KNOWLEDGE_POINT_NOT_MATCHED".equals(error.getWarningType())) {
+                            hasKnowledgePointNotMatched = true;
+                        } else if ("KNOWLEDGE_POINT_FUZZY_MATCHED".equals(error.getWarningType())) {
+                            hasKnowledgePointFuzzyMatched = true;
+                        } else {
+                            hasOtherWarnings = true;
+                        }
+                    }
+                }
+            }
+            
+            boolean hasAnyWarnings = warningCount > 0;
+            
+            // 构建警告提示信息
+            StringBuilder warningMsg = new StringBuilder();
+            if (hasKnowledgePointNotMatched) {
+                warningMsg.append("部分知识点未找到匹配");
+            }
+            if (hasKnowledgePointFuzzyMatched) {
+                if (warningMsg.length() > 0) warningMsg.append("，");
+                warningMsg.append("部分知识点为模糊匹配");
+            }
+            if (hasOtherWarnings) {
+                if (warningMsg.length() > 0) warningMsg.append("，");
+                warningMsg.append("存在其他警告信息");
+            }
+            
             if (result.getFailCount() > 0) {
-                writeJson(response, BaseResponse.other("读取完成，但存在错误数据", result));
+                if (hasAnyWarnings) {
+                    String message = String.format("导入完成，但存在%d条警告：%s，请检查并手动调整", warningCount, warningMsg.toString());
+                    writeJson(response, BaseResponse.other(message, result));
+                } else {
+                    writeJson(response, BaseResponse.other("读取完成，但存在错误数据", result));
+                }
             } else {
-                writeJson(response, BaseResponse.ok("读取成功", result));
+                if (hasAnyWarnings) {
+                    String message = String.format("导入成功，但存在%d条警告：%s，建议检查并调整", warningCount, warningMsg.toString());
+                    writeJson(response, BaseResponse.other(message, result));
+                } else {
+                    writeJson(response, BaseResponse.ok("读取成功", result));
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -569,6 +616,7 @@ public class    QuestionController extends BaseController {
                 row.setFailCount(result.getFailCount());
                 summary.add(row);
                 java.util.List<com.xinkao.erp.question.excel.ImportResultErrorRow> details = new java.util.ArrayList<>();
+                // 处理结构化错误信息（rowErrors）
                 if (result.getRowErrors() != null && !result.getRowErrors().isEmpty()) {
                     for (com.xinkao.erp.question.vo.QuestionImportResultVO.RowError re : result.getRowErrors()) {
                         ImportResultErrorRow d = new ImportResultErrorRow();
@@ -576,7 +624,9 @@ public class    QuestionController extends BaseController {
                         d.setMessage(re.getMessage());
                         details.add(d);
                     }
-                } else if (result.getErrorMessages() != null) {
+                }
+                // 处理传统错误信息（errorMessages）- 与rowErrors并行处理
+                if (result.getErrorMessages() != null && !result.getErrorMessages().isEmpty()) {
                     for (String msg : result.getErrorMessages()) {
                         ImportResultErrorRow d = new ImportResultErrorRow();
                         Integer rn = null;
@@ -617,10 +667,63 @@ public class    QuestionController extends BaseController {
                 return;
             }
             // 默认返回JSON
+            // 检查是否有警告和不同类型的警告
+            boolean hasKnowledgePointNotMatched = false;
+            boolean hasKnowledgePointFuzzyMatched = false;
+            boolean hasQuestionTypeNotMatched = false;
+            boolean hasOtherWarnings = false;
+            int warningCount = 0;
+            
+            if (result.getRowErrors() != null) {
+                for (com.xinkao.erp.question.vo.QuestionImportResultVO.RowError error : result.getRowErrors()) {
+                    // 统计所有错误和警告（不只是警告）
+                    warningCount++;
+                    if ("KNOWLEDGE_POINT_NOT_MATCHED".equals(error.getWarningType())) {
+                        hasKnowledgePointNotMatched = true;
+                    } else if ("KNOWLEDGE_POINT_FUZZY_MATCHED".equals(error.getWarningType())) {
+                        hasKnowledgePointFuzzyMatched = true;
+                    } else if ("QUESTION_TYPE_NOT_MATCHED".equals(error.getWarningType())) {
+                        hasQuestionTypeNotMatched = true;
+                    } else {
+                        hasOtherWarnings = true;
+                    }
+                }
+            }
+            
+            boolean hasAnyWarnings = warningCount > 0;
+            
+            // 构建警告提示信息
+            StringBuilder warningMsg = new StringBuilder();
+            if (hasKnowledgePointNotMatched) {
+                warningMsg.append("部分知识点未找到匹配");
+            }
+            if (hasKnowledgePointFuzzyMatched) {
+                if (warningMsg.length() > 0) warningMsg.append("，");
+                warningMsg.append("部分知识点为模糊匹配");
+            }
+            if (hasQuestionTypeNotMatched) {
+                if (warningMsg.length() > 0) warningMsg.append("，");
+                warningMsg.append("部分题目分类不存在");
+            }
+            if (hasOtherWarnings) {
+                if (warningMsg.length() > 0) warningMsg.append("，");
+                warningMsg.append("存在其他警告信息");
+            }
+            
             if (result.getFailCount() != null && result.getFailCount() > 0) {
-                writeJson(response, BaseResponse.other("导入完成，但存在错误数据", result));
+                if (hasAnyWarnings) {
+                    String message = String.format("题目单导入完成，但存在%d条警告：%s，请检查并手动调整", warningCount, warningMsg.toString());
+                    writeJson(response, BaseResponse.other(message, result));
+                } else {
+                    writeJson(response, BaseResponse.other("导入完成，但存在错误数据", result));
+                }
             } else {
-                writeJson(response, BaseResponse.ok("导入成功", result));
+                if (hasAnyWarnings) {
+                    String message = String.format("题目单导入成功，但存在%d条警告：%s，建议检查并调整", warningCount, warningMsg.toString());
+                    writeJson(response, BaseResponse.other(message, result));
+                } else {
+                    writeJson(response, BaseResponse.ok("导入成功", result));
+                }
             }
         } catch (Exception e) {
             writeJson(response, BaseResponse.fail("导入失败：" + e.getMessage()));
