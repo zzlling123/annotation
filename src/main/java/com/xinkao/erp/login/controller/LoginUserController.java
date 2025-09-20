@@ -15,6 +15,7 @@ import com.xinkao.erp.common.annotation.PrimaryDataSource;
 import com.xinkao.erp.common.util.HttpContextUtils;
 import com.xinkao.erp.login.mapper.VerifyCodeDao;
 import com.xinkao.erp.login.param.ApLoginParam;
+import com.xinkao.erp.login.param.RegisterParam;
 import com.xinkao.erp.login.service.impl.SimpleCharVerifyCodeGenImpl;
 import com.xinkao.erp.login.vo.LoginUserVo;
 import io.swagger.annotations.ApiOperation;
@@ -70,6 +71,18 @@ public class LoginUserController extends BaseController{
 		response.setContentType("image/jpeg");
 		response.getOutputStream().write(verifyCode.getImgBytes());
 		response.getOutputStream().flush();
+	}
+
+	/**
+	 * 用户注册接口
+	 *
+	 * @param registerParam 注册参数
+	 * @return 注册结果
+	 */
+	@PostMapping("/register")
+	@ApiOperation("用户注册")
+	public BaseResponse<?> register(@RequestBody @Valid RegisterParam registerParam) {
+		return loginService.register(registerParam);
 	}
 
 	/**

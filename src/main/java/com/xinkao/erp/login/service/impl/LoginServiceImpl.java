@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.core.util.IdcardUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
@@ -18,7 +19,10 @@ import com.xinkao.erp.common.exception.AuthenticationException;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.util.ip.IpRegionUtils;
 import com.xinkao.erp.common.util.ip.IpUtils;
+import com.xinkao.erp.login.param.RegisterParam;
 import com.xinkao.erp.login.vo.LoginUserVo;
+import com.xinkao.erp.manage.entity.ClassInfo;
+import com.xinkao.erp.manage.service.ClassInfoService;
 import com.xinkao.erp.user.service.UserService;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +50,38 @@ public class LoginServiceImpl extends LoginCommonServiceImpl implements LoginSer
 	@Resource
 	private UserService userService;
 	@Resource
+	private ClassInfoService classInfoService;
+	@Resource
 	private RedisUtil redisUtil;
+
+	@Override
+	public BaseResponse<?> register(RegisterParam registerParam){
+		String userCode = redisUtil.get(registerParam.getUuid());
+		if (!StrUtil.equalsIgnoreCase(registerParam.getCode(), userCode)){
+//			return BaseResponse.fail("验证码不正确！");
+		}
+		// 验证密码一致性
+		if (!registerParam.getPassword().equals(registerParam.getConfirmPassword())) {
+			return BaseResponse.fail("两次输入的密码不一致");
+		}
+		//校验用户名是否存在
+		if (getAccountByUserName(registerParam.getUsername()) != null) {
+			return BaseResponse.fail("用户名已存在！");
+		}
+		//添加用户
+		User user = BeanUtil.copyProperties(registerParam, User.class);
+		// 生成密码
+		String salt = RandomUtil.randomString(20);
+		String password = SecureUtil.md5(salt + registerParam.getPassword());
+		user.setSalt(salt);
+		user.setPassword(password);
+		//设置班级ID为1
+		user.setRoleId(3);
+		//设置班级为第一条有效班级
+		ClassInfo classInfo = classInfoService.lambdaQuery().eq(ClassInfo::getIsDel, CommonEnum.IS_DEL.NO.getCode()).last("limit 1").one();
+		user.setClassId(classInfo.getId());
+		return userService.save(user)?BaseResponse.ok("注册成功！"): BaseResponse.fail("注册失败！");
+	}
 
 	@Override
 	public BaseResponse<LoginUserVo> login(ApLoginParam loginParam, HttpServletRequest request) {
