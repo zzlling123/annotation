@@ -74,6 +74,16 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	//修改新增方法
 	@Override
 	public BaseResponse save(UserParam userParam){
+		// 校验手机号是否为空
+		if (StrUtil.isBlank(userParam.getMobile())) {
+			return BaseResponse.fail("手机号不能为空！");
+		}
+		
+		// 校验手机号唯一性
+		if (lambdaQuery().eq(User::getMobile, userParam.getMobile()).eq(User::getIsDel, CommonEnum.IS_DEL.NO.getCode()).count() > 0) {
+			return BaseResponse.fail("手机号已存在，请使用其他手机号！");
+		}
+		
 		// 生成自定义账号ID
 		String customId = generateCustomAccountId(userParam);
 
@@ -99,6 +109,20 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	@Override
 	public BaseResponse update(UserUpdateParam userUpdateParam){
 		User oldUser = getById(userUpdateParam.getId());
+		
+		// 如果修改了手机号，需要校验手机号唯一性
+		if (StrUtil.isNotBlank(userUpdateParam.getMobile()) && 
+			!userUpdateParam.getMobile().equals(oldUser.getMobile())) {
+			// 校验手机号唯一性（排除当前用户）
+			if (lambdaQuery()
+					.eq(User::getMobile, userUpdateParam.getMobile())
+					.eq(User::getIsDel, CommonEnum.IS_DEL.NO.getCode())
+					.ne(User::getId, userUpdateParam.getId())
+					.count() > 0) {
+				return BaseResponse.fail("手机号已存在，请使用其他手机号！");
+			}
+		}
+		
 		User user = BeanUtil.copyProperties(userUpdateParam, User.class);
 		//如果classId发生了变动，则同时修改examPageUser中的classId
 		updateById(user);
