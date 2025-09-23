@@ -11,8 +11,8 @@ import lombok.Data;
 @Data
 public class ApLoginParam {
 
-    @NotBlank(message = "请填写用户名")
-    @ApiModelProperty("用户名")
+    @NotBlank(message = "请填写用户名或手机号")
+    @ApiModelProperty("用户名或手机号")
     private String username;
 
     @NotBlank(message = "请填写密码")

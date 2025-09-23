@@ -191,6 +191,27 @@ public class UserModelListener extends AnalysisEventListener<UserImportModel> {
             }
         }
         
+        // 检查手机号是否已存在
+        User existingUserByMobile = userService.lambdaQuery().eq(User::getMobile, mobile).eq(User::getIsDel, 0).one();
+        if (existingUserByMobile != null) {
+            msg = "该手机号已存在：" + mobile;
+            errorList.add(getHandleMsg(rowNum + 1, msg));
+            handleResult.setErrorList(errorList);
+
+            UserImportErrorModel userImportErrorModel = new UserImportErrorModel();
+            userImportErrorModel.setSex(sex);
+            userImportErrorModel.setRealName(realName);
+            userImportErrorModel.setRoleName(roleName);
+            userImportErrorModel.setMobile(mobile);
+            userImportErrorModel.setIdCard(idCard);
+            userImportErrorModel.setClassName(className);
+            userImportErrorModel.setErrorInfo(msg);
+            userImportErrorModelList.add(userImportErrorModel);
+
+            log.error("姓名：{}，导入信息有误：{}", realName, msg);
+            return;
+        }
+        
         // 生成用户名
         String username = generateUsername(role.getId(), mobile);
         

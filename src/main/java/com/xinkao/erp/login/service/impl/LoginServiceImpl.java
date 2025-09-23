@@ -68,6 +68,17 @@ public class LoginServiceImpl extends LoginCommonServiceImpl implements LoginSer
 		if (getAccountByUserName(registerParam.getUsername()) != null) {
 			return BaseResponse.fail("用户名已存在！");
 		}
+		
+		//校验手机号是否存在（假设注册参数中有手机号字段）
+		if (StrUtil.isNotBlank(registerParam.getMobile())) {
+			User existingUserByMobile = userService.lambdaQuery()
+				.eq(User::getMobile, registerParam.getMobile())
+				.eq(User::getIsDel, CommonEnum.IS_DEL.NO.getCode())
+				.one();
+			if (existingUserByMobile != null) {
+				return BaseResponse.fail("手机号已存在！");
+			}
+		}
 		//添加用户
 		User user = BeanUtil.copyProperties(registerParam, User.class);
 		// 生成密码
@@ -92,10 +103,10 @@ public class LoginServiceImpl extends LoginCommonServiceImpl implements LoginSer
 		String username = loginParam.getUsername().trim();
 		String password = loginParam.getPassword().trim();
 
-		// 用户名不存在
+		// 用户名或手机号不存在
 		User user = getAccountByUserName(username);
 		if (user == null) {
-			return BaseResponse.fail("用户名不存在！");
+			return BaseResponse.fail("用户名或手机号不存在！");
 		}
 		if (!SecureUtil.md5(user.getSalt()+password).equals(user.getPassword())) {
 			return BaseResponse.fail("密码错误！");
@@ -134,7 +145,16 @@ public class LoginServiceImpl extends LoginCommonServiceImpl implements LoginSer
 
 	@Override
 	public User getAccountByUserName(String username){
-		return userService.lambdaQuery().eq(User::getUsername, username).eq(User::getIsDel, CommonEnum.IS_DEL.NO.getCode()).last("limit 1").one();
+		// 支持用户名或手机号登录
+		return userService.lambdaQuery()
+			.and(wrapper -> wrapper
+				.eq(User::getUsername, username)
+				.or()
+				.eq(User::getMobile, username)
+			)
+			.eq(User::getIsDel, CommonEnum.IS_DEL.NO.getCode())
+			.last("limit 1")
+			.one();
 	}
 
 	/**
