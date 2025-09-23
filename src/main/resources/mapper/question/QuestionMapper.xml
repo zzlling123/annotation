@@ -5,6 +5,7 @@
     <select id="page" resultType="com.xinkao.erp.question.vo.QuestionPageVo">
         SELECT q.*
         FROM q_question q
+        LEFT JOIN q_question_label ql ON q.id = ql.qid
         WHERE
             1 = 1 and q.is_del = 0
         <if test="query.question != null and query.question != ''">
@@ -27,6 +28,9 @@
         </if>
           <if test="query.symbol != null and query.symbol != ''">
             AND q.symbol = #{query.symbol}
+        </if>
+        <if test="query.labelId != null and query.labelId != ''">
+            AND ql.lid = #{query.labelId}
         </if>
         order by q.create_time desc
     </select>

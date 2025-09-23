@@ -120,13 +120,13 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         question.setQuestionText(StripHT(question.getQuestion()));
         save(question);
         //保存标签关联关系
-//        List<QuestionLabel> questionLabels = param.getLabels().stream().map(item -> {
-//            QuestionLabel questionLabel = new QuestionLabel();
-//            questionLabel.setQid(question.getId());
-//            questionLabel.setLid(item);
-//            return questionLabel;
-//        }).collect(Collectors.toList());
-//        questionLabelService.saveBatch(questionLabels);
+        List<QuestionLabel> questionLabels = param.getLabels().stream().map(item -> {
+            QuestionLabel questionLabel = new QuestionLabel();
+            questionLabel.setQid(question.getId());
+            questionLabel.setLid(item);
+            return questionLabel;
+        }).collect(Collectors.toList());
+        questionLabelService.saveBatch(questionLabels);
         //保存标记关联关系
         if (param.getMarkIds() != null && "500".equals(param.getShape())){
             List<QuestionMark> questionMarkList = param.getMarkIds().stream().map(item -> {
@@ -175,14 +175,14 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         question.setOptions(getRealOptions(param.getOptions()));
         question.setQuestionText(StripHT(question.getQuestion()));
         //删除原有标签关联关系
-//        questionLabelService.lambdaUpdate().eq(QuestionLabel::getQid, question.getId()).remove();
-//        List<QuestionLabel> questionLabels = param.getLabels().stream().map(item -> {
-//            QuestionLabel questionLabel = new QuestionLabel();
-//            questionLabel.setQid(question.getId());
-//            questionLabel.setLid(item);
-//            return questionLabel;
-//        }).collect(Collectors.toList());
-//        questionLabelService.saveBatch(questionLabels);
+        questionLabelService.lambdaUpdate().eq(QuestionLabel::getQid, question.getId()).remove();
+        List<QuestionLabel> questionLabels = param.getLabels().stream().map(item -> {
+            QuestionLabel questionLabel = new QuestionLabel();
+            questionLabel.setQid(question.getId());
+            questionLabel.setLid(item);
+            return questionLabel;
+        }).collect(Collectors.toList());
+        questionLabelService.saveBatch(questionLabels);
         questionMarkService.lambdaUpdate().eq(QuestionMark::getQid, question.getId()).remove();
         //保存标记关联关系
         if (param.getMarkIds() != null && "500".equals(param.getShape())){

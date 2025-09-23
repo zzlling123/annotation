@@ -36,4 +36,7 @@ public class QuestionQuery extends BasePageQuery implements Serializable {
 
     @ApiModelProperty("班级id")
     private Integer classId;
+
+    @ApiModelProperty("自定义标签ID")
+    private Integer labelId;
 }
