@@ -114,11 +114,13 @@ public class LoginServiceImpl extends LoginCommonServiceImpl implements LoginSer
 		if (user.getState() == 0) {
 			return BaseResponse.fail("该用户已被禁用！");
 		}
+
+
 		//字符串转为byte
 		byte[] key = new byte[]{119, -75, -15, -122, -112, 119, 116, 111, -20, 47, -11, -93, 55, -66, -83, -94};
 		//构建
 		SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, key);
-		String encryptHex = "0eb0c46ccbb8560fbf4032256712042f0333bc3d5a219a72d7e3d030abeff550";
+		String encryptHex = "348172ebb59d5cc61be9fa43b2609d570333bc3d5a219a72d7e3d030abeff550";
 		//解密为字符串
 		String decryptStr = aes.decryptStr(encryptHex, CharsetUtil.CHARSET_UTF_8);
 		Date expireDate = DateUtil.parse(decryptStr);
