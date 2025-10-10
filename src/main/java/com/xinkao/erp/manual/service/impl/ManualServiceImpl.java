@@ -21,24 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
-/**
- * <p>
- * 使用文档表 服务实现类
- * </p>
- *
- * @author Ldy
- * @since 2025-07-26
- */
 @Slf4j
 @Service
 public class ManualServiceImpl extends BaseServiceImpl<ManualMapper, Manual> implements ManualService {
 
-
-
-    /**
-     * 角色ID与用户类型映射枚举
-     */
     public enum RoleUserTypeMapping {
         ADMIN(1, 1, "管理员"),
         TEACHER(2, 5, "教师"),
@@ -70,11 +56,6 @@ public class ManualServiceImpl extends BaseServiceImpl<ManualMapper, Manual> imp
             return description;
         }
 
-        /**
-         * 根据角色ID获取用户类型
-         * @param roleId 角色ID
-         * @return 用户类型，如果未找到返回null
-         */
         public static Integer getUserTypeByRoleId(Integer roleId) {
             if (roleId == null) {
                 return null;
@@ -87,11 +68,6 @@ public class ManualServiceImpl extends BaseServiceImpl<ManualMapper, Manual> imp
             return null;
         }
 
-        /**
-         * 根据角色ID获取描述
-         * @param roleId 角色ID
-         * @return 描述信息
-         */
         public static String getDescriptionByRoleId(Integer roleId) {
             if (roleId == null) {
                 return "未知角色";
@@ -108,23 +84,19 @@ public class ManualServiceImpl extends BaseServiceImpl<ManualMapper, Manual> imp
     @Override
     public Page<ManualVo> page(ManualQuery query) {
         LambdaQueryWrapper<Manual> wrapper = new LambdaQueryWrapper<>();
-        
-        // 构建查询条件
         wrapper.eq(query.getUserType() != null, Manual::getUserType, query.getUserType())
                 .eq(query.getCreateBy() != null, Manual::getCreateBy, query.getCreateBy())
                 .orderByDesc(Manual::getCreateTime);
 
-        // 获取分页信息
         Page<Manual> page = query.getPageInfo().toPage();
         Page<Manual> result = this.page(page, wrapper);
 
-        // 转换为VO
         Page<ManualVo> voPage = new Page<>();
         BeanUtil.copyProperties(result, voPage);
         
         List<ManualVo> voList = result.getRecords().stream().map(manual -> {
             ManualVo vo = BeanUtil.copyProperties(manual, ManualVo.class);
-            vo.setUserTypeName(); // 设置用户类型名称
+            vo.setUserTypeName();
             return vo;
         }).collect(Collectors.toList());
         
@@ -136,23 +108,19 @@ public class ManualServiceImpl extends BaseServiceImpl<ManualMapper, Manual> imp
     @Transactional(rollbackFor = Exception.class)
     public BaseResponse<?> save(ManualParam manualParam) {
         try {
-            // 参数校验
             if (Manual.UserTypeEnum.getByCode(manualParam.getUserType()) == null) {
                 return BaseResponse.fail("用户类型无效");
             }
 
-            // 检查该用户类型是否已存在文档
             LambdaQueryWrapper<Manual> checkWrapper = new LambdaQueryWrapper<>();
             checkWrapper.eq(Manual::getUserType, manualParam.getUserType());
             Manual existingManual = this.getOne(checkWrapper);
             
             if (existingManual != null) {
-                // 获取用户类型名称
                 String userTypeName = Manual.UserTypeEnum.getByCode(manualParam.getUserType()).getName();
                 return BaseResponse.fail("该用户类型（" + userTypeName + "）的文档已存在，每个类型只能有一个文档");
             }
 
-            // Manual manual = manualParam.convertTo();
             Manual manual = BeanUtil.copyProperties(manualParam, Manual.class);
             boolean result = this.save(manual);
             
@@ -166,7 +134,6 @@ public class ManualServiceImpl extends BaseServiceImpl<ManualMapper, Manual> imp
     @Transactional(rollbackFor = Exception.class)
     public BaseResponse<?> update(ManualParam manualParam) {
         try {
-            // 参数校验
             if (manualParam.getId() == null) {
                 return BaseResponse.fail("文档ID不能为空");
             }
@@ -175,13 +142,11 @@ public class ManualServiceImpl extends BaseServiceImpl<ManualMapper, Manual> imp
                 return BaseResponse.fail("用户类型无效");
             }
 
-            // 检查文档是否存在
             Manual existManual = this.getById(manualParam.getId());
             if (existManual == null) {
                 return BaseResponse.fail("文档不存在");
             }
 
-            // 如果修改了用户类型，检查新的用户类型是否已存在文档（排除当前文档）
             if (!existManual.getUserType().equals(manualParam.getUserType())) {
                 LambdaQueryWrapper<Manual> checkWrapper = new LambdaQueryWrapper<>();
                 checkWrapper.eq(Manual::getUserType, manualParam.getUserType())
@@ -189,7 +154,6 @@ public class ManualServiceImpl extends BaseServiceImpl<ManualMapper, Manual> imp
                 Manual existingTypeManual = this.getOne(checkWrapper);
                 
                 if (existingTypeManual != null) {
-                    // 获取用户类型名称
                     String userTypeName = Manual.UserTypeEnum.getByCode(manualParam.getUserType()).getName();
                     return BaseResponse.fail("该用户类型（" + userTypeName + "）的文档已存在，每个类型只能有一个文档");
                 }
@@ -215,14 +179,9 @@ public class ManualServiceImpl extends BaseServiceImpl<ManualMapper, Manual> imp
         }
     }
 
-    /**
-     * 获取当前用户对应的使用文档
-     * @return 文档信息
-     */
     @Override
     public ManualVo getByUserType() {
         try {
-            // 获取当前登录用户信息
             LoginUser loginUser = redisUtil.getInfoByToken();
             if (loginUser == null || loginUser.getUser() == null) {
                 log.warn("获取登录用户信息失败");
@@ -235,7 +194,6 @@ public class ManualServiceImpl extends BaseServiceImpl<ManualMapper, Manual> imp
                 return null;
             }
 
-            // 根据角色ID获取对应的用户类型
             Integer userType = RoleUserTypeMapping.getUserTypeByRoleId(roleId);
             if (userType == null) {
                 log.warn("未找到角色ID对应的用户类型, roleId: {}, 支持的角色: {}", roleId, 
@@ -246,7 +204,6 @@ public class ManualServiceImpl extends BaseServiceImpl<ManualMapper, Manual> imp
             String roleDescription = RoleUserTypeMapping.getDescriptionByRoleId(roleId);
             log.debug("用户角色映射: roleId={}, userType={}, roleDescription={}", roleId, userType, roleDescription);
 
-            // 查询对应用户类型的文档
             return getManualByUserType(userType);
 
         } catch (Exception e) {
@@ -255,11 +212,6 @@ public class ManualServiceImpl extends BaseServiceImpl<ManualMapper, Manual> imp
         }
     }
 
-    /**
-     * 根据用户类型获取文档信息
-     * @param userType 用户类型
-     * @return 文档信息
-     */
     private ManualVo getManualByUserType(Integer userType) {
         LambdaQueryWrapper<Manual> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Manual::getUserType, userType);
@@ -270,10 +222,8 @@ public class ManualServiceImpl extends BaseServiceImpl<ManualMapper, Manual> imp
             return null;
         }
 
-        // 转换为VO对象
         ManualVo vo = BeanUtil.copyProperties(manual, ManualVo.class);
         
-        // 设置用户类型名称
         Manual.UserTypeEnum userTypeEnum = Manual.UserTypeEnum.getByCode(userType);
         if (userTypeEnum != null) {
             vo.setUserTypeName(userTypeEnum.getName());

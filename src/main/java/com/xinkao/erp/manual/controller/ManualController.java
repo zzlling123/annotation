@@ -25,13 +25,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * <p>
- * 使用文档表 前端控制器
- * </p>
- *
- * 2025-07-26
- */
 @RestController
 @RequestMapping("/manual")
 public class ManualController extends BaseController {
@@ -44,12 +37,6 @@ public class ManualController extends BaseController {
     @Resource
     private ManualService manualService;
 
-    /**
-     * 分页查询使用文档
-     *
-     * @param query 查询条件
-     * @return 分页结果
-     */
     @PrimaryDataSource
     @DataScope(role = "1")
     @PostMapping("/page")
@@ -59,12 +46,6 @@ public class ManualController extends BaseController {
         return BaseResponse.ok(voPage);
     }
 
-    /**
-     * 新增使用文档
-     *
-     * @param manualParam 文档参数
-     * @return 操作结果
-     */
     @PrimaryDataSource
     @DataScope(role = "1")
     @PostMapping("/save")
@@ -74,12 +55,6 @@ public class ManualController extends BaseController {
         return manualService.save(manualParam);
     }
 
-    /**
-     * 修改使用文档
-     *
-     * @param manualParam 文档参数
-     * @return 操作结果
-     */
     @PrimaryDataSource
     @DataScope(role = "1")
     @PostMapping("/update")
@@ -89,12 +64,6 @@ public class ManualController extends BaseController {
         return manualService.update(manualParam);
     }
 
-    /**
-     * 批量删除使用文档
-     *
-     * @param param 文档ID列表
-     * @return 操作结果
-     */
     @PrimaryDataSource
     @DataScope(role = "1")
     @PostMapping("/del")
@@ -104,11 +73,6 @@ public class ManualController extends BaseController {
         return manualService.del(param);
     }
 
-    /**
-     * 根据用户类型获取文档信息
-     *
-     * @return 文档信息
-     */
     @PrimaryDataSource
     @GetMapping("/getByUserType")
     @ApiOperation("根据用户类型获取文档信息")
@@ -123,34 +87,6 @@ public class ManualController extends BaseController {
         return BaseResponse.ok("成功", manual);
     }
 
-//    /**
-//     * 根据用户类型获取文档信息（POST方式）
-//     *
-//     * @param userType 用户类型
-//     * @return 文档信息
-//     */
-//    @PrimaryDataSource
-//    @PostMapping("/getByUserType")
-//    @ApiOperation("根据用户类型获取文档信息（POST方式）")
-//    public BaseResponse<ManualVo> getByUserTypePost(@RequestBody Integer userType) {
-//        // 参数校验
-//        if (userType == null || Manual.UserTypeEnum.getByCode(userType) == null) {
-//            return BaseResponse.fail("用户类型无效");
-//        }
-//
-//        ManualVo manual = manualService.getByUserType(userType);
-//        if (manual == null) {
-//            return BaseResponse.fail("该用户类型暂无文档");
-//        }
-//
-//        return BaseResponse.ok("成功", manual);
-//    }
-
-    /**
-     * 获取用户类型枚举列表
-     *
-     * @return 用户类型列表
-     */
     @PrimaryDataSource
     @GetMapping("/getUserTypes")
     @ApiOperation("获取用户类型枚举列表")
@@ -159,13 +95,6 @@ public class ManualController extends BaseController {
         return BaseResponse.ok("成功", userTypes);
     }
 
-
-    /**
-     * 上传文档文件
-     *
-     * @param file 文件
-     * @return 文件路径
-     */
     @PrimaryDataSource
     @DataScope(role = "1,2")
     @PostMapping(value = "/upload/file", consumes = "multipart/form-data")
