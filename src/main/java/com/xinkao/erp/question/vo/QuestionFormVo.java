@@ -17,15 +17,11 @@ import java.util.List;
 @Setter
 public class QuestionFormVo extends BaseEntity implements OutputConverter<QuestionFormVo, Question> {
 
-    @ApiModelProperty("题目二级标题id")
     private Integer id;
 
-    @ApiModelProperty("题干,json列表")
     private String question;
 
-    @ApiModelProperty("排序")
     private Integer sort;
 
-    @ApiModelProperty("子题列表")
     private List<QuestionChildVo> questionChildList;
 }

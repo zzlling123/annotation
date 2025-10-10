@@ -53,14 +53,6 @@ import java.util.List;
 import java.util.UUID;
 import java.io.InputStream;
 
-/**
- * <p>
- * 题目表 前端控制器
- * </p>
- *
- * @author Ldy
- * @since 2025-03-22 11:19:40
- */
 @RestController
 @RequestMapping("/question")
 public class    QuestionController extends BaseController {
@@ -79,45 +71,35 @@ public class    QuestionController extends BaseController {
     private String ipurl;
 
 
-    /**
-     * 获取题目分类下拉列表
-     */
     @PrimaryDataSource
     @PostMapping("/getQuestionType")
-    @ApiOperation("获取题目分类下拉列表")
     public BaseResponse<List<QuestionType>> getQuestionType() {
         return BaseResponse.ok("成功", questionTypeService.list());
     }
 
-    /**
-     * 新增题目分类
-     */
     @PrimaryDataSource
     @DataScope(role = "1")
     @PostMapping("/saveQuestionType")
-    @ApiOperation("新增题目分类")
     public BaseResponse<?> saveQuestionType(@RequestBody @Valid QuestionTypeAddParam param) {
         return questionTypeService.save(param);
     }
 
-    /**
-     * 修改题目分类
-     */
+
+
+
     @PrimaryDataSource
     @DataScope(role = "1")
     @PostMapping("/updateQuestionType")
-    @ApiOperation("修改题目分类")
     public BaseResponse<?> updateQuestionType(@RequestBody @Valid QuestionTypeParam param) {
         return questionTypeService.update(param);
     }
 
-    /**
-     * 删除题目分类
-     */
+
+
+
     @PrimaryDataSource
     @DataScope(role = "1")
     @PostMapping("/delQuestionType")
-    @ApiOperation("删除题目分类")
     public BaseResponse<?> delQuestionType(@RequestBody DeleteParam param) {
         return questionTypeService.delQuestionType(param);
     }
@@ -125,7 +107,6 @@ public class    QuestionController extends BaseController {
     @PrimaryDataSource
     @DataScope(role = "1")
     @PostMapping("/upload/file")
-    @ApiOperation("上传文件")
     public BaseResponse<String> uploadRequest(@RequestParam(value="file") MultipartFile file,@RequestParam String id, HttpServletRequest request) {
         try {
             String saveFileName;
@@ -153,13 +134,12 @@ public class    QuestionController extends BaseController {
 
     }
 
-    /**
-     * 获取题目分类说明文档
-     */
+
+
+
     @PrimaryDataSource
     @DataScope(role = "1")
     @PostMapping("/getQuestionTypeFileUrl/{questionTypeId}")
-    @ApiOperation("获取题目分类说明文档")
     public BaseResponse<String> updateQuestionType(@PathVariable String questionTypeId) {
         QuestionType questionType = questionTypeService.getById(questionTypeId);
         String fileUrl = "";
@@ -169,12 +149,11 @@ public class    QuestionController extends BaseController {
         return BaseResponse.ok(fileUrl);
     }
 
-    /**
-     * 获取题目分类下拉列表
-     */
+
+
+
     @PrimaryDataSource
     @PostMapping("/getQuestionType/{shape}")
-    @ApiOperation("获取题目分类下拉列表")
     public BaseResponse<List<QuestionType>> getQuestionType(@PathVariable String shape) {
         if ("500".equals(shape)){
             //创建固定字符串集合：2,3,4,5
@@ -184,54 +163,50 @@ public class    QuestionController extends BaseController {
         return BaseResponse.ok("成功", questionTypeService.list());
     }
 
-    /**
-     * 新建自定义标签
-     */
+
+
+
     @PrimaryDataSource
     @PostMapping("/saveQuestionLabel")
-    @ApiOperation("新建自定义标签")
     public BaseResponse<?> saveQuestionLabel(@RequestParam String labelName) {
         Label label = new Label();
         label.setLabelName(labelName);
         return labelService.save(label)? BaseResponse.ok("成功") : BaseResponse.fail("失败");
     }
 
-    /**
-     * 根据标签名称模糊查询标签
-     */
+
+
+
     @PrimaryDataSource
     @PostMapping("/getLabelList")
-    @ApiOperation("根据标签名称模糊查询标签")
     public BaseResponse<List<Label>> getLabelList(@RequestParam String labelName) {
         return BaseResponse.ok("成功", labelService.lambdaQuery().like(Label::getLabelName, labelName).list());
     }
 
-    /**
-     * 分页查询题库
-     *
-     * @param query 查询条件
-     * @return 分页结果
-     */
+
+
+
+
+
+
     @PrimaryDataSource
     @DataScope(role = "1,18,19")
     @PostMapping("/page")
-    @ApiOperation("分页查询题库")
     public BaseResponse<Page<QuestionPageVo>> page(@RequestBody QuestionQuery query) {
         Pageable pageable = query.getPageInfo();
         Page<QuestionPageVo> voPage = questionService.page(query, pageable);
         return BaseResponse.ok(voPage);
     }
 
-    /**
-     * 获取题目详情
-     *
-     * @param id 题目ID
-     * @return 题目详情
-     */
+
+
+
+
+
+
     @PrimaryDataSource
     @DataScope(role = "1")
     @GetMapping("/detail/{id}")
-    @ApiOperation("获取题目详情")
     public BaseResponse<QuestionInfoVo> getQuestionDetail(@PathVariable Integer id) {
         QuestionInfoVo question = questionService.getQuestionDetail(id);
         //将选项转为List<String>
@@ -241,153 +216,142 @@ public class    QuestionController extends BaseController {
         return BaseResponse.ok(question);
     }
 
-    /**
-     * 新增题目
-     *
-     * @param questionParam 题目参数
-     * @return 操作结果
-     */
+
+
+
+
+
+
     @PrimaryDataSource
     @DataScope(role = "1,18")
     @PostMapping("/save")
-    @ApiOperation("新增题目")
     @Log(content = "新增题目",operationType = OperationType.INSERT)
     public BaseResponse<?> save(@Valid @RequestBody QuestionParam questionParam) {
         return questionService.save(questionParam);
     }
 
-    /**
-     * 新增题目单二级标题
-     *
-     * @param questionFormTitleParam 题目参数
-     * @return 操作结果
-     */
+
+
+
+
+
+
     @PrimaryDataSource
     @PostMapping("/saveQuestionFormTitle")
-    @ApiOperation("新增题目单二级标题")
     public BaseResponse<?> saveQuestionFormTitle(@Valid @RequestBody QuestionFormTitleParam questionFormTitleParam) {
         return questionService.saveQuestionFormTitle(questionFormTitleParam);
     }
 
-    /**
-     * 编辑题目单二级标题
-     *
-     * @param questionFormTitleParam 题目参数
-     * @return 操作结果
-     */
+
+
+
+
+
+
     @PrimaryDataSource
     @PostMapping("/updateQuestionFormTitle")
-    @ApiOperation("编辑题目单二级标题")
     public BaseResponse<?> updateQuestionFormTitle(@Valid @RequestBody QuestionFormTitleParam questionFormTitleParam) {
         return questionService.updateQuestionFormTitle(questionFormTitleParam);
     }
 
-    /**
-     * 新增题目单子题
-     *
-     * @param questionChildParam 题目子题参数
-     * @return 操作结果
-     */
+
+
+
+
+
+
     @PrimaryDataSource
     @PostMapping("/saveQuestionChild")
-    @ApiOperation("新增题目单子题")
     public BaseResponse<?> saveQuestionChild(@Valid @RequestBody QuestionChildParam questionChildParam) {
         return questionService.saveQuestionChild(questionChildParam);
     }
 
-    /**
-     * 编辑题目单子题
-     *
-     * @param questionChildParam 题目子题参数
-     * @return 操作结果
-     */
+
+
+
+
+
+
     @PrimaryDataSource
     @PostMapping("/updateQuestionChild")
-    @ApiOperation("编辑题目单子题")
     public BaseResponse<?> updateQuestionChild(@Valid @RequestBody QuestionChildParam questionChildParam) {
         return questionService.updateQuestionChild(questionChildParam);
     }
 
-    /**
-     * 编辑题目
-     *
-     * @param questionParam 题目参数
-     * @return 操作结果
-     */
+
+
+
+
+
+
     @PrimaryDataSource
     @DataScope(role = "1")
     @PostMapping("/update")
-    @ApiOperation("编辑题目")
     @Log(content = "编辑题目",operationType = OperationType.UPDATE)
     public BaseResponse<?> update(@Valid @RequestBody QuestionParam questionParam) {
         return questionService.update(questionParam);
     }
 
-    /**
-     * 批量删除题目
-     *
-     * @param param 题目ID列表
-     * @return 操作结果
-     */
+
+
+
+
+
+
     @PrimaryDataSource
     @DataScope(role = "1")
     @PostMapping("/del")
-    @ApiOperation("批量删除题目")
     @Log(content = "批量删除题目",operationType = OperationType.DELETE)
     public BaseResponse<?> del(@RequestBody DeleteParam param) {
         return questionService.del(param);
     }
 
-    /**
-     * 批量删除二级标题题目
-     *
-     * @param param 二级标题题目ID列表
-     * @return 操作结果
-     */
+
+
+
+
+
+
     @PrimaryDataSource
     @DataScope(role = "1")
     @PostMapping("/delTitle")
-    @ApiOperation("批量删除二级标题题目")
     @Log(content = "批量删除二级标题题目",operationType = OperationType.DELETE)
     public BaseResponse<?> delTitle(@RequestBody DeleteParam param) {
         return questionService.delTitle(param);
     }
 
-    /**
-     * 批量删除子题
-     *
-     * @param param 子题ID列表
-     * @return 操作结果
-     */
+
+
+
+
+
+
     @PrimaryDataSource
     @DataScope(role = "1")
     @PostMapping("/delChild")
-    @ApiOperation("批量删除子题")
     @Log(content = "批量删除子题",operationType = OperationType.DELETE)
     public BaseResponse<?> delChild(@RequestBody DeleteParam param) {
         return questionService.delChild(param);
     }
 
-    /**
-     * 测试方法，题库按照分类、题型插入题目
-     * @return
-     */
+
+
+
+
     @PrimaryDataSource
     @DataScope(role = "1")
     @PostMapping("/selfSave")
-    @ApiOperation("题库按照分类、题型插入题目")
     public void selfSave(){
         questionService.selfSave();
     }
 
-    /**
-     * 获根据题目ID取题目单详情
-     * @return
-     */
+
+
+
+
     @PrimaryDataSource
     @DataScope(role = "1")
     @PostMapping("/getQuestionFormInfo/{id}")
-    @ApiOperation("获根据题目ID取题目单详情")
     public BaseResponse<List<QuestionFormVo>> getQuestionFormInfo(@PathVariable Integer id){
         return questionService.getQuestionFormInfo(id);
     }
@@ -396,7 +360,6 @@ public class    QuestionController extends BaseController {
     @PrimaryDataSource
     @DataScope(role = "1")
     @GetMapping("/titleIntroductionTemplate/common")
-    @ApiOperation("下载普通题目批量导入模板.xlsx")
     public void downloadCommonTemplate(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ClassPathResource resource = new ClassPathResource("titleIntroductionTemplate/普通题目批量导入模板.xlsx");
         if (!resource.exists()) {
@@ -411,7 +374,6 @@ public class    QuestionController extends BaseController {
     @PrimaryDataSource
     @DataScope(role = "1")
     @GetMapping("/titleIntroductionTemplate/form")
-    @ApiOperation("下载题目单.zip")
     public void downloadFormTemplate(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ClassPathResource resource = new ClassPathResource("titleIntroductionTemplate/题目单.zip");
         if (!resource.exists()) {
@@ -454,11 +416,10 @@ public class    QuestionController extends BaseController {
         response.getWriter().write(json);
         response.getWriter().flush();
     }
-    /**
-     * 批量导入题目（服务层读取与校验，支持新模板多Sheet与旧模板）
-     */
+
+
+
     @DataScope(role = "1")
-    @ApiOperation(value = "批量导入题目")
     @PostMapping("/import")
     public void importQuestions(@RequestParam("file") MultipartFile file,
                                 HttpServletRequest request,
@@ -592,7 +553,6 @@ public class    QuestionController extends BaseController {
     @PrimaryDataSource
     @DataScope(role = "1")
     @PostMapping("/form/import-zip")
-    @ApiOperation("题目单导入（V2：多Sheet，无分隔符）")
     public void importQuestionFormZipV2(@RequestParam("file") MultipartFile file,
                                         HttpServletRequest request,
                                         HttpServletResponse response) throws IOException {

@@ -8,18 +8,10 @@ import com.xinkao.erp.user.entity.User;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * 登录相关的服务
- **/
 public interface LoginService {
 
 	BaseResponse<?> register(RegisterParam registerParam);
 
-	/**
-	 * 账号密码登录
-	 * @param apLoginParam
-	 * @return
-	 */
 	BaseResponse<LoginUserVo> login(ApLoginParam apLoginParam, HttpServletRequest request);
 
 	User getAccountByUserName(String username);

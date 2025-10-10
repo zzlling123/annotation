@@ -11,22 +11,16 @@ import java.util.Date;
 @Setter
 public class ClassInfoVo {
 
-    @ApiModelProperty("id")
     private String id;
 
-    @ApiModelProperty("班级名称")
     private String className;
 
-    @ApiModelProperty("班级描述")
     private String description;
-    
-    @ApiModelProperty("负责人ID")
+
     private Integer directorId;
-    
-    @ApiModelProperty("负责人姓名")
+
     private String directorName;
 
-    @ApiModelProperty("创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date createTime;
 }

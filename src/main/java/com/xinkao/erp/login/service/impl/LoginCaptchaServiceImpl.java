@@ -22,26 +22,19 @@ import cn.hutool.captcha.generator.CodeGenerator;
 import cn.hutool.captcha.generator.RandomGenerator;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
-/**
- * 验证码服务
- * @author hys_thanks
- */
 @Service
 public class LoginCaptchaServiceImpl implements LoginCaptchaService {
-	// 圆圈干扰验证码
 	@Resource(name = "CircleCaptcha")
 	private CircleCaptcha circleCaptcha;
-	// 线段干扰的验证码
 	@Resource(name = "LineCaptcha")
 	private LineCaptcha lineCaptcha;
-	// 扭曲干扰验证码
 	@Resource(name = "ShearCaptcha")
 	private ShearCaptcha shearCaptcha;
 	@Resource
 	private XinKaoProperties xinKaoProperties;
-	/**
-	 * 生成手机验证码
-	 */
+
+
+
 	@Override
 	public GenCaptchaResultVo genMobileCaptcha(String mobile) {
 		GenCaptchaResultVo captchaResult = new GenCaptchaResultVo();
@@ -60,13 +53,9 @@ public class LoginCaptchaServiceImpl implements LoginCaptchaService {
 		return captchaResult;
 	}
 
-	/**
-	 * 生成图片验证码
-	 */
 	@Override
 	public GenCaptchaResultVo genPicCaptcha() {
 		GenCaptchaResultVo captchaResult = new GenCaptchaResultVo();
-		// 生成验证码
 		CodeGenerator codeGenerator;
 		AbstractCaptcha captcha;
 		String code = null;
@@ -106,11 +95,7 @@ public class LoginCaptchaServiceImpl implements LoginCaptchaService {
 		captchaResult.setCodePic(captcha.getImageBase64());
 		return captchaResult;
 	}
-	/**
-	 * 数学计算方法获取code
-	 * @param capStr
-	 * @return
-	 */
+
 	private String getCodeResult(String capStr) {
 		int numberLength = xinKaoProperties.getCaptcha().getNumberLength();
 		int a = Convert.toInt(StrUtil.sub(capStr, 0, numberLength).trim());

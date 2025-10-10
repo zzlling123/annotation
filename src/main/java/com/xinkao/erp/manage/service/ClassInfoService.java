@@ -9,14 +9,6 @@ import com.xinkao.erp.manage.param.ClassInfoParam;
 import com.xinkao.erp.manage.query.ClassInfoQuery;
 import com.xinkao.erp.manage.vo.ClassInfoVo;
 
-/**
- * <p>
- * 班级表 服务类
- * </p>
- *
- * @author Ldy
- * @since 2025-03-21 14:32:24
- */
 public interface ClassInfoService extends BaseService<ClassInfo> {
 
     Page<ClassInfoVo> page(ClassInfoQuery query, Pageable pageable);
