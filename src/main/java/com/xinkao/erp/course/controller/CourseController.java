@@ -26,14 +26,12 @@ public class CourseController {
     private CourseService courseService;
 
     @GetMapping("/getList")
-    @ApiOperation("获取课程信息作为下拉列表")
     public BaseResponse<List<Course>> getList() {
         return BaseResponse.ok(courseService.lambdaQuery().list());
     }
 
     @PrimaryDataSource
     @PostMapping("/page")
-    @ApiOperation("分页查询课程信息")
     public BaseResponse<Page<Course>> page(@Valid @RequestBody CourseQuery query) {
         Pageable pageable = query.getPageInfo();
         Page<Course> voPage = courseService.page(query, pageable);
@@ -42,21 +40,18 @@ public class CourseController {
 
     @PrimaryDataSource
     @PostMapping(value = "/save",consumes =  MediaType.MULTIPART_FORM_DATA_VALUE)
-    @ApiOperation("新增课程信息")
     @Log(content = "新增课程信息", operationType = OperationType.INSERT, isSaveRequestData = false)
     public BaseResponse<?> save(@Valid @ModelAttribute Course course,@RequestParam(name = "coverImageFile", required = false) MultipartFile coverImage) {
         return courseService.save1(course,coverImage);
     }
 
     @PostMapping(value = "/update",consumes =  MediaType.MULTIPART_FORM_DATA_VALUE)
-    @ApiOperation("编辑课程信息")
     @Log(content = "编辑课程信息", operationType = OperationType.UPDATE, isSaveRequestData = false)
     public BaseResponse<?> update(@Valid @ModelAttribute Course course,@RequestParam(name = "coverImageFile", required = false) MultipartFile coverImage) {
         return courseService.update(course,coverImage);
     }
 
     @PostMapping("/delete/{id}")
-    @ApiOperation("删除课程信息")
     @Log(content = "删除课程信息", operationType = OperationType.DELETE, isSaveRequestData = false)
     public BaseResponse<?> delete(@PathVariable Integer id) {
         return courseService.delete(id);
@@ -64,7 +59,6 @@ public class CourseController {
 
     @PrimaryDataSource
     @PostMapping("/updateState")
-    @ApiOperation("修改课程状态")
     public BaseResponse<?> updateState(@RequestBody UpdateStateParam param) {
         return courseService.updateState(param);
     }

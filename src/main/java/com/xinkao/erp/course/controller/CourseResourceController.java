@@ -38,7 +38,6 @@ public class CourseResourceController {
 
     @PrimaryDataSource
     @PostMapping("/list/chapterId")
-    @ApiOperation("查询课程章节资源信息通过章节信息ID")
     public List<CourseResource> getResourceList(Long chapterId) {
 
         return courseResourceService.getListByChapterId(chapterId);
@@ -46,7 +45,6 @@ public class CourseResourceController {
 
     @PrimaryDataSource
     @PostMapping("/page")
-    @ApiOperation("分页查询课程章节资源信息")
     public BaseResponse<Page<CourseResource>> page(@Valid @RequestBody CourseResourceQuery query) {
         Pageable pageable = query.getPageInfo();
         Page<CourseResource> voPage = courseResourceService.page(query, pageable);
@@ -55,21 +53,18 @@ public class CourseResourceController {
 
     @PrimaryDataSource
     @PostMapping("/save")
-    @ApiOperation("新增课程章节资源信息")
     @Log(content = "新增课程章节资源信息", operationType = OperationType.INSERT, isSaveRequestData = false)
     public BaseResponse<?> save(@Valid @RequestBody CourseResource courseResource) {
         return courseResourceService.save1(courseResource);
     }
 
     @PostMapping("/update")
-    @ApiOperation("编辑课程章节资源信息")
     @Log(content = "编辑课程章节资源信息", operationType = OperationType.UPDATE, isSaveRequestData = false)
     public BaseResponse<?> update(@Valid @RequestBody CourseResource courseResource) {
         return courseResourceService.update(courseResource);
     }
 
     @PostMapping("/delete/{id}")
-    @ApiOperation("删除课程章节信息")
     @Log(content = "删除课程章节信息", operationType = OperationType.DELETE, isSaveRequestData = false)
     public BaseResponse<?> delete(@PathVariable Integer id) {
         return courseResourceService.delete(id);
@@ -77,7 +72,6 @@ public class CourseResourceController {
 
     @PrimaryDataSource
     @PostMapping("/upload/file")
-    @ApiOperation("上传课程章节信息")
     public Map<String, Object> uploadRequest(@RequestParam(value="file") MultipartFile[] files,@RequestParam(value="chapterId")Long chapterId, HttpServletRequest request) {
         try {
             boolean flag = false;

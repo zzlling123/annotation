@@ -24,7 +24,6 @@ public class CourseChapterController {
     private CourseChapterService courseChapterService;
 
     @GetMapping("/getList/{id}")
-    @ApiOperation("根据课程id获取章节信息作为下拉列表")
     public BaseResponse<List<CourseChapter>> getList(@PathVariable Integer id) {
         return BaseResponse.ok(courseChapterService.lambdaQuery()
                 .eq(CourseChapter::getIsDel, 0)
@@ -34,7 +33,6 @@ public class CourseChapterController {
 
     @PrimaryDataSource
     @PostMapping("/page")
-    @ApiOperation("分页查询课程章节信息")
     public BaseResponse<Page<CourseChapter>> page(@Valid @RequestBody CourseChapterQuery query) {
         Pageable pageable = query.getPageInfo();
         Page<CourseChapter> voPage = courseChapterService.page(query, pageable);
@@ -43,21 +41,18 @@ public class CourseChapterController {
 
     @PrimaryDataSource
     @PostMapping("/save")
-    @ApiOperation("新增课程章节信息")
     @Log(content = "新增课程章节信息", operationType = OperationType.INSERT, isSaveRequestData = false)
     public BaseResponse<?> save(@Valid @RequestBody CourseChapter courseChapter) {
         return courseChapterService.save1(courseChapter);
     }
 
     @PostMapping("/update")
-    @ApiOperation("编辑课程章节信息")
     @Log(content = "编辑课程章节信息", operationType = OperationType.UPDATE, isSaveRequestData = false)
     public BaseResponse<?> update(@Valid @RequestBody CourseChapter courseChapter) {
         return courseChapterService.update(courseChapter);
     }
 
     @PostMapping("/delete/{id}")
-    @ApiOperation("删除课程章节信息")
     @Log(content = "删除课程章节信息", operationType = OperationType.DELETE, isSaveRequestData = false)
     public BaseResponse<?> delete(@PathVariable Integer id) {
         return courseChapterService.delete(id);
