@@ -25,11 +25,6 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 考生、答题管理
- * @author Ldy
- * @since 2025-03-29 16:09:19
- */
 @RestController
 @RequestMapping("/exam-page-user")
 public class ExamPageUserController {
@@ -37,100 +32,55 @@ public class ExamPageUserController {
     @Resource
     private ExamPageUserService examPageUserService;
 
-    /**
-     *
-     * 根据用户信息获取考试列表
-     */
     @PrimaryDataSource
     @PostMapping("/page")
-    @ApiOperation("根据用户信息获取考试列表")
     public BaseResponse<Page<ExamUserVo>> page(@RequestBody ExamQuery query) {
         Pageable pageable = query.getPageInfo();
         Page<ExamUserVo> voPage = examPageUserService.page(query, pageable);
         return BaseResponse.ok(voPage);
     }
 
-    /**
-     *
-     * 根据用户ID，考试ID获取试卷信息
-     */
     @PrimaryDataSource
     @PostMapping("/getExamUserInfo")
-    @ApiOperation("获取试卷信息")
     public BaseResponse<ExamUserVo> getExamUserInfo(@RequestBody @Valid ExamUserQuery examUserQuery) {
         return examPageUserService.getExamUserInfo(examUserQuery);
     }
 
-    /**
-     *
-     * 获取题目信息
-     */
     @PrimaryDataSource
     @PostMapping("/getUserQuestionInfo/{id}")
-    @ApiOperation("获取题目信息")
     public BaseResponse<ExamPageUserQuestionVo> getUserQuestionInfo(@PathVariable("id") String id) {
         return examPageUserService.getUserQuestionInfo(id);
     }
 
-
-
-    /**
-     *
-     * 根据此次考试用户ID，考试ID获取答题进度
-     */
     @PrimaryDataSource
     @PostMapping("/getExamUserProgress")
-    @ApiOperation("获取答题进度")
     public BaseResponse<List<ExamProgressVo>> getExamUserProgress(@RequestBody @Valid ExamUserQuery examUserQuery) {
         return examPageUserService.getExamUserProgress(examUserQuery);
     }
 
-
-
-    /**
-     *
-     * 提交答案
-     */
     @PrimaryDataSource
     @RequestMapping("/submitAnswer")
-    @ApiOperation("单题提交答案")
     @Log(content = "提交答案",operationType = OperationType.INSERT)
     public BaseResponse<?> submitAnswer(@Valid @RequestBody ExamPageUserAnswerParam examPageUserAnswerParam) {
         return examPageUserService.submitAnswer(examPageUserAnswerParam);
     }
 
-    /**
-     *
-     * 子题提交答案
-     */
     @PrimaryDataSource
     @RequestMapping("/submitChildAnswer")
-    @ApiOperation("子题提交答案 ")
     @Log(content = "子题提交答案",operationType = OperationType.INSERT)
     public BaseResponse<?> submitChildAnswer(@Valid @RequestBody ExamPageUserChildAnswerParam param) {
         return examPageUserService.submitChildAnswer(param);
     }
 
-
-    /**
-     *
-     * 交卷计算得分
-     */
     @PrimaryDataSource
     @RequestMapping("/submitExam")
-    @ApiOperation("交卷计算得分")
     @Log(content = "交卷计算得分",operationType = OperationType.INSERT)
     public BaseResponse<Map<String,Integer>> submitExam(@Valid @RequestBody SubmitParam submitParam) {
         return examPageUserService.submitExam(submitParam);
     }
 
-    /**
-     *
-     * 心跳检测
-     */
     @PrimaryDataSource
     @RequestMapping("/heartBeat")
-    @ApiOperation("心跳检测")
     public BaseResponse<?> heartBeat(@Valid @RequestBody ExamUserQuery examUserQuery) {
         return examPageUserService.heartBeat(examUserQuery);
     }

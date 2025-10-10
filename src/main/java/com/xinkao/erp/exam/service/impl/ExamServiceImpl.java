@@ -65,13 +65,11 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
     public Page<ExamPageVo> page(ExamQuery query, Pageable pageable) {
         Page page = pageable.toPage();
         LoginUser loginUser = redisUtil.getInfoByToken();
-        //如果是教师角色，则只显示分配给自己名下班级的考试
         List<Integer> classIds = new ArrayList<>();
         if (loginUser.getUser().getRoleId() == 2) {
             classIds = classInfoService.lambdaQuery().eq(ClassInfo::getDirectorId, loginUser.getUser().getId()).eq(ClassInfo::getIsDel,0).list().stream().map(ClassInfo::getId).collect(Collectors.toList());
         }
-        
-        // 如果是人社局角色（角色19），则只显示所有角色19用户创建的考试
+
         if (loginUser.getUser().getRoleId() == 19) {
             List<String> role19UserIds = userService.lambdaQuery()
                     .eq(User::getRoleId, 19)
@@ -82,8 +80,7 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
                     .collect(Collectors.toList());
             query.setCreateByList(role19UserIds);
         }
-        
-        // 如果是角色18，则显示角色2（教师）和角色18创建的考试
+
         if (loginUser.getUser().getRoleId() == 18) {
             List<String> role2And18UserIds = userService.lambdaQuery()
                     .in(User::getRoleId, Arrays.asList(2, 18))
@@ -110,12 +107,9 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
         detailVo.setScore(examPageSet.getScore());
         detailVo.setScorePass(examPageSet.getScorePass());
         detailVo.setPageMode(examPageSet.getPageMode());
-        //补充班级管理
         List<Integer> classList = examClassService.lambdaQuery().eq(ExamClass::getExamId, id).list().stream().map(ExamClass::getClassId).collect(Collectors.toList());
         detailVo.setClassList(classList);
-        //补充试卷设置
         detailVo.setExamPageSetTypeVoList(examPageSetTypeService.lambdaQuery().eq(ExamPageSetType::getExamId, id).list());
-        //如果来源为社保局，则补充专家列表
         if (exam.getIsExpert() == 1) {
             List<ExamExpert> examExpertList = examExpertService.lambdaQuery().eq(ExamExpert::getExamId, id).list();
             detailVo.setExpertIds(examExpertList.stream().map(ExamExpert::getExpertId).map(String::valueOf).collect(Collectors.joining(",")));
@@ -128,19 +122,16 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
     public BaseResponse save(ExamParam examParam) {
         Exam exam = new Exam();
         BeanUtil.copyProperties(examParam, exam);
-        // 校验考试名称是否重复
         if (lambdaQuery().eq(Exam::getExamName, examParam.getExamName()).count() > 0) {
             return BaseResponse.fail("考试名称已存在");
         }
         save(exam);
-        //保存试卷设置
         ExamPageSet examPageSet = new ExamPageSet();
         examPageSet.setExamId(exam.getId());
         examPageSet.setScore(new BigDecimal(examParam.getScore()));
         examPageSet.setScorePass(new BigDecimal(examParam.getScorePass()));
         examPageSet.setPageMode(Integer.valueOf(examParam.getPageMode()));
         examPageSetService.save(examPageSet);
-        //保存班级管理
         String[] classIds = examParam.getClassIds().split(",");
         List<ExamClass> examClassList = new ArrayList<>();
         for (String classId : classIds) {
@@ -150,7 +141,6 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
             examClassList.add(examClass);
         }
         examClassService.saveBatch(examClassList);
-        //执行如果是专家批改，则调用增加批改关系方法
         if ("1".equals(examParam.getIsExpert())){
             if (StrUtil.isNotBlank(examParam.getExpertIds())){
                 List<ExamExpert> examExpertList = new ArrayList<>();
@@ -175,26 +165,21 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
             return BaseResponse.fail("考试信息不存在");
         }
         BeanUtil.copyProperties(examParam, exam);
-        // 校验考试名称是否重复
         if (lambdaQuery().eq(Exam::getExamName, examParam.getExamName())
                 .ne(Exam::getId, examParam.getId()).count() > 0) {
             return BaseResponse.fail("考试名称已存在");
         }
-        //考试状态已开启时不可编辑
         if (exam.getState() > 10) {
             return BaseResponse.fail("考试已开启，不可编辑");
         }
-        //保存试卷设置
         ExamPageSet examPageSet = examPageSetService.lambdaQuery().eq(ExamPageSet::getExamId, examParam.getId()).one();
         if (examPageSet == null) {
             return BaseResponse.fail("该考试设置信息不存在，请联系管理员");
         }else{
-            //考试如果已经制卷，则不可修改
             if (examPageSet.getQuestionStatus() == 1){
                 return BaseResponse.fail("该考试已设置题目分布，不可修改");
             }
         }
-        //执行如果是专家批改，则调用增加批改关系方法
         if ("1".equals(examParam.getIsExpert())){
             if (StrUtil.isNotBlank(examParam.getExpertIds())){
                 List<ExamExpert> examExpertList = new ArrayList<>();
@@ -216,7 +201,6 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
         examPageSet.setScorePass(new BigDecimal(examParam.getScorePass()));
         examPageSet.setPageMode(Integer.valueOf(examParam.getPageMode()));
         examPageSetService.saveOrUpdate(examPageSet);
-        //清除后，保存班级管理
         examClassService.lambdaUpdate()
                 .eq(ExamClass::getExamId, examParam.getId())
                 .remove();
@@ -235,7 +219,6 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
     @Override
     @Transactional
     public BaseResponse del(Integer id) {
-        //验证是否管理员，如果不是的话，只能删除自己创建的考试
         LoginUser loginUser = redisUtil.getInfoByToken();
         Exam exam = examMapper.selectById(id);
         if (loginUser.getUser().getRoleId() != 1) {
@@ -243,7 +226,6 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
                 return BaseResponse.fail("您只能删除自己创建的考试");
             }
         }
-        //验证考试是否已开始，只能删除未开始的考试
         if (exam.getState() > 10) {
             return BaseResponse.fail("考试已开始，不可删除");
         }
@@ -252,11 +234,6 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
 
     }
 
-
-    /**
-     * 根据题目类型和试卷形状获取试卷填充题库数量
-     *
-     */
     @Override
     public List<ExamPageSetVo> getExamPageSetByTypeAndShape(String examId) {
         Exam exam = getById(examId);
@@ -265,9 +242,7 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
         Map<Integer,List<QuestionTypeListDto>> map = questionTypeListDtos
                 .stream().collect(Collectors.groupingBy(QuestionTypeListDto::getId));
         List<ExamPageSetVo> list = new ArrayList<>();
-        //按照分类，题型进行循环插入
         for (Integer typeId : map.keySet()) {
-            //增加内容
             List<QuestionTypeListDto> voList = map.get(typeId);
             ExamPageSetVo examPageSetImportModel = new ExamPageSetVo();
             for (QuestionTypeListDto vo : voList) {

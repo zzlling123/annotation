@@ -24,12 +24,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-/**
- * 试卷管理
- *
- * @author Ldy
- * @since 2025-03-29 16:06:02
- */
 @RestController
 @RequestMapping("/exam-page-user-question")
 public class ExamPageUserQuestionController {
@@ -48,13 +42,7 @@ public class ExamPageUserQuestionController {
     @Resource
     protected RedisUtil redisUtil;
 
-    /**
-     * 制卷
-     *
-     * @return
-     */
     @PostMapping("/rollMaking/{examId}")
-    @Log(content = "制卷",operationType = OperationType.INSERT)
     public BaseResponse<String> rollMaking(@PathVariable("examId") String examId) {
         if (StrUtil.isBlank(examId)){
             return BaseResponse.fail("编辑失败,试卷分布ID为空！");
@@ -67,24 +55,19 @@ public class ExamPageUserQuestionController {
         if(examPageSet.getQuestionStatus() != 1){
             return BaseResponse.fail("该考试尚未导入试题分布设置，不可组卷！");
         }
-        //获取考试相关班级，然后查询班级下有多少人
         List<Integer> classList = examClassService.lambdaQuery().eq(ExamClass::getExamId, examId).list().stream().map(ExamClass::getClassId).collect(Collectors.toList());
         List<User> userList = userService.lambdaQuery().in(User::getClassId, classList).eq(User::getIsDel, 0).list();
         if (userList.isEmpty()){
             return BaseResponse.fail("该考试下没有考生，请检查关联班级");
         }
-        //生成固定token
         String token = XinKaoConstant.ROLL_MAKING+examId;
-        //验证该token是否有值，如果有则拦截
         if (redisUtil.get(token) != null){
-            //如果value ！= 1则返回
             if (!"1".equals(redisUtil.get(token))){
                 return BaseResponse.fail("该考试正在制卷中，请勿重复操作！");
             }
         }
         redisUtil.set(token, "0", 2, TimeUnit.HOURS);
         examPageSetService.updateById(examPageSet);
-        //异步线程执行导入
         @Valid ExamPageSet finalExamPageSet = examPageSet;
         ThreadUtil.execAsync(() -> {
             examPageStuQuestionService.rollMaking(finalExamPageSet,userList,token);
@@ -92,10 +75,6 @@ public class ExamPageUserQuestionController {
         return BaseResponse.ok("该考试下考生共"+userList.size()+"人,开始制卷......",token);
     }
 
-    /**
-     *
-     * 获取制卷进度
-     */
     @PostMapping("/getProgress/{examId}/{token}")
     public BaseResponse<Map<String,Integer>> getProgress(@PathVariable("examId") String examId, @PathVariable("token") String token) {
         if (StrUtil.isBlank(examId)){

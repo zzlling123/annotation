@@ -22,15 +22,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.ArrayList;
 
-/**
- * 考试和专家模块控制器
- *
- * @author zzl
- * @since 2025-04-05 23:15:56
- */
 @RestController
 @RequestMapping("/exam-expert")
-@Api(tags = "考试专家管理")
 public class ExamExpertController {
 
     @Autowired
@@ -48,11 +41,7 @@ public class ExamExpertController {
     @Autowired
     private RedisUtil redisUtil;
 
-    /**
-     * 新增考试专家关联
-     */
     @PostMapping("/add")
-    @ApiOperation("新增考试专家关联")
     public BaseResponse<?> addExamExpert(@RequestBody ExamExpertDTO examExpertDTO) {
         try {
             ExamExpert examExpert = new ExamExpert();
@@ -66,11 +55,7 @@ public class ExamExpertController {
         }
     }
 
-    /**
-     * 批量新增考试专家关联
-     */
     @PostMapping("/batch-add")
-    @ApiOperation("批量新增考试专家关联")
     public BaseResponse<?> batchAddExamExperts(@RequestBody BatchExamExpertDTO batchExamExpertDTO) {
         try {
             if (batchExamExpertDTO.getExamId() == null) {
@@ -80,8 +65,7 @@ public class ExamExpertController {
             if (batchExamExpertDTO.getExpertIds() == null || batchExamExpertDTO.getExpertIds().isEmpty()) {
                 return BaseResponse.fail("专家ID列表不能为空");
             }
-            
-            // 检查是否已存在相同的关联
+
             List<ExamExpert> existingExperts = examExpertService.lambdaQuery()
                     .eq(ExamExpert::getExamId, batchExamExpertDTO.getExamId())
                     .in(ExamExpert::getExpertId, batchExamExpertDTO.getExpertIds())
@@ -93,8 +77,7 @@ public class ExamExpertController {
                         .collect(java.util.stream.Collectors.toList());
                 return BaseResponse.fail("以下专家已关联该考试：" + existingExpertIds);
             }
-            
-            // 批量创建关联
+
             List<ExamExpert> examExperts = new ArrayList<>();
             for (Integer expertId : batchExamExpertDTO.getExpertIds()) {
                 ExamExpert examExpert = new ExamExpert();
@@ -110,11 +93,7 @@ public class ExamExpertController {
         }
     }
 
-    /**
-     * 根据专家ID和考试ID删除关联
-     */
     @DeleteMapping("/delete")
-    @ApiOperation("根据专家ID和考试ID删除关联")
     public BaseResponse<?> deleteExamExpertByExpertAndExam(
             @RequestParam Integer expertId,
             @RequestParam Integer examId) {
@@ -129,11 +108,7 @@ public class ExamExpertController {
         }
     }
 
-    /**
-     * 批量删除考试专家关联
-     */
     @DeleteMapping("/batch-delete")
-    @ApiOperation("批量删除考试专家关联")
     public BaseResponse<?> batchDeleteExamExperts(@RequestBody BatchExamExpertDTO batchExamExpertDTO) {
         try {
             if (batchExamExpertDTO.getExamId() == null) {
@@ -143,19 +118,16 @@ public class ExamExpertController {
             if (batchExamExpertDTO.getExpertIds() == null || batchExamExpertDTO.getExpertIds().isEmpty()) {
                 return BaseResponse.fail("专家ID列表不能为空");
             }
-            
-            // 构建删除条件
+
             LambdaQueryWrapper<ExamExpert> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(ExamExpert::getExamId, batchExamExpertDTO.getExamId())
                    .in(ExamExpert::getExpertId, batchExamExpertDTO.getExpertIds());
-            
-            // 先查询要删除的记录数量
+
             long count = examExpertService.count(wrapper);
             if (count == 0) {
                 return BaseResponse.fail("未找到要删除的关联记录");
             }
-            
-            // 执行批量删除
+
             boolean result = examExpertService.remove(wrapper);
             return result ? BaseResponse.ok("批量删除成功，共删除 " + count + " 条关联记录") : BaseResponse.fail("批量删除失败");
         } catch (Exception e) {
@@ -163,11 +135,7 @@ public class ExamExpertController {
         }
     }
 
-    /**
-     * 更新考试专家关联
-     */
     @PutMapping("/update")
-    @ApiOperation("更新考试专家关联")
     public BaseResponse<?> updateExamExpert(@RequestBody ExamExpertDTO examExpertDTO) {
         try {
             ExamExpert examExpert = new ExamExpert();
@@ -181,12 +149,7 @@ public class ExamExpertController {
         }
     }
 
-
-    /**
-     * 查询所有考试专家关联
-     */
     @GetMapping("/list")
-    @ApiOperation("查询所有考试专家关联")
     public BaseResponse<List<ExamExpert>> getAllExamExperts() {
         try {
             List<ExamExpert> list = examExpertService.list();
@@ -196,11 +159,7 @@ public class ExamExpertController {
         }
     }
 
-    /**
-     * 根据考试ID查询专家列表
-     */
     @GetMapping("/experts/{examId}")
-    @ApiOperation("根据考试ID查询专家列表")
     public BaseResponse<List<ExamExpert>> getExpertsByExamId(@PathVariable Integer examId) {
         try {
             List<ExamExpert> experts = examExpertService.getExpertsByExamId(examId);
@@ -210,11 +169,7 @@ public class ExamExpertController {
         }
     }
 
-    /**
-     * 根据专家ID查询考试列表
-     */
     @GetMapping("/exams/{expertId}")
-    @ApiOperation("根据专家ID查询考试列表")
     public BaseResponse<List<ExamExpert>> getExamsByExpertId(@PathVariable Integer expertId) {
         try {
             List<ExamExpert> exams = examExpertService.getExamsByExpertId(expertId);
@@ -224,29 +179,23 @@ public class ExamExpertController {
         }
     }
 
-    /**
-     * 查询角色名为"评审专家"的用户信息
-     */
     @GetMapping("/expert-users")
-    @ApiOperation("查询角色名为'评审专家'的用户信息")
     public BaseResponse<List<User>> getExpertUsers() {
         try {
-            // 1. 先查询角色名为"评审专家"的角色ID
             Role expertRole = roleService.lambdaQuery()
                     .eq(Role::getRoleName, "评审专家")
-                    .eq(Role::getIsDel, 0)  // 未删除的角色
+                    .eq(Role::getIsDel, 0)
                     .one();
             
             if (expertRole == null) {
                 return BaseResponse.fail("未找到'评审专家'角色");
             }
-            
-            // 2. 根据角色ID查询用户列表
+
             List<User> expertUsers = userService.lambdaQuery()
                     .eq(User::getRoleId, expertRole.getId())
-                    .eq(User::getIsDel, 0)  // 未删除的用户
-                    .eq(User::getState, 1)   // 启用的用户
-                    .orderByDesc(User::getCreateTime)  // 按创建时间倒序
+                    .eq(User::getIsDel, 0)
+                    .eq(User::getState, 1)
+                    .orderByDesc(User::getCreateTime)
                     .list();
             
             return BaseResponse.ok(expertUsers);
@@ -255,11 +204,7 @@ public class ExamExpertController {
         }
     }
 
-    /**
-     * 为考试分配专家判卷任务
-     */
     @PostMapping("/assign-exam/{examId}")
-    @ApiOperation("为考试分配专家判卷任务")
     public BaseResponse<?> assignExamToExperts(@PathVariable Integer examId) {
         try {
             boolean result = examExpertAssignmentService.assignExamToExperts(examId);
@@ -269,11 +214,7 @@ public class ExamExpertController {
         }
     }
 
-    /**
-     * 查询考试的专家判卷分配情况
-     */
     @GetMapping("/assignments/{examId}")
-    @ApiOperation("查询考试的专家判卷分配情况")
     public BaseResponse<List<ExamExpertAssignment>> getExamAssignments(@PathVariable Integer examId) {
         try {
             List<ExamExpertAssignment> assignments = examExpertAssignmentService.getAssignmentsByExamId(examId);
@@ -283,11 +224,7 @@ public class ExamExpertController {
         }
     }
 
-    /**
-     * 查询专家的判卷任务
-     */
     @GetMapping("/expert-assignments/{expertId}")
-    @ApiOperation("查询专家的判卷任务")
     public BaseResponse<List<ExamExpertAssignment>> getExpertAssignments(@PathVariable Integer expertId) {
         try {
             List<ExamExpertAssignment> assignments = examExpertAssignmentService.getAssignmentsByExpertId(expertId);
@@ -297,22 +234,16 @@ public class ExamExpertController {
         }
     }
 
-    /**
-     * 根据考试ID查询当前专家需要判卷的考生列表
-     */
     @GetMapping("/my-assignments/{examId}")
-    @ApiOperation("根据考试ID查询当前专家需要判卷的考生列表")
     public BaseResponse<List<ExamExpertAssignment>> getMyAssignments(@PathVariable Integer examId) {
         try {
-            // 获取当前登录用户信息
             LoginUser loginUserAll = redisUtil.getInfoByToken();
             if (loginUserAll == null || loginUserAll.getUser() == null) {
                 return BaseResponse.fail("用户未登录");
             }
             
             Integer expertId = loginUserAll.getUser().getId();
-            
-            // 查询当前专家在该考试中的判卷任务
+
             List<ExamExpertAssignment> assignments = examExpertAssignmentService.lambdaQuery()
                     .eq(ExamExpertAssignment::getExamId, examId)
                     .eq(ExamExpertAssignment::getExpertId, expertId)
@@ -326,26 +257,20 @@ public class ExamExpertController {
         }
     }
 
-    /**
-     * 根据考试ID查询当前专家需要判卷的考生列表（未判卷的）
-     */
     @GetMapping("/my-pending-assignments/{examId}")
-    @ApiOperation("根据考试ID查询当前专家需要判卷的考生列表（未判卷的）")
     public BaseResponse<List<ExamExpertAssignment>> getMyPendingAssignments(@PathVariable Integer examId) {
         try {
-            // 获取当前登录用户信息
             LoginUser loginUserAll = redisUtil.getInfoByToken();
             if (loginUserAll == null || loginUserAll.getUser() == null) {
                 return BaseResponse.fail("用户未登录");
             }
             
             Integer expertId = loginUserAll.getUser().getId();
-            
-            // 查询当前专家在该考试中未判卷的任务
+
             List<ExamExpertAssignment> assignments = examExpertAssignmentService.lambdaQuery()
                     .eq(ExamExpertAssignment::getExamId, examId)
                     .eq(ExamExpertAssignment::getExpertId, expertId)
-                    .eq(ExamExpertAssignment::getStatus, 0) // 未判卷
+                    .eq(ExamExpertAssignment::getStatus, 0)
                     .eq(ExamExpertAssignment::getIsDel, 0)
                     .orderByAsc(ExamExpertAssignment::getCreateTime)
                     .list();
@@ -356,26 +281,20 @@ public class ExamExpertController {
         }
     }
 
-    /**
-     * 根据考试ID查询当前专家已判卷的考生列表
-     */
     @GetMapping("/my-completed-assignments/{examId}")
-    @ApiOperation("根据考试ID查询当前专家已判卷的考生列表")
     public BaseResponse<List<ExamExpertAssignment>> getMyCompletedAssignments(@PathVariable Integer examId) {
         try {
-            // 获取当前登录用户信息
             LoginUser loginUserAll = redisUtil.getInfoByToken();
             if (loginUserAll == null || loginUserAll.getUser() == null) {
                 return BaseResponse.fail("用户未登录");
             }
             
             Integer expertId = loginUserAll.getUser().getId();
-            
-            // 查询当前专家在该考试中已判卷的任务
+
             List<ExamExpertAssignment> assignments = examExpertAssignmentService.lambdaQuery()
                     .eq(ExamExpertAssignment::getExamId, examId)
                     .eq(ExamExpertAssignment::getExpertId, expertId)
-                    .eq(ExamExpertAssignment::getStatus, 2) // 已判卷
+                    .eq(ExamExpertAssignment::getStatus, 2)
                     .eq(ExamExpertAssignment::getIsDel, 0)
                     .orderByAsc(ExamExpertAssignment::getCreateTime)
                     .list();
@@ -385,6 +304,4 @@ public class ExamExpertController {
             return BaseResponse.fail("查询失败：" + e.getMessage());
         }
     }
-
-
 }

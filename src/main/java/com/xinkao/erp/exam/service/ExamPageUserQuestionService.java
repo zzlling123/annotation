@@ -11,30 +11,9 @@ import com.xinkao.erp.user.entity.User;
 import java.util.List;
 import java.util.Map;
 
-/**
- * <p>
- * 试卷表 服务类
- * </p>
- *
- * @author Ldy
- * @since 2025-03-29 16:06:02
- */
 public interface ExamPageUserQuestionService extends BaseService<ExamPageUserQuestion> {
 
-    /**
-     * 制卷
-     * @param examPageSet
-     * @param userList
-     * @param token
-     * @return
-     */
     void rollMaking(ExamPageSet examPageSet, List<User> userList, String token);
 
-    /**
-     * 查询生成进度
-     * @param examId
-     * @param token
-     * @return
-     */
     BaseResponse<Map<String,Integer>> getProgress(String examId, String token);
 }

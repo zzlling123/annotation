@@ -10,14 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * <p>
- * 考试-班级关联表 服务实现类
- * </p>
- *
- * @author Ldy
- * @since 2025-03-29 16:15:00
- */
 @Service
 public class ExamClassServiceImpl extends BaseServiceImpl<ExamClassMapper, ExamClass> implements ExamClassService {
 
