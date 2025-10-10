@@ -56,7 +56,6 @@ public class ExerciseRecordsController {
 
 
     @PostMapping("/create")
-    @ApiOperation("选择模块创建练习练习")
     @PrimaryDataSource
     public BaseResponse<?> create( @RequestBody CreateParam createParam) {
         int moduleId = createParam.getModuleId();

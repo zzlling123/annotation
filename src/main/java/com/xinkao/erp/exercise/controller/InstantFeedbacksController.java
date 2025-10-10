@@ -25,7 +25,6 @@ public class InstantFeedbacksController {
     private InstantFeedbacksService instantFeedbacksService;
     @PrimaryDataSource
     @PostMapping("/page")
-    @ApiOperation("分页查询即时反馈表")
     public BaseResponse<Page<InstantFeedbacks>> page(@Valid @RequestBody InstantFeedbacksQuery query) {
         Pageable pageable = query.getPageInfo();
         Page<InstantFeedbacks> voPage = instantFeedbacksService.page(query, pageable);
@@ -34,14 +33,12 @@ public class InstantFeedbacksController {
 
     @PrimaryDataSource
     @PostMapping("/save")
-    @ApiOperation("添加练习记录表 提交练习答案")
     @Log(content = "添加练习记录表，提交练习答案", operationType = OperationType.INSERT, isSaveRequestData = false)
     public BaseResponse<?> save(@Valid @RequestBody InstantFeedbacks instantFeedbacks) {
         return instantFeedbacksService.save1(instantFeedbacks);
     }
 
     @PostMapping("/update")
-    @ApiOperation("更新练习记录表")
     @Log(content = "更新练习记录表", operationType = OperationType.UPDATE, isSaveRequestData = false)
     public BaseResponse<?> update(@Valid @RequestBody InstantFeedbacks instantFeedbacks) {
         if (instantFeedbacks.getId() == null) {
@@ -51,7 +48,6 @@ public class InstantFeedbacksController {
     }
 
     @PostMapping("/delete/{id}")
-    @ApiOperation("删除练习记录表")
     @Log(content = "删除练习记录表", operationType = OperationType.DELETE, isSaveRequestData = false)
     public BaseResponse<?> delete(@PathVariable Integer id) {
         return instantFeedbacksService.delete(id);
