@@ -123,22 +123,22 @@ public class KnowledgePointCacheManager {
 
     @Data
     public static class KnowledgePointMatchResult {
-        /** 是否匹配成功 */
+        
         private boolean matched;
         
-        /** 匹配到的知识点ID */
+        
         private Integer difficultyPointId;
         
-        /** 匹配类型：EXACT/FUZZY/NOT_FOUND/EMPTY/NO_AVAILABLE_POINTS */
+        
         private String matchType;
         
-        /** 匹配建议（用于模糊匹配时的提示） */
+        
         private String suggestion;
         
-        /** 错误信息 */
+        
         private String errorMessage;
         
-        /** 该难度等级下可选的知识点列表 */
+        
         private List<String> availablePoints;
     }
 }

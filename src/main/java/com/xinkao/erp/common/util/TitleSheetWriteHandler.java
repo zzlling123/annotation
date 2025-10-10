@@ -22,7 +22,7 @@ public class TitleSheetWriteHandler implements SheetWriteHandler {
     public void afterSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {
         Workbook workbook = writeWorkbookHolder.getWorkbook();
         Sheet sheet = workbook.getSheetAt(0);
-        //设置标题
+
         Row row = sheet.createRow(0);
         row.setHeight((short) 4700);
         Cell cell = row.createCell(0);
@@ -31,9 +31,9 @@ public class TitleSheetWriteHandler implements SheetWriteHandler {
         cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
         cellStyle.setAlignment(HorizontalAlignment.LEFT);
         Font font = workbook.createFont();
-//        font.setBold(true);
+
         font.setColor(IndexedColors.RED.getIndex());
-//        font.setFontHeight((short) 400);
+
         cellStyle.setFont(font);
         cellStyle.setWrapText(true);
         cell.setCellStyle(cellStyle);

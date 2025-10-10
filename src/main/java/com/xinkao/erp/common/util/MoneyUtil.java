@@ -20,7 +20,7 @@ public class MoneyUtil {
 		str = str.replaceAll(",", "");// 去掉","
 		String integerStr;// 整数部分数字
 		String decimalStr;// 小数部分数字
-		// 初始化：分离整数部分和小数部分
+
 		if (str.indexOf(".") > 0) {
 			integerStr = str.substring(0, str.indexOf("."));
 			decimalStr = str.substring(str.indexOf(".") + 1);
@@ -32,7 +32,6 @@ public class MoneyUtil {
 			decimalStr = "";
 		}
 
-		// integerStr去掉首0，不必去掉decimalStr的尾0(超出部分舍去)
 		if (!integerStr.equals("")) {
 			integerStr = Long.toString(Long.parseLong(integerStr));
 			if (integerStr.equals("0")) {
@@ -40,7 +39,6 @@ public class MoneyUtil {
 			}
 		}
 
-		// overflow超出处理能力，直接返回
 		if (integerStr.length() > IUNIT.length) {
 			return str;
 		}
@@ -70,8 +68,8 @@ public class MoneyUtil {
 		StringBuffer chineseInteger = new StringBuffer("");
 		int length = integers.length;
 		for (int i = 0; i < length; i++) {
-			// 0出现在关键位置：1234(万)5678(亿)9012(万)3456(元)
-			// 特殊情况：10(拾元、壹拾元、壹拾万元、拾万元)
+
+
 			String key = "";
 			if (integers[i] == 0) {
 				if ((length - i) == 13)// 万(亿)(必填)
@@ -82,7 +80,7 @@ public class MoneyUtil {
 					key = IUNIT[4];
 				else if ((length - i) == 1)// 元(必填)
 					key = IUNIT[0];
-				// 0遇非0时补零，不包含最后一位
+
 				if ((length - i) > 1 && integers[i + 1] != 0)
 					key += NUMBERS[0];
 			}
@@ -95,7 +93,7 @@ public class MoneyUtil {
 	private static String getChineseDecimal(int[] decimals) {
 		StringBuffer chineseDecimal = new StringBuffer("");
 		for (int i = 0; i < decimals.length; i++) {
-			// 舍去3位小数之后的
+
 			if (i == 3)
 				break;
 			chineseDecimal.append(decimals[i] == 0 ? "" : (NUMBERS[decimals[i]] + DUNIT[i]));
@@ -109,7 +107,7 @@ public class MoneyUtil {
 		if (length > 4) {
 			String subInteger = "";
 			if (length > 8) {
-				// 取得从低位数，第5到第8位的字串
+
 				subInteger = integerStr.substring(length - 8, length - 4);
 			} else {
 				subInteger = integerStr.substring(0, length - 4);

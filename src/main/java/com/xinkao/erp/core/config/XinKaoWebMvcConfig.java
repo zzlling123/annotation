@@ -69,7 +69,7 @@ public class XinKaoWebMvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler(this.uploadUrlPattern).addResourceLocations(uploadDir);
         registry.addResourceHandler("doc.html").addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
-//        registry.addResourceHandler("/qrCode/**").addResourceLocations("classpath:/META-INF/resources/static/qrCode/");
+
         registry.addResourceHandler("/fileUrl/**").addResourceLocations("file:"+QRCODE_PATH);
         registry.addResourceHandler("/image/**").addResourceLocations("file:"+IMAGE_PATH);
         registry.addResourceHandler("/pcd/**").addResourceLocations("file:"+PCD_PATH);

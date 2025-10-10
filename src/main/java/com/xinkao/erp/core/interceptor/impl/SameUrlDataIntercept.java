@@ -21,9 +21,7 @@ import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * 判断请求url和数据是否和上一次相同，如果和上次相同，则是重复提交表单
- **/
+
 @Component
 @Slf4j
 public class SameUrlDataIntercept extends RepeatSubmitInterceptor {
@@ -35,10 +33,7 @@ public class SameUrlDataIntercept extends RepeatSubmitInterceptor {
     @Resource
     private RedisUtil redisUtil;
 
-    /**
-     * 间隔时间，单位:秒 默认3秒
-     * 两次相同参数的请求，如果间隔时间大于该参数，系统不会认定为重复提交的数据
-     */
+    
     private int intervalTime = 3;
 
     @Override
@@ -53,7 +48,6 @@ public class SameUrlDataIntercept extends RepeatSubmitInterceptor {
             }
         }
 
-        // body参数为空，获取Parameter的数据
         if (StrUtil.isNotEmpty(nowParams)) {
             nowParams = JSONObject.toJSONString(request.getParameterMap());
         }
@@ -61,15 +55,13 @@ public class SameUrlDataIntercept extends RepeatSubmitInterceptor {
         nowDataMap.put(REPEAT_PARAMS, nowParams);
         nowDataMap.put(REPEAT_TIME, System.currentTimeMillis());
 
-        // 请求地址（作为存放cache的key值）
         String url = request.getRequestURI();
 
-        // 唯一值（没有消息头则使用请求地址）
         String submitKey = request.getHeader(XinKaoConstant.ACCESS_TOKEN);
         if (Validator.isEmpty(submitKey)) {
             submitKey = url;
         }
-        // 唯一标识（指定key + 消息头）
+
         String cacheRepeatKey = XinKaoConstant.REPEAT_SUBMIT_KEY + submitKey;
 
         Object sessionObj = redisUtil.getMap(cacheRepeatKey);
@@ -88,24 +80,14 @@ public class SameUrlDataIntercept extends RepeatSubmitInterceptor {
         return false;
     }
 
-    /**
-     * 判断参数是否相同
-     * @param nowMap 本次参数
-     * @param preMap 上次参数
-     * @return boolean 是否相同
-     */
+    
     private boolean compareParams(Map<String, Object> nowMap, Map<String, Object> preMap) {
         String nowParams = (String) nowMap.get(REPEAT_PARAMS);
         String preParams = (String) preMap.get(REPEAT_PARAMS);
         return nowParams.equals(preParams);
     }
 
-    /**
-     * 判断两次间隔时间
-     * @param nowMap 本次时间
-     * @param preMap 上次时间
-     * @return 注释
-     */
+    
     private boolean compareTime(Map<String, Object> nowMap, Map<String, Object> preMap) {
         long time1 = (Long) nowMap.get(REPEAT_TIME);
         long time2 = (Long) preMap.get(REPEAT_TIME);

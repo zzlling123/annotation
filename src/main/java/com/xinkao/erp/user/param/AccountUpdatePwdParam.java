@@ -5,11 +5,7 @@ import javax.validation.constraints.Size;
 
 import lombok.Data;
 
-/**
- * <p>
- * 用户修改密码参数
- * </p>
- */
+
 @Data
 public class AccountUpdatePwdParam {
 

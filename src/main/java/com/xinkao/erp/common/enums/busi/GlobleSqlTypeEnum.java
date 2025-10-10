@@ -4,15 +4,11 @@ import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import lombok.Getter;
-/**
- * 生成常量自增id业务常量
- * 字典常量
- **/
+
 @Getter
 public enum GlobleSqlTypeEnum {
 	, //
 
-    //构造
     ;
 
     @EnumValue

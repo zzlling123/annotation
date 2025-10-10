@@ -35,13 +35,7 @@ public class SimpleCharVerifyCodeGenImpl {
         }
     }
 
-    /**
-     * @Author ZSX
-     * @Description 生成随机字符
-     * @Date 2020/12/22 14:30
-     * @Param [width, height, os]
-     * @return String
-     **/
+    
     public String generate(int width, int height, OutputStream os) throws IOException {
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics graphics = image.getGraphics();
@@ -53,13 +47,7 @@ public class SimpleCharVerifyCodeGenImpl {
         return randomStr;
     }
 
-    /**
-     * @Author ZSX
-     * @Description 生成验证码
-     * @Date 2020/12/22 14:30
-     * @Param [width, height]
-     * @return VerifyCodeDTO
-     **/
+    
     public VerifyCodeDao generate(int width, int height) {
         VerifyCodeDao verifyCode = null;
         try (
@@ -75,13 +63,7 @@ public class SimpleCharVerifyCodeGenImpl {
         return verifyCode;
     }
 
-    /**
-     * @Author ZSX
-     * @Description 设置字符颜色大小
-     * @Date 2020/12/22 14:30
-     * @Param [g, randomStr]
-     * @return
-     **/
+    
     private void createCharacter(Graphics g, String randomStr) {
         char[] charArray = randomStr.toCharArray();
         for (int i = 0; i < charArray.length; i++) {

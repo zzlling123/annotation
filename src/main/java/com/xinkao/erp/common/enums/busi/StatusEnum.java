@@ -35,7 +35,6 @@ public enum StatusEnum {
         throw new IllegalArgumentException("Invalid code: " + code);
     }
 
-    // 根据name获取code
     public static Integer getCodeByName(String name) {
         for (StatusEnum status : StatusEnum.values()) {
             if (status.getName().equals(name)) {

@@ -5,11 +5,7 @@ import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.annotation.write.style.HeadRowHeight;
 import lombok.Data;
 
-/**
- * 多选题 Sheet 实体
- * 预期表头：序号、题目分类、题目难度、所属范围、试题、选项A、选项B、选项C、选项D、选项E（可选）、答案
- * 答案支持多选，示例：AB、ACD、ABCDE
- */
+
 @Data
 @HeadRowHeight(20)
 public class MultipleChoiceSheetModel {
@@ -54,7 +50,6 @@ public class MultipleChoiceSheetModel {
     @ColumnWidth(28)
     private String optionE;
 
-    // 多选题答案：期望为如 "AB"、"ACD" 组合
     @ExcelProperty("答案")
     @ColumnWidth(12)
     private String answer;

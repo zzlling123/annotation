@@ -114,8 +114,7 @@ public class ManualController extends BaseController {
             System.out.println("fileName:" + file.getOriginalFilename());
             saveFileName = UUID.randomUUID().toString() + file.getOriginalFilename();
             File fileNew = new File(fileUrl, saveFileName);
-            
-            // 创建父目录（如果不存在）
+
             if (!fileNew.getParentFile().exists()) {
                 fileNew.getParentFile().mkdirs();
             }

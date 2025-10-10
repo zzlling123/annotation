@@ -468,7 +468,7 @@ public class SummaryController {
                             .eq(ExamPageUserAnswer::getExamId,examId)
                             .in(ExamPageUserAnswer::getUserId,userIds)
             );
-            //查询所有的shape
+
             List<Shape> shapeList = shapeService.list();
             for (Shape shape : shapeList){
                 ClassSummaryParam classSummaryParam = new ClassSummaryParam();
@@ -494,7 +494,7 @@ public class SummaryController {
             }
             questionTypeService.list().forEach(questionType -> {
                 ClassSummaryParam classSummaryParam = new ClassSummaryParam();
-                //筛选出来操作题
+
                 List<ExamPageUserAnswer> examPageUserAnswer_type =
                         examPageUserAnswerList.stream().filter(examPageUserAnswer -> examPageUserAnswer.getType().equals(questionType.getId())&&examPageUserAnswer.getShape()==500).collect(Collectors.toList());
                 BigDecimal maxScore = examPageUserAnswer_type.stream().map(ExamPageUserAnswer::getUserScore).max(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
@@ -647,7 +647,7 @@ public class SummaryController {
                     classId  = classInfoService.list().get(0).getId();
                 }else if (roleId == 2){
                     classId = classInfoService.list().stream().filter(classInfo -> classInfo.getId().equals(loginUserAll.getUser().getClassId())).findFirst().get().getId();
-                    //classId = 3;
+
                 }else {
                     return BaseResponse.fail("无权限显示");
                 }
@@ -755,7 +755,7 @@ public class SummaryController {
 
     @RequestMapping("/getExamListByClass/{classId}")
     public BaseResponse<?> getExamListByClass(@PathVariable Integer classId) {
-        //获取登录用户
+
         LoginUser loginUserAll = redisUtil.getInfoByToken();
         if (loginUserAll == null || loginUserAll.getUser() == null) {
             return BaseResponse.fail("用户未登录");

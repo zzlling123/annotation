@@ -34,14 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * <p>
- * 考试表 服务实现类
- * </p>
- *
- * @author Ldy
- * @since 2025-03-29 16:09:19
- */
+
 @Service
 public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implements ExamService {
 

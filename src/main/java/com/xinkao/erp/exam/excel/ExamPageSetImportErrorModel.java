@@ -7,19 +7,12 @@ import com.xinkao.erp.common.model.BaseExcelModel;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * 调班导入模板
- * @ClassName StuUpdateClassImportModel
- * @Description
- * @Author Ldy
- * @Date 2022/06/25 15:38
- **/
+
 @HeadRowHeight(20)
 @Setter
 @Getter
 public class ExamPageSetImportErrorModel extends BaseExcelModel {
 
-    //单选题、多选题、填空题、问答题、实践题
     @ExcelProperty(index = 0,value = "题目分类")
     @ColumnWidth(20)
     private String type;

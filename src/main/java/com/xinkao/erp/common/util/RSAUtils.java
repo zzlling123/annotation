@@ -144,57 +144,40 @@ public class RSAUtils {
 
 	    
 	    public static String sign(byte[] data, byte[] priKey) throws Exception {
-	        // 取得私钥
+
 	        PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(priKey);
 	        KeyFactory keyFactory = KeyFactory.getInstance(RSA_KEY_ALGORITHM);
-	        // 生成私钥
+
 	        PrivateKey privateKey = keyFactory.generatePrivate(pkcs8KeySpec);
-	        // 实例化Signature
+
 	        Signature signature = Signature.getInstance(SIGNATURE_ALGORITHM);
-	        // 初始化Signature
+
 	        signature.initSign(privateKey);
-	        // 更新
+
 	        signature.update(data);
 	        return Base64.encodeBase64String(signature.sign());
 	    }
 
 	    
 	    public boolean verify(byte[] data, byte[] sign, byte[] pubKey) throws Exception {
-	        // 实例化密钥工厂
+
 	        KeyFactory keyFactory = KeyFactory.getInstance(RSA_KEY_ALGORITHM);
-	        // 初始化公钥
+
 	        X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(pubKey);
-	        // 产生公钥
+
 	        PublicKey publicKey = keyFactory.generatePublic(x509KeySpec);
-	        // 实例化Signature
+
 	        Signature signature = Signature.getInstance(SIGNATURE_ALGORITHM);
-	        // 初始化Signature
+
 	        signature.initVerify(publicKey);
-	        // 更新
+
 	        signature.update(data);
-	        // 验证
+
 	        return signature.verify(sign);
 	    }
 
 	    public static void main(String[] args) {
 	        try {
-//	            Map<String, String> keyMap = initKey();
-//	            String publicKeyString = keyMap.get("publicKeyString");
-//	            String privateKeyString = keyMap.get("privateKeyString");
-//	            logger.info("公钥:" + publicKeyString);
-//	            logger.info("私钥:" + privateKeyString);
-//
-//	            // 待加密数据
-//	            String data = "admin123";
-//	            // 公钥加密
-//	            String encrypt = RSAUtils.encryptByPubKey(data, publicKeyString);
-//	            // 私钥解密
-//	            String decrypt = RSAUtils.decryptByPriKey(encrypt, privateKeyString);
-//
-//	            logger.info("加密前:" + data);
-//	            logger.info("加密后:" + encrypt);
-//	            logger.info("解密后:" + decrypt);
-	            
 	            logger.info(RSAUtils.myDecryptByPriKey("palI8Guhj2FcRgKJL/v/+a4r86XLkOKwYzrMcni6niEhaKP8Tbh3eHpGnpn4AZr0PVuxiCFlQ2dHDtIVmYIoMJPyneiT6dll8bL8QyhFCdnTEo3mSrZagJpqHrv3iHfcTo/+6oD8OD3FLniOdRCSjXRMCjEcUomZjNkjNZondZE="));
 	        } catch (Exception e) {
 	            e.printStackTrace();

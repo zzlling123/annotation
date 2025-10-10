@@ -2,9 +2,7 @@ package com.xinkao.erp.common.exception.file;
 
 import cn.hutool.core.util.StrUtil;
 
-/**
- * 文件名大小限制异常类
- */
+
 public class FileSizeLimitExceededException extends FileException
 {
     private static final long serialVersionUID = 1L;

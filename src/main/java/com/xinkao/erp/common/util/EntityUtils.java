@@ -9,7 +9,7 @@ public class EntityUtils {
     
     public static void hasAllRequired(final Object Object, String requiredColumns) {
         if (StrUtil.isNotEmpty(requiredColumns) && ObjectUtil.isNotEmpty(Object)) {
-            //验证字段非空
+
             String[] columns = requiredColumns.split(",");
             String missCol = "";
             for (String column : columns) {

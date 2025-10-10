@@ -5,29 +5,17 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum QuestionTypesEnum {
 
-    /**
-     * 单选题
-     */
+    
     DANXUAN(100, "单选题"),
-    /**
-     * 多选题
-     */
+    
     DUOXUAN(200, "多选题"),
-    /**
-     * 填空题
-     */
+    
     TIANKONG(300, "填空题"),
-    /**
-     * 主观题
-     */
+    
     ZHUGUAN(400, "主观题"),
-    /**
-     * 判断题
-     */
+    
     PANDUAN(700, "判断题"),
-    /**
-     * 题目单
-     */
+    
     TIMUDAN(600, "题目单");
 
     @EnumValue

@@ -55,7 +55,7 @@ public class FileUtil {
             , file.getName());
         try (InputStream input = new FileInputStream(file);
             OutputStream os = item.getOutputStream()) {
-            // 流转移
+
             IOUtils.copy(input, os);
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid file: " + e, e);
@@ -74,10 +74,10 @@ public class FileUtil {
         response.setCharacterEncoding("utf-8");
         fileName = URLEncoder.encode(fileName, "UTF-8");
         response.setHeader("Content-disposition", "attachment;filename=" + fileName);
-        // 发送给客户端的数据
+
         OutputStream outputStream = response.getOutputStream();
         byte[] buff = new byte[1024];
-        // 读取filename
+
         try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))){
             int i = bis.read(buff);
             while (i != -1) {
@@ -101,10 +101,10 @@ public class FileUtil {
     	response.setCharacterEncoding("UTF-8");
     	fileName = URLEncoder.encode(fileName, "UTF-8");
     	response.setHeader("Content-disposition", "attachment;filename=" + fileName);
-    	// 发送给客户端的数据
+
     	OutputStream outputStream = response.getOutputStream();
     	byte[] buff = new byte[1024];
-    	// 读取filename
+
     	try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))){
     		int i = bis.read(buff);
     		while (i != -1) {

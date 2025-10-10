@@ -15,5 +15,4 @@ public class ExamResultVo {
 
     private Integer obtainedScore;
 
-    // TODO: 添加其他必要的字段
 }

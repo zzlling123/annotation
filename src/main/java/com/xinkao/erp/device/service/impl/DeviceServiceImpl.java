@@ -111,8 +111,7 @@ public class DeviceServiceImpl implements DeviceService {
         LoginUser loginUser = redisUtil.getInfoByToken();
         Device device = new Device();
         BeanUtils.copyProperties(param, device);
-        
-        // 生成设备密钥
+
         device.setDeviceName(param.getDeviceName());
         device.setDescription(param.getDescription());
         device.setMacAddress(param.getMacAddress());

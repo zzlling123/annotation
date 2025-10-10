@@ -10,13 +10,9 @@ import java.math.BigDecimal;
 @Setter
 public class ExamProgressVo {
 
-    /**
-     * 题目ID
-     */
+    
     private String questionId;
-    /**
-     * 题号
-     */
+    
     private String num;
 
     private Integer shape;

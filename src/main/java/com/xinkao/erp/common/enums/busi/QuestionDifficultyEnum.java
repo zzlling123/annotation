@@ -38,7 +38,6 @@ public enum QuestionDifficultyEnum {
         throw new IllegalArgumentException("Invalid code: " + code);
     }
 
-    // 根据name获取code
     public static Integer getCodeByName(String name) {
         for (QuestionDifficultyEnum difficulty : QuestionDifficultyEnum.values()) {
             if (difficulty.getName().equals(name)) {

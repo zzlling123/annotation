@@ -16,14 +16,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * <p>
- * 管理端-菜单表
- * </p>
- *
- * @author hanhys
- * @since 2023-08-03 14:10:39
- */
+
 @Getter
 @Setter
 @TableName("menu")

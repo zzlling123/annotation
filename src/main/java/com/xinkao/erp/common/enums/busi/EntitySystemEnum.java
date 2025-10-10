@@ -35,7 +35,6 @@ public enum EntitySystemEnum {
         throw new IllegalArgumentException("Invalid code: " + code);
     }
 
-    // 根据name获取code
     public static Integer getCodeByName(String name) {
         for (EntitySystemEnum system : EntitySystemEnum.values()) {
             if (system.getName().equals(name)) {

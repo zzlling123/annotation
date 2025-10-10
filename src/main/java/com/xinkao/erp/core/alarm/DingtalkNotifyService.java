@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class DingtalkNotifyService {
-	/**告警信息**/
+	
     @Value("${dingtalk.alarm.enabled}")
     private Boolean alarmEnabled;
 

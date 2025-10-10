@@ -5,11 +5,7 @@ import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.annotation.write.style.HeadRowHeight;
 import lombok.Data;
 
-/**
- * 判断题 Sheet 实体
- * 预期表头：序号、题目分类、题目难度、所属范围、试题、对/错
- * 其中“对/错”列填写 A/B 或 对/错（后续解析时统一转换）。
- */
+
 @Data
 @HeadRowHeight(20)
 public class TrueFalseSheetModel {
@@ -34,7 +30,6 @@ public class TrueFalseSheetModel {
     @ColumnWidth(60)
     private String question;
 
-    // 判断题答案：A/对 表示正确；B/错 表示错误
     @ExcelProperty("对/错")
     @ColumnWidth(10)
     private String answer;

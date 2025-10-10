@@ -123,11 +123,10 @@ public class PasswordCheckUtil {
 	
 	private static boolean checkLateralKeyboardSite(String password) {
 		String tPassword = new String(password);
-		// 将字符串内所有字符转为小写
+
 		tPassword = tPassword.toLowerCase();
 		int length = tPassword.length();
 
-		// 键盘横向规则检测
 		int limitNum = Integer.parseInt(LIMIT_HORIZONTAL_NUM_KEY);
 		boolean isStart = true;
 		for (int i = 0; i < 2; i++) {
@@ -146,14 +145,13 @@ public class PasswordCheckUtil {
 			for (String configStr : KEYBOARD_HORIZONTAL_ARR) {
 				String revOrderStr = new StringBuffer(configStr).reverse().toString();
 
-				// 检查包含字母(区分大小写)
 				if (CHECK_DISTINGGUISH_CASE) {
-					// 考虑 大写键盘匹配的情况
+
 					String upperStr = configStr.toUpperCase();
 					if ((configStr.contains(distinguishStr)) || (upperStr.contains(distinguishStr))) {
 						return true;
 					}
-					// 考虑逆序输入情况下 连续输入
+
 					String revUpperStr = new StringBuffer(upperStr).reverse().toString();
 					if ((revOrderStr.contains(distinguishStr)) || (revUpperStr.contains(distinguishStr))) {
 						return true;
@@ -162,7 +160,7 @@ public class PasswordCheckUtil {
 					if (configStr.contains(str)) {
 						return true;
 					}
-					// 考虑逆序输入情况下 连续输入
+
 					if (revOrderStr.contains(str)) {
 						return true;
 					}
@@ -178,7 +176,6 @@ public class PasswordCheckUtil {
 		tPassword = tPassword.toLowerCase();
 		int n = tPassword.length();
 
-		// 键盘斜线方向规则检测
 		int limitNum = Integer.parseInt(LIMIT_SLOPE_NUM_KEY);
 
 		for (int i = 0; i + limitNum <= n; i++) {
@@ -186,15 +183,14 @@ public class PasswordCheckUtil {
 			String distinguishStr = password.substring(i, i + limitNum);
 			for (String configStr : KEYBOARD_SLOPE_ARR) {
 				String revOrderStr = new StringBuffer(configStr).reverse().toString();
-				// 检测包含字母(区分大小写)
+
 				if (CHECK_DISTINGGUISH_CASE) {
 
-					// 考虑 大写键盘匹配的情况
 					String upperStr = configStr.toUpperCase();
 					if ((configStr.contains(distinguishStr)) || (upperStr.contains(distinguishStr))) {
 						return true;
 					}
-					// 考虑逆序输入情况下 连续输入
+
 					String revUpperStr = new StringBuffer(upperStr).reverse().toString();
 					if ((revOrderStr.contains(distinguishStr)) || (revUpperStr.contains(distinguishStr))) {
 						return true;
@@ -203,7 +199,7 @@ public class PasswordCheckUtil {
 					if (configStr.contains(str)) {
 						return true;
 					}
-					// 考虑逆序输入情况下 连续输入
+
 					if (revOrderStr.contains(str)) {
 						return true;
 					}
@@ -216,11 +212,10 @@ public class PasswordCheckUtil {
 	
 	private static boolean checkSequentialChars(String password) {
 		String tPassword = new String(password);
-		// 将字符串内所有字符转为小写
+
 		tPassword = tPassword.toLowerCase();
 		int length = tPassword.length();
 
-		// 键盘逻辑位置检测
 		int limitNum = Integer.parseInt(LIMIT_LOGIC_NUM_CHAR);
 		boolean isStart = true;
 		for (int i = 0; i < 2; i++) {
@@ -238,14 +233,13 @@ public class PasswordCheckUtil {
 
 			String revOrderStr = new StringBuffer(SEQUENTIAL_CHARS).reverse().toString();
 
-			// 检查包含字母(区分大小写)
 			if (CHECK_DISTINGGUISH_CASE) {
-				// 考虑 大写键盘匹配的情况
+
 				String upperStr = SEQUENTIAL_CHARS.toUpperCase();
 				if ((SEQUENTIAL_CHARS.contains(distinguishStr)) || (upperStr.contains(distinguishStr))) {
 					return true;
 				}
-				// 考虑逆序输入情况下 连续输入
+
 				String revUpperStr = new StringBuffer(upperStr).reverse().toString();
 				if ((revOrderStr.contains(distinguishStr)) || (revUpperStr.contains(distinguishStr))) {
 					return true;
@@ -254,7 +248,7 @@ public class PasswordCheckUtil {
 				if (SEQUENTIAL_CHARS.contains(str)) {
 					return true;
 				}
-				// 考虑逆序输入情况下 连续输入
+
 				if (revOrderStr.contains(str)) {
 					return true;
 				}
@@ -290,37 +284,32 @@ public class PasswordCheckUtil {
 			return false;
 		}
 
-		// 检测长度
 		if (CHECK_PASSWORD_LENGTH) {
 			if (!checkPasswordLength(password)) {
 				return false;
 			}
 		}
 
-		// 检测包含数字
 		if (CHECK_CONTAIN_DIGIT) {
 			if (!checkContainDigit(password)) {
 				return false;
 			}
 		}
 
-		// 检测包含字母
 		if (CHECK_CONTAIN_CASE) {
 			if (!checkContainCase(password)) {
 				return false;
 			}
 		}
 
-		// 检测字母区分大小写
 		if (CHECK_DISTINGGUISH_CASE) {
-			// 检测包含小写字母
+
 			if (CHECK_LOWER_CASE) {
 				if (!checkContainLowerCase(password)) {
 					return false;
 				}
 			}
 
-			// 检测包含大写字母
 			if (CHECK_UPPER_CASE) {
 				if (!checkContainUpperCase(password)) {
 					return false;
@@ -328,35 +317,30 @@ public class PasswordCheckUtil {
 			}
 		}
 
-		// 检测包含特殊符号
 		if (CHECK_CONTAIN_SPECIAL_CHAR) {
 			if (!checkContainSpecialChar(password)) {
 				return false;
 			}
 		}
 
-		// 检测键盘横向连续
 		if (CHECK_HORIZONTAL_KEY_SEQUENTIAL) {
 			if (checkLateralKeyboardSite(password)) {
 				return false;
 			}
 		}
 
-		// 检测键盘斜向连续
 		if (CHECK_SLOPE_KEY_SEQUENTIAL) {
 			if (checkKeyboardSlantSite(password)) {
 				return false;
 			}
 		}
 
-		// 检测逻辑位置连续
 		if (CHECK_LOGIC_SEQUENTIAL) {
 			if (checkSequentialChars(password)) {
 				return false;
 			}
 		}
 
-		// 检测相邻字符是否相同
 		if (CHECK_SEQUENTIAL_CHAR_SAME) {
 			if (checkSequentialSameChars(password)) {
 				return false;

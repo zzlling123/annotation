@@ -470,9 +470,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         }
     }
     
-    /**
-     * 构建题目分类缓存：题目分类名称 -> 分类ID
-     */
+
     private Map<String, Integer> buildQuestionTypeCache() {
         Map<String, Integer> cache = new HashMap<>();
         try {
@@ -489,11 +487,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         return cache;
     }
     
-    /**
-     * 验证题目分类是否存在于数据库中
-     * @param typeName 题目分类名称
-     * @return 分类ID，如果不存在则返回null
-     */
+
     private Integer validateQuestionType(String typeName) {
         if (StrUtil.isBlank(typeName)) {
             return null;
@@ -501,10 +495,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         return currentImportQuestionTypeCache.get(typeName.trim());
     }
     
-    /**
-     * 从组代码中提取数字部分作为伪行号
-     * 例如：QF-0001 -> 1, GROUP-0123 -> 123
-     */
+
     private Integer extractRowNumberFromGroupCode(String groupCode) {
         if (StrUtil.isBlank(groupCode)) {
             return null;
@@ -770,9 +761,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
     }
 
 
-    /**
-     * 保存单选题记录（包含知识点匹配）
-     */
+
     private void saveSingleChoiceRecordWithKnowledgePoint(SingleChoiceRec record) {
 
         String questionText = StrUtil.trimToEmpty(record.getQ());
@@ -834,9 +823,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         questionMapper.insert(question);
     }
 
-    /**
-     * 处理知识点匹配结果的通用方法
-     */
+
     private void handleKnowledgePointMatchResult(
             Object record, 
             Question question, 
@@ -887,9 +874,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         }
     }
     
-    /**
-     * 获取记录的行号
-     */
+
     private int getExcelRow(Object record) {
         if (record instanceof SingleChoiceRec) return ((SingleChoiceRec) record).excelRow;
         if (record instanceof MultipleChoiceRec) return ((MultipleChoiceRec) record).excelRow;
@@ -897,9 +882,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         return 0;
     }
     
-    /**
-     * 获取记录的显示序号
-     */
+
     private int getShowIndex(Object record) {
         if (record instanceof SingleChoiceRec) return ((SingleChoiceRec) record).showIndex;
         if (record instanceof MultipleChoiceRec) return ((MultipleChoiceRec) record).showIndex;
@@ -907,9 +890,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         return 0;
     }
     
-    /**
-     * 获取记录的知识点名称
-     */
+
     private String getKnowledgePointName(Object record) {
         if (record instanceof SingleChoiceRec) return ((SingleChoiceRec) record).getKnowledgePointName();
         if (record instanceof MultipleChoiceRec) return ((MultipleChoiceRec) record).getKnowledgePointName();
@@ -917,9 +898,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         return "";
     }
     
-    /**
-     * 添加警告信息到当前导入会话
-     */
+
     private void addWarningToCurrentImport(Integer rowNum, String message, String warningType) {
         QuestionImportResultVO.RowError warning = new QuestionImportResultVO.RowError();
         warning.setRowNum(rowNum);
@@ -992,9 +971,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         return sb.toString();
     }
 
-    /**
-     * 保存多选题记录（包含知识点匹配）
-     */
+
     private void saveMultipleChoiceRecordWithKnowledgePoint(MultipleChoiceRec record) {
 
         String questionText = StrUtil.trimToEmpty(record.getQ());
@@ -1103,9 +1080,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionMapper, Questio
         questionMapper.insert(question);
     }
 
-    /**
-     * 保存判断题记录（包含知识点匹配）
-     */
+
     private void saveTrueFalseRecordWithKnowledgePoint(TrueFalseRec record) {
 
         Question question = new Question();

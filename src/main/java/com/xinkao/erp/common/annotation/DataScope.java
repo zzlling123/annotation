@@ -9,7 +9,4 @@ public @interface DataScope
 {
     public String role() default "";
 
-//    public String userAlias() default "";
-//
-//	public boolean isUser() default false;
 }

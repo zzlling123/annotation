@@ -16,16 +16,12 @@ public class QuestionTypeParam implements InputConverter<Question> {
     @NotBlank(message = "分类ID不能为空")
     private String id;
 
-    /**
-     * 题目分类名称
-     */
+    
     @ApiModelProperty("分类名称")
     @NotBlank(message = "分类名称不能为空")
     private String typeName;
 
-    /**
-     * 题目分类文档地址
-     */
+    
     @ApiModelProperty("分类文档地址")
     private String fileUrl;
 }

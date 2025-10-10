@@ -18,12 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * 登录日志
- *
- * @author Ldy
- * @since 2023-12-14 21:07:45
- */
+
 @RestController
 @RequestMapping("/user-login-log")
 public class UserLoginLogController extends BaseController {
@@ -31,31 +26,23 @@ public class UserLoginLogController extends BaseController {
     @Autowired
     private UserLoginLogService userLoginLogService;
 
-    /**
-     * 分页
-     *
-     * @return
-     */
+    
     @PrimaryDataSource
     @PostMapping("/page")
     @ApiOperation("分页")
     public BaseResponse<Page<UserLoginLogPageVo>> page(@RequestBody UserLoginLogQuery query) {
-        //获取用户信息
+
         Pageable pageable = query.getPageInfo();
         Page<UserLoginLogPageVo> voPage = userLoginLogService.page(query, pageable);
         return BaseResponse.ok(voPage);
     }
 
-    /**
-     * 获取用户手机号
-     *
-     * @return
-     */
-//    @PrimaryDataSource
-//    @PostMapping("/getMobileById")
-//    @ApiOperation("获取用户手机号")
-//    public BaseResponse getMobileById(@RequestBody UserLoginLog userLoginLog) {
-//        return BaseResponse.ok("成功",userLoginLogService.getById(userLoginLog.getId()).getAccount());
-//    }
+    
+
+
+
+
+
+
 
 }

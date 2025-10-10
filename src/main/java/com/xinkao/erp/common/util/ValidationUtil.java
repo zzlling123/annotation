@@ -33,7 +33,7 @@ public class ValidationUtil {
         if (VALIDATOR == null) {
             synchronized (ValidationUtil.class) {
                 if (VALIDATOR == null) {
-                    // Init the validation
+
                     VALIDATOR = Validation.buildDefaultValidatorFactory().getValidator();
                 }
             }
@@ -48,14 +48,14 @@ public class ValidationUtil {
         Validator validator = getValidator();
 
         if (obj instanceof Iterable) {
-            // validate for iterable
+
             validate((Iterable<?>) obj, groups);
         } else {
-            // validate the non-iterable object
+
             Set<ConstraintViolation<Object>> constraintViolations = validator.validate(obj, groups);
 
             if (!CollectionUtils.isEmpty(constraintViolations)) {
-                // If contain some errors then throw constraint violation exception
+
                 throw new ConstraintViolationException(constraintViolations);
             }
         }
@@ -67,10 +67,8 @@ public class ValidationUtil {
             return;
         }
 
-        // get validator
         Validator validator = getValidator();
 
-        // wrap index
         AtomicInteger i = new AtomicInteger(0);
         final Set<ConstraintViolation<?>> allViolations = new LinkedHashSet<>();
         objs.forEach(obj -> {
@@ -99,7 +97,7 @@ public class ValidationUtil {
         }
 
         Map<String, String> errMap = new HashMap<>(4);
-        // Format the error message
+
         constraintViolations.forEach(constraintViolation ->
             errMap.put(constraintViolation.getPropertyPath().toString(),
                 constraintViolation.getMessage()));

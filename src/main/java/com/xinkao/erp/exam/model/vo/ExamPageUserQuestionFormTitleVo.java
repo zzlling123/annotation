@@ -6,11 +6,7 @@ import lombok.Data;
 import java.util.Date;
 import java.util.List;
 
-/**
- * 题目返回实体
- * @author Ldy
- *
- */
+
 @Data
 public class ExamPageUserQuestionFormTitleVo {
 

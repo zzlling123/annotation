@@ -20,14 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
-/**
- * <p>
- * 用户表 服务类
- * </p>
- *
- * @author hanhys
- * @since 2023-03-15 10:19:43
- */
+
 public interface UserService extends BaseService<User> {
 
 	Page<UserPageVo> page(UserQuery query, Pageable pageable);

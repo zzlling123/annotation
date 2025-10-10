@@ -51,11 +51,11 @@ public class FileUploadUtil {
         Long size = file.getSize();
         String orginalFileName = file.getOriginalFilename();
         String originalBaseFileName = getOriginalBaseFileName(file);
-        // 拼接文件后缀
+
         fileName = fileName + "." + extension;;
         try {
             String subFilePath = getPathFileName(baseDir, fileName);
-            // 创建文件
+
             File desc = createfile(subFilePath);
             file.transferTo(desc);
 
@@ -84,14 +84,14 @@ public class FileUploadUtil {
 
 
     private String getOriginalBaseFileName(@NonNull MultipartFile file) {
-        // 附件名称
+
         String originalFilename = file.getOriginalFilename();
         return getOriginalBaseFileName(originalFilename);
     }
 
     public String getOriginalBaseFileName(@NonNull String fileName) {
         int dotLastIndex = StrUtil.lastIndexOfIgnoreCase(fileName, ".");
-        // 将后缀截取
+
         return fileName.substring(0, dotLastIndex);
     }
 

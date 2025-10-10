@@ -13,20 +13,20 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class IpRegionUtils {
-	 // 2、使用全局的 vIndex 创建带 VectorIndex 缓存的查询对象。
+
     static Searcher searcher = null;
 
     
     @PostConstruct
     public void init() {
-    	// 因为jar无法读取文件,复制创建临时文件
+
     	String tmpDir = System.getProperty("user.dir") + File.separator + "temp";
     	String dbPath = tmpDir + File.separator + "ip2region.xdb";
     	log.info("init ip region db path [{}]", dbPath);
     	File file = new File(dbPath);
     	FileUtil.writeFromStream(IpRegionUtils.class.getClassLoader().getResourceAsStream("data/ip2region.xdb"), file);
     	String absolutePath = file.getAbsolutePath();
-    	// 1、从 dbPath 中预先加载 VectorIndex 缓存，并且把这个得到的数据作为全局变量，后续反复使用。
+
     	byte[] vIndex;
     	 try {
              vIndex = Searcher.loadVectorIndexFromFile(absolutePath);
@@ -45,7 +45,7 @@ public class IpRegionUtils {
     
     public static String getRegion(String ip) {
         try {
-            // db
+
             if (searcher == null) {
                 log.error("DbSearcher is null");
                 return null;

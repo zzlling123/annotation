@@ -8,9 +8,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class EverySecondEvent extends ApplicationEvent {
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 	
 	public EverySecondEvent(Object source) {

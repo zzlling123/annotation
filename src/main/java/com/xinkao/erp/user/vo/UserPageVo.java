@@ -9,13 +9,7 @@ import lombok.Setter;
 
 import java.util.Date;
 
-/**
- * <p>
- * </p>
- *
- * @author Ldy
- * @since 2023-05-09 14:02:05
- */
+
 @Getter
 @Setter
 public class UserPageVo extends BaseEntity {

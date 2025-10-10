@@ -19,9 +19,7 @@ import com.xinkao.erp.system.service.AsyncService;
 import cn.hutool.core.date.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * 异步日志记录
- **/
+
 @Slf4j(topic = "sys-user")
 @Async
 @Service
@@ -31,23 +29,21 @@ public class AsyncServiceImpl implements AsyncService {
     private UserLoginLogService loginLogService;
     @Resource
     private UserOptLogService optLogService;
-    /**
-     * 记录登录日志
-     */
+    
     @Override
     public void recordLogininfo(UserLoginResultVo resultVo) {
     	String account = resultVo.getUsername();
     	String realName = resultVo.getRealName();
     	String loginFlag = resultVo.getLoginFlag();
     	String msg = resultVo.getMsg();
-    	// 获取客户端ip
+
     	String ip = resultVo.getIp();
     	ip = StringUtils.isNotBlank(ip)?ip:"";
         String address = StringUtils.isNotBlank(ip)?IpRegionUtils.getRegion(ip):"";
-        // 获取客户端操作系统
+
         String os = resultVo.getOs();
         os = StringUtils.isNotBlank(os)?os:"";
-        // 获取客户端浏览器
+
         String browser = resultVo.getBrowser();
         browser = StringUtils.isNotBlank(browser)?browser:"";
         
@@ -57,10 +53,9 @@ public class AsyncServiceImpl implements AsyncService {
         s.append(getBlock(account));
         s.append(getBlock(loginFlag));
         s.append(getBlock(msg));
-        // 打印登录信息
+
         log.debug(s.toString());
-      
-        // 封装对象
+
         UserLoginLog loginLog = new UserLoginLog();
         loginLog.setAccount(account);
         loginLog.setRealName(realName);
@@ -70,7 +65,7 @@ public class AsyncServiceImpl implements AsyncService {
         loginLog.setOs(os);
         loginLog.setMsg(msg);
         loginLog.setLoginTime(DateUtil.now());
-        // 日志状态
+
         if (XinKaoConstant.LOGIN_SUCCESS.equals(loginFlag) || XinKaoConstant.LOGOUT.equals(loginFlag)) {
             loginLog.setStatus(CommonEnum.LOGIN_STATUS.SUCCESS.getCode());
         } else if (XinKaoConstant.LOGIN_FAIL.equals(loginFlag)) {
@@ -82,10 +77,7 @@ public class AsyncServiceImpl implements AsyncService {
         }
     }
 
-    /**
-     * 操作日志记录
-     * @param optLog 操作日志信息
-     */
+    
     @Override
     public void recordOptLog(UserOptLog optLog){
         boolean insertResult = optLogService.saveBy(optLog);

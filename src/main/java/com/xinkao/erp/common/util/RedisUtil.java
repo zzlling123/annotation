@@ -27,14 +27,7 @@ public class RedisUtil {
         redisTemplate.opsForValue().set(key, value);
     }
 
-    /**
-     * 缓存基本的对象，Integer、String、实体类等
-     *
-     * @param key 缓存的键值
-     * @param value 缓存的值
-     * @param timeout 时间
-     * @param timeUnit 时间颗粒度
-     */
+    
     public <T> void set(final String key, final T value, final Integer timeout,
         final TimeUnit timeUnit) {
         redisTemplate.opsForValue().set(key, value, timeout, timeUnit);
@@ -44,14 +37,7 @@ public class RedisUtil {
         return expire(key, timeout, TimeUnit.SECONDS);
     }
 
-    /**
-     * 设置有效时间
-     *
-     * @param key Redis键
-     * @param timeout 超时时间
-     * @param unit 时间单位
-     * @return true=设置成功；false=设置失败
-     */
+    
     public boolean expire(final String key, final long timeout, final TimeUnit unit) {
         return redisTemplate.expire(key, timeout, unit);
     }

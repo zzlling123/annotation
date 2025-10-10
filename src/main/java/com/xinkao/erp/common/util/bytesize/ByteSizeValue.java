@@ -1,12 +1,4 @@
-/**
- ** All rights Reserved, Designed By www.xinkaojiaoyu.cn
- **
- ** @Title: ByteSizeValue.java
- ** @Package com.xinkao.campus.base.constant
- ** @date: 2020年1月15日 上午9:15:44
- ** @version V1.0
- ** @Copyright: 2020 www.xinkaojiaoyu.cn Inc. All rights reserved.
- **/
+
 package com.xinkao.erp.common.util.bytesize;
 
 import java.io.Serializable;
@@ -125,9 +117,7 @@ public class ByteSizeValue implements Serializable {
         return pbFrac();
     }
     
-    /**
-     * Format the double value with a single decimal points, trimming trailing '.0'.
-     */
+
     public static String format1Decimals(double value, String suffix) {
         String p = String.valueOf(value);
         int ix = p.indexOf('.') + 1;

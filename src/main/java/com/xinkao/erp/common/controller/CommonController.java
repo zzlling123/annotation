@@ -56,8 +56,6 @@ public class CommonController {
         return commonService.getOBSInfo();
     }
 
-
-//    @PrimaryDataSource
     @PostMapping("/upload/file")
     public BaseResponse<String> uploadRequest(@RequestParam(value="file") MultipartFile file, HttpServletRequest request) {
         try {

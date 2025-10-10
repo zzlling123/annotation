@@ -6,9 +6,7 @@ import com.alibaba.excel.annotation.write.style.HeadRowHeight;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * 题目批量导入模板
- */
+
 @HeadRowHeight(20)
 @Setter
 @Getter

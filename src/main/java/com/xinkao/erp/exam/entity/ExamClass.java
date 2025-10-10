@@ -9,28 +9,17 @@ import com.xinkao.erp.common.model.entity.DataEntity;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * <p>
- * 考试-班级关联表
- * </p>
- *
- * @author Ldy
- * @since 2025-03-29 16:15:00
- */
+
 @Getter
 @Setter
 @TableName("exam_class")
 public class ExamClass extends BaseEntity {
 
-    /**
-     * 考试ID
-     */
+
     @TableField("exam_id")
     private Integer examId;
 
-    /**
-     * 班级ID
-     */
+
     @TableField("class_id")
     private Integer classId;
 

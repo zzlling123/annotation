@@ -120,7 +120,7 @@ public class    QuestionController extends BaseController {
             System.out.println("fileName:" + file.getOriginalFilename());
             saveFileName = UUID.randomUUID().toString()+file.getOriginalFilename();
             File fileNew = new File(fileUrl,saveFileName);
-            // 创建父目录（如果不存在）
+
             if (!fileNew.getParentFile().exists()) {
                 fileNew.getParentFile().mkdirs();
             }
@@ -156,7 +156,7 @@ public class    QuestionController extends BaseController {
     @PostMapping("/getQuestionType/{shape}")
     public BaseResponse<List<QuestionType>> getQuestionType(@PathVariable String shape) {
         if ("500".equals(shape)){
-            //创建固定字符串集合：2,3,4,5
+
             List<Integer> ids = Arrays.asList(2,4,5,6,7);
             return BaseResponse.ok("成功", questionTypeService.lambdaQuery().in(QuestionType::getId, ids).list());
         }
@@ -209,7 +209,7 @@ public class    QuestionController extends BaseController {
     @GetMapping("/detail/{id}")
     public BaseResponse<QuestionInfoVo> getQuestionDetail(@PathVariable Integer id) {
         QuestionInfoVo question = questionService.getQuestionDetail(id);
-        //将选项转为List<String>
+
         if (question == null) {
             return BaseResponse.fail("题目不存在！");
         }
@@ -387,7 +387,7 @@ public class    QuestionController extends BaseController {
 
 
     private void writeFile(HttpServletRequest request, HttpServletResponse response, InputStream inputStream, long contentLength, String downloadName, String contentType) throws IOException {
-        // 保持跨域头
+
         String originHeaderValue = request.getHeader("Origin");
         if (originHeaderValue != null && originHeaderValue.length() > 0) {
             response.setHeader("Access-Control-Allow-Origin", originHeaderValue);
@@ -435,7 +435,7 @@ public class    QuestionController extends BaseController {
         }
         try {
             QuestionImportResultVO result = questionService.importQuestions(file);
-            // 导出 Excel 或返回 JSON，沿用原有逻辑
+
             String export = request.getParameter("export");
             if ("excel".equalsIgnoreCase(export)) {
                 java.util.List<com.xinkao.erp.question.excel.ImportResultSummaryRow> summary = new java.util.ArrayList<>();
@@ -491,7 +491,7 @@ public class    QuestionController extends BaseController {
                 }
                 return;
             }
-            // 检查是否有警告和不同类型的警告
+
             boolean hasKnowledgePointNotMatched = false;
             boolean hasKnowledgePointFuzzyMatched = false;
             boolean hasOtherWarnings = false;
@@ -513,8 +513,7 @@ public class    QuestionController extends BaseController {
             }
             
             boolean hasAnyWarnings = warningCount > 0;
-            
-            // 构建警告提示信息
+
             StringBuilder warningMsg = new StringBuilder();
             if (hasKnowledgePointNotMatched) {
                 warningMsg.append("部分知识点未找到匹配");
@@ -576,7 +575,7 @@ public class    QuestionController extends BaseController {
                 row.setFailCount(result.getFailCount());
                 summary.add(row);
                 java.util.List<com.xinkao.erp.question.excel.ImportResultErrorRow> details = new java.util.ArrayList<>();
-                // 处理结构化错误信息（rowErrors）
+
                 if (result.getRowErrors() != null && !result.getRowErrors().isEmpty()) {
                     for (com.xinkao.erp.question.vo.QuestionImportResultVO.RowError re : result.getRowErrors()) {
                         ImportResultErrorRow d = new ImportResultErrorRow();
@@ -585,7 +584,7 @@ public class    QuestionController extends BaseController {
                         details.add(d);
                     }
                 }
-                // 处理传统错误信息（errorMessages）- 与rowErrors并行处理
+
                 if (result.getErrorMessages() != null && !result.getErrorMessages().isEmpty()) {
                     for (String msg : result.getErrorMessages()) {
                         ImportResultErrorRow d = new ImportResultErrorRow();
@@ -603,7 +602,7 @@ public class    QuestionController extends BaseController {
                         details.add(d);
                     }
                 }
-                // CORS 头与导出
+
                 String originHeaderValue = request.getHeader("Origin");
                 if (originHeaderValue != null && originHeaderValue.length() > 0) {
                     response.setHeader("Access-Control-Allow-Origin", originHeaderValue);
@@ -626,8 +625,8 @@ public class    QuestionController extends BaseController {
                 }
                 return;
             }
-            // 默认返回JSON
-            // 检查是否有警告和不同类型的警告
+
+
             boolean hasKnowledgePointNotMatched = false;
             boolean hasKnowledgePointFuzzyMatched = false;
             boolean hasQuestionTypeNotMatched = false;
@@ -636,7 +635,7 @@ public class    QuestionController extends BaseController {
             
             if (result.getRowErrors() != null) {
                 for (com.xinkao.erp.question.vo.QuestionImportResultVO.RowError error : result.getRowErrors()) {
-                    // 统计所有错误和警告（不只是警告）
+
                     warningCount++;
                     if ("KNOWLEDGE_POINT_NOT_MATCHED".equals(error.getWarningType())) {
                         hasKnowledgePointNotMatched = true;
@@ -651,8 +650,7 @@ public class    QuestionController extends BaseController {
             }
             
             boolean hasAnyWarnings = warningCount > 0;
-            
-            // 构建警告提示信息
+
             StringBuilder warningMsg = new StringBuilder();
             if (hasKnowledgePointNotMatched) {
                 warningMsg.append("部分知识点未找到匹配");

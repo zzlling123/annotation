@@ -79,8 +79,8 @@ public class DeviceController extends BaseController {
             System.out.println("当前设备与主服务器不一致");
             String url = mainServerUrl + "/device/checkRestartStatus";
             try {
-//            BaseResponse responseBody = restTemplate.postForObject(url, macAddress, BaseResponse.class);
-//            boolean isAuthorized = responseBody != null && responseBody.getData() instanceof Boolean && (Boolean) responseBody.getData()!=null?(Boolean) responseBody.getData():false;
+
+
 
                 BaseResponse responseBody = restTemplate.getForObject(mainServerUrl + "/device/checkRestartStatus?macAddress=" + macAddress, BaseResponse.class);
                 boolean isAuthorized = responseBody != null && responseBody.getData() instanceof Boolean && (Boolean) responseBody.getData();
@@ -92,31 +92,27 @@ public class DeviceController extends BaseController {
     }
 
 
-    /**
-     * 查询设备是否被授权(远程)
-     * @param macAddress 设备MAC地址
-     * @return true=已授权，false=未授权
-     */
+    
     @GetMapping("/checkAuth")
     public BaseResponse<Boolean> checkDeviceAuth(@RequestParam("macAddress") String macAddress) {
-//        String mainServerUrl = sysConfigService.getConfigByKey("device.authentication.server");
-//        System.out.println("进入验证方法mainServerUrl:"+mainServerUrl);
-//        if (mainServerUrl == null || mainServerUrl.isEmpty()) {
-//            System.out.println("未配置认证服务器地址");
-//            return BaseResponse.ok(false);
-//        }
-////        String ip = DeviceUtils.extractIpFromUrl(mainServerUrl);
-//        System.out.println("主服务器ip地址：" + ip);
-////        String ipAddress = DeviceUtils.getPublicIpAddress();
-//        System.out.println("当前客户: " + ipAddress);
-//        if (ip.equals(ipAddress)){
-//            System.out.println("当前设备与主服务器一致");
-//            return BaseResponse.ok(true);
-//        }else{
-//            System.out.println("当前设备与主服务器不一致");
-//            boolean hasDevice = deviceService.getDeviceByMacAddress(macAddress) != null;
-//            return BaseResponse.ok(hasDevice);
-//        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         boolean hasDevice = deviceService.getDeviceByMacAddress(macAddress) != null;
         return BaseResponse.ok(hasDevice);
     }
@@ -154,14 +150,14 @@ public class DeviceController extends BaseController {
         }
         String url = mainServerUrl + "/device/addAuth";
         try {
-            // 用POST方式，参数为DeviceParam对象
-            //Boolean isAuthorized = restTemplate.postForObject(url, param, Boolean.class);
+
+
             BaseResponse responseBody = restTemplate.postForObject(url, param, BaseResponse.class);
             Boolean isAuthorized = responseBody != null && responseBody.getData() instanceof Boolean ? (Boolean) responseBody.getData() : false;
             System.out.println("远程授权校验请求已发送（同步模式）结果：" + isAuthorized);
             return ResponseEntity.ok(isAuthorized != null && isAuthorized);
         } catch (Exception e) {
-            // 主服务器不可用时的处理
+
             return ResponseEntity.status(500).body(false);
         }
     }
@@ -274,7 +270,7 @@ public class DeviceController extends BaseController {
         String mainServerUrl = sysConfigService.getConfigByKey("device.authentication.server");
         String url = mainServerUrl + "/device/system-startup/validate";
         try {
-            // 用POST方式，参数为DeviceParam对象，后端返回 BaseResponse<Boolean>
+
             BaseResponse responseBody = restTemplate.postForObject(url, param, BaseResponse.class);
             Boolean isAuthorized = responseBody != null && responseBody.getData() instanceof Boolean ? (Boolean) responseBody.getData() : false;
             System.out.println("远程授权校验请求已发送（同步模式）结果：" + isAuthorized);
@@ -284,7 +280,7 @@ public class DeviceController extends BaseController {
                 return BaseResponse.fail("系统启动验证失败，请检查MAC地址和密钥");
             }
         } catch (Exception e) {
-            // 主服务器不可用时的处理
+
             return BaseResponse.fail("主服务器不可用");
         }
     }

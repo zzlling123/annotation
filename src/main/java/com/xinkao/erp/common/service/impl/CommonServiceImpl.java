@@ -73,17 +73,16 @@ public class CommonServiceImpl implements CommonService {
         }
         return filename;
     }
-    //获取字符串中的纯汉字
+
     @Override
     public String extractChinese(String str) {
-        // 使用正则表达式匹配汉字
-        // \p{InCJK_Unified_Ideographs} 是 Unicode 范围 \u4E00-\u9FA5 的等价表达
-        // 如果需要匹配扩展的汉字（Unicode范围更广），可以使用 \p{Unified_Ideograph}
-        String regex = "[\u4E00-\u9FA5]";
-        // 如果环境支持Unicode属性，可以使用以下正则表达式匹配扩展的汉字
-        // String regex = "\\p{InCJK_Unified_Ideographs}";
 
-        // 使用StringBuilder进行字符串拼接
+
+
+        String regex = "[\u4E00-\u9FA5]";
+
+
+
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < str.length(); i++) {
             if (Character.toString(str.charAt(i)).matches(regex)) {

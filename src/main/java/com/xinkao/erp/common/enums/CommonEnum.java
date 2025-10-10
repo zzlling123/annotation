@@ -1,12 +1,8 @@
 package com.xinkao.erp.common.enums;
 
-/**
- * 通用常量
- **/
+
 public class CommonEnum {
-	/**
-	 * 全局
-	 */
+	
     public enum GLOBAL_YN {
         YES(1, "是"),
         NO(0, "否");
@@ -27,15 +23,12 @@ public class CommonEnum {
             this.name = name;
         }
     }
-    /**
-     * 用户身份常量
-     */
+    
     public enum ManagerType {
     	ADMIN(1, "管理员"),
     	USER(0, "普通用户"),
     	OTHER(-1, "其他")
-    	
-    	//构造
+
     	;
     	
     	private int code;
@@ -67,9 +60,7 @@ public class CommonEnum {
     	}
     }
 
-    /**
-     * 登录状态
-     */
+    
     public enum LOGIN_STATUS {
         SUCCESS(0, "成功"),
         FAIL(1, "失败");
@@ -91,9 +82,7 @@ public class CommonEnum {
         }
     }
 
-    /**
-     * 是否已删除
-     */
+    
     public enum IS_DEL {
         YES(1, "已删除"),
         NO(0, "未删除");
@@ -115,9 +104,7 @@ public class CommonEnum {
         }
     }
 
-    /**
-     * 是否启用
-     */
+    
     public enum STATE {
         YES(1, "已启用"),
         NO(0, "未启用");

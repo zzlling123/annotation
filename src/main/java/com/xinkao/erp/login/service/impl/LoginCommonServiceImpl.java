@@ -22,9 +22,9 @@ public class LoginCommonServiceImpl {
 	    final String ip = IpUtils.getIpAddr(request);
 		resultVo.setIp(ip);
 		final UserAgent userAgent = UserAgentUtil.parse(request.getHeader("User-Agent"));
-		 // 获取客户端操作系统
+
         String os = userAgent.getOs().getName();
-        // 获取客户端浏览器
+
         String browser = userAgent.getBrowser().getName();
 		resultVo.setOs(os);
 		resultVo.setBrowser(browser);

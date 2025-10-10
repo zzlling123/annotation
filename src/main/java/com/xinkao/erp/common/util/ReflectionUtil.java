@@ -42,16 +42,15 @@ public class ReflectionUtil extends ReflectUtil {
         Assert.isTrue(interfaceType.isInterface(), "The give type must be an interface");
 
         if (implementationClass == null) {
-            // If the super class is Object parent then return null
+
             return null;
         }
 
-        // Get parameterized type
         ParameterizedType currentType =
             getParameterizedType(interfaceType, implementationClass.getGenericInterfaces());
 
         if (currentType != null) {
-            // return the current type
+
             return currentType;
         }
 

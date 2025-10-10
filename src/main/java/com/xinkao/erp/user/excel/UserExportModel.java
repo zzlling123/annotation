@@ -8,10 +8,7 @@ import com.xinkao.erp.common.model.BaseExcelModel;
 
 import lombok.Data;
 
-/**
- * 账号信息导出字段
- * @author hys_thanks
- */
+
 @Data
 public class UserExportModel extends BaseExcelModel{
 

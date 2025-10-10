@@ -13,7 +13,7 @@ public enum SysConfigEnum {
     KW_CAPTCHA_PIC_ON_OFF("kw.login.captchaPicOnOff", "考点端登录时图形验证码开关"),
     SCORE_CAPTCHA_PIC_ON_OFF("score.login.captchaPicOnOff", "识别端登录时图形验证码开关"),
     CACHE_APP_ENABLE("cache.app.enable", "应用级别缓存开关"),
-    //构造
+
     ;
 
     private String key;

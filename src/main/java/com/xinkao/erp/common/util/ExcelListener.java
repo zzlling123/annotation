@@ -17,9 +17,9 @@ public class ExcelListener<T> extends AnalysisEventListener<T> {
     @Override
     public void invoke(T t, AnalysisContext analysisContext) {
         Integer currentRowNum = analysisContext.getCurrentRowNum();
-//        if(currentRowNum >= 2){
-//            datas.add(t);
-//        }
+
+
+
         datas.add(t);
     }
 

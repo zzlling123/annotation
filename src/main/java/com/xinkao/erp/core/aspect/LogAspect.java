@@ -101,7 +101,6 @@ public class LogAspect {
             if (controllerLog.isSaveResponseData()) {
                 userOptLog.setResponseData(JSONObject.toJSONString(jsonResult));
             } else {
-                // 不保存但是打印出来
                 log.debug(JSONObject.toJSONString(jsonResult));
             }
             String ip = IpUtils.getIpAddr(ServletUtils.getRequest());

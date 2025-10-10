@@ -18,29 +18,17 @@ public class LoginUser  {
     private Long loginTs;
     
     private Long expireTime;
-    /**
-     * 登录IP地址
-     */
+    
     private String ipAddr;
-    /**
-     * 登录地点
-     */
+    
     private String loginLocation;
-    /**
-     * 浏览器类型
-     */
+    
     private String browser;
-    /**
-     * 操作系统
-     */
+    
     private String os;
-    /**
-     * 用户信息
-     */
+    
     private User user;
-    /**
-     * 角色列表
-     */
+    
     private List<Role> roleList;
 
     public LoginUser(User user) {

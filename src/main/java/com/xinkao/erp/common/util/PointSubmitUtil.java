@@ -21,7 +21,7 @@ import java.util.Map;
 @Component
 public class PointSubmitUtil {
     public PanJuanParam get3DPointScore(ExamPageUserAnswer examPageUserAnswer) {
-        // 解析标准答案和学生作答答案
+
         Map<String,List<Map<String, List<Map<String, Object>>>>> rightAnswer = getAnswerFor3dJson(examPageUserAnswer.getRightAnswer());
         Map<String,List<Map<String, List<Map<String, Object>>>>> userAnswer = getAnswerFor3dJson(examPageUserAnswer.getUserAnswer());
         PanJuanParam dto = new PanJuanParam();
@@ -180,7 +180,7 @@ public class PointSubmitUtil {
         if (StrUtil.isBlank(answer)){
             return answerMap;
         }
-        //解析JSON
+
         JSONArray jsonArray = JSON.parseArray(answer);
         for (int i = 0; i < jsonArray.size(); i++) {
             List<Map<String, List<Map<String, Object>>>> answerList = new ArrayList<>();
@@ -206,7 +206,7 @@ public class PointSubmitUtil {
     }
 
     public static double calculateIoU(Cuboid cuboid1, Cuboid cuboid2) {
-        // 计算各轴投影是否有重叠
+
         double overlapX = calculateAxisOverlap(
                 cuboid1.getMinX(), cuboid1.getMaxX(),
                 cuboid2.getMinX(), cuboid2.getMaxX()
@@ -231,7 +231,6 @@ public class PointSubmitUtil {
         return overlapVolume / (volume1 + volume2 - overlapVolume);
     }
 
-    // 单轴重叠长度计算
     private static double calculateAxisOverlap(double min1, double max1, double min2, double max2) {
         double start = Math.max(min1, min2);
         double end = Math.min(max1, max2);

@@ -120,9 +120,7 @@ public class ExamExpertAssignmentServiceImpl extends ServiceImpl<ExamExpertAssig
                 .list();
     }
     
-    /**
-     * 获取评审专家角色ID
-     */
+    
     private Integer getExpertRoleId() {
         int roleId = 0;
         LambdaQueryWrapper<Role> queryWrapper = new LambdaQueryWrapper<>();

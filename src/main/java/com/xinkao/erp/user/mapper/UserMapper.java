@@ -13,14 +13,7 @@ import com.xinkao.erp.user.vo.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-/**
- * <p>
- * 管理端-用户表 Mapper 接口
- * </p>
- *
- * @author hanhys
- * @since 2023-08-03 14:13:11
- */
+
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
 	Page<UserPageVo> page(Page pg , @Param("userQuery") UserQuery userQuery);

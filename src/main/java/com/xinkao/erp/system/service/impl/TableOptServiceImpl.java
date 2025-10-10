@@ -15,10 +15,7 @@ import com.xinkao.erp.system.service.TableOptService;
 import cn.hutool.core.date.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * 表操作相关的服务
- * @author hys_thanks
- */
+
 @Slf4j
 @Service
 public class TableOptServiceImpl implements TableOptService {

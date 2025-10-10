@@ -101,7 +101,7 @@ public class ExcelUtils {
             excelWriterBuilder.sheet(sheetName).doWrite(list);
         } catch (Exception e) {
             log.error("导出excel出错：{}", e.getMessage());
-            // 重置response
+
             response.reset();
             response.setContentType("application/json");
             response.setCharacterEncoding("utf-8");
@@ -119,7 +119,7 @@ public class ExcelUtils {
             response.setContentType("application/vnd.ms-excel");
             response.setCharacterEncoding("utf-8");
             fileName = URLEncoder.encode(fileName, "UTF-8");
-            //            fileName = new String(fileName.getBytes(), "UTF-8");
+
             response.setHeader("Content-disposition", "attachment;filename=" + fileName);
             return response.getOutputStream();
         } catch (IOException e) {

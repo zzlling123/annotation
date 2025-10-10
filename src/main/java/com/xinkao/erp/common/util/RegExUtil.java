@@ -42,7 +42,7 @@ public class RegExUtil {
     }
     
     public static boolean isWeekPassword(String password) {
-    	// 空对象、空字符串、长度小于8 -> 验证不通过
+
         if (StringUtils.isBlank(password)) {
         	return true;
         }
@@ -51,7 +51,7 @@ public class RegExUtil {
         }
         StringCounter counter = new StringCounter().initInstance(password);
         int kinds = counter.getKinds();
-        // 四种字符，需要全部存在
+
         if(kinds <= 3) {
         	return true;
         }

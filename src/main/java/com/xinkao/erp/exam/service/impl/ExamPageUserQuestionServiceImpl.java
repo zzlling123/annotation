@@ -383,9 +383,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
         return list;
     }
 
-    /**
-     * 查询进度
-     */
+    
     @Transactional
     @Override
     public BaseResponse<Map<String,Integer>> getProgress(String examId,String token) {
