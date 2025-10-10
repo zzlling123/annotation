@@ -19,44 +19,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-/**
- * 分钟级事件处理事件发送
- * 每分钟发送事件,接收事件后,如果事务未处理完成,跳过即可
- **/
 @Slf4j
 @Component
 public class EveryMinuteEventTask {
 
     @Resource
     private ExamService examService;
-
-    @Scheduled(cron = "0 * * * * ?")
-    public void updateExamStatus() {
-        log.info("更新考试项目,考试状态的状态...开始");
-        // 获取未开始的考试（state小于等于10）且开始时间大于当前时间的考试
-        List<Exam> examList = examService.lambdaQuery()
-                .lt(Exam::getState, 20)
-                .le(Exam::getStartTime, DateUtil.date())
-                .eq(Exam::getIsDel, 0)
-                .list();
-        if (examList.size() > 0) {
-            for (Exam exam : examList) {
-                exam.setState(20);
-                examService.updateById(exam);
-            }
-        }
-        List<Exam> examList2 = examService.lambdaQuery()
-                .eq(Exam::getState, 20)
-                .le(Exam::getEndTime, DateUtil.date())
-                .eq(Exam::getIsDel, 0)
-                .list();
-        if (examList2.size() > 0) {
-            for (Exam exam : examList2) {
-                exam.setState(21);
-                examService.updateById(exam);
-            }
-        }
-        log.info("更新考试项目,考试状态的状态...结束");
-    }
 
 }

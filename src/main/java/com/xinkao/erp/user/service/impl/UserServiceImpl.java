@@ -39,14 +39,6 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-/**
- * <p>
- * 用户表 服务实现类
- * </p>
- *
- * @author hanhys
- * @since 2023-03-15 10:19:43
- */
 @Slf4j
 @Service
 public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implements UserService {
@@ -60,10 +52,10 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	@Autowired
 	private ResultUtils resultUtils;
 
-	//分页
+
 	@Override
 	public Page<UserPageVo> page(UserQuery query, Pageable pageable) {
-		// 获取当前登录用户角色，用于权限控制
+
 		LoginUser loginUser = redisUtil.getInfoByToken();
 		query.setCurrentUserRoleId(loginUser.getUser().getRoleId());
 
@@ -71,32 +63,32 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 		return userMapper.page(page, query);
 	}
 
-	//修改新增方法
+
 	@Override
 	public BaseResponse save(UserParam userParam){
-		// 校验手机号是否为空
+
 		if (StrUtil.isBlank(userParam.getMobile())) {
 			return BaseResponse.fail("手机号不能为空！");
 		}
 		
-		// 校验手机号唯一性
+
 		if (lambdaQuery().eq(User::getMobile, userParam.getMobile()).eq(User::getIsDel, CommonEnum.IS_DEL.NO.getCode()).count() > 0) {
 			return BaseResponse.fail("手机号已存在，请使用其他手机号！");
 		}
 		
-		// 生成自定义账号ID
+
 		String customId = generateCustomAccountId(userParam);
 
-		// 检查账号是否已存在
+
 		if (lambdaQuery().eq(User::getUsername, customId).count() > 0) {
 			return BaseResponse.fail("生成的账号已存在，请重试！");
 		}
 
 		User user = new User();
 		BeanUtil.copyProperties(userParam, user);
-		user.setUsername(customId); // 账号与ID一致
+		user.setUsername(customId);
 
-		// 生成密码
+
 		String salt = RandomUtil.randomString(20);
 		String password = SecureUtil.md5(salt + userParam.getPassword());
 		user.setSalt(salt);
@@ -105,15 +97,15 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 		return save(user) ? BaseResponse.ok("新增成功！账号为：" + customId) : BaseResponse.fail("新增失败！");
 	}
 
-	//修改
+
 	@Override
 	public BaseResponse update(UserUpdateParam userUpdateParam){
 		User oldUser = getById(userUpdateParam.getId());
 		
-		// 如果修改了手机号，需要校验手机号唯一性
+
 		if (StrUtil.isNotBlank(userUpdateParam.getMobile()) && 
 			!userUpdateParam.getMobile().equals(oldUser.getMobile())) {
-			// 校验手机号唯一性（排除当前用户）
+
 			if (lambdaQuery()
 					.eq(User::getMobile, userUpdateParam.getMobile())
 					.eq(User::getIsDel, CommonEnum.IS_DEL.NO.getCode())
@@ -124,16 +116,16 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 		}
 		
 		User user = BeanUtil.copyProperties(userUpdateParam, User.class);
-		//如果classId发生了变动，则同时修改examPageUser中的classId
+
 		updateById(user);
 		if (oldUser.getClassId()!=user.getClassId()){
-			//涉及一个新旧考试数据的问题(后续再讨论，如果发生了变动，但是新班级没有这个考试，就会丢失数据)
-//			examPageUserService.lambdaUpdate().eq(ExamPageUser::getUserId,user.getId()).set(ExamPageUser::getClassId,user.getClassId()).update();
+
+
 		}
 		return BaseResponse.ok("修改成功！");
 	}
 
-	//删除
+
 	@Override
 	public BaseResponse del(String ids){
 		String[] idsArray = StrUtil.splitToArray(ids, ',');
@@ -141,7 +133,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 		return BaseResponse.ok("删除成功！");
 	}
 
-	//重置密码
+
 	@Override
 	public BaseResponse resetPassword(int userId) {
 		User user = getById(userId);
@@ -158,7 +150,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	public BaseResponse updateState(UpdateStateParam updateStateParam){
 		String[] ids = updateStateParam.getIds().split(",");
 		String content = Objects.equals(updateStateParam.getState(), "1") ? "启用" :"禁用";
-		//根据IDS获取列表摘取姓名组成字符串
+
 		String userNames = lambdaQuery().in(User::getId, ids).select(User::getRealName).list().stream().map(User::getRealName).reduce((a, b) -> a + "," + b).get();
 		userOptLogService.saveLog("用户"+content+",姓名："+userNames, JSON.toJSONString(updateStateParam));
 		return lambdaUpdate().in(User::getId, ids).set(User::getState, updateStateParam.getState()).update()?BaseResponse.ok(content+"成功！"):BaseResponse.fail(content+"失败！");
@@ -174,7 +166,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 				for (Integer rowNum : addUserMap.keySet()) {
 					try {
 						User addUser = addUserMap.get(rowNum);
-						//赋值默认密码
+
 						String passwordStr = resetPassword;
 						String salt =  RandomUtil.randomString(6);
 						String password = SecureUtil.md5(salt+passwordStr);
@@ -190,7 +182,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 				}
 			}
 			resultUtils.getResult(handleResult,successCount,errorList);
-			//记录日志
+
 			if(successCount > 0){
 				userOptLogService.saveLog( "导入用户:" + successCount+"条", null);
 			}
@@ -208,7 +200,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 		LoginUser loginUser = redisUtil.getInfoByToken();
 		UserInfoVo userInfoVo = userMapper.getUserInfoBySelf(loginUser.getUser().getId());
 		
-		// 打印调试信息
+
 		log.info("获取用户信息: userId={}, mobile={}, email={}", 
 			loginUser.getUser().getId(), userInfoVo.getMobile(), userInfoVo.getEmail());
 		
@@ -219,25 +211,25 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	public BaseResponse<?> updatePassword(AccountUpdatePwdParam param){
 		LoginUser loginUser = redisUtil.getInfoByToken();
 		User user = getById(loginUser.getUser().getId());
-		//验证旧密码
+
 		if (!SecureUtil.md5(user.getSalt()+param.getOldPwd()).equals(user.getPassword())) {
 			return BaseResponse.fail("密码错误！");
 		}
-		//验证两次新密码
+
 		if (!param.getNewPwd().equals(param.getNewPwdAgain())) {
 			return BaseResponse.fail("两次密码不一致！");
 		}
-		//验证密码安全性
-//		if (!PasswordCheckUtil.evalPassword(param.getNewPwd())) {
-//			return BaseResponse.fail("新密码须6-18位，包含字母和数字，不能连续，且必须含有大写和小写字母");
-//		}
+
+
+
+
 		String salt =  RandomUtil.randomString(6);
 		user.setSalt(salt);
 		user.setPassword(SecureUtil.md5(salt+param.getNewPwd()));
 		
 		boolean result = updateById(user);
 		if (result) {
-			// 记录操作日志
+
 			userOptLogService.saveLog("修改密码", "密码修改成功");
 			return BaseResponse.ok("修改成功！");
 		} else {
@@ -252,11 +244,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 		if (query.getQueryType().equals("1")){
 			examAndPracticeBarVoList = userMapper.getPracticeBarForExercise(query,loginUser.getUser().getId());
 		}else {
-			//考试
+
 			examAndPracticeBarVoList = userMapper.getExamAndPracticeBarForExam(query,loginUser.getUser().getId());
 		}
 		for (ExamAndPracticeBarVo examAndPracticeBarVo : examAndPracticeBarVoList) {
-			//赋值百分比
+
 			if ("0".equals(examAndPracticeBarVo.getUserScore()) || "0".equals(examAndPracticeBarVo.getScore())){
 				examAndPracticeBarVo.setScoreRate("0.00");
 			}else{
@@ -275,7 +267,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 			return BaseResponse.fail("用户不存在！");
 		}
 		
-		// 只更新可修改的字段：真实姓名、邮箱和头像
+
 		if (StrUtil.isNotBlank(param.getRealName())) {
 			user.setRealName(param.getRealName());
 		}
@@ -288,7 +280,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 		
 		boolean result = updateById(user);
 		if (result) {
-			// 记录操作日志
+
 			userOptLogService.saveLog("更新个人信息", JSON.toJSONString(param));
 			return BaseResponse.ok("个人信息更新成功！");
 		} else {
@@ -303,7 +295,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 		if (query.getQueryType().equals("1")){
 			examAndPracticePieVoList = userMapper.getPracticePieForExercise(query,loginUser.getUser().getId());
 		}else {
-			//考试
+
 			examAndPracticePieVoList = userMapper.getExamAndPracticePieForExam(query,loginUser.getUser().getId());
 		}
 		List<ExamAndPracticePieAllVo> allVoList = new ArrayList<>();
@@ -326,40 +318,40 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 
 	@Override
 	public String generateCustomAccountId(UserParam userParam) {
-		// 返回的账号格式：学校管理员用XX,社保局管理员用BJ，教师JS，学生XS，评审专家ZJ，社会考生SH，后面加手机
-		// 学校管理员的角色id为18,社保局管理员Id为19，教师角色Id为2，学生角色id为3，评审专家角色id为20，社会考生的角色id为21
+
+
 		String customId = null;
 
 		String roleId = userParam.getRoleId();
 		String mobile = userParam.getMobile();
 
-		// 根据角色ID生成前缀
+
 		String prefix = "";
 		switch (roleId) {
 			case "18":
-				prefix = "XX"; // 学校管理员
+				prefix = "XX";
 				break;
 			case "19":
-				prefix = "BJ"; // 社保局管理员
+				prefix = "BJ";
 				break;
 			case "2":
-				prefix = "JS"; // 教师
+				prefix = "JS";
 				break;
 			case "3":
-				prefix = "XS"; // 学生
+				prefix = "XS";
 				break;
 			case "20":
-				prefix = "ZJ"; // 评审专家
+				prefix = "ZJ";
 				break;
 			case "21":
-				prefix = "SH"; // 社会考生
+				prefix = "SH";
 				break;
 			default:
-				prefix = "YH"; // 默认用户
+				prefix = "YH";
 				break;
 		}
 
-		// 组合前缀和手机号生成账号
+
 		customId = prefix + mobile;
 
 		return customId;

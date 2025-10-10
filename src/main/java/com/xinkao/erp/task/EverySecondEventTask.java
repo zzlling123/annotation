@@ -14,13 +14,5 @@ import com.xinkao.erp.common.event.EverySecondEvent;
  **/
 @Component
 public class EverySecondEventTask {
-    
-    @Resource
-    private ApplicationEventPublisher eventPublisher;
-    
-//    @Scheduled(cron = "0/1 * * * * ?")
-    public void secondEvent() {
-        EverySecondEvent event = new EverySecondEvent(this);
-        eventPublisher.publishEvent(event);
-    }
+
 }

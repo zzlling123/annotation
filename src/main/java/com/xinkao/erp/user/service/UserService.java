@@ -30,25 +30,16 @@ import java.util.Map;
  */
 public interface UserService extends BaseService<User> {
 
-	/**
-	 * 分页
-	 * @return
-	 */
 	Page<UserPageVo> page(UserQuery query, Pageable pageable);
 
-	//新增用户
 	BaseResponse<?> save(UserParam userSaveParam);
 
-	//修改用户
 	BaseResponse<?> update(UserUpdateParam userUpdateParam);
 
-	//修改状态
 	BaseResponse<?> updateState(UpdateStateParam updateStateParam);
 
-	//重置密码
 	BaseResponse<?> resetPassword(int userId);
 
-	//删除用户
 	BaseResponse<?> del(String ids);
 
 	void importUser(HttpServletResponse response, Map<Integer, User> addUserMap, HandleResult handleResult, List<UserImportErrorModel> userImportErrorModelList, String token);
@@ -63,6 +54,5 @@ public interface UserService extends BaseService<User> {
 
     BaseResponse<List<ExamAndPracticePieAllVo>> getExamAndPracticePie(ExamAndPracticeBarQuery query);
 
-	//生成自定义账号ID
 	String generateCustomAccountId(UserParam userParam);
 }
