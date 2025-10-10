@@ -21,12 +21,6 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * 基础方法
- *
- * @author Ldy
- * @since 2022-06-02 16:50:19
- */
 @RestController
 @RequestMapping("/common")
 public class CommonController {
@@ -41,19 +35,13 @@ public class CommonController {
     private String ipurl;
 
 
-    /**
-     * 根据导入token获取导入进度
-     * @return
-     */
     @PrimaryDataSource
-    @ApiOperation(value = "根据导入token获取导入进度")
     @RequestMapping(value = "/getImportByToken", method = RequestMethod.POST)
     public BaseResponse getImportByToken(String importToken) {
         JSONObject json = JSON.parseObject(redisUtil.get(importToken));
         if (json == null){
             return BaseResponse.ok("导入中......");
         }else{
-            //验证是否成功
             if ("fail".equals(json.getString("state"))){
                 return BaseResponse.fail("导入失败！");
             }else{
@@ -64,16 +52,13 @@ public class CommonController {
 
     @PrimaryDataSource
     @PostMapping("/getOBSInfo")
-    @ApiOperation("获取OBS信息")
     public BaseResponse getOBSInfo() {
         return commonService.getOBSInfo();
     }
 
 
-    // 使用HttpServletRequest作为参数
 //    @PrimaryDataSource
     @PostMapping("/upload/file")
-    @ApiOperation("上传文件")
     public BaseResponse<String> uploadRequest(@RequestParam(value="file") MultipartFile file, HttpServletRequest request) {
         try {
             String saveFileName;
@@ -88,7 +73,6 @@ public class CommonController {
             saveFileName = UUID.randomUUID().toString()+file.getOriginalFilename();
 
             File fileNew = new File(fileUrl,saveFileName);
-            // 创建父目录（如果不存在）
             if (!fileNew.getParentFile().exists()) {
                 fileNew.getParentFile().mkdirs();
             }

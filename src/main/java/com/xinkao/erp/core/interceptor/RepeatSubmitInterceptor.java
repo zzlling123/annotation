@@ -13,10 +13,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.xinkao.erp.common.annotation.RepeatSubmit;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.common.util.ServletUtils;
-
-/**
- * 防表单重复提交
- **/
 @Component
 public abstract class RepeatSubmitInterceptor extends HandlerInterceptorAdapter {
 
@@ -40,12 +36,5 @@ public abstract class RepeatSubmitInterceptor extends HandlerInterceptorAdapter 
         }
     }
 
-    /**
-     * 验证是否重复提交由子类实现具体的防重复提交的规则
-     *
-     * @param request
-     * @return
-     * @throws Exception
-     */
     public abstract boolean isRepeatSubmit(HttpServletRequest request);
 }

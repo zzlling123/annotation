@@ -4,11 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * 媒体类型工具类
- * 
- * @author ruoyi
- */
+
 public class MimeTypeUtil {
     public static final String IMAGE_PNG = "image/png";
     

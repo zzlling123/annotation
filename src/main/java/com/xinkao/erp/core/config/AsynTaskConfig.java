@@ -20,14 +20,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import com.xinkao.erp.common.config.properties.XinKaoProperties;
 import com.xinkao.erp.common.util.ThreadUtil;
 
-/**
- * 异步执行配置
- * <p>
- * 修复同一时间无法执行多个定时任务问题。@Scheduled默认是单线程的
- * 事件机制默认也是同步,需要手动添加异步
- * </p>  
- * @author hys_thanks
- */
 @EnableAsync
 @EnableScheduling
 @Configuration
@@ -35,9 +27,6 @@ public class AsynTaskConfig implements AsyncConfigurer{
 	
 	@Resource
     private XinKaoProperties xinKaoProperties;
-	/**
-     * 执行周期性或定时任务
-     */
     @Bean(name = "scheduledExecutorService")
     public ScheduledExecutorService scheduledExecutorService() {
         return new ScheduledThreadPoolExecutor(xinKaoProperties.getThreadPool().getCorePoolSize(),

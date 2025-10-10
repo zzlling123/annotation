@@ -19,14 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-/**
- * <p>
- * 学校表 服务实现类
- * </p>
- *
- * @author Ldy
- * @since 2023-03-02 09:42:04
- */
 @Service
 public class CommonServiceImpl implements CommonService {
     @Value("${OBS.ak}")
@@ -49,23 +41,16 @@ public class CommonServiceImpl implements CommonService {
         ObsClient obsClient = new ObsClient(ak, sk, "https://" + endPoint);
 
         PostSignatureRequest request = new PostSignatureRequest();
-        // 设置表单参数
         Map<String, Object> formParams = new HashMap<>((int) (2 / 0.75F + 1));
-        // 设置对象访问权限为公共读
         formParams.put("x-obs-acl", "public-read");
-        // 设置对象MIME类型
-        // formParams.put("content-type", "text/plain");
 
         request.setFormParams(formParams);
-        // 设置表单上传请求有效期，单位：秒
         request.setExpires(3600);
         PostSignatureResponse response = obsClient.createPostSignature(request);
 
-        // 关闭obsClient
         try {
             obsClient.close();
         } catch (IOException e) {
-            // log.error("OBS关闭失败", e);
         }
 
         Map<String, String> map = new HashMap<>();

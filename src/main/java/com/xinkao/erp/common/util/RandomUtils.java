@@ -4,11 +4,7 @@ import java.awt.*;
 import java.util.Random;
 import java.util.UUID;
 
-/**
- * @author ZSX
- * @Description
- * @createTime 2020/12/22 14:13
- */
+
 public class RandomUtils extends org.apache.commons.lang3.RandomUtils {
     private static final char[] CODE_SEQ = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J',
             'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
@@ -52,11 +48,7 @@ public class RandomUtils extends org.apache.commons.lang3.RandomUtils {
         return random.nextInt(bound);
     }
 
-    /***
-     * 获取uuid
-     * @Author lililiang
-     * @Date 2021/6/15 14:35
-     */
+    
     public static String getUUID() {
         return UUID.randomUUID().toString().replaceAll("-", "");
     }

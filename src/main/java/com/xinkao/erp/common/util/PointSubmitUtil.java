@@ -25,12 +25,12 @@ public class PointSubmitUtil {
         Map<String,List<Map<String, List<Map<String, Object>>>>> rightAnswer = getAnswerFor3dJson(examPageUserAnswer.getRightAnswer());
         Map<String,List<Map<String, List<Map<String, Object>>>>> userAnswer = getAnswerFor3dJson(examPageUserAnswer.getUserAnswer());
         PanJuanParam dto = new PanJuanParam();
-        int biao = 0;//正确标注个数
-        int cuo = 0;//应该标注未标注个数
-        int wu = 0;//错误标注个数
-        int shu = 0;//属性个数
-        int zong = 0;//总共需要标注个数
-        int da = 0;//学生标注个数
+        int biao = 0;
+        int cuo = 0;
+        int wu = 0;
+        int shu = 0;
+        int zong = 0;
+        int da = 0;
         boolean is_error  = false;
         if (rightAnswer.size() == 0 || userAnswer.size() == 0){
             dto.setIsCorrect(1);
@@ -45,11 +45,9 @@ public class PointSubmitUtil {
             dto.setScore(new BigDecimal(0));
             return dto;
         }
-        // 比对帧的个数
         if (rightAnswer.size() != userAnswer.size()) {
             is_error = true;
         }
-        //计算学生标注数量，避免直接出错导致没有计算答题数
         for (String s : userAnswer.keySet()) {
             List<Map<String, List<Map<String, Object>>>> userFrame = userAnswer.get(s);
             for (int i = 0; i < userFrame.size(); i++) {
@@ -60,7 +58,6 @@ public class PointSubmitUtil {
                 }
             }
         }
-        //按照每帧进行循环
         for (String s : rightAnswer.keySet()) {
             List<Map<String, List<Map<String, Object>>>> rightFrame = new ArrayList<>();
             List<Map<String, List<Map<String, Object>>>> userFrame = new ArrayList<>();
@@ -68,7 +65,6 @@ public class PointSubmitUtil {
                 rightFrame = rightAnswer.get(s);
                 userFrame = userAnswer.get(s);
             }catch (Exception e){
-                //跳过
                 is_error = true;
                 continue;
             }
@@ -79,7 +75,6 @@ public class PointSubmitUtil {
             if (rightFrame.size() != userFrame.size()) {
                 is_error = true;
             }
-            // 将该帧内每个数组key进行比对
             for (int i = 0; i < rightFrame.size(); i++) {
                 Map<String, List<Map<String, Object>>> rightFrameForOne = new HashMap<>();
                 Map<String, List<Map<String, Object>>> userFrameForOne = new HashMap<>();
@@ -87,17 +82,14 @@ public class PointSubmitUtil {
                     rightFrameForOne = rightFrame.get(i);
                     userFrameForOne = userFrame.get(i);
                 }catch (Exception e){
-                    //跳过
                     is_error = true;
                     continue;
                 }
 
-                // 比对每个数组的key
                 if (!rightFrameForOne.keySet().equals(userFrameForOne.keySet())) {
                     is_error = true;
                 }
 
-                // 比对每个数组的attr的最后一个个数组
                 for (String key : rightFrameForOne.keySet()) {
                     List<Map<String, Object>> rightAttrs = rightFrameForOne.get(key);
                     List<Map<String, Object>> userAttrs = userFrameForOne.get(key);
@@ -110,22 +102,15 @@ public class PointSubmitUtil {
                     }
                     zong += rightAttrs.size();
                     for (int j = 0; j < rightAttrs.size(); j++) {
-                        //循环判断每一个userAttr中的标记、误差
                         JSONArray rightAttr = (JSONArray) rightAttrs.get(j).get("attr");
-                        //获取rightAttr的最后一个个数组
                         String rightThirdAttr = (String) rightAttr.get(rightAttr.size() - 1);
-//                        List<String> rightThirdAttr = (List<String>) rightAttr.get(rightAttr.size() - 1);
                         shu++;
-                        // 计算position的误差
                         Map<String, BigDecimal> rightPosition = (Map<String, BigDecimal>) rightAttrs.get(j).get("position");
                         Map<String, Object> rightSize = (Map<String, Object>) rightAttrs.get(j).get("size");
                         for (int k = 0; k < userAttrs.size(); k++){
-                            //循环遍历userAttrs，判断是否有attr一致且误差值小于0.95或不大于1.05，如果循环完毕没有符合的则返回0
                             JSONArray userAttr = (JSONArray) userAttrs.get(k).get("attr");
                             String userThirdAttr = (String) userAttr.get(userAttr.size() - 1);
                             if (!rightThirdAttr.equals(userThirdAttr)) {
-                                //跳过，继续验证下一条
-                                // 如果循环完毕没有符合的则返回0
                                 if (k == userAttrs.size() - 1) {
                                     is_error = true;
                                     cuo++;
@@ -135,22 +120,17 @@ public class PointSubmitUtil {
                             }
                             Map<String, BigDecimal> userPosition = (Map<String, BigDecimal>) userAttrs.get(k).get("position");
                             Map<String, Object> userSize = (Map<String, Object>) userAttrs.get(k).get("size");
-                            //组成Cuboid进行比对
                             Cuboid cuboid1 = new Cuboid(get3DDoubleStr(rightPosition.get("x")), get3DDoubleStr(rightPosition.get("y")), get3DDoubleStr(rightPosition.get("z")), get3DDoubleStr(rightSize.get("x")), get3DDoubleStr(rightSize.get("y")), get3DDoubleStr(rightSize.get("z")));
                             Cuboid cuboid2 = new Cuboid(get3DDoubleStr(userPosition.get("x")), get3DDoubleStr(userPosition.get("y")), get3DDoubleStr(userPosition.get("z")), get3DDoubleStr(userSize.get("x")), get3DDoubleStr(userSize.get("y")), get3DDoubleStr(userSize.get("z")));
 
                             double iou = calculateIoU(cuboid1, cuboid2);
                             System.out.println("重叠率: " + iou); // 输出约为0.0667（6.67%）
                             if (iou < 0.8 || iou > 1.2) {
-                                //跳过，继续验证下一条
-                                // 如果循环完毕没有符合的则返回0
                                 if (k == userAttrs.size() - 1) {
                                     is_error = true;
                                 }
                             }else{
                                 biao++;
-                                //如果有符合的则删除该元素，终结该for循环，继续向下循环
-                                //删除userAttrs中的该元素
                                 userAttrs.remove(k);
                                 break;
                             }
@@ -240,15 +220,12 @@ public class PointSubmitUtil {
                 cuboid2.getMinZ(), cuboid2.getMaxZ()
         );
 
-        // 若任一轴无重叠，直接返回0
         if (overlapX <= 0 || overlapY <= 0 || overlapZ <= 0) {
             return 0.0;
         }
 
-        // 计算重叠体积
         double overlapVolume = overlapX * overlapY * overlapZ;
 
-        // 计算交并比
         double volume1 = cuboid1.getVolume();
         double volume2 = cuboid2.getVolume();
         return overlapVolume / (volume1 + volume2 - overlapVolume);

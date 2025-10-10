@@ -15,9 +15,6 @@ import org.springframework.web.filter.GenericFilterBean;
 
 import cn.hutool.core.util.StrUtil;
 
-/**
- * Repeatable 过滤器
- */
 @Component
 @Order
 public class RepeatableFilter extends GenericFilterBean {

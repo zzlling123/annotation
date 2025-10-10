@@ -1,9 +1,6 @@
 package com.xinkao.erp.common.enums.system;
 
 import lombok.Getter;
-/**
- * 系统内置参数
- */
 @Getter
 public enum SysConfigEnum {
 

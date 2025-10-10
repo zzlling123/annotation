@@ -32,11 +32,8 @@ public class StartupAuthCheckRunner implements ApplicationRunner {
             }
             try {
                 restTemplate.getForObject(url, String.class);
-                System.out.println("远程授权校验请求已发送");
             } catch (Exception e) {
-                System.err.println("远程授权校验请求失败: " + e.getMessage());
             }
         }
-        System.out.println("重启后请求内容结束");
     }
 }

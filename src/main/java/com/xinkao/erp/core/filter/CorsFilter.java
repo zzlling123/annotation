@@ -19,9 +19,6 @@ import org.springframework.web.filter.GenericFilterBean;
 
 import com.xinkao.erp.common.constant.XinKaoConstant;
 
-/**
- * 跨域拦截器 
- */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE + 10)
 public class CorsFilter extends GenericFilterBean {

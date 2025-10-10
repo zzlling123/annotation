@@ -12,12 +12,6 @@ package com.xinkao.erp.common.util.bytesize;
 import java.io.Serializable;
 import java.util.Locale;
 
-/**
- ** @ClassName: ByteSizeValue
- ** @Description: 字节单位转换方法
- ** @author: yongshun.han
- ** @date: 2020年1月15日 上午9:15:44
- **/
 public class ByteSizeValue implements Serializable {
     
     private static final long serialVersionUID = 1L;

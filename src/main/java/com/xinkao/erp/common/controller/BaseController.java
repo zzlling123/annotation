@@ -10,10 +10,6 @@ import com.xinkao.erp.common.util.RedisUtil;
 
 import cn.hutool.core.util.IdcardUtil;
 
-/**
- * 基础控制器
- * @author hys_thanks
- */
 @Controller
 public class BaseController {
 	@Value("${spring.application.name}")
@@ -28,11 +24,6 @@ public class BaseController {
 	protected RedisUtil redisUtil;
 	
 
-    /**
-     * 处理隐藏手机号
-     * @param mobile
-     * @return
-     */
     public String hideMobile(String mobile) {
         int length = StringUtils.length(mobile);
         if (length >= 11) {
@@ -45,10 +36,6 @@ public class BaseController {
         }
         return mobile + encryptChar;
     }
-    /**
-     * 处理隐藏身份证号
-     * @return
-     */
     public String hideIdCard(String idCard) {
     	return IdcardUtil.hide(idCard, 4, 15);
     }

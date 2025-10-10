@@ -5,9 +5,6 @@ import java.time.ZoneId;
 import java.util.Date;
 import org.dozer.DozerConverter;
 
-/**
- * LocalDateTime与Date自定义转化
- **/
 public class LocalDateTimeToDateDozerConverter extends DozerConverter<LocalDateTime, Date> {
 
     public LocalDateTimeToDateDozerConverter() {

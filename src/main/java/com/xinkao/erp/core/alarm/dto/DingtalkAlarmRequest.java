@@ -7,11 +7,6 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
-/**
- * 异常告警发送到钉钉的信息拼装
- * @author hys_thanks
- *
- */
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

@@ -6,9 +6,7 @@ import java.net.UnknownHostException;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * IP工具类
- **/
+
 public class IpUtils {
 
     public static String getIpAddr(HttpServletRequest request) {
@@ -32,7 +30,6 @@ public class IpUtils {
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getRemoteAddr();
         }
-        //对于通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割
         if (ip != null && ip.length() > 0) {
             String[] ips = ip.split(",");
             if (ips.length > 0) {
@@ -79,12 +76,7 @@ public class IpUtils {
         }
     }
 
-    /**
-     * 将IPv4地址转换成字节
-     *
-     * @param text IPv4地址
-     * @return byte 字节
-     */
+    
     public static byte[] textToNumericFormatV4(String text) {
         if (text.length() == 0) {
             return null;

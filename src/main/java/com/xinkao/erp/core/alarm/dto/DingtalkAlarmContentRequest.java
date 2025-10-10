@@ -7,10 +7,6 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
-/**
- * 异常信息告警
- * @author hys_thanks
- */
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

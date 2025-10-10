@@ -25,9 +25,6 @@ import com.xinkao.erp.common.util.ValidationUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * 全局Controller异常处理
- **/
 @Slf4j
 @RestControllerAdvice
 public class ControllerExceptionHandler {

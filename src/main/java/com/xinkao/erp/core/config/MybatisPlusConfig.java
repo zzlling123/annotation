@@ -18,9 +18,7 @@ import com.xinkao.erp.core.mybatisplus.handler.DynamicTableHolder;
 
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * MP配置
- **/
+
 @Configuration
 @Slf4j
 public class MybatisPlusConfig {

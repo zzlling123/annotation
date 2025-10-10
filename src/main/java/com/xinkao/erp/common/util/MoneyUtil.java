@@ -5,24 +5,17 @@ import java.text.DecimalFormat;
 
 import org.apache.commons.lang3.StringUtils;
 
-/**
- * 
- * @ClassName: MoneyUtil
- * @Description: 关于rmb相互转换的工具类
- * @version V1.0
- */
+
 public class MoneyUtil {
-	/** 大写数字 */
+	
 	private static final String[] NUMBERS = { "零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖" };
-	/** 整数部分的单位 */
+	
 	private static final String[] IUNIT = { "元", "拾", "佰", "仟", "万", "拾", "佰", "仟", "亿", "拾", "佰", "仟", "万", "拾", "佰",
 			"仟" };
-	/** 小数部分的单位 */
+	
 	private static final String[] DUNIT = { "角", "分", "厘" };
 
-	/**
-	 * 得到大写金额。
-	 */
+	
 	public static String toChinese(String str) {
 		str = str.replaceAll(",", "");// 去掉","
 		String integerStr;// 整数部分数字
@@ -63,9 +56,7 @@ public class MoneyUtil {
 		return result + resultStr;
 	}
 
-	/**
-	 * 整数部分和小数部分转换为数组，从高位至低位
-	 */
+	
 	private static int[] toArray(String number) {
 		int[] array = new int[number.length()];
 		for (int i = 0; i < number.length(); i++) {
@@ -74,9 +65,7 @@ public class MoneyUtil {
 		return array;
 	}
 
-	/**
-	 * 得到中文金额的整数部分。
-	 */
+	
 	private static String getChineseInteger(int[] integers, boolean isMust5) {
 		StringBuffer chineseInteger = new StringBuffer("");
 		int length = integers.length;
@@ -102,9 +91,7 @@ public class MoneyUtil {
 		return chineseInteger.toString();
 	}
 
-	/**
-	 * 得到中文金额的小数部分。
-	 */
+	
 	private static String getChineseDecimal(int[] decimals) {
 		StringBuffer chineseDecimal = new StringBuffer("");
 		for (int i = 0; i < decimals.length; i++) {
@@ -116,9 +103,7 @@ public class MoneyUtil {
 		return chineseDecimal.toString();
 	}
 
-	/**
-	 * 判断第5位数字的单位"万"是否应加。
-	 */
+	
 	private static boolean isMust5(String integerStr) {
 		int length = integerStr.length();
 		if (length > 4) {
@@ -138,22 +123,12 @@ public class MoneyUtil {
 		}
 	}
 
-	/**
-	 * (字符串)分转(字符串)元
-	 * 
-	 * @param amount
-	 * @return
-	 */
+	
 	public static String fenToYuan(String amount) {
 		return fenToYuanStr(Long.valueOf(amount));
 	}
 
-	/**
-	 * (数字)分转(字符串)元
-	 * 
-	 * @param amount
-	 * @return
-	 */
+	
 	public static String fenToYuanStr(Long amount) {
 		DecimalFormat df = new DecimalFormat("#0.00");
 		BigDecimal _divisor = new BigDecimal(100);
@@ -162,22 +137,12 @@ public class MoneyUtil {
 		return df.format(result);
 	}
 
-	/**
-	 * (字符串)元转(字符串)分
-	 * 
-	 * @param amount
-	 * @return
-	 */
+	
 	public static String yuanToFen(String amount) {
 		return String.valueOf(yuanStrToFen(amount));
 	}
 
-	/**
-	 * (字符串)元转(数字)分
-	 * 
-	 * @param amount
-	 * @return
-	 */
+	
 	public static Long yuanStrToFen(String amount) {
 		BigDecimal _divisor = new BigDecimal(100);
 		BigDecimal bd = new BigDecimal(amount);

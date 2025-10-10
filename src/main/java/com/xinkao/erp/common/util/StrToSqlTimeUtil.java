@@ -12,13 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * @ClassName StrToSqlTimeUtil
- * @Description TODO
- * @Author youmin
- * @Date 2023/8/21 16:03
- * @Version 1.0
- */
+
 @Component
 public class StrToSqlTimeUtil {
     public static final String HH_MM_FORMAT = "HH:mm";

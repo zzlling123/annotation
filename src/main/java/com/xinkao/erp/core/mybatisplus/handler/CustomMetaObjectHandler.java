@@ -13,9 +13,6 @@ import com.xinkao.erp.user.entity.User;
 
 import javax.annotation.Resource;
 
-/**
- * 自定义元对象处理器
- **/
 @Component
 public class CustomMetaObjectHandler implements MetaObjectHandler {
 
@@ -24,7 +21,6 @@ public class CustomMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
-     // 判断是否有createTime字段，有就自动填充，没有就跳过
         boolean hasCreateTime = metaObject.hasGetter(DataEntity.CREATE_TIME_PROPERTY_NAME);
         boolean hasCreateBy = metaObject.hasGetter(DataEntity.CREATE_BY_PROPERTY_NAME);
         boolean hasUpdateTime = metaObject.hasGetter(DataEntity.UPDATE_TIME_PROPERTY_NAME);

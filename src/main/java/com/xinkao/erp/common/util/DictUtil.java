@@ -1,15 +1,8 @@
 package com.xinkao.erp.common.util;
-/**
- * 一些常用的字典常量
- * @author hys_thanks
- */
+
 public class DictUtil {
 
-	/**
-	 * 证件类型
-	 * @param idCardType
-	 * @return
-	 */
+	
 	public static String getIdCardTypeChineseStr(Integer idCardType) {
 		if(idCardType != null) {
 			if(0 == idCardType) {
@@ -22,11 +15,7 @@ public class DictUtil {
 		}
 		return "";
 	}
-	/**
-	 * 性别字典
-	 * @param sex
-	 * @return
-	 */
+	
 	public static String getSexChineseStr(Integer sex) {
 		if(sex != null) {
 			if(1 == sex) {
@@ -37,12 +26,7 @@ public class DictUtil {
 		}
 		return "";
 	}
-	/**
-	 * 人口类型<br>
-	 * 0-户籍人口 1-常住人口 2-流动人口 3-滞留人口
-	 * @param personType
-	 * @return
-	 */
+	
 	public static String getPersonTypeChineseStr(Integer personType) {
 		if(personType != null) {
 			if(0 == personType) {
@@ -57,11 +41,7 @@ public class DictUtil {
 		}
 		return "";
 	}
-	/**
-	 * 36类人群
-	 * @param crowdType
-	 * @return
-	 */
+	
 	public static String getCrowdTypeChineseStr(Integer crowdType) {
 		if(crowdType != null) {
 			if(1 == crowdType) {
@@ -72,12 +52,7 @@ public class DictUtil {
 		}
 		return "";
 	}
-	/**
-	 * 与户主关系
-	 * 与户主关系:0-户主本人 1-配偶 2-子女 3-孙子女 4-父母 5-祖父母或外祖父母 6-兄弟姐妹 7-其他
-	 * @param householdRelation
-	 * @return
-	 */
+	
 	public static String getHouseholdRelationChineseStr(Integer householdRelation) {
 		if(householdRelation != null) {
 			if(0 == householdRelation) {
@@ -100,11 +75,7 @@ public class DictUtil {
 		}
 		return "";
 	}
-	/**
-	 * 婚姻状况
-	 * @param maritalStatus
-	 * @return
-	 */
+	
 	public static String getMaritalStatusChineseStr(Integer maritalStatus) {
 		if(maritalStatus != null) {
 			if(0 == maritalStatus) {
@@ -115,12 +86,7 @@ public class DictUtil {
 		}
 		return "";
 	}
-	/**
-	 * 房屋类型转换
-	 * 房屋状态:-1 未核验 0-自有住房 1-承租房 2-无人居住
-	 * @param useType
-	 * @return
-	 */
+	
 	public static String getUseTypeChineseStr(Integer useType) {
 		if(useType != null) {
 			if(-1 == useType) {

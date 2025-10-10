@@ -5,10 +5,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 import lombok.Getter;
 
-/**
- * 用户等级的常量集
- * @author hys_thanks
- */
 @Getter
 public enum UserLevelEnum {
 	/**

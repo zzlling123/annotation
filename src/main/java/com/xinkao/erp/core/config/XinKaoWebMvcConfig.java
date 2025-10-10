@@ -22,9 +22,6 @@ import com.xinkao.erp.common.config.properties.XinKaoProperties;
 import com.xinkao.erp.core.aspect.DataAuthCheckInterceptor;
 import com.xinkao.erp.core.interceptor.RepeatSubmitInterceptor;
 
-/**
- *mvc相关的配置
- **/
 @Configuration
 public class XinKaoWebMvcConfig implements WebMvcConfigurer {
 
@@ -53,9 +50,6 @@ public class XinKaoWebMvcConfig implements WebMvcConfigurer {
                 URL_SEPARATOR) + "**";
     }
 
-    /**
-     * 自定义拦截规则
-     */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(repeatSubmitInterceptor).addPathPatterns("/**");
@@ -81,10 +75,6 @@ public class XinKaoWebMvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/pcd/**").addResourceLocations("file:"+PCD_PATH);
         registry.addResourceHandler("/cres/**").addResourceLocations("file:"+cres);
     }
-    /**
-     * 增加图片转换器
-     * @param converters
-     */
     @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
         converters.add(new BufferedImageHttpMessageConverter());

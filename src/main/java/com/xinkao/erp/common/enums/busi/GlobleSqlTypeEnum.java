@@ -17,9 +17,6 @@ public enum GlobleSqlTypeEnum {
 
     @EnumValue
     private final String code;
-    /**
-     * 长度为1-9,不能大于10
-     */
     @EnumValue
     private final int length;
 

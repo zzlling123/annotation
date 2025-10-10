@@ -5,9 +5,6 @@ import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
 import org.apache.poi.ss.usermodel.Sheet;
 
-/**
- * excel单页写入处理器
- **/
 public class FreezeSheetWriteHandler implements SheetWriteHandler {
 
     private int colSplit;

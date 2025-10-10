@@ -21,22 +21,12 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import cn.hutool.core.util.StrUtil;
 
-/**
- * @ClassName FileUtils
- **/
+
 public class FileUtil {
 
     private static final Logger log = LoggerFactory.getLogger(FileUtil.class);
 
-    /**
-     * 导出文件时为Writer生成OutputStream
-     *
-     * @param response   HttpServletResponse
-     * @param fileName   导出的文件名
-     * @param fileSuffix 文件后缀
-     * @return
-     * @throws IOException
-     */
+    
     public static OutputStream getOutputStream(HttpServletResponse response, String fileName, String fileSuffix) throws IOException {
         try {
             fileName = fileNameEncode(fileName);
@@ -51,23 +41,13 @@ public class FileUtil {
         }
     }
 
-    /**
-     * 文件名编码
-     *
-     * @param fileName
-     * @return
-     * @throws IOException
-     */
+    
     public static String fileNameEncode(String fileName) throws IOException {
         fileName = URLEncoder.encode(fileName, "utf-8").replaceAll("\\+", "%20");
         return fileName;
     }
 
-    /**
-     * 将file转为MutipartFile
-     * @param file
-     * @return
-     */
+    
     public static MultipartFile getMultipartFile(File file) {
         FileItem item = new DiskFileItemFactory().createItem("file"
             , MediaType.MULTIPART_FORM_DATA_VALUE

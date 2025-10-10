@@ -19,9 +19,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.FieldError;
 
-/**
- * 对象验证工具类
- **/
+
 public class ValidationUtil {
 
     private static volatile Validator VALIDATOR;
@@ -29,10 +27,7 @@ public class ValidationUtil {
     private ValidationUtil() {
     }
 
-    /**
-     * 懒加载，获取一个validator
-     * @return
-     */
+    
     @NonNull
     public static Validator getValidator() {
         if (VALIDATOR == null) {
@@ -47,11 +42,7 @@ public class ValidationUtil {
         return VALIDATOR;
     }
 
-    /**
-     * 手动验证bean
-     * @param obj 要验证的对象
-     * @param groups 要验证的分组
-     */
+    
     public static void validate(Object obj, Class<?>... groups) {
 
         Validator validator = getValidator();
@@ -70,11 +61,7 @@ public class ValidationUtil {
         }
     }
 
-    /**
-     * 验证可迭代类型的对象
-     * @param objs 可迭代的对象
-     * @param groups 要验证的分组
-     */
+    
     public static void validate(@Nullable Iterable<?> objs, @Nullable Class<?>... groups) {
         if (objs == null) {
             return;
@@ -103,11 +90,7 @@ public class ValidationUtil {
         }
     }
 
-    /**
-     * 将字段验证错误转换为标准的map型，key:value = field:message
-     * @param constraintViolations 违反约束的错误信息
-     * @return
-     */
+    
     @NonNull
     public static Map<String, String> mapWithValidError(
         Set<ConstraintViolation<?>> constraintViolations) {
@@ -136,12 +119,7 @@ public class ValidationUtil {
     }
 
 
-    /**
-     * 将字段验证错误转换为标准的map型，key:value = field:message
-     *
-     * @param fieldErrors 字段错误组
-     * @return 如果返回null，则表示未出现错误
-     */
+    
     public static Map<String, String> mapWithFieldError(@Nullable List<FieldError> fieldErrors) {
         if (CollectionUtils.isEmpty(fieldErrors)) {
             return Collections.emptyMap();
@@ -153,12 +131,7 @@ public class ValidationUtil {
         return errMap;
     }
 
-    /**
-     * 将字段验证错误转换为错误信息
-     *
-     * @param fieldErrors 字段错误组
-     * @return 如果返回null，则表示未出现错误
-     */
+    
     public static String strWithFieldError(@Nullable List<FieldError> fieldErrors) {
         StringBuffer strErrBuffer = new StringBuffer();
         if (CollectionUtils.isEmpty(fieldErrors)) {

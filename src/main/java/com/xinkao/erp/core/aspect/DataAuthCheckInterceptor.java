@@ -20,9 +20,6 @@ import com.xinkao.erp.user.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * 数据权限验证日志切面
- **/
 @Slf4j
 @Component
 public class DataAuthCheckInterceptor implements HandlerInterceptor {
@@ -39,7 +36,6 @@ public class DataAuthCheckInterceptor implements HandlerInterceptor {
 		if (handler instanceof HandlerMethod) {
 			HandlerMethod handlerMethod = (HandlerMethod) handler;
 			Method method = handlerMethod.getMethod();
-			// 获取用户权限校验注解(优先获取方法，无则再从类获取)
 			DataAuth dataAuth = method.getAnnotation(DataAuth.class);
 			if (null == dataAuth) {
 				dataAuth = method.getDeclaringClass().getAnnotation(DataAuth.class);
@@ -49,13 +45,7 @@ public class DataAuthCheckInterceptor implements HandlerInterceptor {
 				User loginUser = loginUserAll.getUser();
 				UserLevelEnum[] authList = dataAuth.authList();
 				boolean check = true;
-//				for (UserLevelEnum level : authList) {
-//					if (level.getCode() == loginUser.getLevel()) {
-//						check = true;
-//					}
-//				}
 				if(!check) {
-					 // 如若不抛出异常，也可返回false
                     throw new PermissionDeniedException("数据权限不足");
 				}
 			}

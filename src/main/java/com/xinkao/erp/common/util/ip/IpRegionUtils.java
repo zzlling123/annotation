@@ -9,18 +9,14 @@ import org.springframework.stereotype.Component;
 import cn.hutool.core.io.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * IP地区工具类
- **/
+
 @Slf4j
 @Component
 public class IpRegionUtils {
 	 // 2、使用全局的 vIndex 创建带 VectorIndex 缓存的查询对象。
     static Searcher searcher = null;
 
-    /**
-     * 初始化IP库
-     */
+    
     @PostConstruct
     public void init() {
     	// 因为jar无法读取文件,复制创建临时文件
@@ -46,12 +42,7 @@ public class IpRegionUtils {
         }
     }
 
-    /**
-     * 解析IP
-     *
-     * @param ip
-     * @return
-     */
+    
     public static String getRegion(String ip) {
         try {
             // db

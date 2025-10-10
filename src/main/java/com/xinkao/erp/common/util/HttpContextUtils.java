@@ -12,11 +12,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
-/**
- * @author lililiang
- * @Description
- * @createTime 2021/8/20 9:19
- */
+
 @Slf4j
 public class HttpContextUtils {
 
@@ -75,47 +71,27 @@ public class HttpContextUtils {
 
 		return ip;
 	}
-	/**
-	 * 获取ip
-	 * @Author lililiang
-	 * @Date 2021/7/7 14:42
-	 */
+	
 	public static String getIpAddr() {
 		getHttpServletRequest().getMethod();
 		return getIpAddrByRequest(getHttpServletRequest());
 	}
 
-	/**
-	 * 获取请求方法
-	 * @Author lililiang
-	 * @Date 2021/7/7 14:42
-	 */
+	
 	public static String getMethod() {
 		return getHttpServletRequest().getMethod();
 	}
 
-	/**
-	 * 获取UserAgent
-	 * @Author lililiang
-	 * @Date 2021/7/7 14:42
-	 */
+	
 	public static UserAgent getUserAgent() {
 		return UserAgentUtil.parse(getHttpServletRequest().getHeader("USER-AGENT"));
 	}
-	/**
-	 * 获取操作平台
-	 * @Author lililiang
-	 * @Date 2021/7/7 14:42
-	 */
+	
 	public static String getPlatform() {
 		return getUserAgent().getPlatform().toString();
 	}
 
-	/**
-	 * 获取浏览器
-	 * @Author lililiang
-	 * @Date 2021/7/7 14:42
-	 */
+	
 	public static String getBrowser() {
 		return getUserAgent().getBrowser().toString();
 	}

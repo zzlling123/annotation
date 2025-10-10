@@ -3,12 +3,6 @@ package com.xinkao.erp.common.constant;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- ** @ClassName: FileTypeConstant
- ** @Description: 文件类型常量
- ** @author: yongshun.han
- ** @date: 2020年1月16日 上午10:49:14
- **/
 public class FileTypeConstant {
     public final static Map<String, String> FILE_TYPE_MAP = new HashMap<String, String>();
     
