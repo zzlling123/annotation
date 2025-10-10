@@ -29,24 +29,20 @@ public class ExamScoreServiceImpl implements ExamScoreService {
     @Autowired
     private ExamMapper examMapper;
 
-    // 老师：导出班级单次考试成绩
     @Override
     public List<StudentExamScoreDTO> getClassExamScores(Integer classId, Integer examId) {
-        // 1. 查询班级所有学生
         List<User> students = userMapper.selectList(
                 new LambdaQueryWrapper<User>().eq(User::getClassId, classId)
         );
         if (students.isEmpty()) return Collections.emptyList();
         List<Integer> userIds = students.stream().map(User::getId).collect(Collectors.toList());
 
-        // 2. 查询该考试下这些学生的所有作答
         List<ExamPageUserAnswer> answers = examPageUserAnswerMapper.selectList(
                 new LambdaQueryWrapper<ExamPageUserAnswer>()
                         .eq(ExamPageUserAnswer::getExamId, examId)
                         .in(ExamPageUserAnswer::getUserId, userIds)
         );
 
-        // 3. 按userId分组聚合
         Map<Integer, List<ExamPageUserAnswer>> groupByUser = answers.stream()
                 .collect(Collectors.groupingBy(ExamPageUserAnswer::getUserId));
 
@@ -66,14 +62,11 @@ public class ExamScoreServiceImpl implements ExamScoreService {
     }
 
     @Override
-    // 学生：导出自己多次考试成绩
     public List<ExamScoreDTO> getStudentExamScores(Integer userId) {
-        // 1. 查询该学生所有作答
         List<ExamPageUserAnswer> answers = examPageUserAnswerMapper.selectList(
                 new LambdaQueryWrapper<ExamPageUserAnswer>().eq(ExamPageUserAnswer::getUserId, userId)
         );
 
-        // 2. 按examId分组聚合
         Map<Integer, List<ExamPageUserAnswer>> groupByExam = answers.stream()
                 .collect(Collectors.groupingBy(ExamPageUserAnswer::getExamId));
 

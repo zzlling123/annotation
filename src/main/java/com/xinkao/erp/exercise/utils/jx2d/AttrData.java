@@ -18,7 +18,6 @@ public class AttrData {
         if (attrArray == null) {
             return;
         }
-        //判断attrArray是否存在下级数组
 
         List<String> innerList = new ArrayList<>();
         if (attrArray.size()==1){

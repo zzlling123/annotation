@@ -17,24 +17,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-/**
- * 即时反馈表 前端控制器
- *
- * @author zzl
- * @since 2025-04-05 23:15:56
- */
 @RestController
 @RequestMapping("/instant-feedbacks")
 public class InstantFeedbacksController {
 
     @Autowired
     private InstantFeedbacksService instantFeedbacksService;
-    /**
-     * 分页查询
-     *
-     * @param query 查询条件
-     * @return 分页结果
-     */
     @PrimaryDataSource
     @PostMapping("/page")
     @ApiOperation("分页查询即时反馈表")
@@ -44,12 +32,6 @@ public class InstantFeedbacksController {
         return BaseResponse.ok(voPage);
     }
 
-    /**
-     * 新增练习记录表信息
-     *
-     * @param instantFeedbacks 练习记录表信息参数
-     * @return 操作结果
-     */
     @PrimaryDataSource
     @PostMapping("/save")
     @ApiOperation("添加练习记录表 提交练习答案")
@@ -58,12 +40,6 @@ public class InstantFeedbacksController {
         return instantFeedbacksService.save1(instantFeedbacks);
     }
 
-    /**
-     * 编辑练习记录表信息
-     *
-     * @param instantFeedbacks 练习记录表
-     * @return 操作结果
-     */
     @PostMapping("/update")
     @ApiOperation("更新练习记录表")
     @Log(content = "更新练习记录表", operationType = OperationType.UPDATE, isSaveRequestData = false)
@@ -74,12 +50,6 @@ public class InstantFeedbacksController {
         return instantFeedbacksService.update(instantFeedbacks);
     }
 
-    /**
-     * 删除练习记录表信息
-     *
-     * @param id 课程章节ID
-     * @return 操作结果
-     */
     @PostMapping("/delete/{id}")
     @ApiOperation("删除练习记录表")
     @Log(content = "删除练习记录表", operationType = OperationType.DELETE, isSaveRequestData = false)

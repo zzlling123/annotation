@@ -80,35 +80,18 @@ public class SummaryController {
     @Autowired
     private ExamService examService;
 
-//    统计
-//    学生成绩统计	详细记录每个学生的练习和考试成绩，生成个人成绩单和进步曲线图，帮助学生了解自己的学习效果。
-//    班级成绩统计	汇总整个班级的成绩数据，生成班级平均分、最高分、最低分等统计信息，便于教师评估教学效果。
-
-    /**
-     * 学生成绩统
-     * @param summaryStuParam 其中type 是考试还是练习 0 练习 1 考试；stuId 是学生id
-     * @return
-     */
     @RequestMapping("/stuSummary")
-    @ApiOperation("学生成绩统计，type 是考试还是练习 0 练习 1 考试，stuId是学生id")
     @PrimaryDataSource
     public BaseResponse<?> stuSummary(@RequestBody SummaryStuParam  summaryStuParam) {
-        //判断summaryStuParam是否存在stuId
         List<Integer> stuIds = new ArrayList<>();
         if (summaryStuParam.getStuId() == null|| summaryStuParam.getStuId().size() == 0) {
-            //获取当前登录用户信息
             LoginUser loginUserAll = redisUtil.getInfoByToken();
             if (loginUserAll.getUser().getRoleId()==1){
-                //超级管理员，查看所有信息
             }else if (loginUserAll.getUser().getRoleId()==3){
-                //学生，只能查看自己的信息
                 stuIds.add(loginUserAll.getUser().getId());
                 summaryStuParam.setStuId(stuIds);
             }else if (loginUserAll.getUser().getRoleId()==2){
-                //老师，只能查看自己学生的信息
-                //查询老师所带班级
                 List<ClassInfo> classInfoList = classInfoService.lambdaQuery().eq(ClassInfo::getDirectorId, loginUserAll.getUser().getId()).eq(ClassInfo::getIsDel, CommonEnum.IS_DEL.NO.getCode()).list();
-                //查询班级classInfoList下的学生id
                 LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery();
                 wrapper.eq(User::getIsDel, CommonEnum.IS_DEL.NO.getCode());
                 wrapper.in(User::getClassId, classInfoList.stream().map(ClassInfo::getId).collect(Collectors.toList()));
@@ -118,56 +101,7 @@ public class SummaryController {
             }
         }
         if (summaryStuParam.getType() == 0){
-//            List<ExerciseRecordsQuery> exerciseRecordsList = exerciseRecordsService.getListUserName(summaryStuParam);
-//            List<ExerciseRecordsVo> exerciseRecordsVoList = new ArrayList<>();
-//            for (ExerciseRecordsQuery exerciseRecordsQuery : exerciseRecordsList) {
-//                ExerciseRecordsVo exerciseRecordsVo = new ExerciseRecordsVo();
-//                BeanUtils.copyProperties(exerciseRecordsQuery, exerciseRecordsVo);
-//                exerciseRecordsVoList.add(exerciseRecordsVo);
-//            }
-//            int zong = 0; //需要标注的个数
-//            int biao = 0;  //标注个数
-//            int cuo = 0;//应该标注未标注个数
-//            int wu = 0;//错误标注个数
-//            int shu = 0;//属性个数
-//            int da = 0; //学生标注个数
-//            double accuracyRate = 0;
-//            double coverageRate = 0;
-//            for (ExerciseRecordsVo exerciseRecordsVo : exerciseRecordsVoList) {
-//                List<InstantFeedbacks> instantFeedbacksList = instantFeedbacksService.list(new LambdaQueryWrapper<InstantFeedbacks>().eq(InstantFeedbacks::getShape, 500).eq(InstantFeedbacks::getRecordId, exerciseRecordsVo.getId()));
-//                //循环练习记录查询每个练习记录所对应的上述数据然后计算总数据
-//                for (InstantFeedbacks instantFeedbacks : instantFeedbacksList) {
-//                    zong = zong + instantFeedbacks.getZong();
-//                    da = da + instantFeedbacks.getDa();
-//                    biao = biao + instantFeedbacks.getBiao();
-//                    wu = wu + instantFeedbacks.getWu();
-//                    cuo = cuo + instantFeedbacks.getCuo();
-//                    shu = shu + instantFeedbacks.getShu();
-//                    if (instantFeedbacks.getAccuracyRate() != null) {
-//                        accuracyRate += instantFeedbacks.getAccuracyRate().doubleValue();
-//                    }
-//                    if (instantFeedbacks.getCoverageRate() != null) {
-//                        coverageRate += instantFeedbacks.getCoverageRate().doubleValue();
-//                    }
-//                }
-//                int size = instantFeedbacksList.size();
-//                exerciseRecordsVo.setDa(size != 0 ? da / size : 0);
-//                exerciseRecordsVo.setBiao(size != 0 ? biao / size : 0);
-//                exerciseRecordsVo.setCuo(size != 0 ? cuo / size : 0);
-//                exerciseRecordsVo.setWu(size != 0 ? wu / size : 0);
-//                exerciseRecordsVo.setShu(size != 0 ? shu / size : 0);
-//                exerciseRecordsVo.setZong(size!=0?zong / size:0);
-//                if (size != 0) {
-//                    exerciseRecordsVo.setAccuracyRate(new BigDecimal(accuracyRate / size).setScale(2, RoundingMode.HALF_UP));
-//                    exerciseRecordsVo.setCoverageRate(new BigDecimal(coverageRate / size).setScale(2, RoundingMode.HALF_UP));
-//                } else {
-//                    exerciseRecordsVo.setAccuracyRate(new BigDecimal(0));
-//                    exerciseRecordsVo.setCoverageRate(new BigDecimal(0));
-//                }
-//            }
-//            return BaseResponse.ok(exerciseRecordsVoList);
             List<InstantFeedbacks> instantFeedbacksList = instantFeedbacksService.list(new LambdaQueryWrapper<InstantFeedbacks>().eq(InstantFeedbacks::getShape, 500).in(InstantFeedbacks::getUserId,summaryStuParam.getStuId() ));
-            //加上user的名字
             instantFeedbacksList.forEach(instantFeedbacks -> {
                 instantFeedbacks.setRealName(userService.getById(instantFeedbacks.getUserId()).getRealName());
             });
@@ -186,12 +120,12 @@ public class SummaryController {
                 examPageUserParam.setRealName(userService.getById(examPageUser.getUserId()).getRealName());
                 examPageUserVoList.add(examPageUserParam);
             }
-            int zong = 0; //需要标注的个数
-            int biao = 0;  //标注个数
-            int cuo = 0;//应该标注未标注个数
-            int wu = 0;//错误标注个数
-            int shu = 0;//属性个数
-            int da = 0; //学生标注个数
+            int zong = 0;
+            int biao = 0;
+            int cuo = 0;
+            int wu = 0;
+            int shu = 0;
+            int da = 0;
             double accuracyRate = 0;
             double coverageRate = 0;
             for (ExamPageUserParam examPageUserParam : examPageUserVoList) {
@@ -233,14 +167,11 @@ public class SummaryController {
     }
 
     @RequestMapping("/stuSummaryByUserRole/{type}")
-    @ApiOperation("根据登录用户查询所带班级学生成绩统计，admin查看所有学生，type 是考试还是练习 0 练习 1 考试")
     @PrimaryDataSource
     public BaseResponse<?> stuSummaryByUserRole(@PathVariable int type) {
-        //获取当前登录用户信息
         List<Integer> userIds = null;
         LoginUser loginUserAll = redisUtil.getInfoByToken();
         if (loginUserAll.getUser().getRoleId() == 1){
-            //获取用户管理的班级
             LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery();
             wrapper.eq(User::getRoleId,2);
             List<User> userList = userService.list(wrapper);
@@ -249,7 +180,6 @@ public class SummaryController {
             LambdaQueryWrapper<ClassInfo> wrapper = Wrappers.lambdaQuery();
             wrapper.eq(ClassInfo::getDirectorId,loginUserAll.getUser().getId());
             List<Integer> classIds = classInfoService.list(wrapper).stream().map(ClassInfo::getId).collect(Collectors.toList());
-            //获取用户管理的班级
             LambdaQueryWrapper<User> wrapper1 = Wrappers.lambdaQuery();
             wrapper1.in(User::getClassId,classIds);
             wrapper1.eq(User::getRoleId,3);
@@ -269,17 +199,16 @@ public class SummaryController {
                 BeanUtils.copyProperties(exerciseRecords, exerciseRecordsVo);
                 exerciseRecordsVoList.add(exerciseRecordsVo);
             }
-            int zong = 0; //需要标注的个数
-            int biao = 0;  //标注个数
-            int cuo = 0;//应该标注未标注个数
-            int wu = 0;//错误标注个数
-            int shu = 0;//属性个数
-            int da = 0; //学生标注个数
+            int zong = 0;
+            int biao = 0;
+            int cuo = 0;
+            int wu = 0;
+            int shu = 0;
+            int da = 0;
             double accuracyRate = 0;
             double coverageRate = 0;
             for (ExerciseRecordsVo exerciseRecordsVo : exerciseRecordsVoList) {
                 List<InstantFeedbacks> instantFeedbacksList = instantFeedbacksService.list(new LambdaQueryWrapper<InstantFeedbacks>().eq(InstantFeedbacks::getShape, 500).eq(InstantFeedbacks::getRecordId, exerciseRecordsVo.getId()));
-                //循环练习记录查询每个练习记录所对应的上述数据然后计算总数据
                 for (InstantFeedbacks instantFeedbacks : instantFeedbacksList) {
                     zong = zong + instantFeedbacks.getZong();
                     da = da + instantFeedbacks.getDa();
@@ -321,12 +250,12 @@ public class SummaryController {
                 BeanUtils.copyProperties(examPageUser, examPageUserParam);
                 examPageUserVoList.add(examPageUserParam);
             }
-            int zong = 0; //需要标注的个数
-            int biao = 0;  //标注个数
-            int cuo = 0;//应该标注未标注个数
-            int wu = 0;//错误标注个数
-            int shu = 0;//属性个数
-            int da = 0; //学生标注个数
+            int zong = 0;
+            int biao = 0;
+            int cuo = 0;
+            int wu = 0;
+            int shu = 0;
+            int da = 0;
             double accuracyRate = 0;
             double coverageRate = 0;
             for (ExamPageUserParam examPageUserParam : examPageUserVoList) {
@@ -367,17 +296,8 @@ public class SummaryController {
         }
     }
 
-    /**
-     * 班级成绩统计(汇总整个班级的成绩数据，生成班级平均分、最高分、最低分等统计信息，便于教师评估教学效果。)
-     * @param summaryParam 其中type 是考试还是练习 0 练习 1 考试；classId 是班级id
-     * @return
-     */
     @RequestMapping("/classSummary")
-    @ApiOperation("班级成绩统计，summaryParam 其中type 是考试还是练习 0 练习 1 考试；classId 是班级id")
     public BaseResponse<?> classSummary(@RequestBody SummaryParam  summaryParam) {
-        //登录用户
-
-        //根据班级id获取班级下的所有学生
         List<User> userList = null;
         if (summaryParam.getClassId() == null){
             return BaseResponse.fail("参数错误");
@@ -391,70 +311,14 @@ public class SummaryController {
         }
         List<Integer> userIds = userList.stream().map(User::getId).collect(Collectors.toList());
         if (summaryParam.getType() == 0){
-//            LambdaQueryWrapper<ExerciseRecords> wrapper = Wrappers.lambdaQuery();
-//            wrapper.in(ExerciseRecords::getUserId,userIds);
-//            List<ExerciseRecords> exerciseRecordsList = exerciseRecordsService.list(wrapper);
-//            //List<ExerciseRecords>的数据转到List<ExerciseRecordsVo>中
-//            List<ExerciseRecordsVo> exerciseRecordsVoList = new ArrayList<>();
-//            for (ExerciseRecords exerciseRecords : exerciseRecordsList) {
-//                ExerciseRecordsVo exerciseRecordsVo = new ExerciseRecordsVo();
-//                BeanUtils.copyProperties(exerciseRecords, exerciseRecordsVo);
-//                exerciseRecordsVoList.add(exerciseRecordsVo);
-//            }
-//            int zong = 0; //需要标注的个数
-//            int biao = 0;  //标注个数
-//            int cuo = 0;//应该标注未标注个数
-//            int wu = 0;//错误标注个数
-//            int shu = 0;//属性个数
-//            int da = 0; //学生标注个数
-//            double accuracyRate = 0;
-//            double coverageRate = 0;
-//            //循环练习查询每个练习所对应的练习记录
-//            for (ExerciseRecordsVo exerciseRecordsVo : exerciseRecordsVoList) {
-//                List<InstantFeedbacks> instantFeedbacksList = instantFeedbacksService.list(new LambdaQueryWrapper<InstantFeedbacks>().eq(InstantFeedbacks::getShape, 500).eq(InstantFeedbacks::getRecordId, exerciseRecordsVo.getId()));
-//                //循环练习记录查询每个练习记录所对应的上述数据然后计算总数据
-//                for (InstantFeedbacks instantFeedbacks : instantFeedbacksList) {
-//                    zong = zong + instantFeedbacks.getZong();
-//                    da = da + instantFeedbacks.getDa();
-//                    biao = biao + instantFeedbacks.getBiao();
-//                    wu = wu + instantFeedbacks.getWu();
-//                    cuo = cuo + instantFeedbacks.getCuo();
-//                    shu = shu + instantFeedbacks.getShu();
-//                    if (instantFeedbacks.getAccuracyRate() != null) {
-//                        accuracyRate += instantFeedbacks.getAccuracyRate().doubleValue();
-//                    }
-//                    if (instantFeedbacks.getCoverageRate() != null) {
-//                        coverageRate += instantFeedbacks.getCoverageRate().doubleValue();
-//                    }
-//                }
-//                int size = instantFeedbacksList.size();
-//                exerciseRecordsVo.setDa(size!=0?da / size:0);
-//                exerciseRecordsVo.setBiao(size!=0?biao / size:0);
-//                exerciseRecordsVo.setCuo(size!=0?cuo / size:0);
-//                exerciseRecordsVo.setWu(size!=0?wu / size:0);
-//                exerciseRecordsVo.setShu(size!=0?shu / size:0);
-//                exerciseRecordsVo.setZong(size!=0?zong / size:0);
-//                if (size!=0){
-//                    exerciseRecordsVo.setAccuracyRate(new BigDecimal(accuracyRate/size).setScale(2, RoundingMode.HALF_UP));
-//                    exerciseRecordsVo.setCoverageRate(new BigDecimal(coverageRate/size).setScale(2, RoundingMode.HALF_UP));
-//                }else {
-//                    exerciseRecordsVo.setAccuracyRate(new BigDecimal(0));
-//                    exerciseRecordsVo.setCoverageRate(new BigDecimal(0));
-//                }
-//
-//            }
-//            return BaseResponse.ok(exerciseRecordsVoList);
             List<InstantFeedbacks> instantFeedbacksList = instantFeedbacksService.list(new LambdaQueryWrapper<InstantFeedbacks>().eq(InstantFeedbacks::getShape, 500).in(InstantFeedbacks::getUserId,userIds));
-            //加上user的名字
             instantFeedbacksList.forEach(instantFeedbacks -> {
                 instantFeedbacks.setRealName(userService.getById(instantFeedbacks.getUserId()).getRealName());
             });
             return BaseResponse.ok(instantFeedbacksList);
         }
         else if (summaryParam.getType() == 1){
-            //关联user表查询考试记录并返回学生姓名
             List<ExamPageUserVo> examPageUserList = examPageUserService.getExamPageUserName(summaryParam.getClassId());
-            //获取考试id
             List<Integer> examIds = examPageUserList.stream().map(ExamPageUserVo::getExamId).distinct().collect(Collectors.toList());
             ClassSummaryParam classSummaryParam = new ClassSummaryParam();
             for (Integer examId : examIds){
@@ -468,7 +332,6 @@ public class SummaryController {
                     avgScore = avgScore.add(examPageUserVo.getScore());
                 }
                 avgScore = NumberUtil.div(avgScore,examPageUserList1.size());
-                //classSummaryParam.setExamId(examId+"");
                 classSummaryParam.setAvgScore(avgScore+"");
                 classSummaryParam.setMaxScore(maxScore+"");
                 classSummaryParam.setMinScore(minScore+"");
@@ -480,19 +343,12 @@ public class SummaryController {
         }
     }
 
-    /**
-     * 班级各题型分数情况（type为类型（考试或者练习,0:练习,1:考试），练习则通过班级选择显示各个类型的操作题的数据，考试前端页面管理员可以通过班级搜索+考试搜索显示数据，教师通过班级选择显示）
-     * @param summaryParam
-     * @return
-     */
     @RequestMapping("/getClassScoreByQuestionType")
     @PrimaryDataSource
-    @ApiOperation("班级各题型分数情况（type为类型（考试或者练习,0:练习,1:考试），练习则通过班级选择显示各个类型的操作题的数据(默认显示第一个班级，第一个操作题)，考试前端页面管理员可以通过班级搜索+考试搜索显示数据，教师通过班级选择显示（默认显示第一个班级第一个考试））")
     public BaseResponse<?> getClassScoreByQuestionType(SummaryParam summaryParam) {
         List<ClassSummaryParam> classSummaryParamList = new ArrayList<>();
         List<ClassSummaryParam> classSummaryExamOperateParamList = new ArrayList<>();
         HashMap<String,Object> map = new HashMap<>();
-        //获取当前登录用户信息
         LoginUser loginUserAll = redisUtil.getInfoByToken();
         int roleId = loginUserAll.getUser().getRoleId();
         Integer classId = 0;
@@ -501,9 +357,9 @@ public class SummaryController {
             if (summaryParam.getClassId()!=null){
                 classId = summaryParam.getClassId();
             }else{
-                if (roleId == 1){//管理员
+                if (roleId == 1){
                     classId  = classInfoService.list().get(0).getId();
-                }else if (roleId == 2){//教师
+                }else if (roleId == 2){
                     classId = classInfoService.list().stream().filter(classInfo -> classInfo.getId().equals(loginUserAll.getUser().getClassId())).findFirst().get().getId();
                 }else {
                     return BaseResponse.fail("无权限显示");
@@ -526,8 +382,6 @@ public class SummaryController {
                             .eq(InstantFeedbacks::getIsDel,0)
                             .eq(InstantFeedbacks::getFinishedState,2)
                             .eq(InstantFeedbacks::getShape,500)
-                            //.gt(InstantFeedbacks::getCreateTime, summaryParam.getStartTime()) // 添加时间过滤条件
-                            //.lt(InstantFeedbacks::getUpdateTime, summaryParam.getEndTime())
                             .list();
             if(instantFeedbacksList==null){
                 return BaseResponse.fail("无操作题数据");
@@ -536,7 +390,6 @@ public class SummaryController {
             }else {
                 ClassSummaryParam classSummaryParam = new ClassSummaryParam();
                 classSummaryParam.setExamId(null);
-                //按着type的类型拆分数据
                 questionTypeService.list().forEach(questionType -> {
                     List<InstantFeedbacks> instantFeedbacks_type =
                             instantFeedbacksList.stream().filter(instantFeedbacks -> instantFeedbacks.getType().equals(questionType.getId())).collect(Collectors.toList());
@@ -585,9 +438,9 @@ public class SummaryController {
             if (summaryParam.getClassId()!=null){
                 classId = summaryParam.getClassId();
             }else{
-                if (roleId == 1){//管理员
+                if (roleId == 1){
                     classId  = classInfoService.list().get(0).getId();
-                }else if (roleId == 2){//教师
+                }else if (roleId == 2){
                     classId = classInfoService.list().stream().filter(classInfo -> classInfo.getId().equals(loginUserAll.getUser().getClassId())).findFirst().get().getId();
                 }else {
                     return BaseResponse.fail("无权限显示");
@@ -614,7 +467,7 @@ public class SummaryController {
                     new LambdaQueryWrapper<ExamPageUserAnswer>()
                             .eq(ExamPageUserAnswer::getExamId,examId)
                             .in(ExamPageUserAnswer::getUserId,userIds)
-                            );
+            );
             //查询所有的shape
             List<Shape> shapeList = shapeService.list();
             for (Shape shape : shapeList){
@@ -693,33 +546,24 @@ public class SummaryController {
         }
     }
 
-    /**
-     * 学生各题型分数情况（type为类型（考试或者练习,0:练习,1:考试），练习则通过班级选择显示各个类型的操作题的数据，考试前端页面管理员可以通过班级搜索+考试搜索显示数据，教师通过班级选择显示）
-     * @param summaryStuIDParam
-     * @return
-     */
     @RequestMapping("/getStuScoreByQuestionType")
     @PrimaryDataSource
-    @ApiOperation("学生各题型分数情况（type为类型（考试或者练习,0:练习,1:考试），练习则通过班级选择显示各个类型的操作题的数据(默认显示第一个班级，第一个操作题)，考试前端页面管理员可以通过班级搜索+考试搜索显示数据，教师通过班级选择显示（默认显示第一个班级第一个考试））")
     public BaseResponse<?> getStuScoreByQuestionType(SummaryStuIDParam summaryStuIDParam) {
         List<ClassSummaryParam> classSummaryParamList = new ArrayList<>();
         List<ClassSummaryParam> classSummaryExamOperateParamList = new ArrayList<>();
         HashMap<String,Object> map = new HashMap<>();
-        //获取当前登录用户信息
         LoginUser loginUserAll = redisUtil.getInfoByToken();
         int roleId = loginUserAll.getUser().getRoleId();
-       // int roleId = 1;
         Integer classId = 0;
         Integer examId = 0;
         if(summaryStuIDParam.getType()==0){
             if (summaryStuIDParam.getClassId()!=null){
                 classId = summaryStuIDParam.getClassId();
             }else{
-                if (roleId == 1){//管理员
+                if (roleId == 1){
                     classId  = classInfoService.list().get(0).getId();
-                }else if (roleId == 2){//教师
+                }else if (roleId == 2){
                     classId = classInfoService.list().stream().filter(classInfo -> classInfo.getId().equals(loginUserAll.getUser().getClassId())).findFirst().get().getId();
-                    //classId = 3;
                 }else {
                     return BaseResponse.fail("无权限显示");
                 }
@@ -738,8 +582,6 @@ public class SummaryController {
                             .eq(InstantFeedbacks::getIsDel,0)
                             .eq(InstantFeedbacks::getFinishedState,2)
                             .eq(InstantFeedbacks::getShape,500)
-                            //.gt(InstantFeedbacks::getCreateTime, summaryParam.getStartTime()) // 添加时间过滤条件
-                            //.lt(InstantFeedbacks::getUpdateTime, summaryParam.getEndTime())
                             .list();
             if(instantFeedbacksList==null){
                 return BaseResponse.fail("无操作题数据");
@@ -753,7 +595,6 @@ public class SummaryController {
                 List<InstantFeedbacks>  instantFeedbacksList_student = instantFeedbacksList.stream().filter(instantFeedbacks -> instantFeedbacks.getUserId().equals(summaryStuIDParam.getStuId())).collect(Collectors.toList());
                 ClassSummaryParam classSummaryParam = new ClassSummaryParam();
                 classSummaryParam.setExamId(null);
-                //按着type的类型拆分数据
                 questionTypeService.list().forEach(questionType -> {
                     List<InstantFeedbacks> instantFeedbacks_type =
                             instantFeedbacksList_student.stream().filter(instantFeedbacks -> instantFeedbacks.getType().equals(questionType.getId())).collect(Collectors.toList());
@@ -802,9 +643,9 @@ public class SummaryController {
             if (summaryStuIDParam.getClassId()!=null){
                 classId = summaryStuIDParam.getClassId();
             }else{
-                if (roleId == 1){//管理员
+                if (roleId == 1){
                     classId  = classInfoService.list().get(0).getId();
-                }else if (roleId == 2){//教师
+                }else if (roleId == 2){
                     classId = classInfoService.list().stream().filter(classInfo -> classInfo.getId().equals(loginUserAll.getUser().getClassId())).findFirst().get().getId();
                     //classId = 3;
                 }else {
@@ -835,7 +676,6 @@ public class SummaryController {
                 summaryStuIDParam.setStuId(examPageUserAnswer_first.getUserId());
             }
             List<ExamPageUserAnswer> examPageUserAnswerList_stu = examPageUserAnswerList.stream().filter(examPageUserAnswer -> examPageUserAnswer.getUserId().equals(summaryStuIDParam.getStuId())).collect(Collectors.toList());
-            //查询所有的shape
             List<Shape> shapeList = shapeService.list();
             for (Shape shape : shapeList){
                 ClassSummaryParam classSummaryParam = new ClassSummaryParam();
@@ -862,7 +702,6 @@ public class SummaryController {
             }
             questionTypeService.list().forEach(questionType -> {
                 ClassSummaryParam classSummaryParam = new ClassSummaryParam();
-                //筛选出来操作题
                 List<ExamPageUserAnswer> examPageUserAnswer_type =
                         examPageUserAnswerList_stu.stream().filter(examPageUserAnswer -> examPageUserAnswer.getType().equals(questionType.getId())&&examPageUserAnswer.getShape()==500).collect(Collectors.toList());
                 BigDecimal maxScore = examPageUserAnswer_type.stream().map(ExamPageUserAnswer::getUserScore).max(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
@@ -914,12 +753,7 @@ public class SummaryController {
         }
     }
 
-    /**
-     * 根据班级获取考试列表
-     */
     @RequestMapping("/getExamListByClass/{classId}")
-    @ApiOperation("根据班级获取考试列表")
-    //@PrimaryDataSource
     public BaseResponse<?> getExamListByClass(@PathVariable Integer classId) {
         //获取登录用户
         LoginUser loginUserAll = redisUtil.getInfoByToken();

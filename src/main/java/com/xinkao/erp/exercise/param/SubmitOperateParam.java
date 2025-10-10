@@ -7,8 +7,6 @@ import lombok.Setter;
 @Setter
 @Getter
 public class SubmitOperateParam {
-    @ApiModelProperty("练习题目编号")
     private Integer questionId;
-    @ApiModelProperty("学生答案")
     private String userAnswer;
 }

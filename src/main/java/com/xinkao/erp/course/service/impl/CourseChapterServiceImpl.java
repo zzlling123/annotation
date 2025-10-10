@@ -12,14 +12,6 @@ import com.xinkao.erp.common.service.impl.BaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-/**
- * <p>
- * 课程章节表 服务实现类
- * </p>
- *
- * @author zzl
- * @since 2025-03-21 17:19:23
- */
 @Service
 public class CourseChapterServiceImpl extends BaseServiceImpl<CourseChapterMapper, CourseChapter> implements CourseChapterService {
     @Autowired

@@ -15,7 +15,6 @@ public class Segment {
     private String role;
     private String text;
 
-    // Getter 和 Setter 方法（可自动生成）
 
     public String getKey() { return key; }
     public void setKey(String key) { this.key = key; }

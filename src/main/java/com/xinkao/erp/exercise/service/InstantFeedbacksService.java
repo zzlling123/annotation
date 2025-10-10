@@ -9,14 +9,6 @@ import com.xinkao.erp.common.service.BaseService;
 import com.xinkao.erp.exercise.query.ExerciseRecordsQuery;
 import com.xinkao.erp.exercise.query.InstantFeedbacksQuery;
 
-/**
- * <p>
- * 即时反馈表 服务类
- * </p>
- *
- * @author zzl
- * @since 2025-04-05 23:15:56
- */
 public interface InstantFeedbacksService extends BaseService<InstantFeedbacks> {
     Page<InstantFeedbacks> page(InstantFeedbacksQuery query, Pageable pageable);
     BaseResponse<?> save1(InstantFeedbacks instantFeedbacks);

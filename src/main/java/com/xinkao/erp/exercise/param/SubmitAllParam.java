@@ -7,6 +7,5 @@ import lombok.Setter;
 @Setter
 @Getter
 public class SubmitAllParam {
-    @ApiModelProperty("练习项目编号")
     private Integer exerciseRecordsId;
 }

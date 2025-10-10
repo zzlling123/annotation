@@ -12,14 +12,6 @@ import com.xinkao.erp.course.query.CourseResourceQuery;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * <p>
- * 章节资源表 服务类
- * </p>
- *
- * @author zzl
- * @since 2025-03-21 17:19:23
- */
 public interface CourseResourceService extends BaseService<CourseResource> {
     void convertToHLS(String inputPath, String outputDir) throws IOException;
     List<CourseResource> getListByChapterId(Long chapterId);
