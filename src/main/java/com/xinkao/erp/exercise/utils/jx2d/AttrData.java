@@ -11,6 +11,8 @@ public class AttrData {
     public List<List<String>> attr;
     public Position position;
     public Size size;
+    public Double canvasW;
+    public Double canvasH;
 
     public AttrData(JSONObject obj) {
         this.attr = new ArrayList<>();
@@ -46,5 +48,8 @@ public class AttrData {
 
         JSONObject sizeObj = obj.getJSONObject("size");
         this.size = new Size(sizeObj);
+
+        this.canvasW = obj.getDouble("canvasW");
+        this.canvasH = obj.getDouble("canvasH");
     }
 }
