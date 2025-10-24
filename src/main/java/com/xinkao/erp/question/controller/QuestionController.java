@@ -93,7 +93,7 @@ public class    QuestionController extends BaseController {
      * 新增题目分类
      */
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @PostMapping("/saveQuestionType")
     @ApiOperation("新增题目分类")
     public BaseResponse<?> saveQuestionType(@RequestBody @Valid QuestionTypeAddParam param) {
@@ -104,7 +104,7 @@ public class    QuestionController extends BaseController {
      * 修改题目分类
      */
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @PostMapping("/updateQuestionType")
     @ApiOperation("修改题目分类")
     public BaseResponse<?> updateQuestionType(@RequestBody @Valid QuestionTypeParam param) {
@@ -115,7 +115,7 @@ public class    QuestionController extends BaseController {
      * 删除题目分类
      */
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @PostMapping("/delQuestionType")
     @ApiOperation("删除题目分类")
     public BaseResponse<?> delQuestionType(@RequestBody DeleteParam param) {
@@ -123,7 +123,7 @@ public class    QuestionController extends BaseController {
     }
 
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @PostMapping("/upload/file")
     @ApiOperation("上传文件")
     public BaseResponse<String> uploadRequest(@RequestParam(value="file") MultipartFile file,@RequestParam String id, HttpServletRequest request) {
@@ -157,7 +157,7 @@ public class    QuestionController extends BaseController {
      * 获取题目分类说明文档
      */
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @PostMapping("/getQuestionTypeFileUrl/{questionTypeId}")
     @ApiOperation("获取题目分类说明文档")
     public BaseResponse<String> updateQuestionType(@PathVariable String questionTypeId) {
@@ -213,7 +213,7 @@ public class    QuestionController extends BaseController {
      * @return 分页结果
      */
     @PrimaryDataSource
-    @DataScope(role = "1,18,19")
+    @DataScope(role = "1,2,18,19,22")
     @PostMapping("/page")
     @ApiOperation("分页查询题库")
     public BaseResponse<Page<QuestionPageVo>> page(@RequestBody QuestionQuery query) {
@@ -229,7 +229,7 @@ public class    QuestionController extends BaseController {
      * @return 题目详情
      */
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @GetMapping("/detail/{id}")
     @ApiOperation("获取题目详情")
     public BaseResponse<QuestionInfoVo> getQuestionDetail(@PathVariable Integer id) {
@@ -248,7 +248,7 @@ public class    QuestionController extends BaseController {
      * @return 操作结果
      */
     @PrimaryDataSource
-    @DataScope(role = "1,18")
+    @DataScope(role = "1,2,18,19,22")
     @PostMapping("/save")
     @ApiOperation("新增题目")
     @Log(content = "新增题目",operationType = OperationType.INSERT)
@@ -315,7 +315,7 @@ public class    QuestionController extends BaseController {
      * @return 操作结果
      */
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @PostMapping("/update")
     @ApiOperation("编辑题目")
     @Log(content = "编辑题目",operationType = OperationType.UPDATE)
@@ -330,7 +330,7 @@ public class    QuestionController extends BaseController {
      * @return 操作结果
      */
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @PostMapping("/del")
     @ApiOperation("批量删除题目")
     @Log(content = "批量删除题目",operationType = OperationType.DELETE)
@@ -345,7 +345,7 @@ public class    QuestionController extends BaseController {
      * @return 操作结果
      */
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @PostMapping("/delTitle")
     @ApiOperation("批量删除二级标题题目")
     @Log(content = "批量删除二级标题题目",operationType = OperationType.DELETE)
@@ -360,7 +360,7 @@ public class    QuestionController extends BaseController {
      * @return 操作结果
      */
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @PostMapping("/delChild")
     @ApiOperation("批量删除子题")
     @Log(content = "批量删除子题",operationType = OperationType.DELETE)
@@ -373,7 +373,7 @@ public class    QuestionController extends BaseController {
      * @return
      */
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @PostMapping("/selfSave")
     @ApiOperation("题库按照分类、题型插入题目")
     public void selfSave(){
@@ -385,7 +385,7 @@ public class    QuestionController extends BaseController {
      * @return
      */
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @PostMapping("/getQuestionFormInfo/{id}")
     @ApiOperation("获根据题目ID取题目单详情")
     public BaseResponse<List<QuestionFormVo>> getQuestionFormInfo(@PathVariable Integer id){
@@ -394,7 +394,7 @@ public class    QuestionController extends BaseController {
 
 
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @GetMapping("/titleIntroductionTemplate/common")
     @ApiOperation("下载普通题目批量导入模板.xlsx")
     public void downloadCommonTemplate(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -409,7 +409,7 @@ public class    QuestionController extends BaseController {
     }
 
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @GetMapping("/titleIntroductionTemplate/form")
     @ApiOperation("下载题目单.zip")
     public void downloadFormTemplate(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -457,7 +457,7 @@ public class    QuestionController extends BaseController {
     /**
      * 批量导入题目（服务层读取与校验，支持新模板多Sheet与旧模板）
      */
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @ApiOperation(value = "批量导入题目")
     @PostMapping("/import")
     public void importQuestions(@RequestParam("file") MultipartFile file,
@@ -590,7 +590,7 @@ public class    QuestionController extends BaseController {
 
 
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @PostMapping("/form/import-zip")
     @ApiOperation("题目单导入（V2：多Sheet，无分隔符）")
     public void importQuestionFormZipV2(@RequestParam("file") MultipartFile file,
