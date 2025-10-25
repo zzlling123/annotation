@@ -40,7 +40,6 @@ public class ManualController extends BaseController {
     @PrimaryDataSource
     @DataScope(role = "1")
     @PostMapping("/page")
-    @ApiOperation("分页查询使用文档")
     public BaseResponse<Page<ManualVo>> page(@RequestBody ManualQuery query) {
         Page<ManualVo> voPage = manualService.page(query);
         return BaseResponse.ok(voPage);
@@ -49,8 +48,6 @@ public class ManualController extends BaseController {
     @PrimaryDataSource
     @DataScope(role = "1")
     @PostMapping("/save")
-    @ApiOperation("新增使用文档")
-    @Log(content = "新增使用文档", operationType = OperationType.INSERT)
     public BaseResponse<?> save(@Valid @RequestBody ManualParam manualParam) {
         return manualService.save(manualParam);
     }
@@ -58,8 +55,6 @@ public class ManualController extends BaseController {
     @PrimaryDataSource
     @DataScope(role = "1")
     @PostMapping("/update")
-    @ApiOperation("修改使用文档")
-    @Log(content = "修改使用文档", operationType = OperationType.UPDATE)
     public BaseResponse<?> update(@Valid @RequestBody ManualParam manualParam) {
         return manualService.update(manualParam);
     }
@@ -67,15 +62,12 @@ public class ManualController extends BaseController {
     @PrimaryDataSource
     @DataScope(role = "1")
     @PostMapping("/del")
-    @ApiOperation("批量删除使用文档")
-    @Log(content = "批量删除使用文档", operationType = OperationType.DELETE)
     public BaseResponse<?> del(@RequestBody DeleteParam param) {
         return manualService.del(param);
     }
 
     @PrimaryDataSource
     @GetMapping("/getByUserType")
-    @ApiOperation("根据用户类型获取文档信息")
     public BaseResponse<ManualVo> getByUserType() {
 
 
@@ -89,7 +81,6 @@ public class ManualController extends BaseController {
 
     @PrimaryDataSource
     @GetMapping("/getUserTypes")
-    @ApiOperation("获取用户类型枚举列表")
     public BaseResponse<List<Manual.UserTypeEnum>> getUserTypes() {
         List<Manual.UserTypeEnum> userTypes = Arrays.asList(Manual.UserTypeEnum.values());
         return BaseResponse.ok("成功", userTypes);
@@ -98,7 +89,6 @@ public class ManualController extends BaseController {
     @PrimaryDataSource
     @DataScope(role = "1,2")
     @PostMapping(value = "/upload/file", consumes = "multipart/form-data")
-    @ApiOperation("上传文档文件")
     public BaseResponse<String> uploadFile(@RequestParam(value = "file") MultipartFile file) {
 
         try {

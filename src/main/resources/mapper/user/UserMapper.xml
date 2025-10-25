@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xinkao.erp.user.mapper.UserMapper">
-<!-- 分页查询 -->
+	<!-- 分页查询 -->
 	<select id="page" resultType="com.xinkao.erp.user.vo.UserPageVo">
 		SELECT u.*,r.role_name,c.class_name
 		FROM `user` u
@@ -55,8 +55,8 @@
 	<select id="getUserInfoBySelf" resultType="com.xinkao.erp.user.vo.UserInfoVo">
 		SELECT u.*,r.role_name,c.class_name
 		FROM `user` u
-		LEFT JOIN `role` r ON r.id = u.role_id
-		LEFT JOIN class_info c ON c.id = u.class_id
+				 LEFT JOIN `role` r ON r.id = u.role_id
+				 LEFT JOIN class_info c ON c.id = u.class_id
 		WHERE 1=1 and u.is_del = 0 and u.id = #{userId}
 	</select>
 
@@ -91,9 +91,9 @@
 	</select>
 
 	<select id="getPracticeBarForExercise" resultType="com.xinkao.erp.user.vo.ExamAndPracticeBarVo">
-		SELECT qt.id type,qt.type_name,IF(SUM(ea.score) is null,0,SUM(ea.score)) userScore,IF(SUM(ea.question_score) is null,0,SUM(ea.question_score)) score
+		SELECT qt.id type,qt.type_name,IF(SUM(ea.accuracy_rate) is null,0,SUM(ea.accuracy_rate) * 100) userScore,count(*) * 100 score
 		FROM q_question_type qt
-		LEFT JOIN `exercise_records` ea ON qt.id = ea.module_id and user_id = #{userId} and ea.completion_status = 1
+		LEFT JOIN `instant_feedbacks` ea ON qt.id = ea.type and user_id = #{userId} and ea.finished_state = 2
 		<if test="query.startTime != null and query.startTime != ''">
 			and ea.create_time >= #{query.startTime}
 		</if>
@@ -107,9 +107,9 @@
 	<select id="getPracticePieForExercise" resultType="com.xinkao.erp.user.vo.ExamAndPracticePieVo">
 		SELECT qt.id,qt.type_name,
 		COUNT(ea.id) teaNum,
-		SUM(IF(ea.completion_status = 1,1,0)) userTeaNum
+		SUM(IF(ea.finished_state = 2,1,0)) userTeaNum
 		FROM q_question_type qt
-		LEFT JOIN `exercise_records` ea ON qt.id = ea.module_id and user_id = #{userId}
+		LEFT JOIN `instant_feedbacks` ea ON qt.id = ea.type and user_id = #{userId}
 		<if test="query.startTime != null and query.startTime != ''">
 			and ea.create_time >= #{query.startTime}
 		</if>
