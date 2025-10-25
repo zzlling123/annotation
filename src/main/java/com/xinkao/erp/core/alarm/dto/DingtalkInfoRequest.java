@@ -7,10 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- *  业务信息告警内容
- * @author hys_thanks
- */
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

@@ -1,11 +1,5 @@
 package com.xinkao.erp.common.util.bytesize;
 
-/**
- ** @ClassName: ByteSizeUnit
- ** @Description: 字节单位
- ** @author: yongshun.han
- ** @date: 2020年1月15日 上午9:14:43
- **/
 public enum ByteSizeUnit {
     BYTES {
         @Override
@@ -203,10 +197,6 @@ public enum ByteSizeUnit {
     
     static final long MAX = Long.MAX_VALUE;
     
-    /**
-     * Scale d by m, checking for overflow.
-     * This has a short name to make above code more readable.
-     */
     static long x(long d, long m, long over) {
         if (d > over) {
             return Long.MAX_VALUE;

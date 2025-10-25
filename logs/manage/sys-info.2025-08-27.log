@@ -1,0 +1,102 @@
+00:00:00.006 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+00:00:00.021 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+00:00:19.068 [lettuce-eventExecutorLoop-1-8] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+00:00:19.131 [lettuce-nioEventLoop-4-3] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+00:00:45.037 [SpringApplicationShutdownHook] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+00:00:45.040 [SpringApplicationShutdownHook] INFO  io.undertow.servlet - [log,389] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+00:00:45.054 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+00:00:45.060 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed
+00:00:51.626 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 2228 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+00:00:51.629 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+00:00:51.629 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+00:00:52.854 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+00:00:52.864 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+00:00:52.866 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+00:00:52.867 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+00:00:52.867 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+00:00:53.514 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+00:00:53.930 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+00:00:54.017 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+00:00:56.108 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+00:00:56.135 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@3da7bd98]
+00:00:56.141 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+00:00:58.750 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+00:00:58.756 [restartedMain] INFO  org.xnio - [<clinit>,95] - XNIO version 3.8.7.Final
+00:00:58.762 [restartedMain] INFO  org.xnio.nio - [<clinit>,58] - XNIO NIO Implementation Version 3.8.7.Final
+00:00:58.780 [restartedMain] INFO  org.jboss.threads - [<clinit>,52] - JBoss Threads version 3.1.0.Final
+00:00:58.823 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 7.591 seconds (JVM running for 8.666)
+00:01:00.012 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+00:01:00.040 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+00:01:23.416 [Thread-5] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+00:01:23.431 [Thread-5] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+00:01:23.437 [Thread-5] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed
+00:01:23.706 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 2228 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+00:01:23.706 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+00:01:24.345 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+00:01:24.532 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+00:01:24.662 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+00:01:24.700 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-2} inited
+00:01:25.973 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+00:01:25.993 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@66990b8]
+00:01:25.998 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+00:01:28.375 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+00:01:28.384 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 4.736 seconds (JVM running for 38.228)
+00:01:59.081 [lettuce-eventExecutorLoop-5-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+00:01:59.158 [lettuce-nioEventLoop-7-2] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+00:02:00.008 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+00:02:00.027 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+00:02:30.074 [lettuce-eventExecutorLoop-5-8] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+00:02:30.161 [lettuce-nioEventLoop-7-3] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+00:03:00.009 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+00:03:00.019 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+00:03:00.977 [lettuce-eventExecutorLoop-5-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+00:03:01.045 [lettuce-nioEventLoop-7-4] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+00:03:32.079 [lettuce-eventExecutorLoop-5-2] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+00:03:32.214 [lettuce-nioEventLoop-7-5] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+00:04:00.007 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+00:04:00.018 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+00:04:03.080 [lettuce-eventExecutorLoop-5-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+00:04:03.150 [lettuce-nioEventLoop-7-6] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+00:04:34.079 [lettuce-eventExecutorLoop-5-4] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+00:04:34.165 [lettuce-nioEventLoop-7-7] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+00:05:00.007 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+00:05:00.018 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+00:05:05.078 [lettuce-eventExecutorLoop-5-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+00:05:05.152 [lettuce-nioEventLoop-7-8] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+00:05:36.087 [lettuce-eventExecutorLoop-5-6] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+00:05:36.152 [lettuce-nioEventLoop-7-1] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+00:06:00.009 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+00:06:00.019 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+00:06:07.079 [lettuce-eventExecutorLoop-5-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+00:06:07.145 [lettuce-nioEventLoop-7-2] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+00:06:38.081 [lettuce-eventExecutorLoop-5-8] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+00:06:38.151 [lettuce-nioEventLoop-7-3] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+00:07:00.009 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+00:07:00.017 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+00:07:09.079 [lettuce-eventExecutorLoop-5-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+00:07:09.158 [lettuce-nioEventLoop-7-4] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+00:07:40.083 [lettuce-eventExecutorLoop-5-2] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+00:07:40.164 [lettuce-nioEventLoop-7-5] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+00:08:00.010 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+00:08:00.037 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+00:08:11.074 [lettuce-eventExecutorLoop-5-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+00:08:11.150 [lettuce-nioEventLoop-7-6] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+00:08:41.978 [lettuce-eventExecutorLoop-5-4] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+00:08:42.058 [lettuce-nioEventLoop-7-7] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+00:09:00.009 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+00:09:00.014 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+00:09:13.076 [lettuce-eventExecutorLoop-5-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+00:09:13.159 [lettuce-nioEventLoop-7-8] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+00:09:44.087 [lettuce-eventExecutorLoop-5-6] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+00:09:44.158 [lettuce-nioEventLoop-7-1] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+00:10:00.006 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+00:10:00.017 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+00:10:15.080 [lettuce-eventExecutorLoop-5-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+00:10:15.147 [lettuce-nioEventLoop-7-2] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+00:10:46.076 [lettuce-eventExecutorLoop-5-8] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+00:10:46.151 [lettuce-nioEventLoop-7-3] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+00:11:00.013 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+00:11:00.026 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+00:11:11.808 [SpringApplicationShutdownHook] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+00:11:11.814 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-2} closing ...
+00:11:11.815 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-2} closed

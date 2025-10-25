@@ -8,9 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * 角色查询分页返回实体
- **/
+
 @Setter
 @Getter
 @ApiModel("角色查询实体-VO")
@@ -26,9 +24,7 @@ public class RolePageVo implements OutputConverter<RolePageVo, Role> {
 	@ApiModelProperty("创建人")
 	private String createBy;
 
-	/**
-	 * 创建时间
-	 */
+	
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
 	private String createTime;
 }

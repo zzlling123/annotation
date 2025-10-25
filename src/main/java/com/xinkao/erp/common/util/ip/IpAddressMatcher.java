@@ -5,9 +5,6 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import org.springframework.util.StringUtils;
 
-/**
- * ip地址匹配器
- **/
 public class IpAddressMatcher {
 
     private final int nMaskBits;

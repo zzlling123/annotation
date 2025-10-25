@@ -32,14 +32,6 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-/**
- * <p>
- * 试卷表 服务实现类
- * </p>
- *
- * @author Ldy
- * @since 2025-03-29 16:06:02
- */
 @Service
 public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUserQuestionMapper, ExamPageUserQuestion> implements ExamPageUserQuestionService {
 
@@ -72,38 +64,28 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
     @Resource
     private ExamExpertAssignmentService examExpertAssignmentService;
 
-    //三种试卷格式：0-同题同序 1-同题不同序 2-不同题不同序
-    /**
-     * 制卷<br>
-     * 同题同序：
-     * 	按照设置随机获取题目，生成一套试卷题号，循环插入
-     * 同题不同序：
-     * 	按照设置随机获取题目，按照单选多选判断流程，将题目中的第几个和题号进行随机数值占用插入，循环生成
-     * 不同题不同序
-     * 	按照此次科目涉及的人，循环抽题
-     * */
     @Override
     public void rollMaking(ExamPageSet examPageSet, List<User> userList, String token) {
-        //想将考生添加至exam_page_stu表，方便后期查询进度
+
         List<ExamPageUser> examPageUserList = new ArrayList<>();
         List<ExamPageUserLog> examPageUserLogList = new ArrayList<>();
         Exam exam = examService.getById(examPageSet.getExamId());
-        //移除之前的数据
+
         examPageUserService.lambdaUpdate()
                 .eq(ExamPageUser::getExamId,examPageSet.getExamId())
                 .remove();
         examPageUserLogService.lambdaUpdate()
                 .eq(ExamPageUserLog::getExamId,examPageSet.getExamId())
                 .remove();
-        //首先清除可能存在生成失败的无用数据
+
         lambdaUpdate().eq(ExamPageUserQuestion::getExamId,examPageSet.getExamId()).remove();
         examPageUserQuestionFormTitleService.lambdaUpdate().eq(ExamPageUserQuestionFormTitle::getExamId,examPageSet.getExamId()).remove();
         examPageUserQuestionChildService.lambdaUpdate().eq(ExamPageUserQuestionChild::getExamId,examPageSet.getExamId()).remove();
         examPageUserChildAnswerService.lambdaUpdate().eq(ExamPageUserChildAnswer::getExamId,examPageSet.getExamId()).remove();
-        //清除答题卡数据
+
         examPageUserAnswerService.lambdaUpdate().eq(ExamPageUserAnswer::getExamId,examPageSet.getExamId()).remove();
         for (User user : userList) {
-            //查询是否已生成过
+
             ExamPageUser examPageUser = new  ExamPageUser();
             examPageUser.setUserId(user.getId());
             examPageUser.setClassId(user.getClassId());
@@ -112,7 +94,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
             examPageUser.setCreateTime(DateUtil.date());
             examPageUserList.add(examPageUser);
 
-            //创建答题心跳记录备用
+
             ExamPageUserLog examPageUserLog = new ExamPageUserLog();
             BeanUtil.copyProperties(examPageUser, examPageUserLog);
             examPageUserLog.setId(null);
@@ -121,28 +103,28 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
         }
         examPageUserService.saveBatch(examPageUserList);
         examPageUserLogService.saveBatch(examPageUserLogList);
-        //获取设置中的知识点列表
+
         List<ExamPageSetType> examPageSetTypeList = examPageSetTypeService.lambdaQuery()
                 .eq(ExamPageSetType::getExamId,examPageSet.getExamId())
                 .orderByAsc(ExamPageSetType::getShape)
                 .list();
-        //按照之前shape的排列顺序分组成map格式
+
         Map<Integer,List<ExamPageSetType>> examPageSetTypeMap = examPageSetTypeList.stream().collect(Collectors.groupingBy(ExamPageSetType::getShape));
 
-        //如果是0-同题同序 1-同题不同序则先获取一套试题
+
         if (0 == examPageSet.getPageMode()|| 1 == examPageSet.getPageMode()) {
-            //根据知识点获取随机题目
+
             Map<Integer,List<Question>> questionMap = getQuestionMap(exam,examPageSetTypeMap);
-            //如果为0则进行循环插入
+
             if (examPageSet.getPageMode() == 0) {
                 for (ExamPageUser examPageUser : examPageUserList) {
                     List<ExamPageUserQuestion> examPageUserQuestionList = new ArrayList<>();
                     List<ExamPageUserQuestionFormTitle> examPageUserQuestionFormTitleList = new ArrayList<>();
                     List<ExamPageUserQuestionChild> examPageUserQuestionChildList = new ArrayList<>();
                     List<ExamPageUserAnswer> examPageUserAnswerList = new ArrayList<>();
-                    //查询题型分布设置中是否包含主观题，如果包含，则ExamPageUser中needCorrect为1，否则为0
+
                     boolean needCorrect = false;
-                    //修改该考生生成试卷状态为生成中
+
                     try{
                         examPageUser.setSelectStatus(1);
                         examPageUserService.updateById(examPageUser);
@@ -162,7 +144,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                                 examPageUserQuestion.setCreateTime(DateUtil.date());
                                 examPageUserQuestionList.add(examPageUserQuestion);
 
-                                //生成用户答案模板
+
                                 ExamPageUserAnswer examPageUserAnswer = new ExamPageUserAnswer();
                                 BeanUtil.copyProperties(examPageUserQuestion,examPageUserAnswer);
                                 examPageUserAnswer.setId(null);
@@ -173,7 +155,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                                 examPageUserAnswer.setCreateTime(DateUtil.date());
                                 examPageUserAnswerList.add(examPageUserAnswer);
 
-                                //如果题目为题目单，则添加相关表
+
                                 if (question.getIsForm() == 1){
                                     examPageUserQuestionFormTitleList.addAll(getQuestionFormTitle(question.getId(),examPageUser.getUserId(),examPageUser.getExamId(),examPageUserQuestion.getId()));
                                     examPageUserQuestionChildList.addAll(getQuestionChild(question,examPageUser.getUserId(),examPageUser.getExamId(),examPageUserQuestion.getId(),examPageUserQuestionFormTitleList));
@@ -186,15 +168,15 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                         }
                         saveBatch(examPageUserQuestionList);
                         examPageUserAnswerService.saveBatch(examPageUserAnswerList);
-                        //如果包含题目单则执行相关添加
+
                         if (!examPageUserQuestionChildList.isEmpty()) {
-                            //添加答案的子表
+
                             List<ExamPageUserChildAnswer> examPageUserChildAnswerList = getQuestionChildAnswer(examPageUserQuestionChildList);
                             examPageUserQuestionFormTitleService.saveBatch(examPageUserQuestionFormTitleList);
                             examPageUserQuestionChildService.saveBatch(examPageUserQuestionChildList);
                             examPageUserChildAnswerService.saveBatch(examPageUserChildAnswerList);
                         }
-                        //修改该考生生成试卷状态为完成
+
                         examPageUser.setSelectStatus(2);
                         examPageUser.setNeedCorrect(needCorrect?1:0);
                         examPageUserService.updateById(examPageUser);
@@ -203,16 +185,16 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                     }
                 }
             }else {
-                //如果为1则生成题目列表后进行随机排列题号后进行插入
+
                 for (ExamPageUser examPageUser : examPageUserList) {
                     List<ExamPageUserQuestion> examPageUserQuestionList = new ArrayList<>();
                     List<ExamPageUserQuestionFormTitle> examPageUserQuestionFormTitleList = new ArrayList<>();
                     List<ExamPageUserQuestionChild> examPageUserQuestionChildList = new ArrayList<>();
                     List<ExamPageUserAnswer> examPageUserAnswerList = new ArrayList<>();
-                    //查询题型分布设置中是否包含主观题，如果包含，则ExamPageUser中needCorrect为1，否则为0
+
                     boolean needCorrect = false;
                     try{
-                        //修改该考生生成试卷状态为生成中
+
                         examPageUser.setSelectStatus(1);
                         examPageUserService.updateById(examPageUser);
                         int allNum = 0;
@@ -221,7 +203,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                             List<Question> questionList = questionMap.get(integer);
                             allNum += questionList.size();
                             for (int i = 0;i < questionList.size();i++) {
-                                //获取随机题号
+
                                 int num = getQuestionNum(numSet,allNum);
                                 Question question = questionList.get(i);
                                 ExamPageUserQuestion examPageUserQuestion = new ExamPageUserQuestion();
@@ -234,7 +216,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                                 examPageUserQuestion.setNumSort(num);
                                 examPageUserQuestion.setCreateTime(DateUtil.date());
                                 examPageUserQuestionList.add(examPageUserQuestion);
-                                //生成用户答案模板
+
                                 ExamPageUserAnswer examPageUserAnswer = new ExamPageUserAnswer();
                                 BeanUtil.copyProperties(examPageUserQuestion,examPageUserAnswer);
                                 examPageUserAnswer.setId(null);
@@ -245,7 +227,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                                 examPageUserAnswer.setCreateTime(DateUtil.date());
                                 examPageUserAnswerList.add(examPageUserAnswer);
 
-                                //如果题目为题目单，则添加相关表
+
                                 if (question.getIsForm() == 1){
                                     examPageUserQuestionFormTitleList.addAll(getQuestionFormTitle(question.getId(),examPageUser.getUserId(),examPageUser.getExamId(),examPageUserQuestion.getId()));
                                     examPageUserQuestionChildList.addAll(getQuestionChild(question,examPageUser.getUserId(),examPageUser.getExamId(),examPageUserQuestion.getId(),examPageUserQuestionFormTitleList));
@@ -257,15 +239,15 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                         }
                         saveBatch(examPageUserQuestionList);
                         examPageUserAnswerService.saveBatch(examPageUserAnswerList);
-                        //如果包含题目单则执行相关添加
+
                         if (!examPageUserQuestionChildList.isEmpty()) {
-                            //添加答案的子表
+
                             List<ExamPageUserChildAnswer> examPageUserChildAnswerList = getQuestionChildAnswer(examPageUserQuestionChildList);
                             examPageUserQuestionFormTitleService.saveBatch(examPageUserQuestionFormTitleList);
                             examPageUserQuestionChildService.saveBatch(examPageUserQuestionChildList);
                             examPageUserChildAnswerService.saveBatch(examPageUserChildAnswerList);
                         }
-                        //修改该考生生成试卷状态为完成
+
                         examPageUser.setSelectStatus(2);
                         examPageUser.setNeedCorrect(needCorrect?1:0);
                         examPageUserService.updateById(examPageUser);
@@ -275,20 +257,20 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                 }
             }
         }else{
-            //如果为2则每个个学生都是单独生成一套试卷
+
             for (ExamPageUser examPageUser : examPageUserList) {
                 List<ExamPageUserQuestion> examPageUserQuestionList = new ArrayList<>();
                 List<ExamPageUserQuestionFormTitle> examPageUserQuestionFormTitleList = new ArrayList<>();
                 List<ExamPageUserQuestionChild> examPageUserQuestionChildList = new ArrayList<>();
                 List<ExamPageUserAnswer> examPageUserAnswerList = new ArrayList<>();
                 try{
-                    //根据知识点获取随即题目
+
                     Map<Integer,List<Question>> questionMap = getQuestionMap(exam,examPageSetTypeMap);
-                    //修改该考生生成试卷状态为生成中
+
                     examPageUser.setSelectStatus(1);
                     examPageUserService.updateById(examPageUser);
                     int num = 0;
-                    //查询题型分布设置中是否包含主观题，如果包含，则ExamPageUser中needCorrect为1，否则为0
+
                     boolean needCorrect = false;
                     for (Integer integer : questionMap.keySet()) {
                         List<Question> questionList = questionMap.get(integer);
@@ -303,7 +285,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                             examPageUserQuestion.setNumSort(num + 1);
                             examPageUserQuestion.setCreateTime(DateUtil.date());
                             examPageUserQuestionList.add(examPageUserQuestion);
-                            //生成用户答案模板
+
                             ExamPageUserAnswer examPageUserAnswer = new ExamPageUserAnswer();
                             BeanUtil.copyProperties(examPageUserQuestion, examPageUserAnswer);
                             examPageUserAnswer.setId(null);
@@ -311,7 +293,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                             examPageUserAnswer.setRightAnswer(examPageUserQuestion.getAnswer());
                             examPageUserAnswer.setCreateTime(DateUtil.date());
                             examPageUserAnswerList.add(examPageUserAnswer);
-                            //如果题目为题目单，则添加相关表
+
                             if (question.getIsForm() == 1){
                                 examPageUserQuestionFormTitleList.addAll(getQuestionFormTitle(question.getId(),examPageUser.getUserId(),examPageUser.getExamId(),examPageUserQuestion.getId()));
                                 examPageUserQuestionChildList.addAll(getQuestionChild(question,examPageUser.getUserId(),examPageUser.getExamId(),examPageUserQuestion.getId(),examPageUserQuestionFormTitleList));
@@ -324,15 +306,15 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
                     }
                     saveBatch(examPageUserQuestionList);
                     examPageUserAnswerService.saveBatch(examPageUserAnswerList);
-                    //如果包含题目单则执行相关添加
+
                     if (!examPageUserQuestionChildList.isEmpty()) {
-                        //添加答案的子表
+
                         List<ExamPageUserChildAnswer> examPageUserChildAnswerList = getQuestionChildAnswer(examPageUserQuestionChildList);
                         examPageUserQuestionFormTitleService.saveBatch(examPageUserQuestionFormTitleList);
                         examPageUserQuestionChildService.saveBatch(examPageUserQuestionChildList);
                         examPageUserChildAnswerService.saveBatch(examPageUserChildAnswerList);
                     }
-                    //修改该考生生成试卷状态为完成
+
                     examPageUser.setSelectStatus(2);
                     examPageUser.setNeedCorrect(needCorrect?1:0);
                     examPageUserService.updateById(examPageUser);
@@ -401,13 +383,11 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
         return list;
     }
 
-    /**
-     * 查询进度
-     */
+    
     @Transactional
     @Override
     public BaseResponse<Map<String,Integer>> getProgress(String examId,String token) {
-        //获取考试相关班级，然后查询班级下有多少人
+
         List<Integer> classList = examClassService.lambdaQuery().eq(ExamClass::getExamId, examId).list().stream().map(ExamClass::getClassId).collect(Collectors.toList());
         Long count0 = userService.lambdaQuery().in(User::getClassId, classList).eq(User::getIsDel, 0).count();
         Map<String,Integer> map = new HashMap<>();
@@ -442,7 +422,7 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
             List<ExamPageSetType> examPageSetPointList = examPageSetPointMap.get(integer);
             List<Question> questionList = new ArrayList<>();
             for (ExamPageSetType examPageSetPoint : examPageSetPointList) {
-                //获取该知识点的随机抽取题目
+
                 questionList.addAll(questionMapper.getRandQuestion(examPageSetPoint,exam.getDifficultyLevel(),symbolList));
             }
             questionMap.put(integer,questionList);
@@ -456,9 +436,9 @@ public class ExamPageUserQuestionServiceImpl extends BaseServiceImpl<ExamPageUse
         boolean setOk = false;
         int r;
         do {
-            r = RandomUtil.randomInt(1,max+1);//MAX+1
+            r = RandomUtil.randomInt(1,max+1);
             if (set.add(r)){
-                //set不能重复，所以在成功添加进SET之后，附加给这个题号集合
+
                 setOk = true;
             }
         } while (!setOk);

@@ -13,14 +13,6 @@ import com.xinkao.erp.common.service.impl.BaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-/**
- * <p>
- * 即时反馈表 服务实现类
- * </p>
- *
- * @author zzl
- * @since 2025-04-05 23:15:56
- */
 @Service
 public class InstantFeedbacksServiceImpl extends BaseServiceImpl<InstantFeedbacksMapper, InstantFeedbacks> implements InstantFeedbacksService {
     @Autowired

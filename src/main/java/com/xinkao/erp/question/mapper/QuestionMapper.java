@@ -12,14 +12,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-/**
- * <p>
- * 题库表 Mapper 接口
- * </p>
- *
- * @author Ldy
- * @since 2025-03-22 11:19:40
- */
+
 @Mapper
 public interface QuestionMapper extends BaseMapper<Question> {
 

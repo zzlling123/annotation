@@ -2,9 +2,6 @@ package com.xinkao.erp.common.exception;
 
 import com.xinkao.erp.common.enums.system.XinKaoState;
 
-/**
- * 认证异常
- **/
 public class UserPasswordNotMatchException extends AbstractXinKaoException {
 
     public UserPasswordNotMatchException(String message) {

@@ -5,14 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * <p>
- *     统计树状图
- * </p>
- *
- * @author Ldy
- * @since 2023-05-09 14:02:05
- */
+
 @Getter
 @Setter
 public class ExamAndPracticeBarVo extends BaseEntity {

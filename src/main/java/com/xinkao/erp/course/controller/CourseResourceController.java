@@ -26,12 +26,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
 
-/**
- * 章节资源表 前端控制器
- *
- * @author zzl
- * @since 2025-03-21 17:19:23
- */
 @RestController
 @RequestMapping("/course-resource")
 public class CourseResourceController {
@@ -44,7 +38,6 @@ public class CourseResourceController {
 
     @PrimaryDataSource
     @PostMapping("/list/chapterId")
-    @ApiOperation("查询课程章节资源信息通过章节信息ID")
     public List<CourseResource> getResourceList(Long chapterId) {
 
         return courseResourceService.getListByChapterId(chapterId);
@@ -52,57 +45,33 @@ public class CourseResourceController {
 
     @PrimaryDataSource
     @PostMapping("/page")
-    @ApiOperation("分页查询课程章节资源信息")
     public BaseResponse<Page<CourseResource>> page(@Valid @RequestBody CourseResourceQuery query) {
         Pageable pageable = query.getPageInfo();
         Page<CourseResource> voPage = courseResourceService.page(query, pageable);
         return BaseResponse.ok(voPage);
     }
 
-    /**
-     * 新增课程章节信息
-     *
-     * @param courseResource 课程章节信息参数
-     * @return 操作结果
-     */
     @PrimaryDataSource
     @PostMapping("/save")
-    @ApiOperation("新增课程章节资源信息")
     @Log(content = "新增课程章节资源信息", operationType = OperationType.INSERT, isSaveRequestData = false)
     public BaseResponse<?> save(@Valid @RequestBody CourseResource courseResource) {
         return courseResourceService.save1(courseResource);
     }
 
-    /**
-     * 编辑课程章节信息
-     *
-     * @param courseResource 课程章节信息参数
-     * @return 操作结果
-     */
     @PostMapping("/update")
-    @ApiOperation("编辑课程章节资源信息")
     @Log(content = "编辑课程章节资源信息", operationType = OperationType.UPDATE, isSaveRequestData = false)
     public BaseResponse<?> update(@Valid @RequestBody CourseResource courseResource) {
         return courseResourceService.update(courseResource);
     }
 
-    /**
-     * 删除课程章节信息
-     *
-     * @param id 课程章节ID
-     * @return 操作结果
-     */
     @PostMapping("/delete/{id}")
-    @ApiOperation("删除课程章节信息")
     @Log(content = "删除课程章节信息", operationType = OperationType.DELETE, isSaveRequestData = false)
     public BaseResponse<?> delete(@PathVariable Integer id) {
         return courseResourceService.delete(id);
     }
 
-    // 使用HttpServletRequest作为参数
     @PrimaryDataSource
     @PostMapping("/upload/file")
-    @ApiOperation("上传课程章节信息")
     public Map<String, Object> uploadRequest(@RequestParam(value="file") MultipartFile[] files,@RequestParam(value="chapterId")Long chapterId, HttpServletRequest request) {
         try {
             boolean flag = false;
@@ -138,7 +107,6 @@ public class CourseResourceController {
         return dealResultMap(true, "上传成功");
     }
 
-    // 使用Spring MVC的MultipartFile类作为参数
     @PostMapping("/upload/multipart")
     public Map<String, Object> uploadMultipartFile(MultipartFile file,Long chapterId) {
         String fileName = file.getOriginalFilename();
@@ -170,7 +138,6 @@ public class CourseResourceController {
         return dealResultMap(true, "上传成功");
     }
 
-    // 处理上传文件结果
     private Map<String, Object> dealResultMap(boolean success, String msg) {
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("success", success);
@@ -178,7 +145,6 @@ public class CourseResourceController {
         return result;
     }
 
-    // 分片上传接口
     @PostMapping("/chunk")
     public ResponseEntity<String> uploadChunk(
             @RequestParam("file") MultipartFile file,
@@ -192,7 +158,6 @@ public class CourseResourceController {
                 chunkDir.mkdirs();
             }
 
-            // 保存分片到临时目录
             File chunkFile = new File(chunkDir, String.format("%s.part", chunkNumber));
             file.transferTo(chunkFile);
 
@@ -202,7 +167,6 @@ public class CourseResourceController {
         }
     }
 
-    // 合并分片接口
     @PostMapping("/merge")
     public ResponseEntity<String> mergeChunks(
             @RequestParam("fileName") String fileName,
@@ -219,7 +183,6 @@ public class CourseResourceController {
             File outputFile = new File(uploadDir + fileName);
             FileOutputStream fos = new FileOutputStream(outputFile);
 
-            // 按序号合并所有分片
             for (int i = 1; i <= Objects.requireNonNull(chunkDir.list()).length; i++) {
                 File chunkFile = new File(chunkDir, i + ".part");
                 FileInputStream fis = new FileInputStream(chunkFile);
@@ -232,7 +195,6 @@ public class CourseResourceController {
             }
             fos.close();
 
-            // 删除临时分片目录
             FileUtils.deleteDirectory(chunkDir);
 
             return ResponseEntity.ok("文件合并成功: " + outputFile.getAbsolutePath());

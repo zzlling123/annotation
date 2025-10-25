@@ -1,0 +1,25 @@
+23:00:40.599 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 28620 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+23:00:40.608 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+23:00:40.612 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+23:00:46.017 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+23:00:46.062 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+23:00:46.071 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+23:00:46.072 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+23:00:46.073 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+23:00:47.164 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+23:00:47.831 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+23:00:48.004 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+23:00:49.517 [Druid-ConnectionPool-Create-1771394226] INFO  c.a.d.p.DruidAbstractDataSource - [setFailContinuous,1883] - {dataSource-1} failContinuous is true
+23:03:10.269 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 26612 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+23:03:10.273 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+23:03:10.278 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+23:03:11.428 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+23:03:11.436 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+23:03:11.438 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+23:03:11.439 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+23:03:11.439 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+23:03:11.960 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+23:03:12.314 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+23:03:12.385 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+23:03:13.900 [restartedMain] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+23:03:13.904 [restartedMain] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed

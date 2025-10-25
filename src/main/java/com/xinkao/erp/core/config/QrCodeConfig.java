@@ -5,11 +5,6 @@ import org.springframework.context.annotation.Configuration;
 
 import cn.hutool.core.img.ColorUtil;
 import cn.hutool.extra.qrcode.QrConfig;
-/**
- * 二维码配置
- * @author hys_thanks
- *
- */
 @Configuration
 public class QrCodeConfig {
    

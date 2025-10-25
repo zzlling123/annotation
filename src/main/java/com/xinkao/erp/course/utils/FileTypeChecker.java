@@ -8,7 +8,6 @@ public class FileTypeChecker {
     private static final Map<String, String> fileTypeMap = new HashMap<>();
 
     static {
-        // 初始化文件类型与扩展名的映射关系
         fileTypeMap.put("txt", "文本文件");
         fileTypeMap.put("jpg", "图片文件（JPEG）");
         fileTypeMap.put("png", "图片文件（PNG）");
@@ -32,16 +31,12 @@ public class FileTypeChecker {
     }
 
     public static String getFileType(String filePath) {
-        // 获取文件的扩展名
         String extension = getExtension(filePath);
-        // 查找并返回文件类型
         return fileTypeMap.getOrDefault(extension, "未知文件类型");
     }
 
     public static String getExtension(String filePath) {
-        // 获取文件路径中的文件名部分
         String fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
-        // 获取文件的扩展名
         if (fileName.contains(".")) {
             return fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
         }

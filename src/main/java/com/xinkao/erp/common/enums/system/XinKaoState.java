@@ -1,8 +1,6 @@
 package com.xinkao.erp.common.enums.system;
 
-/**
- * 状态码枚举
- */
+
 public enum XinKaoState {
 
     OK("ok", "成功"),

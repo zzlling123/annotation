@@ -13,14 +13,10 @@ import com.xinkao.erp.core.alarm.dto.DingtalkAlarmRequest;
 import cn.hutool.http.HttpUtil;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * 发送钉钉群组机器人消息
- * @author hys_thanks
- */
 @Slf4j
 @Component
 public class DingtalkNotifyService {
-	/**告警信息**/
+	
     @Value("${dingtalk.alarm.enabled}")
     private Boolean alarmEnabled;
 

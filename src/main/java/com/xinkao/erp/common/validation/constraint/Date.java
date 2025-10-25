@@ -11,9 +11,6 @@ import javax.validation.Payload;
 
 import com.xinkao.erp.common.validation.validator.DateValidatorForCharSequence;
 
-/**
- * excel时间转换注解
- **/
 @Documented
 @Constraint(
     validatedBy = {DateValidatorForCharSequence.class}

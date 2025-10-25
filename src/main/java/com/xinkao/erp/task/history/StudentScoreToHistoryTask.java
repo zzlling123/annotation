@@ -13,39 +13,8 @@ import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * 学生归档历史表
- * @author hys_thanks
- *
- */
 @Slf4j
 @Component
 public class StudentScoreToHistoryTask {
 
-	    
-	/**
-     * 学生成绩信息归档,每年3月份执行
-     */
-//    @Scheduled(cron = "00 00 09 * 03 ?")
-    public void studentScoreToHistoryTask() {
-    	log.error("学生成绩归档历史表....开始");
-    	int year = DateUtil.date().getField(DateField.YEAR);
-    	Integer lastYear = year - 3;
-    	Integer pageSize = 5000;
-//    	Long count = studentScoreService.lambdaQuery().eq(ExamStudentScore::getExamYear,lastYear).count();
-//    	Integer page = count.intValue() /pageSize;//总页数
-//    	if(count.intValue()%pageSize != 0) {
-//    		page = page + 1;
-//    	}
-//    	for(int i = 0; i< page; i++) {
-//    		List<ExamStudentScore> studentList = studentScoreService.lambdaQuery().eq(ExamStudentScore::getExamYear,lastYear)
-//    								.orderByAsc(ExamStudentScore::getId)
-//									.last("limit "+pageSize).list();
-//    		List<ExamStudentScoreHis> studentHisList = studentList.stream().map(st->{
-//    			return BeanMapper.map(st, ExamStudentScoreHis.class);
-//    		}).collect(Collectors.toList());
-//    		studentScoreHisService.saveBatch(studentHisList, 500);
-//    	}
-    	log.error("学生成绩归档历史表....结束");
-    }
 }

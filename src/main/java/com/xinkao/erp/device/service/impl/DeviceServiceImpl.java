@@ -22,9 +22,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * 设备Service实现类
- */
 @Service
 public class DeviceServiceImpl implements DeviceService {
     
@@ -40,27 +37,22 @@ public class DeviceServiceImpl implements DeviceService {
         
         LambdaQueryWrapper<Device> wrapper = new LambdaQueryWrapper<>();
         
-        // 设备名称模糊查询
         if (StringUtils.hasText(query.getDeviceName())) {
             wrapper.like(Device::getDeviceName, query.getDeviceName());
         }
         
-        // MAC地址模糊查询
         if (StringUtils.hasText(query.getMacAddress())) {
             wrapper.like(Device::getMacAddress, query.getMacAddress());
         }
         
-        // 状态查询
         if (query.getStatus() != null) {
             wrapper.eq(Device::getStatus, query.getStatus());
         }
         
-        // 按创建时间倒序
         wrapper.orderByDesc(Device::getCreateTime);
         
         IPage<Device> devicePage = deviceMapper.selectPage(page, wrapper);
         
-        // 转换为VO
         IPage<DeviceVO> voPage = new Page<>(devicePage.getCurrent(), devicePage.getSize(), devicePage.getTotal());
         List<DeviceVO> voList = devicePage.getRecords().stream()
                 .map(this::convertToVO)
@@ -78,10 +70,8 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     public boolean addDeviceAuthRequest(DeviceParam param){
-        //获取登录用户
         Device device = new Device();
         BeanUtils.copyProperties(param, device);
-        //如果当前设备的mac地址是存在的，且是禁用，则改成状态为待审核
         LambdaQueryWrapper<Device> wrapper = new LambdaQueryWrapper<>();
         Device oldDevice = deviceMapper.selectOne(wrapper.eq(Device::getMacAddress, device.getMacAddress()));
         if (oldDevice != null && oldDevice.getStatus() == 2) {
@@ -96,7 +86,6 @@ public class DeviceServiceImpl implements DeviceService {
             device.setRestartStatus(0);
             return deviceMapper.updateById(device) > 0;
         }else {
-            // 生成设备密钥
             device.setDeviceName(param.getDeviceName());
             device.setDescription(param.getDescription());
             device.setMacAddress(param.getMacAddress());
@@ -110,7 +99,6 @@ public class DeviceServiceImpl implements DeviceService {
             }
             device.setStatus(0);
             device.setUpdateTime(LocalDateTime.now());
-            // 设置创建时间
             device.setCreateTime(LocalDateTime.now());
             device.setUpdateTime(LocalDateTime.now());
             device.setRestartStatus(0);
@@ -120,12 +108,10 @@ public class DeviceServiceImpl implements DeviceService {
     
     @Override
     public boolean addDevice(DeviceParam param) {
-        //获取登录用户
         LoginUser loginUser = redisUtil.getInfoByToken();
         Device device = new Device();
         BeanUtils.copyProperties(param, device);
-        
-        // 生成设备密钥
+
         device.setDeviceName(param.getDeviceName());
         device.setDescription(param.getDescription());
         device.setMacAddress(param.getMacAddress());
@@ -137,7 +123,6 @@ public class DeviceServiceImpl implements DeviceService {
         if (!DeviceUtils.isValidMacAddress(device.getMacAddress())){
             return false;
         }
-        //判断参数param有没有status的值没有，则设置程默认值1
         if (param.getStatus() == null){
             device.setStatus(0);
         }else if (param.getStatus() == 1){
@@ -149,7 +134,6 @@ public class DeviceServiceImpl implements DeviceService {
         if (loginUser!=null){
             device.setUpdateBy(loginUser.getUser().getRealName());
         }
-        // 设置创建时间
         device.setCreateTime(LocalDateTime.now());
         device.setUpdateTime(LocalDateTime.now());
         
@@ -212,7 +196,6 @@ public class DeviceServiceImpl implements DeviceService {
         LambdaQueryWrapper<Device> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Device::getMacAddress, macAddress);
         wrapper.eq(Device ::getStatus, 1);
-        //时间没有到失效时间
         wrapper.ge(Device::getKeyExpireTime, LocalDateTime.now());
         return deviceMapper.selectOne(wrapper);
     }
@@ -225,23 +208,19 @@ public class DeviceServiceImpl implements DeviceService {
         }
         System.out.println("deviceKey:" + deviceKey);
         System.out.println("device____key:" + device.getDeviceKey());
-        // 检查密钥是否匹配
         if (!device.getDeviceKey().equals(deviceKey)) {
             System.out.println("密钥不匹配");
             return false;
         }
         
-        // 检查设备状态
         if (device.getStatus() != 1) {
             return false;
         }
         
-        // 检查密钥是否过期
         if (device.getKeyExpireTime() != null && LocalDateTime.now().isAfter(device.getKeyExpireTime())) {
             return false;
         }
         
-        // 更新最后激活时间
         device.setLastActivateTime(LocalDateTime.now());
         device.setRestartStatus(0);
         deviceMapper.updateById(device);
@@ -275,17 +254,11 @@ public class DeviceServiceImpl implements DeviceService {
         return deviceMapper.updateById(device) > 0;
     }
     
-    /**
-     * 转换为VO
-     */
     private DeviceVO convertToVO(Device device) {
         DeviceVO vo = new DeviceVO();
         BeanUtils.copyProperties(device, vo);
         
-        // 隐藏密钥中间部分
-        //vo.setDeviceKey(DeviceUtils.maskDeviceKey(device.getDeviceKey()));
         
-        // 设置状态描述
         switch (device.getStatus()) {
             case 0:
                 vo.setStatusDesc("未激活");
@@ -300,7 +273,6 @@ public class DeviceServiceImpl implements DeviceService {
                 vo.setStatusDesc("未知");
         }
         
-        // 检查密钥是否有效
         vo.setKeyValid(device.getKeyExpireTime() == null || 
                        LocalDateTime.now().isBefore(device.getKeyExpireTime()));
         

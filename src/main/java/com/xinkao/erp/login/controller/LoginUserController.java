@@ -29,9 +29,6 @@ import com.xinkao.erp.common.controller.BaseController;
 import com.xinkao.erp.common.enums.system.OperationType;
 import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.login.service.LoginService;
-/**
- * 登录用户信息相关服务
- **/
 @RequestMapping("login")
 @RestController
 public class LoginUserController extends BaseController{
@@ -41,68 +38,35 @@ public class LoginUserController extends BaseController{
 	@Autowired
 	private SimpleCharVerifyCodeGenImpl verifyCodeGenService;
 
-
-	/**
-	 * @Description 获取验证码图片
-	 * @Date 2020/12/21 10:30
-	 * @Param [response]
-	 * @return
-	 */
-	@ApiOperation("获取验证码")
 	@GetMapping("/getVerificationCode")
 	public void verifyCode(HttpServletResponse response) throws IOException {
 		String uuid = RandomUtil.randomString(10);
-		System.out.println("uuid：" + uuid);
 		VerifyCodeDao verifyCode = verifyCodeGenService.generate(80, 28);
 		String code = verifyCode.getCode();
-		System.out.println("验证码：" + code);
-		// 将验证码信息放到Redis缓存中
+
 		redisUtil.set(uuid, code, 2, TimeUnit.MINUTES);
-		//设置响应头
 		response.setHeader("Pragma", "no-cache");
-		//设置响应头
 		response.setHeader("Cache-Control", "no-cache");
 		response.setHeader("Access-Control-Expose-Headers", "*");
-		// 将uuid放入响应头，前端需要保存到浏览器缓存
 		response.setHeader("uuid", uuid);
-		//在代理服务器端防止缓冲
 		response.setDateHeader("Expires", 0);
-		//设置响应内容类型
 		response.setContentType("image/jpeg");
 		response.getOutputStream().write(verifyCode.getImgBytes());
 		response.getOutputStream().flush();
 	}
 
-	/**
-	 * 用户注册接口
-	 *
-	 * @param registerParam 注册参数
-	 * @return 注册结果
-	 */
 	@PostMapping("/register")
-	@ApiOperation("用户注册")
 	public BaseResponse<?> register(@RequestBody @Valid RegisterParam registerParam) {
 		return loginService.register(registerParam);
 	}
 
-	/**
-	 * 执行登录
-	 *
-	 * @return
-	 */
 	@PostMapping("/login")
 	public BaseResponse<LoginUserVo> login(@RequestBody @Valid ApLoginParam apLoginParam, HttpServletRequest request) {
 		return loginService.login(apLoginParam,request);
 	}
 
-	/**
-	 * 退出登录
-	 *
-	 * @return
-	 */
 	@PrimaryDataSource
 	@PostMapping("/logout")
-	@Log(content = "退出登录", operationType = OperationType.UPDATE, isSaveRequestData = false)
 	public BaseResponse logout() {
 		return redisUtil.deleteObject(HttpContextUtils.getHttpServletRequest().getHeader("Authorization"))? BaseResponse.ok("退出成功！"):BaseResponse.fail("失败");
 	}

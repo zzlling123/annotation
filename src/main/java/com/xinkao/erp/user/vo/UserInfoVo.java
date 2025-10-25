@@ -8,13 +8,7 @@ import lombok.Setter;
 
 import java.util.Date;
 
-/**
- * <p>
- * </p>
- *
- * @author Ldy
- * @since 2023-05-09 14:02:05
- */
+
 @Getter
 @Setter
 public class UserInfoVo extends BaseEntity {
@@ -60,8 +54,7 @@ public class UserInfoVo extends BaseEntity {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date createTime;
-    
-    // 手动添加getter方法以确保mobile和email能正确访问
+
     public String getMobile() {
         return mobile;
     }

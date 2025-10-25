@@ -24,10 +24,6 @@ import com.xinkao.erp.system.service.SysConfigService;
 import cn.hutool.core.util.IdUtil;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * 验证码相关的管理
- * @author hys_thanks
- */
 @Slf4j
 @RequestMapping("/ap")
 @RestController

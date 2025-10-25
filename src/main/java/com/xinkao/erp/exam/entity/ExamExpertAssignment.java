@@ -7,13 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * 专家判卷分配表
- * 记录哪个专家判哪个学生的试卷
- *
- * @author zzl
- * @since 2025-01-XX
- */
+
 @Getter
 @Setter
 @TableName("exam_expert_assignment")

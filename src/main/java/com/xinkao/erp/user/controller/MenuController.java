@@ -28,80 +28,40 @@ import com.xinkao.erp.common.model.BaseResponse;
 import com.xinkao.erp.user.service.RoleService;
 import com.xinkao.erp.user.vo.MenuRoleVo;
 
-/**
- * 菜单相关
- * @author 777
- *
- */
 @RequestMapping("/menu")
 @RestController
 public class MenuController extends BaseController {
 	@Autowired
 	private MenuService menuService;
-	/**
-	 * 根据用户权限获取用户菜单
-	 *
-	 * @return
-	 */
 	@PrimaryDataSource
 	@PostMapping("/getList")
-	@ApiOperation("根据用户权限获取用户菜单")
 	public BaseResponse<List<Menu>> getList() {
 		return menuService.getList();
 	}
 
-	/**
-	 * 获取所有菜单树状图
-	 *
-	 * @return
-	 */
 	@PrimaryDataSource
 	@PostMapping("/getAllList")
-	@ApiOperation("获取所有菜单树状图")
 	public BaseResponse<List<Menu>> getAllList() {
 		return menuService.getAllList();
 	}
 
-
-
-	/**
-	 * 新增菜单
-	 *
-	 * @return
-	 */
 	@PrimaryDataSource
 	@DataScope(role = "1")
 	@PostMapping("/save")
-	@ApiOperation("新增菜单")
-	@Log(content = "新增菜单",operationType = OperationType.INSERT)
 	public BaseResponse save(@Valid @RequestBody MenuParam param) {
 		return menuService.save(param);
 	}
 
-	/**
-	 * 修改菜单
-	 *
-	 * @return
-	 */
 	@PrimaryDataSource
 	@DataScope(role = "1")
 	@PostMapping("/update")
-	@ApiOperation("修改菜单")
-	@Log(content = "修改菜单",operationType = OperationType.UPDATE)
 	public BaseResponse update(@Valid @RequestBody MenuParam param) {
 		return menuService.update(param);
 	}
 
-	/**
-	 * 删除
-	 *
-	 * @return
-	 */
 	@PrimaryDataSource
 	@PostMapping("/del")
 	@DataScope(role = "1")
-	@ApiOperation("删除菜单")
-	@Log(content = "删除菜单",operationType = OperationType.UPDATE)
 	public BaseResponse del(@RequestBody UpdateStateParam updateStateParam) {
 		if (StrUtil.isBlank(updateStateParam.getIds())){
 			return BaseResponse.fail("参数错误,id不可为空！");

@@ -13,12 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
 
-/**
- * 题目-标记关联表 前端控制器
- *
- * @author Ldy
- * @since 2025-04-20 22:26:27
- */
 @RestController
 @RequestMapping("/question-mark")
 public class QuestionMarkController extends BaseController {
@@ -26,15 +20,4 @@ public class QuestionMarkController extends BaseController {
     @Resource
     private QuestionMarkService questionMarkService;
 
-//    /**
-//     * 根据题目ID获取标记树状图
-//     *
-//     * @return
-//     */
-//    @PrimaryDataSource
-//    @PostMapping("/getListByQid/{qid}")
-//    @ApiOperation("根据题目ID获取标记树状图")
-//    public BaseResponse<List<Mark>> getListByQid(@PathVariable Integer qid) {
-//        return questionMarkService.getListByQid(qid);
-//    }
 }

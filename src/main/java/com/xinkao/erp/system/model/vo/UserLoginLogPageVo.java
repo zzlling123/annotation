@@ -7,9 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * 登录日志查询分页返回实体
- **/
+
 @Setter
 @Getter
 @ApiModel("登录日志查询实体-VO")
@@ -33,8 +31,7 @@ public class UserLoginLogPageVo implements OutputConverter<UserLoginLogPageVo, U
     @ApiModelProperty("登录时间")
     private String loginTime;
 
-//    @ApiModelProperty("登陆地点")
-//    private String loginLocation;
+
 
     @ApiModelProperty("登录系统")
     private String os;

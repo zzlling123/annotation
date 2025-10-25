@@ -4,11 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * 媒体类型工具类
- * 
- * @author ruoyi
- */
+
 public class MimeTypeUtil {
     public static final String IMAGE_PNG = "image/png";
     
@@ -23,13 +19,13 @@ public class MimeTypeUtil {
     public static final List<String> IMAGE_EXTENSION = Collections.unmodifiableList(Arrays.asList("bmp", "gif", "jpg", "jpeg", "png"));
     
     public static final List<String> DEFAULT_ALLOWED_EXTENSION = Collections.unmodifiableList(Arrays.asList(
-            // 图片
+
             "bmp", "gif", "jpg", "jpeg", "png",
-            // word excel powerpoint
+
             "doc", "docx", "xls", "xlsx", "ppt", "pptx", "html", "htm", "txt",
-            // 压缩文件
+
             "rar", "zip", "gz", "bz2",
-            // pdf
+
             "pdf"));
     
     public static String getExtension(String prefix) {

@@ -7,33 +7,23 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-/**
- * 用户修改参数
- **/
+
 @Data
 public class UserUpdateParam {
 
-    /**
-     * id
-     */
+    
     @NotBlank(message = "id不能为空")
     private String id;
 
-    /**
-     * 姓名
-     */
+    
     @NotBlank(message = "姓名不能为空")
     private String realName;
 
-    /**
-     * 账号
-     */
+    
     @NotBlank(message = "账号不能为空")
     private String username;
 
-    /**
-     * 角色
-     */
+    
     @NotBlank(message = "角色不能为空")
     private String roleId;
 

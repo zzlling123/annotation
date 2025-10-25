@@ -5,25 +5,16 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 import lombok.Getter;
 
-/**
- * 科目相关的常量集
- * @author hys_thanks
- */
+
 @Getter
 public enum SubjectEnum {
-	/**
-     * 物理
-     */
+	
 	WULI("wuli", "物理"),
-    /**
-     * 化学
-     */
+    
 	HUAXUE("huaxue", "化学"),
-    /**
-     * 商户
-     */
+    
 	SHENGWU("shengwu", "生物"),
-    //构造
+
     ;
     @EnumValue
     private String code;

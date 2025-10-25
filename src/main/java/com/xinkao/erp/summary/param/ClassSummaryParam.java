@@ -12,27 +12,21 @@ import java.util.List;
 @Data
 public class ClassSummaryParam {
 
-    //考试id
      @ApiModelProperty("考试id，为null，则为练习")
     private Integer examId;
 
-    //标注类型
      @ApiModelProperty("标注类型")
     private Integer type;
 
-    //题目类型
     @ApiModelProperty("题目类型:100-单选 200-多选 300-填空 400-主观题 500-操作题")
     private String shape;
 
-    //平均分
     @ApiModelProperty("平均分")
     private String avgScore;
 
-    //最高分
     @ApiModelProperty("最高分")
     private String maxScore;
 
-    //最低分
     @ApiModelProperty("最低分")
     private String minScore;
 
@@ -63,15 +57,12 @@ public class ClassSummaryParam {
     @ApiModelProperty("学生标注个数")
     private Integer avgDa;
 
-    //学生考试详情
     @ApiModelProperty("学生考试详情")
     private List<ExamPageUserVo> examPageUserVoList;
 
-    //学生考试详情
     @ApiModelProperty("学生考试做题详情")
     private List<ExamPageUserAnswer> examPageUserAnswerList;
 
-    //学生练习详情
     @ApiModelProperty("学生练习详情")
     private List<InstantFeedbacks> instantFeedbacksVoList;
 

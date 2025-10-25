@@ -5,9 +5,7 @@ import org.springframework.lang.Nullable;
 
 import com.xinkao.erp.common.enums.system.XinKaoState;
 
-/**
- * 项目的抽象异常基类
- **/
+
 public abstract class AbstractXinKaoException extends RuntimeException {
 
     private Object errorData;

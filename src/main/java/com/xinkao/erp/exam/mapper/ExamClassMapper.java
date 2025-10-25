@@ -8,14 +8,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-/**
- * <p>
- * 考试-班级关联表 Mapper 接口
- * </p>
- *
- * @author Ldy
- * @since 2025-03-29 16:15:00
- */
+
 @Mapper
 public interface ExamClassMapper extends BaseMapper<ExamClass> {
     List<ExamClVo> listByClassId(@Param("classId") Integer classId);

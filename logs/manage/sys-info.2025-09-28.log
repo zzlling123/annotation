@@ -1,0 +1,458 @@
+16:12:44.612 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.5.Final
+16:12:44.614 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 1072 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+16:12:44.618 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+16:12:53.036 [restartedMain] INFO  o.d.c.GlobalSettings - [loadGlobalSettings,113] - Trying to find Dozer configuration file: dozer.properties
+16:12:53.046 [restartedMain] INFO  o.d.DozerInitializer - [init,75] - Initializing Dozer. Version: 5.5.0, Thread Name: restartedMain
+16:12:53.050 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerStatisticsController] auto registered with the Platform MBean Server
+16:12:53.079 [restartedMain] INFO  o.d.j.JMXPlatformImpl - [register,66] - Dozer JMX MBean [org.dozer.jmx:type=DozerAdminController] auto registered with the Platform MBean Server
+16:12:53.079 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+16:12:54.097 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+16:12:54.922 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+16:12:55.095 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-1} inited
+16:12:57.921 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+16:12:58.140 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@36c9066e]
+16:12:58.147 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+16:13:01.500 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+16:13:01.527 [restartedMain] INFO  org.xnio - [<clinit>,95] - XNIO version 3.8.7.Final
+16:13:01.534 [restartedMain] INFO  org.xnio.nio - [<clinit>,58] - XNIO NIO Implementation Version 3.8.7.Final
+16:13:01.556 [restartedMain] INFO  org.jboss.threads - [<clinit>,52] - JBoss Threads version 3.1.0.Final
+16:13:01.652 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 17.577 seconds (JVM running for 19.558)
+16:13:32.279 [lettuce-eventExecutorLoop-1-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:13:32.321 [lettuce-nioEventLoop-4-2] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:13:48.396 [Thread-1] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+16:13:48.456 [Thread-1] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-1} closing ...
+16:13:48.466 [Thread-1] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-1} closed
+16:13:49.319 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 1072 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+16:13:49.319 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+16:14:08.068 [restartedMain] INFO  c.x.e.MyApplication - [logStarting,55] - Starting MyApplication using Java 18.0.2.1 on DESKTOP-TNHFM8P with PID 1072 (E:\test_project\annotation\target\classes started by 73922 in E:\test_project\annotation)
+16:14:08.068 [restartedMain] INFO  c.x.e.MyApplication - [logStartupProfileInfo,638] - The following 1 profile is active: "dev"
+16:14:09.265 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+16:14:09.575 [restartedMain] INFO  io.undertow.servlet - [log,389] - Initializing Spring embedded WebApplicationContext
+16:14:09.795 [restartedMain] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - [dataSource,55] - Init DruidDataSource
+16:14:09.879 [restartedMain] INFO  c.a.d.p.DruidDataSource - [init,985] - {dataSource-2} inited
+16:14:12.200 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,29] - init ip region db path [E:\test_project\annotation\temp\ip2region.xdb]
+16:14:12.239 [restartedMain] INFO  c.x.e.c.u.i.IpRegionUtils - [init,43] - bean [org.lionsoul.ip2region.xdb.Searcher@25c0e6ca]
+16:14:12.247 [restartedMain] INFO  o.d.DozerBeanMapper - [init,175] - Initializing a new instance of dozer bean mapper.
+16:14:16.897 [restartedMain] INFO  io.undertow - [start,120] - starting server: Undertow - 2.2.28.Final
+16:14:16.913 [restartedMain] INFO  c.x.e.MyApplication - [logStarted,61] - Started MyApplication in 8.941 seconds (JVM running for 94.819)
+16:14:47.203 [lettuce-eventExecutorLoop-5-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:14:47.240 [lettuce-nioEventLoop-7-2] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:15:00.005 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:15:00.104 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:15:18.202 [lettuce-eventExecutorLoop-5-8] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:15:18.258 [lettuce-nioEventLoop-7-3] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:15:49.325 [lettuce-eventExecutorLoop-5-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:15:49.546 [lettuce-nioEventLoop-7-4] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:16:00.021 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:16:00.094 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:16:20.202 [lettuce-eventExecutorLoop-5-2] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:16:20.250 [lettuce-nioEventLoop-7-5] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:16:51.208 [lettuce-eventExecutorLoop-5-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:16:52.438 [lettuce-nioEventLoop-7-6] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:17:00.016 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:17:00.071 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:17:23.302 [lettuce-eventExecutorLoop-5-4] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:17:23.345 [lettuce-nioEventLoop-7-7] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:17:54.314 [lettuce-eventExecutorLoop-5-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:17:54.378 [lettuce-nioEventLoop-7-8] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:18:00.006 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:18:00.053 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:18:25.215 [lettuce-eventExecutorLoop-5-6] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:18:25.260 [lettuce-nioEventLoop-7-1] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:18:56.303 [lettuce-eventExecutorLoop-5-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:18:56.341 [lettuce-nioEventLoop-7-2] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:19:00.008 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:19:00.059 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:19:27.307 [lettuce-eventExecutorLoop-5-8] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:19:27.372 [lettuce-nioEventLoop-7-3] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:19:58.207 [lettuce-eventExecutorLoop-5-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:19:58.260 [lettuce-nioEventLoop-7-4] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:20:00.006 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:20:00.053 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:20:29.309 [lettuce-eventExecutorLoop-5-2] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:20:29.376 [lettuce-nioEventLoop-7-5] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:21:00.005 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:21:00.054 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:21:00.314 [lettuce-eventExecutorLoop-5-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:21:00.359 [lettuce-nioEventLoop-7-6] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:21:31.202 [lettuce-eventExecutorLoop-5-4] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:21:31.261 [lettuce-nioEventLoop-7-7] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:22:00.006 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:22:00.064 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:22:02.216 [lettuce-eventExecutorLoop-5-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:22:02.295 [lettuce-nioEventLoop-7-8] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:22:33.304 [lettuce-eventExecutorLoop-5-6] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:22:33.342 [lettuce-nioEventLoop-7-1] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:23:00.005 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:23:00.051 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:23:04.313 [lettuce-eventExecutorLoop-5-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:23:04.357 [lettuce-nioEventLoop-7-2] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:23:35.213 [lettuce-eventExecutorLoop-5-8] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:23:35.273 [lettuce-nioEventLoop-7-3] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:24:00.004 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:24:00.061 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:24:06.315 [lettuce-eventExecutorLoop-5-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:24:06.380 [lettuce-nioEventLoop-7-4] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:24:37.206 [lettuce-eventExecutorLoop-5-2] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:24:37.241 [lettuce-nioEventLoop-7-5] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:25:00.001 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:25:00.075 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:25:08.208 [lettuce-eventExecutorLoop-5-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:25:08.255 [lettuce-nioEventLoop-7-6] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:25:39.311 [lettuce-eventExecutorLoop-5-4] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:25:39.368 [lettuce-nioEventLoop-7-7] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:26:00.010 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:26:00.087 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:26:10.303 [lettuce-eventExecutorLoop-5-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:26:10.362 [lettuce-nioEventLoop-7-8] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:26:41.203 [lettuce-eventExecutorLoop-5-6] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:26:41.317 [lettuce-nioEventLoop-7-1] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:27:00.007 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:27:00.069 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:27:12.302 [lettuce-eventExecutorLoop-5-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:27:12.347 [lettuce-nioEventLoop-7-2] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:27:43.303 [lettuce-eventExecutorLoop-5-8] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:27:43.390 [lettuce-nioEventLoop-7-3] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:28:00.001 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:28:00.057 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:28:14.212 [lettuce-eventExecutorLoop-5-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:28:14.272 [lettuce-nioEventLoop-7-4] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:28:45.211 [lettuce-eventExecutorLoop-5-2] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:28:45.253 [lettuce-nioEventLoop-7-5] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:29:00.015 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:29:00.077 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:29:16.317 [lettuce-eventExecutorLoop-5-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:29:16.369 [lettuce-nioEventLoop-7-6] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:29:47.308 [lettuce-eventExecutorLoop-5-4] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:29:47.347 [lettuce-nioEventLoop-7-7] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:30:00.005 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:30:00.053 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:30:18.210 [lettuce-eventExecutorLoop-5-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:30:18.262 [lettuce-nioEventLoop-7-8] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:30:49.302 [lettuce-eventExecutorLoop-5-6] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:30:49.362 [lettuce-nioEventLoop-7-1] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:31:00.007 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:31:00.049 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:31:20.309 [lettuce-eventExecutorLoop-5-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:31:20.349 [lettuce-nioEventLoop-7-2] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:31:51.202 [lettuce-eventExecutorLoop-5-8] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:31:51.240 [lettuce-nioEventLoop-7-3] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:32:00.007 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:32:00.049 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:32:22.317 [lettuce-eventExecutorLoop-5-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:32:22.353 [lettuce-nioEventLoop-7-4] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:32:53.315 [lettuce-eventExecutorLoop-5-2] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:32:53.353 [lettuce-nioEventLoop-7-5] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:33:00.012 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:33:00.079 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:33:24.202 [lettuce-eventExecutorLoop-5-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:33:24.251 [lettuce-nioEventLoop-7-6] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:33:55.309 [lettuce-eventExecutorLoop-5-4] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:33:55.364 [lettuce-nioEventLoop-7-7] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:34:00.005 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:34:00.057 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:34:26.307 [lettuce-eventExecutorLoop-5-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:34:26.340 [lettuce-nioEventLoop-7-8] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:34:57.213 [lettuce-eventExecutorLoop-5-6] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:34:57.267 [lettuce-nioEventLoop-7-1] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:35:00.002 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:35:00.040 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:35:28.209 [lettuce-eventExecutorLoop-5-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:35:28.271 [lettuce-nioEventLoop-7-2] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:35:59.303 [lettuce-eventExecutorLoop-5-8] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:35:59.334 [lettuce-nioEventLoop-7-3] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:36:00.001 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:36:00.056 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:36:30.213 [lettuce-eventExecutorLoop-5-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:36:30.285 [lettuce-nioEventLoop-7-4] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:37:00.003 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:37:00.046 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:37:01.205 [lettuce-eventExecutorLoop-5-2] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:37:01.259 [lettuce-nioEventLoop-7-5] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:37:32.313 [lettuce-eventExecutorLoop-5-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:37:32.352 [lettuce-nioEventLoop-7-6] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:38:00.002 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:38:00.103 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:38:03.224 [lettuce-eventExecutorLoop-5-4] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:38:03.312 [lettuce-nioEventLoop-7-7] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:38:34.208 [lettuce-eventExecutorLoop-5-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:38:34.248 [lettuce-nioEventLoop-7-8] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:39:00.008 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:39:00.059 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:39:05.316 [lettuce-eventExecutorLoop-5-6] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:39:05.362 [lettuce-nioEventLoop-7-1] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:39:36.305 [lettuce-eventExecutorLoop-5-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:39:36.354 [lettuce-nioEventLoop-7-2] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:40:00.012 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:40:00.055 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:40:07.211 [lettuce-eventExecutorLoop-5-8] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:40:07.287 [lettuce-nioEventLoop-7-3] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:40:38.212 [lettuce-eventExecutorLoop-5-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:40:38.257 [lettuce-nioEventLoop-7-4] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:41:00.009 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:41:00.099 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:41:09.303 [lettuce-eventExecutorLoop-5-2] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:41:09.366 [lettuce-nioEventLoop-7-5] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:41:40.206 [lettuce-eventExecutorLoop-5-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:41:40.503 [lettuce-nioEventLoop-7-6] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:42:00.016 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:42:00.079 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:42:11.313 [lettuce-eventExecutorLoop-5-4] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:42:11.590 [lettuce-nioEventLoop-7-7] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:42:42.407 [lettuce-eventExecutorLoop-5-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:42:42.453 [lettuce-nioEventLoop-7-8] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:43:00.014 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:43:00.065 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:43:13.214 [lettuce-eventExecutorLoop-5-6] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:43:13.277 [lettuce-nioEventLoop-7-1] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:43:44.204 [lettuce-eventExecutorLoop-5-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:43:44.562 [lettuce-nioEventLoop-7-2] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:44:00.003 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:44:00.063 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:44:15.305 [lettuce-eventExecutorLoop-5-8] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:44:15.341 [lettuce-nioEventLoop-7-3] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:44:46.214 [lettuce-eventExecutorLoop-5-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:44:46.254 [lettuce-nioEventLoop-7-4] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:45:00.008 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:45:00.062 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:45:17.210 [lettuce-eventExecutorLoop-5-2] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:45:17.272 [lettuce-nioEventLoop-7-5] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:45:48.307 [lettuce-eventExecutorLoop-5-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:45:48.353 [lettuce-nioEventLoop-7-6] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:46:00.014 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:46:00.093 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:46:19.305 [lettuce-eventExecutorLoop-5-4] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:46:19.352 [lettuce-nioEventLoop-7-7] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:46:50.204 [lettuce-eventExecutorLoop-5-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:46:50.249 [lettuce-nioEventLoop-7-8] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:47:00.009 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:47:00.050 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:47:21.215 [lettuce-eventExecutorLoop-5-6] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:47:21.249 [lettuce-nioEventLoop-7-1] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:47:52.310 [lettuce-eventExecutorLoop-5-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:47:52.359 [lettuce-nioEventLoop-7-2] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:48:00.000 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:48:00.052 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:48:23.305 [lettuce-eventExecutorLoop-5-8] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:48:23.342 [lettuce-nioEventLoop-7-3] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:48:54.204 [lettuce-eventExecutorLoop-5-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:48:54.250 [lettuce-nioEventLoop-7-4] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:49:00.009 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:49:00.076 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:49:25.305 [lettuce-eventExecutorLoop-5-2] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:49:25.370 [lettuce-nioEventLoop-7-5] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:49:56.207 [lettuce-eventExecutorLoop-5-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:49:56.235 [lettuce-nioEventLoop-7-6] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:50:00.012 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:50:00.066 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:50:27.215 [lettuce-eventExecutorLoop-5-4] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:50:27.262 [lettuce-nioEventLoop-7-7] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:50:58.311 [lettuce-eventExecutorLoop-5-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:50:58.363 [lettuce-nioEventLoop-7-8] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:51:00.009 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:51:00.056 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:51:29.207 [lettuce-eventExecutorLoop-5-6] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:51:29.239 [lettuce-nioEventLoop-7-1] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:52:00.014 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:52:00.067 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:52:00.216 [lettuce-eventExecutorLoop-5-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:52:00.258 [lettuce-nioEventLoop-7-2] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:52:31.313 [lettuce-eventExecutorLoop-5-8] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:52:31.354 [lettuce-nioEventLoop-7-3] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:53:00.004 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:53:00.041 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:53:02.208 [lettuce-eventExecutorLoop-5-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:53:02.266 [lettuce-nioEventLoop-7-4] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:53:33.207 [lettuce-eventExecutorLoop-5-2] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:53:33.269 [lettuce-nioEventLoop-7-5] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:54:00.015 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:54:00.060 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:54:04.206 [lettuce-eventExecutorLoop-5-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:54:04.269 [lettuce-nioEventLoop-7-6] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:54:35.305 [lettuce-eventExecutorLoop-5-4] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:54:35.376 [lettuce-nioEventLoop-7-7] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:55:00.004 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:55:00.048 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:55:06.210 [lettuce-eventExecutorLoop-5-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:55:06.282 [lettuce-nioEventLoop-7-8] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:55:37.209 [lettuce-eventExecutorLoop-5-6] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:55:37.243 [lettuce-nioEventLoop-7-1] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:56:00.010 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:56:00.050 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:56:08.302 [lettuce-eventExecutorLoop-5-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:56:08.339 [lettuce-nioEventLoop-7-2] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:56:39.203 [lettuce-eventExecutorLoop-5-8] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:56:39.262 [lettuce-nioEventLoop-7-3] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:57:00.016 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:57:00.064 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:57:10.209 [lettuce-eventExecutorLoop-5-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:57:10.250 [lettuce-nioEventLoop-7-4] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:57:41.314 [lettuce-eventExecutorLoop-5-2] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:57:41.363 [lettuce-nioEventLoop-7-5] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:58:00.012 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:58:00.053 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:58:12.315 [lettuce-eventExecutorLoop-5-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:58:12.362 [lettuce-nioEventLoop-7-6] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:58:43.211 [lettuce-eventExecutorLoop-5-4] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:58:43.284 [lettuce-nioEventLoop-7-7] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:59:00.010 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+16:59:00.069 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+16:59:14.306 [lettuce-eventExecutorLoop-5-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:59:14.415 [lettuce-nioEventLoop-7-8] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+16:59:45.213 [lettuce-eventExecutorLoop-5-6] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+16:59:45.260 [lettuce-nioEventLoop-7-1] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:00:00.013 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+17:00:00.077 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+17:00:16.206 [lettuce-eventExecutorLoop-5-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:00:16.244 [lettuce-nioEventLoop-7-2] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:00:47.213 [lettuce-eventExecutorLoop-5-8] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:00:47.278 [lettuce-nioEventLoop-7-3] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:01:00.003 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+17:01:00.074 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+17:01:18.209 [lettuce-eventExecutorLoop-5-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:01:18.267 [lettuce-nioEventLoop-7-4] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:01:49.216 [lettuce-eventExecutorLoop-5-2] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:01:49.319 [lettuce-nioEventLoop-7-5] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:02:00.022 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+17:02:00.073 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+17:02:20.208 [lettuce-eventExecutorLoop-5-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:02:20.253 [lettuce-nioEventLoop-7-6] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:02:51.208 [lettuce-eventExecutorLoop-5-4] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:02:51.246 [lettuce-nioEventLoop-7-7] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:03:00.008 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+17:03:00.050 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+17:03:22.205 [lettuce-eventExecutorLoop-5-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:03:22.273 [lettuce-nioEventLoop-7-8] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:03:53.203 [lettuce-eventExecutorLoop-5-6] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:03:53.231 [lettuce-nioEventLoop-7-1] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:04:00.010 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+17:04:00.048 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+17:04:24.212 [lettuce-eventExecutorLoop-5-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:04:24.244 [lettuce-nioEventLoop-7-2] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:04:55.209 [lettuce-eventExecutorLoop-5-8] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:04:55.242 [lettuce-nioEventLoop-7-3] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:05:00.014 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+17:05:00.051 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+17:05:26.210 [lettuce-eventExecutorLoop-5-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:05:26.248 [lettuce-nioEventLoop-7-4] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:05:57.306 [lettuce-eventExecutorLoop-5-2] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:05:57.342 [lettuce-nioEventLoop-7-5] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:06:00.010 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+17:06:00.051 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+17:06:28.214 [lettuce-eventExecutorLoop-5-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:06:28.250 [lettuce-nioEventLoop-7-6] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:06:59.208 [lettuce-eventExecutorLoop-5-4] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:06:59.237 [lettuce-nioEventLoop-7-7] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:07:00.007 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+17:07:00.042 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+17:07:30.302 [lettuce-eventExecutorLoop-5-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:07:30.333 [lettuce-nioEventLoop-7-8] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:08:00.005 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+17:08:00.043 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+17:08:01.308 [lettuce-eventExecutorLoop-5-6] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:08:01.339 [lettuce-nioEventLoop-7-1] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:08:32.214 [lettuce-eventExecutorLoop-5-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:08:32.254 [lettuce-nioEventLoop-7-2] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:09:00.016 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+17:09:00.052 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+17:09:03.205 [lettuce-eventExecutorLoop-5-8] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:09:03.240 [lettuce-nioEventLoop-7-3] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:09:34.307 [lettuce-eventExecutorLoop-5-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:09:34.356 [lettuce-nioEventLoop-7-4] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:10:00.012 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+17:10:00.069 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+17:10:05.209 [lettuce-eventExecutorLoop-5-2] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:10:05.244 [lettuce-nioEventLoop-7-5] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:10:36.210 [lettuce-eventExecutorLoop-5-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:10:36.249 [lettuce-nioEventLoop-7-6] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:11:00.007 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+17:11:00.062 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+17:11:07.314 [lettuce-eventExecutorLoop-5-4] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:11:07.370 [lettuce-nioEventLoop-7-7] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:11:38.211 [lettuce-eventExecutorLoop-5-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:11:38.266 [lettuce-nioEventLoop-7-8] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:12:00.008 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+17:12:00.049 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+17:12:09.211 [lettuce-eventExecutorLoop-5-6] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:12:09.279 [lettuce-nioEventLoop-7-1] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:12:40.312 [lettuce-eventExecutorLoop-5-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:12:40.345 [lettuce-nioEventLoop-7-2] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:13:00.006 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+17:13:00.053 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+17:13:11.210 [lettuce-eventExecutorLoop-5-8] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:13:11.251 [lettuce-nioEventLoop-7-3] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:13:42.215 [lettuce-eventExecutorLoop-5-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:13:42.270 [lettuce-nioEventLoop-7-4] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:14:00.009 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+17:14:00.056 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+17:14:13.306 [lettuce-eventExecutorLoop-5-2] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:14:13.340 [lettuce-nioEventLoop-7-5] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:14:44.308 [lettuce-eventExecutorLoop-5-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:14:44.354 [lettuce-nioEventLoop-7-6] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:15:00.000 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+17:15:00.038 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+17:15:15.203 [lettuce-eventExecutorLoop-5-4] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:15:15.249 [lettuce-nioEventLoop-7-7] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:15:46.307 [lettuce-eventExecutorLoop-5-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:15:46.350 [lettuce-nioEventLoop-7-8] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:16:00.004 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+17:16:00.071 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+17:16:17.208 [lettuce-eventExecutorLoop-5-6] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:16:17.242 [lettuce-nioEventLoop-7-1] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:16:48.216 [lettuce-eventExecutorLoop-5-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:16:48.261 [lettuce-nioEventLoop-7-2] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:17:00.014 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+17:17:00.066 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+17:17:19.207 [lettuce-eventExecutorLoop-5-8] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:17:19.269 [lettuce-nioEventLoop-7-3] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:17:50.210 [lettuce-eventExecutorLoop-5-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:17:50.238 [lettuce-nioEventLoop-7-4] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:18:00.006 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+17:18:00.053 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+17:18:21.211 [lettuce-eventExecutorLoop-5-2] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:18:21.262 [lettuce-nioEventLoop-7-5] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:18:52.202 [lettuce-eventExecutorLoop-5-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:18:52.232 [lettuce-nioEventLoop-7-6] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:19:00.007 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+17:19:00.045 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+17:19:23.215 [lettuce-eventExecutorLoop-5-4] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:19:23.246 [lettuce-nioEventLoop-7-7] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:19:54.208 [lettuce-eventExecutorLoop-5-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:19:54.253 [lettuce-nioEventLoop-7-8] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:20:00.002 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+17:20:00.055 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+17:20:25.204 [lettuce-eventExecutorLoop-5-6] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:20:25.242 [lettuce-nioEventLoop-7-1] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:20:56.317 [lettuce-eventExecutorLoop-5-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:20:56.371 [lettuce-nioEventLoop-7-2] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:21:00.001 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+17:21:00.066 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+17:21:27.213 [lettuce-eventExecutorLoop-5-8] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:21:27.257 [lettuce-nioEventLoop-7-3] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:21:58.214 [lettuce-eventExecutorLoop-5-1] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:21:58.259 [lettuce-nioEventLoop-7-4] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:22:00.006 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+17:22:00.062 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+17:22:29.304 [lettuce-eventExecutorLoop-5-2] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:22:29.338 [lettuce-nioEventLoop-7-5] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:23:00.003 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+17:23:00.066 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+17:23:00.204 [lettuce-eventExecutorLoop-5-3] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:23:00.278 [lettuce-nioEventLoop-7-6] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:23:31.202 [lettuce-eventExecutorLoop-5-4] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:23:31.265 [lettuce-nioEventLoop-7-7] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:24:00.007 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+17:24:00.080 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+17:24:02.212 [lettuce-eventExecutorLoop-5-5] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:24:02.263 [lettuce-nioEventLoop-7-8] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:24:33.209 [lettuce-eventExecutorLoop-5-6] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:24:33.239 [lettuce-nioEventLoop-7-1] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:25:00.007 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,35] - 更新考试项目,考试状态的状态...开始
+17:25:00.043 [schedule-pool-1] INFO  c.x.e.t.EveryMinuteEventTask - [updateExamStatus,59] - 更新考试项目,考试状态的状态...结束
+17:25:04.206 [lettuce-eventExecutorLoop-5-7] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:25:04.237 [lettuce-nioEventLoop-7-2] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:25:35.305 [lettuce-eventExecutorLoop-5-8] INFO  i.l.c.p.ConnectionWatchdog - [log,171] - Reconnecting, last destination was /114.67.238.43:6379
+17:25:35.500 [lettuce-nioEventLoop-7-3] INFO  i.l.c.p.ReconnectionHandler - [lambda$null$3,174] - Reconnected to 114.67.238.43/<unresolved>:6379
+17:25:36.392 [SpringApplicationShutdownHook] INFO  io.undertow - [stop,259] - stopping server: Undertow - 2.2.28.Final
+17:25:36.418 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2105] - {dataSource-2} closing ...
+17:25:36.423 [SpringApplicationShutdownHook] INFO  c.a.d.p.DruidDataSource - [close,2178] - {dataSource-2} closed

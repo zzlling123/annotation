@@ -13,60 +13,17 @@ import com.xinkao.erp.exam.vo.ExamPageVo;
 
 import java.util.List;
 
-/**
- * <p>
- * 考试表 服务类
- * </p>
- *
- * @author Ldy
- * @since 2025-03-29 16:09:19
- */
 public interface ExamService extends BaseService<Exam> {
 
-    /**
-     * 分页查询考试信息
-     *
-     * @param query 查询条件
-     * @param pageable 分页信息
-     * @return 分页结果
-     */
     Page<ExamPageVo> page(ExamQuery query, Pageable pageable);
 
-    /**
-     * 查看考试详情
-     *
-     * @param id 考试ID
-     * @return 考试详情
-     */
     ExamDetailVo detail(Integer id);
 
-    /**
-     * 新增考试
-     *
-     * @param examParam 考试信息
-     * @return 操作结果
-     */
     BaseResponse<?> save(ExamParam examParam);
 
-    /**
-     * 编辑考试
-     *
-     * @param examParam 考试信息
-     * @return 操作结果
-     */
     BaseResponse<?> update(ExamParam examParam);
 
-    /**
-     * 删除考试
-     *
-     * @param id 考试ID
-     * @return 操作结果
-     */
     BaseResponse<?> del(Integer id);
 
-    /**
-     * 根据题目类型和试卷形状获取试卷填充题库数量
-     *
-     */
     List<ExamPageSetVo> getExamPageSetByTypeAndShape(String examId);
 }

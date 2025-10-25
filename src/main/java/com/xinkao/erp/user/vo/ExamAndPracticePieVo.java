@@ -7,14 +7,7 @@ import lombok.Setter;
 
 import java.util.Map;
 
-/**
- * <p>
- *     统计饼状图
- * </p>
- *
- * @author Ldy
- * @since 2023-05-09 14:02:05
- */
+
 @Getter
 @Setter
 public class ExamAndPracticePieVo extends BaseEntity {

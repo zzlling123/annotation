@@ -8,14 +8,7 @@ import com.xinkao.erp.manage.query.ClassInfoQuery;
 import com.xinkao.erp.manage.vo.ClassInfoVo;
 import org.apache.ibatis.annotations.Mapper;
 
-/**
- * <p>
- * 班级表 Mapper 接口
- * </p>
- *
- * @author Ldy
- * @since 2025-03-21 14:32:24
- */
+
 @Mapper
 public interface ClassInfoMapper extends BaseMapper<ClassInfo> {
 

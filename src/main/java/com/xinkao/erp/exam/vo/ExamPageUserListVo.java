@@ -13,27 +13,19 @@ import java.util.Date;
 
 @Getter
 @Setter
-@ApiModel("待批改用户列表视图")
 public class ExamPageUserListVo extends BaseEntity implements OutputConverter<ExamPageUserListVo, Exam> {
 
-    @ApiModelProperty("考生试卷ID")
     private String id;
 
-    @ApiModelProperty("考试ID")
     private String examId;
 
-    @ApiModelProperty("用户ID")
     private String userId;
 
-    @ApiModelProperty("用户名称")
     private String realName;
 
-    @ApiModelProperty("作答状态")
     private Integer answerStatus;
 
-    @ApiModelProperty("是否已经全部批改0否1是")
     private Integer onCorrect;
 
-    @ApiModelProperty("是否需要批改0否1是")
     private Integer needCorrect;
 }

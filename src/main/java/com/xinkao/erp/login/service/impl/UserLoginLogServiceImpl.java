@@ -21,14 +21,6 @@ import com.xinkao.erp.system.service.TableOptService;
 
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * <p>
- * 管理端-用户登录表 服务实现类
- * </p>
- *
- * @author hanhys
- * @since 2023-08-03 14:18:36
- */
 @Service
 @Slf4j
 public class UserLoginLogServiceImpl extends BaseServiceImpl<UserLoginLogMapper, UserLoginLog>
@@ -45,7 +37,7 @@ public class UserLoginLogServiceImpl extends BaseServiceImpl<UserLoginLogMapper,
 		idGenerator = new DefaultIdentifierGenerator();
 	}
 
-	//分页
+
 	@Override
 	public Page<UserLoginLogPageVo> page(UserLoginLogQuery query, Pageable pageable) {
 		Page page = pageable.toPage();
@@ -55,9 +47,6 @@ public class UserLoginLogServiceImpl extends BaseServiceImpl<UserLoginLogMapper,
 		return loginLogMapper.page(page, query);
 	}
 
-	/**
-	 * 保存登录日志
-	 */
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public boolean saveBy(UserLoginLog userLoginLog) {

@@ -16,14 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * <p>
- * 练习记录表 服务实现类
- * </p>
- *
- * @author zzl
- * @since 2025-04-05 23:15:56
- */
 @Service
 public class ExerciseRecordsServiceImpl extends BaseServiceImpl<ExerciseRecordsMapper, ExerciseRecords> implements ExerciseRecordsService {
 
@@ -36,11 +28,6 @@ public class ExerciseRecordsServiceImpl extends BaseServiceImpl<ExerciseRecordsM
         return exerciseRecordsMapper.page(page, query);
     }
 
-    /**
-     * 通过id查询练习记录详情
-     * @param exerciseRecords
-     * @return
-     */
     public ExerciseRecords detailById(ExerciseRecords exerciseRecords) {
         return getById(exerciseRecords.getId());
     }

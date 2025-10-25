@@ -2,10 +2,7 @@ package com.xinkao.erp.common.exception.file;
 
 import java.util.List;
 
-/**
- * 文件上传 误异常类
- *
- */
+
 public class InvalidExtensionException extends FileException {
     private static final long serialVersionUID = 1L;
 

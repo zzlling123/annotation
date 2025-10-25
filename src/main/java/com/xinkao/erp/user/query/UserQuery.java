@@ -14,9 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 
-/**
- * 用户查询
- **/
+
 @Setter
 @Getter
 @ApiModel("用户查询")

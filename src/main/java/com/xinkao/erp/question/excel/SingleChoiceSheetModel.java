@@ -5,10 +5,7 @@ import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.annotation.write.style.HeadRowHeight;
 import lombok.Data;
 
-/**
- * 单选题 Sheet 实体（按列头名称映射）
- * 预期表头：序号、题目分类、题目难度、所属范围、试题、选项A、选项B、选项C、选项D、选项E（可选）、答案
- */
+
 @Data
 @HeadRowHeight(20)
 public class SingleChoiceSheetModel {
@@ -49,8 +46,6 @@ public class SingleChoiceSheetModel {
     @ColumnWidth(28)
     private String optionD;
 
-
-    // 单选题答案：期望为 A/B/C/D 中的一个
     @ExcelProperty("答案")
     @ColumnWidth(10)
     private String answer;

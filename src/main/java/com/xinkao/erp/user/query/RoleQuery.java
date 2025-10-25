@@ -9,9 +9,7 @@ import lombok.Setter;
 import java.io.Serializable;
 
 
-/**
- * 角色查询
- **/
+
 @Setter
 @Getter
 @ApiModel("角色分页查询")

@@ -24,14 +24,6 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * <p>
- * 课程表	 服务实现类
- * </p>
- *
- * @author zzl
- * @since 2025-03-21 16:53:36
- */
 @Service
 public class CourseServiceImpl extends BaseServiceImpl<CourseMapper, Course> implements CourseService {
 
@@ -52,40 +44,31 @@ public class CourseServiceImpl extends BaseServiceImpl<CourseMapper, Course> imp
         if (lambdaQuery().eq(Course::getCourseName, course.getCourseName()).eq(Course::getCourseStatus, CommonEnum.IS_DEL.NO.getCode()).count() > 0) {
             return BaseResponse.fail("课程名称已存在！");
         }
-        // 1. 图片上传逻辑
         if (coverImage != null && !coverImage.isEmpty()) {
-            String coverImagePath = uploadCoverImage(coverImage); // 实现图片上传方法
-            course.setCoverImage(coverImagePath); // 设置封面图路径
         }
 
         return save(course) ? BaseResponse.ok("新增成功！") : BaseResponse.fail("新增失败！");
     }
     private String uploadCoverImage(MultipartFile file) {
-        // 获取文件原始名称
         String originalFilename = file.getOriginalFilename();
 
-        // 获取文件后缀（如 .jpg, .png）
         String fileExtension = "";
         if (originalFilename != null && originalFilename.contains(".")) {
             fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
             originalFilename = originalFilename.substring(0, originalFilename.lastIndexOf("."));
         }
-        // 使用时间戳 + UUID 防止重名，例如：20250405120000-UUID.jpg
         String uniqueFileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + "-" + UUID.randomUUID() + fileExtension;
-        // 指定保存路径
         File dest = new File(cres + uniqueFileName);
 
-        // 创建父目录（如果不存在）
         if (!dest.getParentFile().exists()) {
             dest.getParentFile().mkdirs();
         }
         try {
-            // 保存文件
             file.transferTo(dest);
         } catch (Exception e) {
             throw new RuntimeException("文件上传失败", e);
         }
-        return cres + uniqueFileName; // 示例返回路径
+        return cres + uniqueFileName;
     }
 
     @Override
@@ -93,10 +76,9 @@ public class CourseServiceImpl extends BaseServiceImpl<CourseMapper, Course> imp
         if (lambdaQuery().eq(Course::getCourseName, course.getCourseName()).ne(Course::getId, course.getId()).eq(Course::getCourseStatus, CommonEnum.IS_DEL.NO.getCode()).count() > 0) {
             return BaseResponse.fail("课程名称已存在！");
         }
-        // 如果上传了新的封面图，则更新路径
         if (coverImage != null && !coverImage.isEmpty()) {
-            String newImagePath = uploadCoverImage(coverImage); // 文件上传逻辑
-            course.setCoverImage(newImagePath);
+            String newImagePath = uploadCoverImage(coverImage);
+            course.setCoverImage(coverImage.getName());
         }
         return updateById(course) ? BaseResponse.ok("更新成功！") : BaseResponse.fail("更新失败！");
     }

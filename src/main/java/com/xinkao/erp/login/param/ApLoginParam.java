@@ -5,9 +5,7 @@ import javax.validation.constraints.NotBlank;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-/**
- * 账号密码登录参数
- **/
+
 @Data
 public class ApLoginParam {
 

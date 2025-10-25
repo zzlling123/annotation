@@ -8,14 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * <p>
- * 账号表
- * </p>
- *
- * @author Ldy
- * @since 2023-03-02 09:42:04
- */
+
 @Getter
 @Setter
 @TableName("user")

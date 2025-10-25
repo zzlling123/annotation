@@ -2,10 +2,6 @@ package com.xinkao.erp.common.model;
 
 import java.util.List;
 import java.util.Map;
-
-/**
- * 文件导入后返回json数据
- **/
 public class ExcelImportResultVO<T> {
 
     private String fileName;

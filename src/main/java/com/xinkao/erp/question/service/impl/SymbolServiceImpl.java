@@ -23,14 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * <p>
- * 题目标记名称表 服务实现类
- * </p>
- *
- * @author Ldy
- * @since 2025-09-03 19:13:25
- */
 @Service
 public class SymbolServiceImpl extends BaseServiceImpl<SymbolMapper, Symbol> implements SymbolService {
 

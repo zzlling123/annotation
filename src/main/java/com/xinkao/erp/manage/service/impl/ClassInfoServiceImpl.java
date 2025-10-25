@@ -35,7 +35,6 @@ public class ClassInfoServiceImpl extends BaseServiceImpl<ClassInfoMapper, Class
         if (lambdaQuery().eq(ClassInfo::getClassName, classInfoParam.getClassName()).eq(ClassInfo::getIsDel, CommonEnum.IS_DEL.NO.getCode()).count() > 0) {
             return BaseResponse.fail("班级名称已存在！");
         }
-        //获取当前登录用户信息
         LoginUser loginUserAll = redisUtil.getInfoByToken();
         if(loginUserAll.getUser().getRoleId()==19){
             classInfoParam.setDirectorId(loginUserAll.getUser().getId());

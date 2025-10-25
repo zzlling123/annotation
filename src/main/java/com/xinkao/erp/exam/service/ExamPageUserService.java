@@ -41,7 +41,6 @@ public interface ExamPageUserService extends BaseService<ExamPageUser> {
 
     BaseResponse<?> heartBeat(ExamUserQuery examUserQuery);
 
-    //教师批改部分
     Page<ExamPageTeacherVo>pageTeacher(ExamTeacherQuery query, Pageable pageable);
 
     Page<ExamPageUserListVo>getExamUserListForExamId(ExamUserQuery query, Pageable pageable);

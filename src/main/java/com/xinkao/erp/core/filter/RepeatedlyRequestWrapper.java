@@ -14,9 +14,6 @@ import javax.servlet.http.HttpServletRequestWrapper;
 
 import cn.hutool.core.io.IoUtil;
 
-/**
- * 构建可重复读取inputStream的request
- */
 public class RepeatedlyRequestWrapper extends HttpServletRequestWrapper {
     private final byte[] body;
 

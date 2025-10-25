@@ -25,7 +25,6 @@ public class FileTransUtil {
         return toFile;
     }
 
-    //获取流文件
     private static void inputStreamToFile(InputStream ins, File file) {
         try {
             OutputStream os = new FileOutputStream(file);

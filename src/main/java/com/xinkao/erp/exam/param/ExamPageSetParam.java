@@ -13,39 +13,27 @@ import java.math.BigDecimal;
 public class ExamPageSetParam {
 
 
-    /**
-     * 分类ID
-     */
+
     @ApiModelProperty("type_id")
     private Integer typeId;
 
-    /**
-     * 分类名称
-     */
+
     @ApiModelProperty("type_name")
     private String typeName;
 
-    /**
-     * 题目类型:100-单选 200-多选 300-填空 400-主观题 500-操作题
-     */
+
     @ApiModelProperty("shape")
     private Integer shape;
 
-    /**
-     * 该分类下该种题型题目数量
-     */
+
     @ApiModelProperty("question_num")
     private Integer questionNum;
 
-    /**
-     * 每题分数
-     */
+
     @ApiModelProperty("score")
     private BigDecimal score;
 
-    /**
-     * 部分得分
-     */
+
     @ApiModelProperty("score_part")
     private BigDecimal scorePart;
 }

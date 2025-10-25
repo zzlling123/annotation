@@ -17,14 +17,6 @@ import com.xinkao.erp.common.service.impl.BaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-/**
- * <p>
- * 题目-标记关联表 服务实现类
- * </p>
- *
- * @author Ldy
- * @since 2025-04-20 22:26:27
- */
 @Service
 public class QuestionMarkServiceImpl extends BaseServiceImpl<QuestionMarkMapper, QuestionMark> implements QuestionMarkService {
 
@@ -38,13 +30,6 @@ public class QuestionMarkServiceImpl extends BaseServiceImpl<QuestionMarkMapper,
         return BaseResponse.ok(formatMarkListByQid(markList,markIds));
     }
 
-    //递归获取子集列表
-    /**
-     * 格式化菜单列表
-     *
-     * @param markList 菜单列表
-     * @return 格式化后的菜单列表
-     */
     @Override
     public List<Mark> formatMarkListByQid(List<Mark> markList,List<Integer> markIds) {
         List<Mark> formatMarkList = new ArrayList<>();
@@ -52,12 +37,10 @@ public class QuestionMarkServiceImpl extends BaseServiceImpl<QuestionMarkMapper,
             int markId = mark.getId();
             int pid = mark.getPid();
 
-            // 一级菜单
             if (pid == 0 && markIds.contains(markId)) {
                 List<Mark> childMarkList = new ArrayList<>();
                 for (Mark childMark : markList) {
                     int childPid = childMark.getPid();
-                    // 二级菜单
                     if (childPid == markId) {
                         childMarkList.add(childMark);
                     }

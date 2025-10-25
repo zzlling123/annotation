@@ -4,10 +4,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * 题目单导入（zip+相对路径方案）Excel接收模型
- * 说明：列表型字段先以原字符串接收（用“、”分组，“，”分隔项内字段），导入服务中再解析。
- */
+
 @Getter
 @Setter
 public class QuestionFormZipImportModel {

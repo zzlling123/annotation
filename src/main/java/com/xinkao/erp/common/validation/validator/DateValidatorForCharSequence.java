@@ -9,9 +9,6 @@ import javax.validation.ConstraintValidatorContext;
 
 import com.xinkao.erp.common.validation.constraint.Date;
 
-/**
- * String类型的日期格式校验
- **/
 public class DateValidatorForCharSequence implements ConstraintValidator<Date, CharSequence> {
 
     private String pattern;

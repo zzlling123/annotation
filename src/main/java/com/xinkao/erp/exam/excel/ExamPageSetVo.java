@@ -10,14 +10,12 @@ import lombok.Setter;
 @ApiModel("考试设置题目数量")
 public class ExamPageSetVo{
 
-    //题目分类
     @ApiModelProperty("题目分类ID")
     private Integer type;
 
     @ApiModelProperty("题目分类名称")
     private String typeStr;
 
-    //单选题库题数
     @ApiModelProperty("单选题库题数")
     private String choiceSingleCount = "0";
 
@@ -27,7 +25,6 @@ public class ExamPageSetVo{
     @ApiModelProperty("单选抽取题数")
     private String choiceSingleChouCount;
 
-    //单选每题得分
     @ApiModelProperty("单选每题得分")
     private String choiceSingleScore;
 

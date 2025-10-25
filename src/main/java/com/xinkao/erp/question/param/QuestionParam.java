@@ -45,9 +45,7 @@ public class QuestionParam implements InputConverter<Question> {
     @NotBlank(message = "题目所属标记不能为空")
     private String symbol;
 
-    /**
-     * 选项列表 json["A","B","C"]
-     */
+    
     @ApiModelProperty("选项列表")
     private List<String> options;
 

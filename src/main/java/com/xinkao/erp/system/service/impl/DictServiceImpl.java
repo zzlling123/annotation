@@ -23,16 +23,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/**
- * 账户相关的实现
- **/
+
 @Service
 @Slf4j
 public class DictServiceImpl extends BaseServiceImpl<DictMapper, Dict>
     implements DictService {
-	/**
-	 * 分页查询字典
-	 */
+	
 	@Override
 	public Page<Dict> pageDict(String type, String dictValue, Pageable pageable) {
 		return lambdaQuery()
@@ -41,16 +37,12 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, Dict>
                 .orderByAsc(Dict::getSort)
                 .page(pageable.toPage());
 	}
-	/**
-	 * 查询字典列表
-	 */
+	
 	@Override
 	public List<Dict> selectBy(String type) {
 		  return lambdaQuery().eq(Dict::getDictType, type).eq(Dict::getState, 1).orderByAsc(Dict::getSort).list();
 	}
-	/**
-	 * 保存字典值
-	 */
+	
 	@Transactional(noRollbackFor = BusinessException.class)
 	@Override
 	public boolean saveBy(String type, String name, String dictValue) {
@@ -67,13 +59,11 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, Dict>
 		Long count = lambdaQuery().eq(Dict::getDictType, type).count();
 		count = ( count == null ? 0L: count);
 		dict.setSort(count.intValue());
-		//保存
+
 		save(dict);
 	    return true;
 	}
-	/**
-	 * 多个主键删除
-	 */
+	
 	@Override
 	public boolean deleteByIds(String ids) {
 		if(StringUtils.isEmpty(ids)) {
@@ -84,24 +74,20 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, Dict>
 		removeByIds(idList);
 		return true;
 	}
-	/**
-	 * 获取单记录
-	 */
+	
 	@Override
 	public Dict selectOne(String type) {
 		return lambdaQuery().eq(Dict::getDictType, type).eq(Dict::getState, 1)
 				.last("limit 1").orderByDesc(Dict::getSort).one();
 	}
-	/**
-	 * 设置默认代码
-	 */
+	
 	@Override
 	public Dict setDictBy(String type, String name, String dictValue) {
 		Dict dict = lambdaQuery().eq(Dict::getDictType, type)
         .one();
 		if(dict != null){
 			dict.setDictValue(dictValue);
-			//更新
+
 			updateById(dict);
 		}else {
 			dict = new Dict();
@@ -111,7 +97,7 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, Dict>
 			Long count = lambdaQuery().eq(Dict::getDictType, type).count();
 			count = ( count == null ? 0L: count);
 			dict.setSort(count.intValue());
-			//保存
+
 			save(dict);
 		}
 		return dict;

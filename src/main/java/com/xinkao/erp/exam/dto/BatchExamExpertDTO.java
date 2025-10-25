@@ -6,9 +6,7 @@ import lombok.Data;
 
 import java.util.List;
 
-/**
- * 批量添加考试专家关联DTO
- */
+
 @Data
 @ApiModel("批量添加考试专家关联")
 public class BatchExamExpertDTO {

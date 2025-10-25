@@ -6,9 +6,6 @@ import java.util.List;
 import java.util.Map;
 import lombok.Data;
 
-/**
- * 批量操作结果
- */
 @Data
 public class HandleResult {
 

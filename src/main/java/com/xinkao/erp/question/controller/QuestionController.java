@@ -53,14 +53,6 @@ import java.util.List;
 import java.util.UUID;
 import java.io.InputStream;
 
-/**
- * <p>
- * 题目表 前端控制器
- * </p>
- *
- * @author Ldy
- * @since 2025-03-22 11:19:40
- */
 @RestController
 @RequestMapping("/question")
 public class    QuestionController extends BaseController {
@@ -79,53 +71,42 @@ public class    QuestionController extends BaseController {
     private String ipurl;
 
 
-    /**
-     * 获取题目分类下拉列表
-     */
     @PrimaryDataSource
     @PostMapping("/getQuestionType")
-    @ApiOperation("获取题目分类下拉列表")
     public BaseResponse<List<QuestionType>> getQuestionType() {
         return BaseResponse.ok("成功", questionTypeService.list());
     }
 
-    /**
-     * 新增题目分类
-     */
     @PrimaryDataSource
-    @DataScope(role = "1,22")
+    @DataScope(role = "1")
     @PostMapping("/saveQuestionType")
-    @ApiOperation("新增题目分类")
     public BaseResponse<?> saveQuestionType(@RequestBody @Valid QuestionTypeAddParam param) {
         return questionTypeService.save(param);
     }
 
-    /**
-     * 修改题目分类
-     */
+
+
+
     @PrimaryDataSource
-    @DataScope(role = "1,22")
+    @DataScope(role = "1")
     @PostMapping("/updateQuestionType")
-    @ApiOperation("修改题目分类")
     public BaseResponse<?> updateQuestionType(@RequestBody @Valid QuestionTypeParam param) {
         return questionTypeService.update(param);
     }
 
-    /**
-     * 删除题目分类
-     */
+
+
+
     @PrimaryDataSource
-    @DataScope(role = "1,22")
+    @DataScope(role = "1")
     @PostMapping("/delQuestionType")
-    @ApiOperation("删除题目分类")
     public BaseResponse<?> delQuestionType(@RequestBody DeleteParam param) {
         return questionTypeService.delQuestionType(param);
     }
 
     @PrimaryDataSource
-    @DataScope(role = "1,22")
+    @DataScope(role = "1")
     @PostMapping("/upload/file")
-    @ApiOperation("上传文件")
     public BaseResponse<String> uploadRequest(@RequestParam(value="file") MultipartFile file,@RequestParam String id, HttpServletRequest request) {
         try {
             String saveFileName;
@@ -139,7 +120,7 @@ public class    QuestionController extends BaseController {
             System.out.println("fileName:" + file.getOriginalFilename());
             saveFileName = UUID.randomUUID().toString()+file.getOriginalFilename();
             File fileNew = new File(fileUrl,saveFileName);
-            // 创建父目录（如果不存在）
+
             if (!fileNew.getParentFile().exists()) {
                 fileNew.getParentFile().mkdirs();
             }
@@ -153,13 +134,12 @@ public class    QuestionController extends BaseController {
 
     }
 
-    /**
-     * 获取题目分类说明文档
-     */
+
+
+
     @PrimaryDataSource
-    @DataScope(role = "1,22")
+    @DataScope(role = "1")
     @PostMapping("/getQuestionTypeFileUrl/{questionTypeId}")
-    @ApiOperation("获取题目分类说明文档")
     public BaseResponse<String> updateQuestionType(@PathVariable String questionTypeId) {
         QuestionType questionType = questionTypeService.getById(questionTypeId);
         String fileUrl = "";
@@ -169,234 +149,217 @@ public class    QuestionController extends BaseController {
         return BaseResponse.ok(fileUrl);
     }
 
-    /**
-     * 获取题目分类下拉列表
-     */
+
+
+
     @PrimaryDataSource
     @PostMapping("/getQuestionType/{shape}")
-    @ApiOperation("获取题目分类下拉列表")
     public BaseResponse<List<QuestionType>> getQuestionType(@PathVariable String shape) {
         if ("500".equals(shape)){
-            //创建固定字符串集合：2,3,4,5
+
             List<Integer> ids = Arrays.asList(2,4,5,6,7);
             return BaseResponse.ok("成功", questionTypeService.lambdaQuery().in(QuestionType::getId, ids).list());
         }
         return BaseResponse.ok("成功", questionTypeService.list());
     }
 
-    /**
-     * 新建自定义标签
-     */
+
+
+
     @PrimaryDataSource
     @PostMapping("/saveQuestionLabel")
-    @ApiOperation("新建自定义标签")
     public BaseResponse<?> saveQuestionLabel(@RequestParam String labelName) {
         Label label = new Label();
         label.setLabelName(labelName);
         return labelService.save(label)? BaseResponse.ok("成功") : BaseResponse.fail("失败");
     }
 
-    /**
-     * 根据标签名称模糊查询标签
-     */
+
+
+
     @PrimaryDataSource
     @PostMapping("/getLabelList")
-    @ApiOperation("根据标签名称模糊查询标签")
     public BaseResponse<List<Label>> getLabelList(@RequestParam String labelName) {
         return BaseResponse.ok("成功", labelService.lambdaQuery().like(Label::getLabelName, labelName).list());
     }
 
-    /**
-     * 分页查询题库
-     *
-     * @param query 查询条件
-     * @return 分页结果
-     */
+
+
+
+
+
+
     @PrimaryDataSource
-    @DataScope(role = "1,2,18,19,22")
+    @DataScope(role = "1,18,19")
     @PostMapping("/page")
-    @ApiOperation("分页查询题库")
     public BaseResponse<Page<QuestionPageVo>> page(@RequestBody QuestionQuery query) {
         Pageable pageable = query.getPageInfo();
         Page<QuestionPageVo> voPage = questionService.page(query, pageable);
         return BaseResponse.ok(voPage);
     }
 
-    /**
-     * 获取题目详情
-     *
-     * @param id 题目ID
-     * @return 题目详情
-     */
+
+
+
+
+
+
     @PrimaryDataSource
-    @DataScope(role = "1,22")
+    @DataScope(role = "1")
     @GetMapping("/detail/{id}")
-    @ApiOperation("获取题目详情")
     public BaseResponse<QuestionInfoVo> getQuestionDetail(@PathVariable Integer id) {
         QuestionInfoVo question = questionService.getQuestionDetail(id);
-        //将选项转为List<String>
+
         if (question == null) {
             return BaseResponse.fail("题目不存在！");
         }
         return BaseResponse.ok(question);
     }
 
-    /**
-     * 新增题目
-     *
-     * @param questionParam 题目参数
-     * @return 操作结果
-     */
+
+
+
+
+
+
     @PrimaryDataSource
-    @DataScope(role = "1,2,18,19,22")
+    @DataScope(role = "1,18")
     @PostMapping("/save")
-    @ApiOperation("新增题目")
     @Log(content = "新增题目",operationType = OperationType.INSERT)
     public BaseResponse<?> save(@Valid @RequestBody QuestionParam questionParam) {
         return questionService.save(questionParam);
     }
 
-    /**
-     * 新增题目单二级标题
-     *
-     * @param questionFormTitleParam 题目参数
-     * @return 操作结果
-     */
+
+
+
+
+
+
     @PrimaryDataSource
     @PostMapping("/saveQuestionFormTitle")
-    @ApiOperation("新增题目单二级标题")
     public BaseResponse<?> saveQuestionFormTitle(@Valid @RequestBody QuestionFormTitleParam questionFormTitleParam) {
         return questionService.saveQuestionFormTitle(questionFormTitleParam);
     }
 
-    /**
-     * 编辑题目单二级标题
-     *
-     * @param questionFormTitleParam 题目参数
-     * @return 操作结果
-     */
+
+
+
+
+
+
     @PrimaryDataSource
     @PostMapping("/updateQuestionFormTitle")
-    @ApiOperation("编辑题目单二级标题")
     public BaseResponse<?> updateQuestionFormTitle(@Valid @RequestBody QuestionFormTitleParam questionFormTitleParam) {
         return questionService.updateQuestionFormTitle(questionFormTitleParam);
     }
 
-    /**
-     * 新增题目单子题
-     *
-     * @param questionChildParam 题目子题参数
-     * @return 操作结果
-     */
+
+
+
+
+
+
     @PrimaryDataSource
     @PostMapping("/saveQuestionChild")
-    @ApiOperation("新增题目单子题")
     public BaseResponse<?> saveQuestionChild(@Valid @RequestBody QuestionChildParam questionChildParam) {
         return questionService.saveQuestionChild(questionChildParam);
     }
 
-    /**
-     * 编辑题目单子题
-     *
-     * @param questionChildParam 题目子题参数
-     * @return 操作结果
-     */
+
+
+
+
+
+
     @PrimaryDataSource
     @PostMapping("/updateQuestionChild")
-    @ApiOperation("编辑题目单子题")
     public BaseResponse<?> updateQuestionChild(@Valid @RequestBody QuestionChildParam questionChildParam) {
         return questionService.updateQuestionChild(questionChildParam);
     }
 
-    /**
-     * 编辑题目
-     *
-     * @param questionParam 题目参数
-     * @return 操作结果
-     */
+
+
+
+
+
+
     @PrimaryDataSource
-    @DataScope(role = "1,22")
+    @DataScope(role = "1")
     @PostMapping("/update")
-    @ApiOperation("编辑题目")
     @Log(content = "编辑题目",operationType = OperationType.UPDATE)
     public BaseResponse<?> update(@Valid @RequestBody QuestionParam questionParam) {
         return questionService.update(questionParam);
     }
 
-    /**
-     * 批量删除题目
-     *
-     * @param param 题目ID列表
-     * @return 操作结果
-     */
+
+
+
+
+
+
     @PrimaryDataSource
-    @DataScope(role = "1,22")
+    @DataScope(role = "1")
     @PostMapping("/del")
-    @ApiOperation("批量删除题目")
     @Log(content = "批量删除题目",operationType = OperationType.DELETE)
     public BaseResponse<?> del(@RequestBody DeleteParam param) {
         return questionService.del(param);
     }
 
-    /**
-     * 批量删除二级标题题目
-     *
-     * @param param 二级标题题目ID列表
-     * @return 操作结果
-     */
+
+
+
+
+
+
     @PrimaryDataSource
-    @DataScope(role = "1,22")
+    @DataScope(role = "1")
     @PostMapping("/delTitle")
-    @ApiOperation("批量删除二级标题题目")
     @Log(content = "批量删除二级标题题目",operationType = OperationType.DELETE)
     public BaseResponse<?> delTitle(@RequestBody DeleteParam param) {
         return questionService.delTitle(param);
     }
 
-    /**
-     * 批量删除子题
-     *
-     * @param param 子题ID列表
-     * @return 操作结果
-     */
+
+
+
+
+
+
     @PrimaryDataSource
-    @DataScope(role = "1,22")
+    @DataScope(role = "1")
     @PostMapping("/delChild")
-    @ApiOperation("批量删除子题")
     @Log(content = "批量删除子题",operationType = OperationType.DELETE)
     public BaseResponse<?> delChild(@RequestBody DeleteParam param) {
         return questionService.delChild(param);
     }
 
-    /**
-     * 测试方法，题库按照分类、题型插入题目
-     * @return
-     */
+
+
+
+
     @PrimaryDataSource
-    @DataScope(role = "1,22")
+    @DataScope(role = "1")
     @PostMapping("/selfSave")
-    @ApiOperation("题库按照分类、题型插入题目")
     public void selfSave(){
         questionService.selfSave();
     }
 
-    /**
-     * 获根据题目ID取题目单详情
-     * @return
-     */
+
+
+
+
     @PrimaryDataSource
-    @DataScope(role = "1,22")
+    @DataScope(role = "1")
     @PostMapping("/getQuestionFormInfo/{id}")
-    @ApiOperation("获根据题目ID取题目单详情")
     public BaseResponse<List<QuestionFormVo>> getQuestionFormInfo(@PathVariable Integer id){
         return questionService.getQuestionFormInfo(id);
     }
 
 
     @PrimaryDataSource
-    @DataScope(role = "1,22")
+    @DataScope(role = "1")
     @GetMapping("/titleIntroductionTemplate/common")
-    @ApiOperation("下载普通题目批量导入模板.xlsx")
     public void downloadCommonTemplate(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ClassPathResource resource = new ClassPathResource("titleIntroductionTemplate/普通题目批量导入模板.xlsx");
         if (!resource.exists()) {
@@ -409,9 +372,8 @@ public class    QuestionController extends BaseController {
     }
 
     @PrimaryDataSource
-    @DataScope(role = "1,22")
+    @DataScope(role = "1")
     @GetMapping("/titleIntroductionTemplate/form")
-    @ApiOperation("下载题目单.zip")
     public void downloadFormTemplate(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ClassPathResource resource = new ClassPathResource("titleIntroductionTemplate/题目单.zip");
         if (!resource.exists()) {
@@ -425,7 +387,7 @@ public class    QuestionController extends BaseController {
 
 
     private void writeFile(HttpServletRequest request, HttpServletResponse response, InputStream inputStream, long contentLength, String downloadName, String contentType) throws IOException {
-        // 保持跨域头
+
         String originHeaderValue = request.getHeader("Origin");
         if (originHeaderValue != null && originHeaderValue.length() > 0) {
             response.setHeader("Access-Control-Allow-Origin", originHeaderValue);
@@ -454,11 +416,10 @@ public class    QuestionController extends BaseController {
         response.getWriter().write(json);
         response.getWriter().flush();
     }
-    /**
-     * 批量导入题目（服务层读取与校验，支持新模板多Sheet与旧模板）
-     */
-    @DataScope(role = "1,22")
-    @ApiOperation(value = "批量导入题目")
+
+
+
+    @DataScope(role = "1")
     @PostMapping("/import")
     public void importQuestions(@RequestParam("file") MultipartFile file,
                                 HttpServletRequest request,
@@ -474,7 +435,7 @@ public class    QuestionController extends BaseController {
         }
         try {
             QuestionImportResultVO result = questionService.importQuestions(file);
-            // 导出 Excel 或返回 JSON，沿用原有逻辑
+
             String export = request.getParameter("export");
             if ("excel".equalsIgnoreCase(export)) {
                 java.util.List<com.xinkao.erp.question.excel.ImportResultSummaryRow> summary = new java.util.ArrayList<>();
@@ -530,7 +491,7 @@ public class    QuestionController extends BaseController {
                 }
                 return;
             }
-            // 检查是否有警告和不同类型的警告
+
             boolean hasKnowledgePointNotMatched = false;
             boolean hasKnowledgePointFuzzyMatched = false;
             boolean hasOtherWarnings = false;
@@ -552,8 +513,7 @@ public class    QuestionController extends BaseController {
             }
             
             boolean hasAnyWarnings = warningCount > 0;
-            
-            // 构建警告提示信息
+
             StringBuilder warningMsg = new StringBuilder();
             if (hasKnowledgePointNotMatched) {
                 warningMsg.append("部分知识点未找到匹配");
@@ -590,9 +550,8 @@ public class    QuestionController extends BaseController {
 
 
     @PrimaryDataSource
-    @DataScope(role = "1,22")
+    @DataScope(role = "1")
     @PostMapping("/form/import-zip")
-    @ApiOperation("题目单导入（V2：多Sheet，无分隔符）")
     public void importQuestionFormZipV2(@RequestParam("file") MultipartFile file,
                                         HttpServletRequest request,
                                         HttpServletResponse response) throws IOException {
@@ -616,7 +575,7 @@ public class    QuestionController extends BaseController {
                 row.setFailCount(result.getFailCount());
                 summary.add(row);
                 java.util.List<com.xinkao.erp.question.excel.ImportResultErrorRow> details = new java.util.ArrayList<>();
-                // 处理结构化错误信息（rowErrors）
+
                 if (result.getRowErrors() != null && !result.getRowErrors().isEmpty()) {
                     for (com.xinkao.erp.question.vo.QuestionImportResultVO.RowError re : result.getRowErrors()) {
                         ImportResultErrorRow d = new ImportResultErrorRow();
@@ -625,7 +584,7 @@ public class    QuestionController extends BaseController {
                         details.add(d);
                     }
                 }
-                // 处理传统错误信息（errorMessages）- 与rowErrors并行处理
+
                 if (result.getErrorMessages() != null && !result.getErrorMessages().isEmpty()) {
                     for (String msg : result.getErrorMessages()) {
                         ImportResultErrorRow d = new ImportResultErrorRow();
@@ -643,7 +602,7 @@ public class    QuestionController extends BaseController {
                         details.add(d);
                     }
                 }
-                // CORS 头与导出
+
                 String originHeaderValue = request.getHeader("Origin");
                 if (originHeaderValue != null && originHeaderValue.length() > 0) {
                     response.setHeader("Access-Control-Allow-Origin", originHeaderValue);
@@ -666,8 +625,8 @@ public class    QuestionController extends BaseController {
                 }
                 return;
             }
-            // 默认返回JSON
-            // 检查是否有警告和不同类型的警告
+
+
             boolean hasKnowledgePointNotMatched = false;
             boolean hasKnowledgePointFuzzyMatched = false;
             boolean hasQuestionTypeNotMatched = false;
@@ -676,7 +635,7 @@ public class    QuestionController extends BaseController {
             
             if (result.getRowErrors() != null) {
                 for (com.xinkao.erp.question.vo.QuestionImportResultVO.RowError error : result.getRowErrors()) {
-                    // 统计所有错误和警告（不只是警告）
+
                     warningCount++;
                     if ("KNOWLEDGE_POINT_NOT_MATCHED".equals(error.getWarningType())) {
                         hasKnowledgePointNotMatched = true;
@@ -691,8 +650,7 @@ public class    QuestionController extends BaseController {
             }
             
             boolean hasAnyWarnings = warningCount > 0;
-            
-            // 构建警告提示信息
+
             StringBuilder warningMsg = new StringBuilder();
             if (hasKnowledgePointNotMatched) {
                 warningMsg.append("部分知识点未找到匹配");

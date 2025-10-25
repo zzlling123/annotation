@@ -29,91 +29,48 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.List;
 
-/**
- * 角色相关
- * @author 777
- *
- */
 @RequestMapping("/role")
 @RestController
 public class RoleController extends BaseController {
 	@Autowired
 	private RoleService roleService;
-	/**
-	 * 获取角色列表
-	 *
-	 * @return
-	 */
 	@PostMapping("/getList")
-	@ApiOperation("获取角色列表")
 	public BaseResponse<List<Role>> getList() {
 		return BaseResponse.ok(roleService.getRoleList());
 	}
 
-	/**
-	 * 分页
-	 *
-	 * @return
-	 */
 	@PrimaryDataSource
 	@PostMapping("/page")
 	@DataScope(role = "1")
-	@ApiOperation("分页")
 	public BaseResponse<Page<RolePageVo>> page(@RequestBody RoleQuery query) {
-		//获取用户信息
 		Pageable pageable = query.getPageInfo();
 		Page<RolePageVo> voPage = roleService.page(query, pageable);
 		return BaseResponse.ok(voPage);
 	}
 
-	/**
-	 * 根据id获取角色权限列表
-	 *
-	 * @return
-	 */
 	@PrimaryDataSource
 	@PostMapping("/getRoleMenuList")
-	@ApiOperation("根据id获取角色权限列表")
 	public BaseResponse<List<Menu>> getRoleMenuList(@RequestBody RoleParam roleParam) {
 		return roleService.getRoleMenuList(roleParam);
 	}
 
-
-	/**
-	 * 新增角色
-	 *
-	 * @return
-	 */
 	@PrimaryDataSource
 	@DataScope(role = "1")
 	@PostMapping("/save")
-	@ApiOperation("新增角色")
 	public BaseResponse save(@Valid @RequestBody RoleParam roleParam) {
 		return roleService.save(roleParam);
 	}
 
-	/**
-	 * 修改角色
-	 *
-	 * @return
-	 */
 	@PrimaryDataSource
 	@DataScope(role = "1")
 	@PostMapping("/update")
-	@ApiOperation("修改角色")
 	public BaseResponse update(@Valid @RequestBody RoleParam roleParam) {
 		return roleService.update(roleParam);
 	}
 
-	/**
-	 * 删除
-	 *
-	 * @return
-	 */
 	@PrimaryDataSource
 	@DataScope(role = "1")
 	@PostMapping("/del")
-	@ApiOperation("删除角色")
 	public BaseResponse del(@RequestBody Role role) {
 		if (role.getId() == null){
 			return BaseResponse.fail("参数错误,id不可为空！");

@@ -6,11 +6,7 @@ import javax.validation.constraints.Size;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-/**
- * 个人信息更新参数
- * 用于个人中心修改个人资料
- * 包含可修改的字段：真实姓名、邮箱和头像
- */
+
 @Data
 public class PersonalInfoUpdateParam {
 

@@ -4,13 +4,10 @@ import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
-/**
- * 字典常量
- **/
+
 @Getter
 public enum DictTypeEnum {
 
-    //构造
     ;
 
     @EnumValue

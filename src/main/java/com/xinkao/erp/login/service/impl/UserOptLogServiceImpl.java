@@ -35,14 +35,6 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * <p>
- * 管理端-操作记录(分表) 服务实现类
- * </p>
- *
- * @author hanhys
- * @since 2023-08-03 14:18:36
- */
 @Service
 @Slf4j
 public class UserOptLogServiceImpl extends BaseServiceImpl<UserOptLogMapper, UserOptLog> implements UserOptLogService {
@@ -58,9 +50,6 @@ public class UserOptLogServiceImpl extends BaseServiceImpl<UserOptLogMapper, Use
 		idGenerator = new DefaultIdentifierGenerator();
 	}
 
-	/**
-	 * 保存操作日志
-	 */
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public boolean saveBy(UserOptLog optLog) {
@@ -74,7 +63,6 @@ public class UserOptLogServiceImpl extends BaseServiceImpl<UserOptLogMapper, Use
 		return result == 1;
 	}
 
-	//分页
 	@Override
 	public Page<UserOptLogPageVo> page(UserOptLogQuery query, Pageable pageable) {
 		Page page = pageable.toPage();
@@ -84,7 +72,6 @@ public class UserOptLogServiceImpl extends BaseServiceImpl<UserOptLogMapper, Use
 		return optLogMapper.page(page, query);
 	}
 
-	//详情查询
 	@Override
 	public UserOptLogDetailsVo details(Integer id) {
 		return optLogMapper.details(id);
@@ -106,22 +93,17 @@ public class UserOptLogServiceImpl extends BaseServiceImpl<UserOptLogMapper, Use
 		userOptLog.setContent(content);
 		userOptLog.setRequestTime(DateUtil.now());
 
-		// 获取IP地址
 		String ip = IpUtils.getIpAddr(ServletUtils.getRequest());
 		userOptLog.setClientIp(ip);
 		userOptLog.setIpRegion(IpRegionUtils.getRegion(ip));
-		// 获取浏览器相关信息
 		String userAgentStr = ServletUtils.getRequest().getHeader("User-Agent");
 		UserAgent userAgent = UserAgentUtil.parse(userAgentStr);
 		userOptLog.setBrowser(userAgent.getBrowser().getName());
 		userOptLog.setOs(userAgent.getOs().getName());
 		userOptLog.setUserAgent(userAgentStr);
 
-		// 请求方式
 		userOptLog.setRequestMethod(ServletUtils.getRequest().getMethod());
-		// 请求路径
 		userOptLog.setRequestUrl(ServletUtils.getRequest().getRequestURI());
-		// 保存数据库
 		SpringUtil.getBean(AsyncService.class).recordOptLog(userOptLog);
 	}
 }

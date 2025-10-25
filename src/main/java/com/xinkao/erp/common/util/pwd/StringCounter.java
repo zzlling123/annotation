@@ -6,10 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * 密码字符串种类
- * @author hys_thanks
- */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

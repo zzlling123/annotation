@@ -8,14 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * <p>
- * 角色菜单表
- * </p>
- *
- * @author Ldy
- * @since 2024-04-28 09:09:10
- */
+
 @Getter
 @Setter
 @TableName("role_menu")

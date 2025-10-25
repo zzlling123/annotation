@@ -7,40 +7,25 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * <p>
- * 班级表
- * </p>
- *
- * @author Ldy
- * @since 2025-03-21 14:32:24
- */
+
 @Getter
 @Setter
 @TableName("class_info")
 public class ClassInfo extends DataEntity {
 
-    /**
-     * 班级名称
-     */
+    
     @TableField("class_name")
     private String className;
 
-    /**
-     * 班级描述
-     */
+    
     @TableField("description")
     private String description;
 
-    /**
-     * 是否显示1显示0隐藏
-     */
+    
     @TableField("state")
     private Integer state;
 
-    /**
-     * 负责人Id
-     */
+    
     @TableField("director_id")
     private Integer directorId;
 

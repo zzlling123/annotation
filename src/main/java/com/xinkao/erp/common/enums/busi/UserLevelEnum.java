@@ -5,25 +5,15 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 import lombok.Getter;
 
-/**
- * 用户等级的常量集
- * @author hys_thanks
- */
 @Getter
 public enum UserLevelEnum {
-	/**
-     * 学校
-     */
+	
     SCHOOL(10, "学校"),
-    /**
-     * 区县教育局
-     */
+    
     AREA(20, "区县教育局"),
-    /**
-     * 市局
-     */
+    
     CITY(30, "市局"),
-    //构造
+
     ;
     @EnumValue
     private int code;

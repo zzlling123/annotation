@@ -18,9 +18,7 @@ import com.xinkao.erp.core.mybatisplus.handler.DynamicTableHolder;
 
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * MP配置
- **/
+
 @Configuration
 @Slf4j
 public class MybatisPlusConfig {
@@ -38,10 +36,7 @@ public class MybatisPlusConfig {
 					TableSplitEnum.KW_STUDENT_SCORE_UPLOAD_LOG.getTableName()
 					));
 
-    /**
-     * 插件
-     * @return
-     */
+    
 	@Bean
 	public MybatisPlusInterceptor mybatisPlusInterceptor() {
 		MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
@@ -50,7 +45,6 @@ public class MybatisPlusConfig {
 			String dynamicTableName = DynamicTableHolder.get();
 			return StringUtils.isNotEmpty(dynamicTableName) ? dynamicTableName : tableName;
 		});
-		// 设置动态表名拦截器
 		interceptor.addInnerInterceptor(dynamicTableNameInnerInterceptor);
 		interceptor.addInnerInterceptor(new PaginationInnerInterceptor());
 		return interceptor;

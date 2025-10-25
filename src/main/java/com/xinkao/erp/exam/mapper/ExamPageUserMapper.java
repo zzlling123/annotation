@@ -16,14 +16,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
-/**
- * <p>
- * 考生表 Mapper 接口
- * </p>
- *
- * @author Ldy
- * @since 2025-03-29 16:09:19
- */
+
 @Mapper
 public interface ExamPageUserMapper extends BaseMapper<ExamPageUser> {
 

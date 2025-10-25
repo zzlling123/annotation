@@ -11,30 +11,19 @@ import com.xinkao.erp.user.entity.User;
 
 import lombok.Data;
 
-/**
- * 用户相关参数
- * @author hys_thanks
- */
+
 @Data
 public class UserParam implements InputConverter<User>{
-	/**
-	 * 用户主键
-	 */
+	
 	private String userId;
-	 /**
-     * 账号
-     */
+	 
 	@NotBlank(message = "账号不能为空")
 	@Length(min = 3,max = 20,message = "账号长度最低为3位,最高为20位")
     private String username;
 
-    /**
-     * 密码
-     */
+    
     private String password;
-    /**
-     * 昵称
-     */
+    
     @NotBlank(message = "姓名不能为空")
     private String realName;
 
@@ -44,9 +33,7 @@ public class UserParam implements InputConverter<User>{
     @ApiModelProperty("性别")
     private String sex;
 
-    /**
-     * 角色
-     */
+    
     @NotBlank(message = "角色不能为空")
     private String roleId;
 

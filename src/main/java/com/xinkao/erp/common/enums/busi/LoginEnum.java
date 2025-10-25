@@ -5,27 +5,18 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 import lombok.Getter;
 
-/**
- * 登录相关的常量集
- * @author hys_thanks
- */
+
 public class LoginEnum {
 
 	@Getter
 	public enum LoginMethodEnum {
-		/**
-	     * 账号密码登录
-	     */
+		
 	    ACCOUNT_PASSWORD(0, "账号密码登录"),
-	    /**
-	     *小程序登录
-	     */
+	    
 	    MINAPP(1, "小程序登录"),
-	    /**
-	     *不确定
-	     */
+	    
 	    OTHER(-1, "不确定"),
-	    //构造
+
 	    ;
 	    @EnumValue
 	    private Integer code;

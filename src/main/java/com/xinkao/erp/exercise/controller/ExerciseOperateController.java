@@ -37,12 +37,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
-/**
- * 练习操作题记录表
- *
- * @author zzl
- * @since 2025-04-05 23:15:56
- */
+
 @RestController
 @RequestMapping("/exercise-operate")
 public class ExerciseOperateController {
@@ -63,20 +58,10 @@ public class ExerciseOperateController {
     private UserService userService;
 
 
-    /**
-     * 开始练习并返回第一道题的信息
-     * @param id 模块编号
-     *               题目类型:100-单选 200-多选 300-填空 400-主观题 500-操作题
-     * @return hasNext 返回下一道题的信息，如果有下一题则返回true，如果没有下一题则返回false
-     * @return question 返回当前题的信息
-     * @return exerciseRecordsId 练习记录编号，开始练习时候返回的练习记录编号
-     * */
     @GetMapping("/start/{id}")
-    @ApiOperation("开始操作题练习,返回题目信息")
     @PrimaryDataSource
     public BaseResponse<?> start(@PathVariable Integer id, HttpServletRequest request) {
         LoginUser loginUserAll = redisUtil.getInfoByToken();
-        //根据id获取题目信息
         Question question = questionService.getById(id);
         InstantFeedbacks  feedbacks = instantFeedbacksService.getOne(new QueryWrapper<InstantFeedbacks>().eq("question_id", question.getId()).eq("user_id", loginUserAll.getUser().getId()).eq("record_id", 0));
         if (feedbacks == null){
@@ -101,15 +86,12 @@ public class ExerciseOperateController {
 
 
     @PostMapping("/saveAnswer")
-    @ApiOperation("保存单个题答案")
     @PrimaryDataSource
     public BaseResponse<?> saveAnswer(@RequestBody SubmitOperateParam submitParam) {
         LoginUser loginUserAll = redisUtil.getInfoByToken();
         Integer questionId = submitParam.getQuestionId();
         String userAnswer = submitParam.getUserAnswer();
-        //根据题号找到当前题并获取答案
         Question question = questionService.getById(questionId);
-        //根据questionId和exerciseRecordsId找到InstantFeedbacks的记录，要是不存在就创建
         InstantFeedbacks feedbacks = instantFeedbacksService.getOne(
                 new QueryWrapper<InstantFeedbacks>().eq("user_id", loginUserAll.getUser().getId()).eq("question_id", questionId));
         if (feedbacks == null) {
@@ -146,13 +128,10 @@ public class ExerciseOperateController {
         }else {
             score = markQuestionUtils.checkAnswer(userAnswer, answer, question.getShape(),5,question.getType());
             if (score == 5) {
-                //正确
                 feedbacks.setIsCorrect(1);
             }else if (score == 0) {
-                //错误
                 feedbacks.setIsCorrect(0);
             }else if (score > 0&& score < 5) {
-                //部分正确
                 feedbacks.setIsCorrect(2);
             }
         }
@@ -160,7 +139,6 @@ public class ExerciseOperateController {
         feedbacks.setUserScore(score);
         feedbacks.setUpdateBy(loginUserAll.getUser().getRealName());
         feedbacks.setUpdateTime(new Date());
-        //计算createTime和updateTime的时间差多少秒
         long time = feedbacks.getUpdateTime().getTime() - feedbacks.getCreateTime().getTime();
         feedbacks.setOperationDuration(time / 1000);
         feedbacks.setFinishedState(1);
@@ -169,15 +147,12 @@ public class ExerciseOperateController {
     }
 
     @PostMapping("/submit")
-    @ApiOperation("提交单个题答案")
     @PrimaryDataSource
     public BaseResponse<?> submit(@RequestBody SubmitParam submitParam) {
         LoginUser loginUserAll = redisUtil.getInfoByToken();
         Integer questionId = submitParam.getQuestionId();
         String userAnswer = submitParam.getUserAnswer();
-        //根据题号找到当前题并获取答案
         Question question = questionService.getById(questionId);
-        //根据questionId和exerciseRecordsId找到InstantFeedbacks的记录，要是不存在就创建
         InstantFeedbacks feedbacks = instantFeedbacksService.getOne(
                 new QueryWrapper<InstantFeedbacks>().eq("user_id", loginUserAll.getUser().getId()).eq("question_id", questionId));
         if (feedbacks == null) {
@@ -214,13 +189,10 @@ public class ExerciseOperateController {
         }else {
             score = markQuestionUtils.checkAnswer(userAnswer, answer, question.getShape(),5,question.getType());
             if (score == 5) {
-                //正确
                 feedbacks.setIsCorrect(1);
             }else if (score == 0) {
-                //错误
                 feedbacks.setIsCorrect(0);
             }else if (score > 0&& score < 5) {
-                //部分正确
                 feedbacks.setIsCorrect(2);
             }
         }
@@ -228,7 +200,6 @@ public class ExerciseOperateController {
         feedbacks.setUserScore(score);
         feedbacks.setUpdateBy(loginUserAll.getUser().getRealName());
         feedbacks.setUpdateTime(new Date());
-        //计算createTime和updateTime的时间差多少秒
         long time = feedbacks.getUpdateTime().getTime() - feedbacks.getCreateTime().getTime();
         feedbacks.setOperationDuration(time / 1000);
         feedbacks.setFinishedState(2);
@@ -237,19 +208,11 @@ public class ExerciseOperateController {
     }
 
 
-    /**
-     * 分页查询
-     *
-     * @param query 查询条件
-     * @return 分页结果
-     */
     @PrimaryDataSource
     @PostMapping("/page")
-    @ApiOperation("分页查询练习操作的题目")
     public BaseResponse<Page<QuestionExercisePageVo>> page(@Valid @RequestBody QuestionQuery query) {
         LoginUser loginUserAll = redisUtil.getInfoByToken();
         Pageable pageable = query.getPageInfo();
-        //判断当前用户是不是学生
         if (loginUserAll.getUser().getRoleId() != 3) {
             return BaseResponse.fail("只有学生才能查看");
         }
@@ -258,7 +221,6 @@ public class ExerciseOperateController {
         Page<QuestionExercisePageVo> voPage = questionService.page1(query, pageable);
         voPage.getRecords().forEach(item -> {
             InstantFeedbacks  feedbacks = instantFeedbacksService.getOne(new QueryWrapper<InstantFeedbacks>().eq("question_id", item.getId()).eq("user_id", loginUserAll.getUser().getId()).eq("record_id", 0));
-            //练习状态:0未开始，1进行中，2已完成
             if (feedbacks == null){
                 item.setExerciseState(0);
             }else if (feedbacks.getFinishedState() == null || feedbacks.getFinishedState() == 0){
@@ -272,30 +234,16 @@ public class ExerciseOperateController {
         return BaseResponse.ok(voPage);
     }
 
-    /**
-     * 分页查询统计
-     *
-     * @param query 查询条件
-     * @return 分页结果
-     */
     @PrimaryDataSource
     @PostMapping("/page_summary")
-    @ApiOperation("分页查询已经完成练习操作的题目数据")
     public BaseResponse<Page<InstantFeedbacks>> pageSummary(@Valid @RequestBody InstantFeedbacksQuery query) {
-        //获取当前用户
         LoginUser loginUserAll = redisUtil.getInfoByToken();
-        //判断summaryStuParam是否存在stuId
         List<Integer> stuIds = new ArrayList<>();
         if (loginUserAll.getUser().getRoleId()==1){
-            //超级管理员，查看所有信息
         }else if (loginUserAll.getUser().getRoleId()==3){
-            //学生，只能查看自己的信息
             stuIds.add(loginUserAll.getUser().getId());
         }else if (loginUserAll.getUser().getRoleId()==2){
-            //老师，只能查看自己学生的信息
-            //查询老师所带班级
             List<ClassInfo> classInfoList = classInfoService.lambdaQuery().eq(ClassInfo::getDirectorId, loginUserAll.getUser().getId()).eq(ClassInfo::getIsDel, CommonEnum.IS_DEL.NO.getCode()).list();
-            //查询班级classInfoList下的学生id
             LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery();
             wrapper.eq(User::getIsDel, CommonEnum.IS_DEL.NO.getCode());
             wrapper.in(User::getClassId, classInfoList.stream().map(ClassInfo::getId).collect(Collectors.toList()));

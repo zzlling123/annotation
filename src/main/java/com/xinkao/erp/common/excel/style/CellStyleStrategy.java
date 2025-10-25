@@ -9,10 +9,6 @@ import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 
-/**
- * 自定义表头和内容格式
- * @author hys_thanks
- */
 public class CellStyleStrategy extends HorizontalCellStyleStrategy {
     private final WriteCellStyle headWriteCellStyle;
     private final WriteCellStyle contentWriteCellStyle;
@@ -23,10 +19,8 @@ public class CellStyleStrategy extends HorizontalCellStyleStrategy {
         this.contentWriteCellStyle = contentWriteCellStyle;
     }
 
-    //设置头样式
     @Override
     protected void setHeadCellStyle( CellWriteHandlerContext context) {
-        // 获取字体实例
         WriteFont headWriteFont = new WriteFont();
         headWriteFont.setFontName("宋体");
      
@@ -42,13 +36,11 @@ public class CellStyleStrategy extends HorizontalCellStyleStrategy {
         WriteCellStyle.merge(headWriteCellStyle, cellData.getOrCreateStyle());
     }
 
-    //设置填充数据样式
     @Override
     protected void setContentCellStyle(CellWriteHandlerContext context) {
         WriteFont contentWriteFont = new WriteFont();
         contentWriteFont.setFontName("宋体");
         contentWriteFont.setFontHeightInPoints((short) 11);
-        //设置数据填充后的实线边框
         contentWriteCellStyle.setWriteFont(contentWriteFont);
         contentWriteCellStyle.setBorderLeft(BorderStyle.THIN);
         contentWriteCellStyle.setBorderTop(BorderStyle.THIN);

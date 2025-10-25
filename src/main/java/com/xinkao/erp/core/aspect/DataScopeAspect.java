@@ -33,12 +33,8 @@ public class DataScopeAspect {
 	@Pointcut("@annotation(com.xinkao.erp.common.annotation.PrimaryDataSource)")
 	public void datasourcePointcut() {}
 
-	/**
-	 * 前置操作，拦截具体请求，验证token
-	 */
 	@Before("datasourcePointcut()")
 	public void doBefore(JoinPoint point) {
-		//获取当前缓存下的用户信息
 		if (StrUtil.isBlank(HttpContextUtils.getHttpServletRequest().getHeader("Authorization"))){
 			throw new AuthenticationException("登录token不可为空！");
 		}
@@ -53,13 +49,11 @@ public class DataScopeAspect {
 		handleDataScope(point,loginUser.getUser().getRoleId());
 	}
 	protected void handleDataScope(final JoinPoint joinPoint,Integer roleId) {
-		// 获得注解
 		DataScope controllerDataScope = getAnnotationLog(joinPoint);
 		if (controllerDataScope == null) {
 			return;
 		}
 		String role = controllerDataScope.role();
-		//验证用户权限
 		if (StrUtil.isNotBlank(role)){
 			List<String> roleArray = Arrays.asList(role.split(","));
 			boolean flag = false;
@@ -71,9 +65,6 @@ public class DataScopeAspect {
 			}
 		}
 	}
-	/**
-	 * 是否存在注解，如果存在就获取
-	 */
 	private DataScope getAnnotationLog(JoinPoint joinPoint) {
 		Signature signature = joinPoint.getSignature();
 		MethodSignature methodSignature = (MethodSignature) signature;
@@ -85,12 +76,5 @@ public class DataScopeAspect {
 		return null;
 	}
 
-	/**
-	 * 后置操作，设置回默认的数据源id
-	 */
-//	@AfterReturning("datasourcePointcut()")
-//	public void doAfter() {
-//		DynamicDataSourceHolder.clearDataSource();
-//	}
 
 }

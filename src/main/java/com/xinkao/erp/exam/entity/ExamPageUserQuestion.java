@@ -9,140 +9,92 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
-/**
- * <p>
- * 试卷表
- * </p>
- *
- * @author Ldy
- * @since 2025-03-29 16:06:02
- */
+
 @Getter
 @Setter
 @TableName("exam_page_user_question")
 public class ExamPageUserQuestion extends DataSnowIdEntity {
 
-    /**
-     * 试卷主键
-     */
+    
     @TableField("user_id")
     private Integer userId;
 
-    /**
-     * 考试项目主键
-     */
+    
     @TableField("exam_id")
     private Integer examId;
 
-    /**
-     * 题号的数字格式
-     */
+    
     @TableField("num_sort")
     private Integer numSort;
 
-    /**
-     * 题号
-     */
+    
     @TableField("num")
     private String num;
 
-    /**
-     * 题目分类
-     */
+    
     @TableField("type")
     private Integer type;
 
-    /**
-     * 题目类型:100-单选 200-多选 300-填空 400-主观题 500-操作题
-     */
+    
     @TableField("shape")
     private Integer shape;
 
-    /**
-     * 题库来源试题主键
-     */
+    
     @TableField("old_question_id")
     private Integer oldQuestionId;
 
-    /**
-     * 操作题标头
-     */
+    
     @TableField("title")
     private String title;
 
-    /**
-     * 题干,json列表
-     */
+    
     @TableField("question")
     private String question;
 
-    /**
-     * 操作题文件路径JSON
-     */
+    
     @TableField("json_url")
     private String jsonUrl;
 
-    /**
-     * 选项列表 json
-     */
+    
     @TableField("options")
     private String options;
 
-    /**
-     * 如果是填空题，则为有几个空
-     */
+    
     @TableField("answer_count")
     private Integer answerCount;
 
-    /**
-     * 题目分数
-     */
+    
     @TableField("score")
     private BigDecimal score;
 
-    /**
-     * 部分答对分数(限多选)
-     */
+    
     @TableField("score_part")
     private BigDecimal scorePart;
 
-    /**
-     * 答案
-     */
+    
     @TableField("answer")
     private String answer;
 
-    /**
-     * 是否需要批改0否1是
-     */
+    
     @TableField("need_correct")
     private Integer needCorrect;
 
-    /**
-     * 难易程度：0-容易 1-中等 2-较难
-     */
+    
     @TableField("difficulty_level")
     private Integer difficultyLevel;
 
-    /**
-     * 标记
-     */
+    
     @TableField("symbol")
     private String symbol;
 
-    /**
-     * 用户答案
-     */
+    
     @TableField(exist = false)
     private String userAnswer;
 
-    //是否题目单，0否1是
     @TableField("is_form")
     private Integer isForm;
 
-    /**
-     * 文档路径
-     */
+    
     @TableField("file_url")
     private String fileUrl;
 

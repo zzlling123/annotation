@@ -28,12 +28,8 @@ public class DataSourceAspect {
     private RedisUtil redisUtil;
 
     @Pointcut("@annotation(com.xinkao.erp.common.annotation.PrimaryDataSource)")
-//    @Pointcut("execution(public * com.xinkao.electronicArchives.controller.*.*(..))")
     public void datasourcePointcut() {}
 
-    /**
-     * 前置操作，拦截具体请求，获取header里的数据源id，设置线程变量里，用于后续切换数据源
-     */
     @Before("datasourcePointcut()")
     public void doBefore(JoinPoint joinPoint) {
         Signature signature = joinPoint.getSignature();
@@ -43,7 +39,6 @@ public class DataSourceAspect {
         if (StringUtils.isBlank(token)){
             throw new AuthenticationException("请重新登录！");
         }
-        //获取当前缓存下的用户信息
         LoginUser loginUser = redisUtil.get(token);
         if (loginUser == null){
             throw new AuthenticationException("请重新登录！");
