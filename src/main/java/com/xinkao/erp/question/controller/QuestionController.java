@@ -78,34 +78,29 @@ public class    QuestionController extends BaseController {
     }
 
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @PostMapping("/saveQuestionType")
     public BaseResponse<?> saveQuestionType(@RequestBody @Valid QuestionTypeAddParam param) {
         return questionTypeService.save(param);
     }
 
-
-
-
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @PostMapping("/updateQuestionType")
     public BaseResponse<?> updateQuestionType(@RequestBody @Valid QuestionTypeParam param) {
         return questionTypeService.update(param);
     }
 
-
-
-
+    
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @PostMapping("/delQuestionType")
     public BaseResponse<?> delQuestionType(@RequestBody DeleteParam param) {
         return questionTypeService.delQuestionType(param);
     }
 
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @PostMapping("/upload/file")
     public BaseResponse<String> uploadRequest(@RequestParam(value="file") MultipartFile file,@RequestParam String id, HttpServletRequest request) {
         try {
@@ -120,7 +115,6 @@ public class    QuestionController extends BaseController {
             System.out.println("fileName:" + file.getOriginalFilename());
             saveFileName = UUID.randomUUID().toString()+file.getOriginalFilename();
             File fileNew = new File(fileUrl,saveFileName);
-
             if (!fileNew.getParentFile().exists()) {
                 fileNew.getParentFile().mkdirs();
             }
@@ -134,11 +128,9 @@ public class    QuestionController extends BaseController {
 
     }
 
-
-
-
+    
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @PostMapping("/getQuestionTypeFileUrl/{questionTypeId}")
     public BaseResponse<String> updateQuestionType(@PathVariable String questionTypeId) {
         QuestionType questionType = questionTypeService.getById(questionTypeId);
@@ -149,9 +141,7 @@ public class    QuestionController extends BaseController {
         return BaseResponse.ok(fileUrl);
     }
 
-
-
-
+    
     @PrimaryDataSource
     @PostMapping("/getQuestionType/{shape}")
     public BaseResponse<List<QuestionType>> getQuestionType(@PathVariable String shape) {
@@ -163,9 +153,7 @@ public class    QuestionController extends BaseController {
         return BaseResponse.ok("成功", questionTypeService.list());
     }
 
-
-
-
+    
     @PrimaryDataSource
     @PostMapping("/saveQuestionLabel")
     public BaseResponse<?> saveQuestionLabel(@RequestParam String labelName) {
@@ -174,23 +162,16 @@ public class    QuestionController extends BaseController {
         return labelService.save(label)? BaseResponse.ok("成功") : BaseResponse.fail("失败");
     }
 
-
-
-
+    
     @PrimaryDataSource
     @PostMapping("/getLabelList")
     public BaseResponse<List<Label>> getLabelList(@RequestParam String labelName) {
         return BaseResponse.ok("成功", labelService.lambdaQuery().like(Label::getLabelName, labelName).list());
     }
 
-
-
-
-
-
-
+    
     @PrimaryDataSource
-    @DataScope(role = "1,18,19")
+    @DataScope(role = "1,2,18,19,22")
     @PostMapping("/page")
     public BaseResponse<Page<QuestionPageVo>> page(@RequestBody QuestionQuery query) {
         Pageable pageable = query.getPageInfo();
@@ -198,14 +179,9 @@ public class    QuestionController extends BaseController {
         return BaseResponse.ok(voPage);
     }
 
-
-
-
-
-
-
+    
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @GetMapping("/detail/{id}")
     public BaseResponse<QuestionInfoVo> getQuestionDetail(@PathVariable Integer id) {
         QuestionInfoVo question = questionService.getQuestionDetail(id);
@@ -216,141 +192,85 @@ public class    QuestionController extends BaseController {
         return BaseResponse.ok(question);
     }
 
-
-
-
-
-
-
+    
     @PrimaryDataSource
-    @DataScope(role = "1,18")
+    @DataScope(role = "1,2,18,19,22")
     @PostMapping("/save")
-    @Log(content = "新增题目",operationType = OperationType.INSERT)
     public BaseResponse<?> save(@Valid @RequestBody QuestionParam questionParam) {
         return questionService.save(questionParam);
     }
 
-
-
-
-
-
-
+    
     @PrimaryDataSource
     @PostMapping("/saveQuestionFormTitle")
     public BaseResponse<?> saveQuestionFormTitle(@Valid @RequestBody QuestionFormTitleParam questionFormTitleParam) {
         return questionService.saveQuestionFormTitle(questionFormTitleParam);
     }
 
-
-
-
-
-
-
+    
     @PrimaryDataSource
     @PostMapping("/updateQuestionFormTitle")
     public BaseResponse<?> updateQuestionFormTitle(@Valid @RequestBody QuestionFormTitleParam questionFormTitleParam) {
         return questionService.updateQuestionFormTitle(questionFormTitleParam);
     }
 
-
-
-
-
-
-
+    
     @PrimaryDataSource
     @PostMapping("/saveQuestionChild")
     public BaseResponse<?> saveQuestionChild(@Valid @RequestBody QuestionChildParam questionChildParam) {
         return questionService.saveQuestionChild(questionChildParam);
     }
 
-
-
-
-
-
-
+    
     @PrimaryDataSource
     @PostMapping("/updateQuestionChild")
     public BaseResponse<?> updateQuestionChild(@Valid @RequestBody QuestionChildParam questionChildParam) {
         return questionService.updateQuestionChild(questionChildParam);
     }
 
-
-
-
-
-
-
+    
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @PostMapping("/update")
-    @Log(content = "编辑题目",operationType = OperationType.UPDATE)
     public BaseResponse<?> update(@Valid @RequestBody QuestionParam questionParam) {
         return questionService.update(questionParam);
     }
 
-
-
-
-
-
-
+    
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @PostMapping("/del")
-    @Log(content = "批量删除题目",operationType = OperationType.DELETE)
     public BaseResponse<?> del(@RequestBody DeleteParam param) {
         return questionService.del(param);
     }
 
-
-
-
-
-
-
+    
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @PostMapping("/delTitle")
-    @Log(content = "批量删除二级标题题目",operationType = OperationType.DELETE)
     public BaseResponse<?> delTitle(@RequestBody DeleteParam param) {
         return questionService.delTitle(param);
     }
 
-
-
-
-
-
-
+    
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @PostMapping("/delChild")
-    @Log(content = "批量删除子题",operationType = OperationType.DELETE)
     public BaseResponse<?> delChild(@RequestBody DeleteParam param) {
         return questionService.delChild(param);
     }
 
-
-
-
-
+    
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @PostMapping("/selfSave")
     public void selfSave(){
         questionService.selfSave();
     }
 
-
-
-
-
+    
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @PostMapping("/getQuestionFormInfo/{id}")
     public BaseResponse<List<QuestionFormVo>> getQuestionFormInfo(@PathVariable Integer id){
         return questionService.getQuestionFormInfo(id);
@@ -358,7 +278,7 @@ public class    QuestionController extends BaseController {
 
 
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @GetMapping("/titleIntroductionTemplate/common")
     public void downloadCommonTemplate(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ClassPathResource resource = new ClassPathResource("titleIntroductionTemplate/普通题目批量导入模板.xlsx");
@@ -372,7 +292,7 @@ public class    QuestionController extends BaseController {
     }
 
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @GetMapping("/titleIntroductionTemplate/form")
     public void downloadFormTemplate(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ClassPathResource resource = new ClassPathResource("titleIntroductionTemplate/题目单.zip");
@@ -416,10 +336,8 @@ public class    QuestionController extends BaseController {
         response.getWriter().write(json);
         response.getWriter().flush();
     }
-
-
-
-    @DataScope(role = "1")
+    
+    @DataScope(role = "1,22")
     @PostMapping("/import")
     public void importQuestions(@RequestParam("file") MultipartFile file,
                                 HttpServletRequest request,
@@ -438,15 +356,15 @@ public class    QuestionController extends BaseController {
 
             String export = request.getParameter("export");
             if ("excel".equalsIgnoreCase(export)) {
-                java.util.List<com.xinkao.erp.question.excel.ImportResultSummaryRow> summary = new java.util.ArrayList<>();
+                List<com.xinkao.erp.question.excel.ImportResultSummaryRow> summary = new java.util.ArrayList<>();
                 com.xinkao.erp.question.excel.ImportResultSummaryRow row = new com.xinkao.erp.question.excel.ImportResultSummaryRow();
                 row.setTotalCount(result.getTotalCount());
                 row.setSuccessCount(result.getSuccessCount());
                 row.setFailCount(result.getFailCount());
                 summary.add(row);
-                java.util.List<com.xinkao.erp.question.excel.ImportResultErrorRow> details = new java.util.ArrayList<>();
+                List<ImportResultErrorRow> details = new java.util.ArrayList<>();
                 if (result.getRowErrors() != null && !result.getRowErrors().isEmpty()) {
-                    for (com.xinkao.erp.question.vo.QuestionImportResultVO.RowError re : result.getRowErrors()) {
+                    for (QuestionImportResultVO.RowError re : result.getRowErrors()) {
                         ImportResultErrorRow d = new ImportResultErrorRow();
                         d.setRowNum(re.getRowNum());
                         d.setMessage(re.getMessage());
@@ -454,7 +372,7 @@ public class    QuestionController extends BaseController {
                     }
                 } else if (result.getErrorMessages() != null) {
                     for (String msg : result.getErrorMessages()) {
-                        com.xinkao.erp.question.excel.ImportResultErrorRow d = new com.xinkao.erp.question.excel.ImportResultErrorRow();
+                        ImportResultErrorRow d = new ImportResultErrorRow();
                         Integer rn = null;
                         try {
                             int idx1 = msg.indexOf("第");
@@ -477,13 +395,13 @@ public class    QuestionController extends BaseController {
                 response.setHeader("Access-Control-Allow-Credentials", "true");
                 response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
                 response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-                String downloadName = java.net.URLEncoder.encode("批量导入结果.xlsx", "UTF-8").replaceAll("\\+", "%20");
+                String downloadName = URLEncoder.encode("批量导入结果.xlsx", "UTF-8").replaceAll("\\+", "%20");
                 response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + downloadName);
                 com.alibaba.excel.ExcelWriter writer = null;
                 try {
-                    writer = com.alibaba.excel.EasyExcel.write(response.getOutputStream()).build();
-                    com.alibaba.excel.write.metadata.WriteSheet s1 = com.alibaba.excel.EasyExcel.writerSheet(0, "汇总").head(com.xinkao.erp.question.excel.ImportResultSummaryRow.class).build();
-                    com.alibaba.excel.write.metadata.WriteSheet s2 = com.alibaba.excel.EasyExcel.writerSheet(1, "错误明细").head(com.xinkao.erp.question.excel.ImportResultErrorRow.class).build();
+                    writer = EasyExcel.write(response.getOutputStream()).build();
+                    com.alibaba.excel.write.metadata.WriteSheet s1 = EasyExcel.writerSheet(0, "汇总").head(com.xinkao.erp.question.excel.ImportResultSummaryRow.class).build();
+                    com.alibaba.excel.write.metadata.WriteSheet s2 = EasyExcel.writerSheet(1, "错误明细").head(ImportResultErrorRow.class).build();
                     writer.write(summary, s1);
                     writer.write(details, s2);
                 } finally {
@@ -498,7 +416,7 @@ public class    QuestionController extends BaseController {
             int warningCount = 0;
             
             if (result.getRowErrors() != null) {
-                for (com.xinkao.erp.question.vo.QuestionImportResultVO.RowError error : result.getRowErrors()) {
+                for (QuestionImportResultVO.RowError error : result.getRowErrors()) {
                     if (Boolean.TRUE.equals(error.getIsWarning())) {
                         warningCount++;
                         if ("KNOWLEDGE_POINT_NOT_MATCHED".equals(error.getWarningType())) {
@@ -550,8 +468,9 @@ public class    QuestionController extends BaseController {
 
 
     @PrimaryDataSource
-    @DataScope(role = "1")
+    @DataScope(role = "1,22")
     @PostMapping("/form/import-zip")
+    @ApiOperation("题目单导入（V2：多Sheet，无分隔符）")
     public void importQuestionFormZipV2(@RequestParam("file") MultipartFile file,
                                         HttpServletRequest request,
                                         HttpServletResponse response) throws IOException {
@@ -568,16 +487,16 @@ public class    QuestionController extends BaseController {
             QuestionImportResultVO result = questionService.importQuestionFormZipV2(file);
             String export = request.getParameter("export");
             if ("excel".equalsIgnoreCase(export)) {
-                java.util.List<com.xinkao.erp.question.excel.ImportResultSummaryRow> summary = new java.util.ArrayList<>();
+                List<com.xinkao.erp.question.excel.ImportResultSummaryRow> summary = new java.util.ArrayList<>();
                 com.xinkao.erp.question.excel.ImportResultSummaryRow row = new com.xinkao.erp.question.excel.ImportResultSummaryRow();
                 row.setTotalCount(result.getTotalCount());
                 row.setSuccessCount(result.getSuccessCount());
                 row.setFailCount(result.getFailCount());
                 summary.add(row);
-                java.util.List<com.xinkao.erp.question.excel.ImportResultErrorRow> details = new java.util.ArrayList<>();
+                List<ImportResultErrorRow> details = new java.util.ArrayList<>();
 
                 if (result.getRowErrors() != null && !result.getRowErrors().isEmpty()) {
-                    for (com.xinkao.erp.question.vo.QuestionImportResultVO.RowError re : result.getRowErrors()) {
+                    for (QuestionImportResultVO.RowError re : result.getRowErrors()) {
                         ImportResultErrorRow d = new ImportResultErrorRow();
                         d.setRowNum(re.getRowNum());
                         d.setMessage(re.getMessage());
@@ -611,13 +530,13 @@ public class    QuestionController extends BaseController {
                 response.setHeader("Access-Control-Allow-Credentials", "true");
                 response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
                 response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-                String downloadName = java.net.URLEncoder.encode("题目单导入结果.xlsx", "UTF-8").replaceAll("\\+", "%20");
+                String downloadName = URLEncoder.encode("题目单导入结果.xlsx", "UTF-8").replaceAll("\\+", "%20");
                 response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + downloadName);
                 com.alibaba.excel.ExcelWriter writer = null;
                 try {
-                    writer = com.alibaba.excel.EasyExcel.write(response.getOutputStream()).build();
-                    com.alibaba.excel.write.metadata.WriteSheet s1 = com.alibaba.excel.EasyExcel.writerSheet(0, "汇总").head(com.xinkao.erp.question.excel.ImportResultSummaryRow.class).build();
-                    com.alibaba.excel.write.metadata.WriteSheet s2 = com.alibaba.excel.EasyExcel.writerSheet(1, "错误明细").head(com.xinkao.erp.question.excel.ImportResultErrorRow.class).build();
+                    writer = EasyExcel.write(response.getOutputStream()).build();
+                    com.alibaba.excel.write.metadata.WriteSheet s1 = EasyExcel.writerSheet(0, "汇总").head(com.xinkao.erp.question.excel.ImportResultSummaryRow.class).build();
+                    com.alibaba.excel.write.metadata.WriteSheet s2 = EasyExcel.writerSheet(1, "错误明细").head(ImportResultErrorRow.class).build();
                     writer.write(summary, s1);
                     writer.write(details, s2);
                 } finally {
@@ -634,7 +553,7 @@ public class    QuestionController extends BaseController {
             int warningCount = 0;
             
             if (result.getRowErrors() != null) {
-                for (com.xinkao.erp.question.vo.QuestionImportResultVO.RowError error : result.getRowErrors()) {
+                for (QuestionImportResultVO.RowError error : result.getRowErrors()) {
 
                     warningCount++;
                     if ("KNOWLEDGE_POINT_NOT_MATCHED".equals(error.getWarningType())) {

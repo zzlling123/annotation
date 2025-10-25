@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 
 public class AttrDataUtils {
-
     public static AttrData findClosestWithSameAttr(AttrData target, List<AttrData> dataList) {
         if (dataList == null || dataList.isEmpty() || target == null) {
             return null;
@@ -71,29 +70,27 @@ public class AttrDataUtils {
             return false;
         }
 
-        if (!isWithinRelativeError(a.position.x, b.position.x, 0.2)) {
+        if (!isWithinRelativeError(a.position.x/a.canvasW*b.canvasW, b.position.x, 0.2)) {
             return false;
         }
 
-        if (!isWithinRelativeError(a.position.y, b.position.y, 0.2)) {
+        if (!isWithinRelativeError(a.position.y/a.canvasH*b.canvasH, b.position.y, 0.2)) {
             return false;
         }
 
-        if (!isWithinRelativeError(a.size.width, b.size.width, 0.2)) {
+        if (!isWithinRelativeError(a.size.width/a.canvasW*b.canvasW, b.size.width, 0.2)) {
             return false;
         }
 
-        return isWithinRelativeError(a.size.height, b.size.height, 0.2);
+        return isWithinRelativeError(a.size.height/a.canvasH*b.canvasH, b.size.height, 0.2);
     }
 
     private static boolean isWithinRelativeError(double val1, double val2, double threshold) {
         if (val1 == val2) {
             return true;
         }
-
         double max = Math.max(Math.abs(val1), Math.abs(val2));
         double relativeError = Math.abs(val1 - val2) / max;
-
         return relativeError <= threshold;
     }
 
