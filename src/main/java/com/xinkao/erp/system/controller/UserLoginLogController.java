@@ -29,7 +29,6 @@ public class UserLoginLogController extends BaseController {
     
     @PrimaryDataSource
     @PostMapping("/page")
-    @ApiOperation("分页")
     public BaseResponse<Page<UserLoginLogPageVo>> page(@RequestBody UserLoginLogQuery query) {
 
         Pageable pageable = query.getPageInfo();
